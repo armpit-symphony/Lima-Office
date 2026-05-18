@@ -1,0 +1,158 @@
+# Security Model
+
+## Baseline
+
+LIMA Office OS uses a Zero Trust baseline for one small-business tenant at a time. No worker, helper agent, connector, model provider, local file, browser page, tool output, or operator action is trusted by default.
+
+Guardian is the syscall gate for model, tool, file, network, connector, outbound, scheduled, and privileged actions.
+
+## Authenticated Worker-Supervisor Channel
+
+Supervisor-to-worker communication must use authenticated device identity before any runtime work is approved. The plan should include:
+
+- Device enrollment.
+- mTLS or equivalent authenticated channel.
+- Capability leases.
+- Key rotation.
+- Revocation.
+- Quarantine.
+- Replacement flow.
+
+## Worker Identity And Attestation Plan
+
+Each Arc worker must have:
+
+- Stable worker ID.
+- Device identity reference.
+- Role assignment.
+- Capability manifest.
+- Approved tenant binding.
+- Health and heartbeat record.
+- Quarantine/revoke state.
+
+Hardware attestation is an open question for Phase 0.
+
+## Secret Storage Rules
+
+- No hardcoded secrets.
+- No plaintext API keys.
+- No tokens in docs, logs, screenshots, prompts, or evidence summaries.
+- Use secret references, not secret values.
+- Future secret storage must support rotation, revocation, least privilege, and audit.
+
+## Least Privilege
+
+Workers and helper agents receive only the tool packs needed for the task, role, tenant, and approval state. Default access is deny.
+
+## RBAC
+
+Initial roles:
+
+- Operator.
+- Approver.
+- Supervisor admin.
+- Field IT reviewer.
+- Security reviewer.
+- Worker node.
+- Helper agent.
+
+Privileged actions require role checks, Guardian decision, approval when required, and evidence.
+
+## Tenant Isolation
+
+Even with one tenant at a time, the system must design tenant isolation from day one:
+
+- Tenant ID on contracts and evidence.
+- Tenant-scoped memory.
+- Tenant-scoped connector readiness.
+- Tenant-scoped worker assignments.
+- Tenant-scoped audit export.
+- Customer exit/delete/reset posture.
+
+Cross-tenant memory sharing is blocked for MVP.
+
+## Data Classification
+
+Initial classifications:
+
+- `public`
+- `internal`
+- `customer_confidential`
+- `sensitive_hr`
+- `sensitive_finance`
+- `sensitive_legal`
+- `sensitive_medical`
+- `secret`
+
+Sensitive HR, finance, legal, medical, and secret data require approval or remain blocked until policy is complete.
+
+## Logging And Audit Requirements
+
+Audit records must capture:
+
+- Actor.
+- Tenant.
+- Worker/helper identity.
+- Action class.
+- Resource reference.
+- Guardian decision.
+- Approval result.
+- Risk tier.
+- Redaction status.
+- Evidence artifact ID.
+- Timestamp.
+- Correlation ID.
+
+Logs must avoid secrets, tokens, raw sensitive payloads, and plaintext API keys.
+
+## Approval-Gated Privileged Actions
+
+Approval is mandatory for:
+
+- External messages.
+- Connector writes.
+- File delete/overwrite.
+- Customer record mutation.
+- Software install/update.
+- Remediation.
+- Production server touch.
+- Payment, legal, or regulated systems.
+- Sensitive HR/finance/legal/medical access.
+
+## Secure Update And Rollback
+
+Update and rollback posture must include:
+
+- Signed or verified update source.
+- Known-good version.
+- Rollback trigger.
+- Evidence capture.
+- Operator visibility.
+- Approval for software changes.
+- Quarantine on failed or suspicious update.
+
+## Connector Trust Program
+
+Connectors remain mock/readiness-only in Phase 0. Future connector trust must document:
+
+- Consent.
+- OAuth/scope review.
+- Read/write/admin tier.
+- Token storage reference.
+- Revocation.
+- Data classification.
+- Prompt injection exposure.
+- Audit/evidence.
+
+## Production Action Rule
+
+No production actions are allowed without policy, Guardian decision, required approval, evidence capture, and explicit future authorization.
+
+## Conceptual Standards Mapping
+
+This mapping is conceptual and does not claim certification or compliance.
+
+- NIST CSF 2.0: Govern, identify, protect, detect, respond, and recover are reflected in contracts, risk tiers, evidence, incident runbooks, and recovery posture.
+- NIST AI RMF: Govern, map, measure, and manage are reflected in Guardian decisions, model routing records, human approval, evidence, and open risk tracking.
+- NIST SP 800-207 Zero Trust: Never trust by default; verify worker identity, operator role, connector scope, and every action request.
+- CISA Secure by Design: Favor least privilege, secure defaults, auditability, update/rollback posture, and no hardcoded secrets.
