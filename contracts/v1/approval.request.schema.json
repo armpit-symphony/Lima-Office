@@ -1,0 +1,329 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/approval.request.schema.json",
+  "title": "Approval Request Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "approval_request_id",
+    "task_id",
+    "guardian_decision_id",
+    "producer",
+    "requested_by",
+    "action_class",
+    "risk_tier",
+    "data_classification",
+    "requested_scope",
+    "scope_hash",
+    "reason",
+    "status",
+    "approval_result",
+    "approver_roles",
+    "policy_version",
+    "evidence_required",
+    "evidence_artifact_ids",
+    "expires_at",
+    "created_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "approval.request"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approval_request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "guardian",
+            "operator_console"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "requested_by": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor_type",
+        "actor_id"
+      ],
+      "properties": {
+        "actor_type": {
+          "type": "string",
+          "enum": [
+            "operator",
+            "supervisor",
+            "worker",
+            "helper_agent"
+          ]
+        },
+        "actor_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "action_class": {
+      "type": "string",
+      "enum": [
+        "external_message_send",
+        "form_submit",
+        "file_delete",
+        "file_overwrite",
+        "customer_record_update",
+        "software_install_update",
+        "remediation",
+        "sensitive_data_access",
+        "production_server_touch",
+        "regulated_system_use"
+      ]
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": [
+        "medium",
+        "high",
+        "blocked"
+      ]
+    },
+    "data_classification": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "customer_confidential",
+        "sensitive_hr",
+        "sensitive_finance",
+        "sensitive_legal",
+        "sensitive_medical",
+        "secret"
+      ]
+    },
+    "requested_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "external_effect",
+        "resource_refs",
+        "allowed_operations",
+        "prohibited_operations",
+        "max_uses"
+      ],
+      "properties": {
+        "external_effect": {
+          "type": "string",
+          "enum": [
+            "send_external_message",
+            "submit_form",
+            "delete_file",
+            "overwrite_file",
+            "modify_customer_record",
+            "install_update_software",
+            "run_remediation",
+            "access_sensitive_data",
+            "touch_production_server",
+            "use_regulated_system"
+          ]
+        },
+        "resource_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "allowed_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prohibited_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "max_uses": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1
+        }
+      }
+    },
+    "scope_hash": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Opaque digest of the requested tenant/task/action/resource scope. This is not secret material."
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "requested",
+        "pending_review",
+        "approved",
+        "denied",
+        "expired",
+        "cancelled",
+        "superseded"
+      ]
+    },
+    "approval_result": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "denied",
+        "expired",
+        "cancelled",
+        "superseded"
+      ]
+    },
+    "approver_roles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "operator",
+          "approver",
+          "supervisor_admin",
+          "field_it_reviewer",
+          "security_reviewer"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "evidence_required": {
+      "type": "boolean"
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_artifact_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "approver_operator_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "decided_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "denial_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_token_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

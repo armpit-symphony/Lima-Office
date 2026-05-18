@@ -1,0 +1,372 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/evidence.artifact.schema.json",
+  "title": "Evidence Artifact Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "artifact_id",
+    "artifact_type",
+    "producer",
+    "actor",
+    "subject",
+    "action_class",
+    "risk_tier",
+    "data_classification",
+    "guardian_decision_id",
+    "approval_request_id",
+    "approval_token_id",
+    "policy_version",
+    "policy_snapshot_hash",
+    "redaction_status",
+    "redaction_profile",
+    "redacted_fields",
+    "retention_class",
+    "retention_policy_ref",
+    "retention_expires_at",
+    "delete_eligible",
+    "storage_ref",
+    "payload_hash",
+    "integrity_ref",
+    "previous_artifact_id",
+    "access_control_ref",
+    "export_eligible",
+    "export_redaction_profile",
+    "summary",
+    "created_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "evidence.artifact"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_type": {
+      "type": "string",
+      "enum": [
+        "guardian_decision",
+        "approval_request",
+        "approval_token",
+        "worker_lifecycle",
+        "worker_heartbeat",
+        "task_transition",
+        "tool_invocation",
+        "model_route",
+        "memory_access",
+        "connector_trust",
+        "incident",
+        "lima_it_handoff",
+        "slo_measurement",
+        "denial",
+        "quarantine"
+      ]
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "worker",
+            "guardian",
+            "operator_console",
+            "helper_agent",
+            "lima_it_bridge"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor_type",
+        "actor_id"
+      ],
+      "properties": {
+        "actor_type": {
+          "type": "string",
+          "enum": [
+            "operator",
+            "supervisor",
+            "worker",
+            "helper_agent",
+            "guardian"
+          ]
+        },
+        "actor_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject_type",
+        "subject_id"
+      ],
+      "properties": {
+        "subject_type": {
+          "type": "string",
+          "enum": [
+            "task",
+            "worker",
+            "helper_agent",
+            "connector",
+            "memory_access",
+            "tool_invocation",
+            "model_route",
+            "incident",
+            "lima_it_handoff"
+          ]
+        },
+        "subject_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "action_class": {
+      "type": "string",
+      "enum": [
+        "model_route",
+        "tool_invocation",
+        "file_read",
+        "file_write",
+        "file_delete",
+        "network_access",
+        "connector_access",
+        "outbound_message",
+        "scheduled_action",
+        "privileged_operation",
+        "memory_access",
+        "worker_lifecycle",
+        "lima_it_diagnostic",
+        "lima_it_remediation",
+        "slo_measurement"
+      ]
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "blocked"
+      ]
+    },
+    "data_classification": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "customer_confidential",
+        "sensitive_hr",
+        "sensitive_finance",
+        "sensitive_legal",
+        "sensitive_medical",
+        "secret"
+      ]
+    },
+    "guardian_decision_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_request_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_token_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_snapshot_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "redaction_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "metadata_only",
+        "payload_redacted",
+        "secret_redacted"
+      ]
+    },
+    "retention_class": {
+      "type": "string",
+      "enum": [
+        "transient_task",
+        "short_term_operator_review",
+        "evidence_retained",
+        "customer_exit_pending",
+        "deletion_pending"
+      ]
+    },
+    "redaction_profile": {
+      "type": "string",
+      "enum": [
+        "none",
+        "metadata_only",
+        "operator_safe_summary",
+        "secret_safe"
+      ]
+    },
+    "redacted_fields": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "retention_policy_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "retention_expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "delete_eligible": {
+      "type": "boolean"
+    },
+    "storage_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "location_ref",
+        "contains_sensitive_payload",
+        "secret_material_present"
+      ],
+      "properties": {
+        "location_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contains_sensitive_payload": {
+          "type": "boolean"
+        },
+        "secret_material_present": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "integrity_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "payload_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "previous_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "access_control_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "export_eligible": {
+      "type": "boolean"
+    },
+    "export_redaction_profile": {
+      "type": "string",
+      "enum": [
+        "not_exportable",
+        "metadata_only",
+        "operator_safe_summary",
+        "customer_safe_summary"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "contract_name": "guardian.decision",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-file-delete-deny-001",
+  "causation_id": "tool-file-delete-001",
+  "idempotency_key": "idem-guardian-file-delete-001",
+  "decision_id": "gd-file-delete-deny-001",
+  "request_id": "req-file-delete-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T21:25:00Z"
+  },
+  "requested_by": {
+    "actor_type": "worker",
+    "actor_id": "arc-file-clerk-01"
+  },
+  "subject": {
+    "subject_type": "tool",
+    "subject_id": "tool-file-delete-001"
+  },
+  "action_class": "file_delete",
+  "resource_ref": {
+    "resource_type": "file",
+    "resource_id": "file-ref-archive-candidate-001",
+    "resource_scope": "tenant_scoped"
+  },
+  "data_classification": "customer_confidential",
+  "risk_tier": "blocked",
+  "policy_refs": [
+    "autonomy-boundary:file-delete-approval-required",
+    "mvp:block-unapproved-file-mutation"
+  ],
+  "policy_version": "policy-phase0-v1",
+  "policy_snapshot_hash": "hash-ref-policy-snapshot-001",
+  "valid_for_action_ref": "action-hash-file-delete-001",
+  "decision": "deny",
+  "approval_required": true,
+  "approval_request_id": null,
+  "approval_token_id": null,
+  "denial_reason": "File deletion requested without a matching approval request and scoped approval token.",
+  "redaction_level": "metadata_only",
+  "evidence_required": true,
+  "evidence_artifact_id": "ev-file-delete-deny-001",
+  "evidence_artifact_ids": [
+    "ev-file-delete-deny-001"
+  ],
+  "prompt_injection": {
+    "untrusted_input_refs": [
+      "doc-ref-untrusted-cleanup-note-001"
+    ],
+    "content_origin": "document",
+    "instruction_boundary": "untrusted_content_as_data",
+    "injection_suspected": true,
+    "injection_signals": [
+      "request_unapproved_tool"
+    ],
+    "containment_action": "deny_action"
+  },
+  "created_at": "2026-05-18T21:25:00Z",
+  "expires_at": "2026-05-18T21:30:00Z"
+}

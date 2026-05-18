@@ -44,3 +44,11 @@
 - What heartbeat interval and missed-heartbeat thresholds are acceptable?
 - What update channel and rollback mechanism should be used?
 - What small-business LAN assumptions are realistic?
+
+## Contract Schema Follow-Ups
+
+- Should `approval.result` become a separate v1 schema, or remain represented by `approval.request` status/result fields and `approval.token` lifecycle fields?
+- Should supervisor-side helper agents get a dedicated `helper.scope` schema before any helper runtime work?
+- What JSON Schema validator should be used in CI for draft 2020-12 validation?
+- What redaction matrix and retention schedule should bind evidence, memory, task, incident, and worker-cache records?
+- What runbooks are required before runtime for evidence-writer failure, approval timeout, worker replacement, update rollback, LIMA IT handoff, and customer exit/delete?

@@ -1,0 +1,331 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/approval.token.schema.json",
+  "title": "Approval Token Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "approval_token_id",
+    "approval_request_id",
+    "guardian_decision_id",
+    "task_id",
+    "bound_task_id",
+    "bound_action_class",
+    "bound_resource_refs",
+    "approver_operator_id",
+    "approver_role_ref",
+    "action_class",
+    "risk_tier",
+    "data_classification",
+    "scope",
+    "scope_hash",
+    "status",
+    "producer",
+    "policy_version",
+    "issued_at",
+    "expires_at",
+    "single_use",
+    "token_digest_ref",
+    "replay_nonce_ref",
+    "token_binding_ref",
+    "max_uses",
+    "used_count",
+    "evidence_artifact_id",
+    "evidence_artifact_ids"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "approval.token"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approval_token_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identifier for an approval token record. This is not token material."
+    },
+    "approval_request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "bound_task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "bound_action_class": {
+      "type": "string",
+      "enum": [
+        "external_message_send",
+        "form_submit",
+        "file_delete",
+        "file_overwrite",
+        "customer_record_update",
+        "software_install_update",
+        "remediation",
+        "sensitive_data_access",
+        "production_server_touch",
+        "regulated_system_use"
+      ]
+    },
+    "bound_resource_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "approver_operator_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approver_role_ref": {
+      "type": "string",
+      "enum": [
+        "operator",
+        "approver",
+        "supervisor_admin",
+        "field_it_reviewer",
+        "security_reviewer"
+      ]
+    },
+    "action_class": {
+      "type": "string",
+      "enum": [
+        "external_message_send",
+        "form_submit",
+        "file_delete",
+        "file_overwrite",
+        "customer_record_update",
+        "software_install_update",
+        "remediation",
+        "sensitive_data_access",
+        "production_server_touch",
+        "regulated_system_use"
+      ]
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": [
+        "medium",
+        "high"
+      ]
+    },
+    "data_classification": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "customer_confidential",
+        "sensitive_hr",
+        "sensitive_finance",
+        "sensitive_legal",
+        "sensitive_medical",
+        "secret"
+      ]
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resource_refs",
+        "allowed_operations",
+        "prohibited_operations"
+      ],
+      "properties": {
+        "resource_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "allowed_operations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prohibited_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "scope_hash": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Opaque digest of the approved tenant/task/action/resource scope. This is not secret material."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "issued",
+        "active",
+        "used",
+        "expired",
+        "revoked"
+      ]
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "operator_console"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "single_use": {
+      "type": "boolean",
+      "const": true
+    },
+    "token_digest_ref": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Reference to a digest or verification record. Do not store bearer token material here."
+    },
+    "replay_nonce_ref": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Reference to replay-protection state. Do not store nonce secret material here."
+    },
+    "token_binding_ref": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Reference to token binding state. Do not store token material here."
+    },
+    "max_uses": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1
+    },
+    "used_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "evidence_artifact_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_artifact_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "used_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "revoked_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "revocation_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

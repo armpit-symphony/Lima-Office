@@ -1,0 +1,364 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/memory.access.schema.json",
+  "title": "Memory Access Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "memory_access_id",
+    "task_id",
+    "producer",
+    "actor",
+    "memory_namespace",
+    "tenant_namespace",
+    "tenant_match_required",
+    "cross_tenant_access",
+    "cross_tenant_check_result",
+    "access_type",
+    "operation",
+    "data_classification",
+    "classification_source",
+    "purpose",
+    "retention_class",
+    "retention_rule",
+    "delete_export_posture",
+    "source_refs",
+    "retrieval_scope",
+    "retrieved_record_refs",
+    "raw_content_allowed",
+    "prompt_injection_scan_status",
+    "policy_result",
+    "policy_version",
+    "guardian_decision_id",
+    "approval_required",
+    "approval_token_id",
+    "evidence_artifact_id",
+    "status",
+    "requested_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "memory.access"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "memory_access_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "worker",
+            "helper_agent",
+            "guardian"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor_type",
+        "actor_id"
+      ],
+      "properties": {
+        "actor_type": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "worker",
+            "helper_agent"
+          ]
+        },
+        "actor_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "memory_namespace": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_namespace": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_match_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "cross_tenant_access": {
+      "type": "boolean",
+      "const": false
+    },
+    "cross_tenant_check_result": {
+      "type": "string",
+      "enum": [
+        "tenant_match",
+        "denied_cross_tenant_attempt",
+        "not_applicable"
+      ]
+    },
+    "access_type": {
+      "type": "string",
+      "enum": [
+        "read",
+        "write_summary",
+        "delete_request",
+        "export_request",
+        "retention_review"
+      ]
+    },
+    "operation": {
+      "type": "string",
+      "enum": [
+        "retrieve",
+        "write_summary",
+        "delete_request",
+        "export_request",
+        "retention_review"
+      ]
+    },
+    "data_classification": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "customer_confidential",
+        "sensitive_hr",
+        "sensitive_finance",
+        "sensitive_legal",
+        "sensitive_medical",
+        "secret"
+      ]
+    },
+    "classification_source": {
+      "type": "string",
+      "enum": [
+        "operator_label",
+        "guardian_policy",
+        "connector_metadata",
+        "memory_metadata",
+        "default_internal"
+      ]
+    },
+    "purpose": {
+      "type": "string",
+      "enum": [
+        "task_context_retrieval",
+        "preference_lookup",
+        "evidence_lookup",
+        "customer_exit_export",
+        "delete_review",
+        "retention_review",
+        "prompt_injection_review"
+      ]
+    },
+    "retention_class": {
+      "type": "string",
+      "enum": [
+        "transient_task",
+        "short_term_operator_review",
+        "evidence_retained",
+        "customer_exit_pending",
+        "deletion_pending"
+      ]
+    },
+    "retention_rule": {
+      "type": "string",
+      "minLength": 1
+    },
+    "delete_export_posture": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "delete_review_required",
+        "export_review_required",
+        "customer_exit_pending"
+      ]
+    },
+    "source_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "retrieval_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_records",
+        "record_ref_only",
+        "untrusted_content_treatment"
+      ],
+      "properties": {
+        "max_records": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 50
+        },
+        "record_ref_only": {
+          "type": "boolean"
+        },
+        "untrusted_content_treatment": {
+          "type": "string",
+          "enum": [
+            "treat_as_data",
+            "scan_before_use",
+            "deny_use"
+          ]
+        }
+      }
+    },
+    "retrieved_record_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "raw_content_allowed": {
+      "type": "boolean",
+      "const": false
+    },
+    "prompt_injection_scan_status": {
+      "type": "string",
+      "enum": [
+        "not_required",
+        "pending",
+        "passed",
+        "suspected",
+        "blocked"
+      ]
+    },
+    "policy_result": {
+      "type": "string",
+      "enum": [
+        "allow",
+        "allow_with_evidence",
+        "requires_approval",
+        "deny",
+        "block_mvp"
+      ]
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approval_required": {
+      "type": "boolean"
+    },
+    "approval_token_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "evidence_artifact_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "requested",
+        "allowed",
+        "denied",
+        "blocked_mvp",
+        "completed",
+        "failed"
+      ]
+    },
+    "denial_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "requested_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "contract_name": "incident.ops",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-rogue-worker-001",
+  "causation_id": "gd-file-delete-deny-001",
+  "idempotency_key": "idem-incident-rogue-worker-001",
+  "incident_id": "inc-rogue-worker-001",
+  "incident_type": "rogue_worker",
+  "severity": "high",
+  "severity_rubric": "security_review",
+  "status": "quarantined",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:26:00Z"
+  },
+  "detected_by": {
+    "actor_type": "guardian",
+    "actor_id": "guardian-phase0",
+    "detection_method": "policy_denial"
+  },
+  "first_detected_at": "2026-05-18T21:25:00Z",
+  "detected_signal": "policy_denial",
+  "customer_impact": "none_detected",
+  "affected_subjects": [
+    {
+      "subject_type": "worker",
+      "subject_id": "arc-file-clerk-01"
+    },
+    {
+      "subject_type": "task",
+      "subject_id": "task-file-cleanup-001"
+    }
+  ],
+  "affected_scope": "single_worker",
+  "containment_actions": [
+    {
+      "action": "quarantine_worker",
+      "status": "applied"
+    },
+    {
+      "action": "notify_operator",
+      "status": "applied"
+    }
+  ],
+  "containment_started_at": "2026-05-18T21:25:30Z",
+  "containment_completed_at": "2026-05-18T21:26:00Z",
+  "handoff_mode": "none",
+  "remediation_authorized": false,
+  "post_review_required": true,
+  "runbook_ref": "runbook-ref-worker-quarantine-phase0",
+  "data_classification": "internal",
+  "risk_tier": "high",
+  "policy_version": "policy-phase0-v1",
+  "guardian_decision_id": "gd-file-delete-deny-001",
+  "approval_required": false,
+  "approval_request_id": null,
+  "approval_token_id": null,
+  "evidence_artifact_ids": [
+    "ev-file-delete-deny-001",
+    "ev-worker-quarantine-001"
+  ],
+  "lima_it_handoff_id": null,
+  "operator_owner": "operator-lab-001",
+  "created_at": "2026-05-18T21:25:30Z",
+  "updated_at": "2026-05-18T21:26:00Z"
+}

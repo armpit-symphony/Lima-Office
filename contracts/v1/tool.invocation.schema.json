@@ -1,0 +1,397 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/tool.invocation.schema.json",
+  "title": "Tool Invocation Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "tool_invocation_id",
+    "task_id",
+    "producer",
+    "actor",
+    "requested_tool",
+    "execution_mode",
+    "dry_run",
+    "side_effect_class",
+    "sandbox_profile",
+    "capability_lease_id",
+    "tool_scope",
+    "risk_tier",
+    "data_classification",
+    "policy_result",
+    "policy_version",
+    "guardian_decision_id",
+    "approval_required",
+    "approval_token_id",
+    "evidence_required",
+    "evidence_artifact_ids",
+    "input_artifact_refs",
+    "output_artifact_refs",
+    "timeout_seconds",
+    "rollback_available",
+    "status",
+    "requested_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "tool.invocation"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tool_invocation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "worker",
+            "helper_agent",
+            "guardian"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor_type",
+        "actor_id"
+      ],
+      "properties": {
+        "actor_type": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "worker",
+            "helper_agent"
+          ]
+        },
+        "actor_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "requested_tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tool_type",
+        "tool_name",
+        "tool_version"
+      ],
+      "properties": {
+        "tool_type": {
+          "type": "string",
+          "enum": [
+            "file",
+            "browser",
+            "network",
+            "connector",
+            "shell",
+            "local_app",
+            "lima_it",
+            "internal_helper"
+          ]
+        },
+        "tool_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tool_version": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "execution_mode": {
+      "type": "string",
+      "enum": [
+        "plan_only",
+        "read_only",
+        "draft_only",
+        "mock_only",
+        "approval_required_write",
+        "blocked_mvp"
+      ]
+    },
+    "dry_run": {
+      "type": "boolean"
+    },
+    "side_effect_class": {
+      "type": "string",
+      "enum": [
+        "none",
+        "read_only",
+        "draft_only",
+        "approval_required_write",
+        "blocked_mvp"
+      ]
+    },
+    "sandbox_profile": {
+      "type": "string",
+      "enum": [
+        "none",
+        "read_only_files",
+        "draft_workspace",
+        "mock_connector",
+        "it_diagnostics_read_only",
+        "blocked"
+      ]
+    },
+    "capability_lease_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tool_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resource_refs",
+        "allowed_operations",
+        "prohibited_operations",
+        "file_scope",
+        "network_scope",
+        "connector_scope"
+      ],
+      "properties": {
+        "resource_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "allowed_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prohibited_operations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "file_scope": {
+          "type": "string",
+          "enum": [
+            "none",
+            "read_only",
+            "draft_workspace",
+            "approved_paths_only",
+            "delete_blocked"
+          ]
+        },
+        "network_scope": {
+          "type": "string",
+          "enum": [
+            "none",
+            "local_supervisor_only",
+            "guardian_approved_allowlist",
+            "mock_only"
+          ]
+        },
+        "connector_scope": {
+          "type": "string",
+          "enum": [
+            "none",
+            "mock_readiness_only",
+            "approval_required_future_live"
+          ]
+        }
+      }
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "blocked"
+      ]
+    },
+    "data_classification": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "customer_confidential",
+        "sensitive_hr",
+        "sensitive_finance",
+        "sensitive_legal",
+        "sensitive_medical",
+        "secret"
+      ]
+    },
+    "policy_result": {
+      "type": "string",
+      "enum": [
+        "allow",
+        "allow_with_evidence",
+        "requires_approval",
+        "deny",
+        "block_mvp",
+        "quarantine_subject"
+      ]
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approval_required": {
+      "type": "boolean"
+    },
+    "approval_token_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "evidence_required": {
+      "type": "boolean"
+    },
+    "evidence_artifact_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "input_artifact_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "output_artifact_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "timeout_seconds": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3600
+    },
+    "rollback_available": {
+      "type": "boolean"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "requested",
+        "policy_checked",
+        "approved_to_run",
+        "denied",
+        "blocked_mvp",
+        "in_progress",
+        "completed",
+        "failed",
+        "blocked_evidence_unavailable",
+        "evidence_failed"
+      ]
+    },
+    "denial_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "requested_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  }
+}

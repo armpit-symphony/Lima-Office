@@ -1,0 +1,64 @@
+{
+  "contract_name": "model.route",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-model-email-draft-001",
+  "causation_id": "task-email-draft-001",
+  "idempotency_key": "idem-model-route-email-001",
+  "model_route_id": "mr-email-draft-001",
+  "task_id": "task-email-draft-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:28:00Z"
+  },
+  "requested_by": {
+    "actor_type": "worker",
+    "actor_id": "arc-admin-01"
+  },
+  "route_state": "routed",
+  "data_classification": "customer_confidential",
+  "prompt_sensitivity": "moderate",
+  "risk_tier": "medium",
+  "model_capability_required": "draft_generation",
+  "allowed_provider_classes": [
+    "local_model"
+  ],
+  "provider_class": "local",
+  "selected_provider_class": "local_model",
+  "routing_policy_ref": "model-routing-policy-phase0",
+  "data_residency_preference": "local_only",
+  "data_egress_allowed": false,
+  "cloud_allowed": false,
+  "fallback_allowed": false,
+  "prompt_ref": "prompt-artifact-ref-email-draft-redacted-001",
+  "response_ref": "response-artifact-ref-email-draft-redacted-001",
+  "redaction_required": true,
+  "policy_version": "policy-phase0-v1",
+  "guardian_decision_id": "gd-model-route-email-001",
+  "approval_required": false,
+  "approval_token_id": null,
+  "evidence_artifact_id": "ev-model-route-email-001",
+  "evidence_artifact_ids": [
+    "ev-model-route-email-001"
+  ],
+  "prompt_injection": {
+    "untrusted_input_refs": [
+      "ticket-ref-customer-context-001"
+    ],
+    "content_origin": "ticket",
+    "injection_suspected": false,
+    "injection_signals": [
+      "none"
+    ],
+    "containment_action": "treat_as_untrusted_data"
+  },
+  "failure_behavior": {
+    "on_provider_unavailable": "block_task",
+    "on_policy_denial": "block_task",
+    "on_evidence_failure": "block_task"
+  },
+  "created_at": "2026-05-18T21:28:00Z"
+}

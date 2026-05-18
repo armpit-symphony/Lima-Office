@@ -24,8 +24,10 @@ Each Arc worker must have:
 
 - Stable worker ID.
 - Device identity reference.
+- Channel identity reference.
 - Role assignment.
 - Capability manifest.
+- Capability lease.
 - Approved tenant binding.
 - Health and heartbeat record.
 - Quarantine/revoke state.
@@ -38,6 +40,8 @@ Hardware attestation is an open question for Phase 0.
 - No plaintext API keys.
 - No tokens in docs, logs, screenshots, prompts, or evidence summaries.
 - Use secret references, not secret values.
+- Approval token contracts store metadata and digest/reference fields only, not bearer token material.
+- Connector trust uses `secrets_ref` only and `secret_material_present: false` in Phase 0.
 - Future secret storage must support rotation, revocation, least privilege, and audit.
 
 ## Least Privilege
@@ -147,6 +151,19 @@ Connectors remain mock/readiness-only in Phase 0. Future connector trust must do
 ## Production Action Rule
 
 No production actions are allowed without policy, Guardian decision, required approval, evidence capture, and explicit future authorization.
+
+## Schema Control Points
+
+The Phase 0 field-level schemas in [contracts/v1](../contracts/v1) define the minimum security metadata for future runtime work:
+
+- Approval token: [approval.token.schema.json](../contracts/v1/approval.token.schema.json) requires task/action/resource binding, expiry, one-time use, replay-protection refs, revocation state, and evidence. It must not contain token material.
+- Worker identity: [worker.lifecycle.schema.json](../contracts/v1/worker.lifecycle.schema.json) and [worker.heartbeat.schema.json](../contracts/v1/worker.heartbeat.schema.json) require device identity refs, channel identity refs, capability lease/hash posture, heartbeat sequence, supervisor receive time, evidence writer state, quarantine, and revoke metadata.
+- Model routing: [model.route.schema.json](../contracts/v1/model.route.schema.json) records provider class, local/cloud boundary, egress posture, prompt/response refs, redaction, prompt-injection handling, Guardian decision, and evidence.
+- Tool invocation: [tool.invocation.schema.json](../contracts/v1/tool.invocation.schema.json) requires tool pack/version, sandbox profile, side-effect class, file/network/connector scope, dry-run posture, approval token linkage where needed, and evidence.
+- Memory access: [memory.access.schema.json](../contracts/v1/memory.access.schema.json) requires tenant namespace, purpose, retention class, delete/export posture, prompt-injection scan state, and `cross_tenant_access: false`.
+- Connector trust: [connector.trust.schema.json](../contracts/v1/connector.trust.schema.json) is mock/readiness-only in Phase 0 with `mock_only: true`, `live_access_enabled: false`, `secret_material_present: false`, consent/scope review posture, and revocation state.
+- Evidence artifact: [evidence.artifact.schema.json](../contracts/v1/evidence.artifact.schema.json) defines redaction, retention, payload/integrity refs, export/delete posture, access-control refs, and evidence chain metadata.
+- LIMA IT handoff: [lima_it.handoff.schema.json](../contracts/v1/lima_it.handoff.schema.json) separates read-only diagnostics from approval-required remediation and blocks production touch in MVP.
 
 ## Conceptual Standards Mapping
 

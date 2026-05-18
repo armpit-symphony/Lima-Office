@@ -8,6 +8,7 @@ Phase 0 status values:
 
 - `documented`: covered by current docs.
 - `needs_contract`: contract fields or states still needed.
+- `schema_defined`: field-level schema/control exists, but runtime remains blocked.
 - `blocked_mvp`: denied for MVP.
 - `future_review`: deferred until implementation planning.
 
@@ -38,18 +39,18 @@ Phase 0 status values:
 
 | Scenario | STRIDE | Risk | Control | Detection | Evidence | MVP Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| Malicious worker node | Spoofing, tampering, elevation | Worker accepts tasks or reports false results | Device identity, capability lease, Guardian decisions, quarantine | Heartbeat anomaly, capability mismatch, evidence mismatch | Worker lifecycle event, Guardian decision, quarantine record | needs_contract |
-| Compromised mini PC | Tampering, disclosure, denial | Local cache or task data exposed; worker misused | Encrypted cache, least privilege, revoke, replacement flow | Missed heartbeat, endpoint alert, suspicious tool request | Incident record, worker status, containment action | needs_contract |
-| Stolen API key | Spoofing, disclosure, elevation | Connector/model access abused | No plaintext keys, secret refs, rotation, revocation | Secret access anomaly, failed scope check | Secret reference event, Guardian denial, incident record | needs_contract |
-| Prompt injection through email/doc/chat/browser/ticket | Tampering, elevation | Model follows hostile instructions and requests unsafe action | Treat content as untrusted, tool mediation, Guardian decision, approval | Suspicious instruction patterns, high-risk tool request | Input classification, denial/approval evidence | needs_contract |
-| Bad connector scopes | Elevation, disclosure | Connector grants write/admin access too early | Connector trust contract, mock first, scope review | Scope mismatch, connector readiness block | Connector readiness evidence, Guardian denial | needs_contract |
+| Malicious worker node | Spoofing, tampering, elevation | Worker accepts tasks or reports false results | Device identity, capability lease, Guardian decisions, quarantine | Heartbeat anomaly, capability mismatch, evidence mismatch | Worker lifecycle event, Guardian decision, quarantine record | schema_defined |
+| Compromised mini PC | Tampering, disclosure, denial | Local cache or task data exposed; worker misused | Encrypted cache, least privilege, revoke, replacement flow | Missed heartbeat, endpoint alert, suspicious tool request | Incident record, worker status, containment action | schema_defined |
+| Stolen API key | Spoofing, disclosure, elevation | Connector/model access abused | No plaintext keys, secret refs, rotation, revocation | Secret access anomaly, failed scope check | Secret reference event, Guardian denial, incident record | schema_defined |
+| Prompt injection through email/doc/chat/browser/ticket | Tampering, elevation | Model follows hostile instructions and requests unsafe action | Treat content as untrusted, tool mediation, Guardian decision, approval | Suspicious instruction patterns, high-risk tool request | Input classification, denial/approval evidence | schema_defined |
+| Bad connector scopes | Elevation, disclosure | Connector grants write/admin access too early | Connector trust contract, mock first, scope review | Scope mismatch, connector readiness block | Connector readiness evidence, Guardian denial | schema_defined |
 | Cross-tenant memory leak | Disclosure | Data from one customer appears in another context | Tenant namespaces, no cross-tenant memory, exit/delete posture | Tenant ID mismatch, retrieval audit | Memory access denial, audit event | blocked_mvp |
 | Unauthorized outbound message | Repudiation, tampering | External email/text/chat sent without approval | Approval required, Guardian outbound gate, no live sends in Phase 0 | Outbound request without approval token | Guardian denial, approval audit | blocked_mvp |
-| Unauthorized file mutation | Tampering | Business file deleted or overwritten | Approval required, file mutation gate, version/rollback plan | File write request risk tier | Guardian decision, approval result, evidence | needs_contract |
-| Rogue supervisor/helper agent | Elevation, repudiation | Helper agent bypasses operator or tool limits | Helper scope contract, RBAC, Guardian gate, evidence | Tool request outside scope, missing operator context | Helper action evidence, denial/quarantine | needs_contract |
-| Model/tool hallucination causing business action | Tampering, repudiation | Model invents action, recipient, or record update | Draft-first workflow, approval for writes, evidence checks | High-risk action request, confidence mismatch | Task result, approval record, Guardian decision | needs_contract |
+| Unauthorized file mutation | Tampering | Business file deleted or overwritten | Approval required, file mutation gate, version/rollback plan | File write request risk tier | Guardian decision, approval result, evidence | schema_defined |
+| Rogue supervisor/helper agent | Elevation, repudiation | Helper agent bypasses operator or tool limits | Helper scope contract, RBAC, Guardian gate, evidence | Tool request outside scope, missing operator context | Helper action evidence, denial/quarantine | schema_defined |
+| Model/tool hallucination causing business action | Tampering, repudiation | Model invents action, recipient, or record update | Draft-first workflow, approval for writes, evidence checks | High-risk action request, confidence mismatch | Task result, approval record, Guardian decision | schema_defined |
 | Update supply-chain compromise | Tampering, elevation | Bad update changes worker/supervisor behavior | Verified update source, known-good rollback, approval | Version mismatch, failed verification | Update evidence, incident record, rollback record | future_review |
-| Customer network compromise | Spoofing, denial, disclosure | Local attacker targets supervisor/worker channel | Authenticated channel, firewall assumptions, quarantine | Connection anomaly, repeated failures | Network incident record, worker containment | needs_contract |
+| Customer network compromise | Spoofing, denial, disclosure | Local attacker targets supervisor/worker channel | Authenticated channel, firewall assumptions, quarantine | Connection anomaly, repeated failures | Network incident record, worker containment | schema_defined |
 
 ## Required Controls Before Runtime
 
@@ -62,6 +63,21 @@ Phase 0 status values:
 - Tenant memory boundary.
 - Secure update/rollback.
 - Incident runbooks.
+
+## Schema Control Map
+
+The Phase 0 schemas do not implement controls, but they define the required records that future controls must produce.
+
+| Threat | Primary schema controls | Required control behavior |
+| --- | --- | --- |
+| Prompt injection | `guardian.decision`, `model.route`, `tool.invocation`, `memory.access`, `connector.trust`, `evidence.artifact` | Treat external content as untrusted data; record origin, signals, containment action, denial/approval, and evidence. |
+| Unauthorized outbound message | `guardian.decision`, `approval.request`, `approval.token`, `task.execution`, `tool.invocation`, `evidence.artifact` | Require Guardian `requires_approval` and a scoped, single-use approval token; Phase 0 examples remain dry-run/draft-only. |
+| Unauthorized file mutation | `guardian.decision`, `tool.invocation`, `approval.request`, `approval.token`, `evidence.artifact`, `incident.ops` | File delete/overwrite is denied without approval; unapproved mutation attempts create evidence and may create an incident. |
+| Cross-tenant memory leak | `memory.access`, `guardian.decision`, `evidence.artifact`, `incident.ops` | Require tenant namespace, `tenant_match_required: true`, `cross_tenant_access: false`, cross-tenant check result, denial evidence, and incident escalation. |
+| Stolen API key | `connector.trust`, `guardian.decision`, `incident.ops`, `evidence.artifact` | Phase 0 connector records use refs only, `secret_material_present: false`, revocation status, scope review, and incident evidence on suspected exposure. |
+| Rogue worker | `worker.lifecycle`, `worker.heartbeat`, `guardian.decision`, `tool.invocation`, `incident.ops`, `evidence.artifact` | Capability mismatch, suspicious tools, evidence failure, or heartbeat anomalies trigger quarantine/revoke metadata and evidence. |
+| Rogue helper agent | `task.execution`, `tool.invocation`, `memory.access`, `guardian.decision`, `incident.ops`, `evidence.artifact` | Helper agents remain supervisor-side actors with scoped tasks; out-of-scope tool/memory requests are denied and evidenced. |
+| LIMA IT remediation misuse | `lima_it.handoff`, `approval.request`, `approval.token`, `guardian.decision`, `incident.ops`, `evidence.artifact` | Diagnostic handoff is read-only; remediation requires approval and remains blocked from production touch in MVP. |
 
 ## Open Threat Questions
 
