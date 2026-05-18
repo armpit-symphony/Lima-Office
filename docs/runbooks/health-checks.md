@@ -32,7 +32,9 @@ Use during routine lab checks, before onboarding a worker, after a failed heartb
 
 ## Approval Requirements
 
-Read-only health checks do not require human approval beyond normal operator access. Software updates, remediation, endpoint changes, network changes, and production server touch require approval.
+Read-only health checks do not require human approval beyond normal operator access. Diagnostic gathering means metadata/ref-based checks only: no secrets, no raw sensitive payload dumps, no mutation, and no hidden background work.
+
+Software updates, remediation, endpoint changes, network changes, and production server touch are blocked from execution in Phase 0 unless future policy and contracts explicitly authorize them.
 
 ## Evidence To Capture
 
@@ -58,4 +60,4 @@ Escalate repeated heartbeat failures, evidence write failures, suspicious model/
 - Health state is recorded.
 - Any degraded/offline/quarantined worker has a next action.
 - Evidence exists for the check.
-- No remediation was run without approval.
+- No remediation, endpoint/network change, software update, or production touch was executed.

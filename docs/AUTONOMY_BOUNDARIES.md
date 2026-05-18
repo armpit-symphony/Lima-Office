@@ -8,10 +8,10 @@ Guardian classification and evidence are required for all categories. "Allowed a
 - Classify tickets.
 - Draft emails/messages.
 - Prepare forms.
-- Gather diagnostics.
+- Gather read-only diagnostics using metadata/ref-based checks only; no secrets, no raw sensitive payload dumps, no mutation, and no hidden background work.
 - Update internal notes.
 - Suggest runbook steps.
-- Organize files.
+- Draft file-organization plans and update internal notes. File move, rename, export, delete, or overwrite requires approval or remains blocked by policy.
 - Produce customer-service draft replies.
 
 ## Approval Required

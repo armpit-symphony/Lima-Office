@@ -4,6 +4,8 @@ These are Phase 0 planning contracts. They are field-level schemas and examples 
 
 The schema source of truth is [contracts/README.md](../contracts/README.md) and [contracts/v1](../contracts/v1). Example JSON objects are in [contracts/examples](../contracts/examples).
 
+Phase 0 policies are pre-runtime requirements and are indexed in [docs/policies/README.md](policies/README.md). A contract record is not enough to authorize runtime behavior; Guardian must also link the relevant policy refs, approval state, and evidence.
+
 ## Contract Rules
 
 - Every contract includes tenant scope through `tenant_id` and `customer_context_id`.
@@ -22,6 +24,7 @@ The schema source of truth is [contracts/README.md](../contracts/README.md) and 
 - Required field changes, enum removals, renamed fields, or state semantic changes require a major version.
 - New producers must not emit a contract version unless the relevant schema and example are present.
 - Runtime implementation remains blocked until the specific contract it needs is present, reviewed, and mapped to Guardian, approval, and evidence behavior.
+- Runtime implementation also remains blocked when the relevant policy or operator runbook is missing or ambiguous.
 
 ## Common Field Groups
 
@@ -125,6 +128,8 @@ The schema source of truth is [contracts/README.md](../contracts/README.md) and 
 - Backwards compatibility notes: new approval action classes require autonomy-boundary and threat-model mapping.
 - MVP acceptance gates: approval-required external email draft can be represented without performing a live send.
 
+Open question: a separate `approval.result` schema remains under review. Until then, approval outcome is represented by `approval.request` result/status fields, `approval.token` lifecycle fields, and linked evidence.
+
 ## Approval Token Contract v1
 
 - Schema: [approval.token.schema.json](../contracts/v1/approval.token.schema.json)
@@ -181,6 +186,8 @@ The schema source of truth is [contracts/README.md](../contracts/README.md) and 
 - Failure behavior: missing decision, missing approval, scope mismatch, timeout, or evidence failure blocks execution.
 - Backwards compatibility notes: new tool types require tool-pack review and Guardian policy mapping.
 - MVP acceptance gates: unauthorized file deletion is denied; read-only diagnostics and draft work can be represented.
+
+Open question: supervisor-side helper agents may need a dedicated `helper.scope` schema before any helper runtime work. Until then, helper agents remain supervisor-side actors inside existing task/tool/memory scopes and cannot inherit worker trust.
 
 ## Memory Access Contract v1
 

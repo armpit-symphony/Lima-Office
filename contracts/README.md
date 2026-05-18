@@ -95,6 +95,19 @@ Before a schema can unlock runtime design:
 6. Confirm the relevant threat scenario in [Threat Model](../docs/THREAT_MODEL.md) has a matching schema/control.
 7. Validate JSON syntax for schemas and examples.
 
+## Policy References
+
+Phase 0 policies are indexed in [docs/policies/README.md](../docs/policies/README.md). Contract consumers must treat these policies as pre-runtime requirements:
+
+- [Approval Token Lifecycle](../docs/policies/approval-token-lifecycle.md)
+- [Evidence Writer Failure](../docs/policies/evidence-writer-failure.md)
+- [Retention And Redaction Matrix](../docs/policies/retention-redaction-matrix.md)
+- [Prompt Injection Handling](../docs/policies/prompt-injection-handling.md)
+- [Worker Quarantine And Re-Enrollment](../docs/policies/worker-quarantine-reenrollment.md)
+- [LIMA IT Diagnostic And Remediation Handoff](../docs/policies/lima-it-diagnostic-remediation-handoff.md)
+
+Guardian decisions must link to relevant `policy_refs`, `policy_version`, approval state, and evidence artifact refs. If the needed policy is missing or ambiguous, consumers fail closed.
+
 ## Runtime Block Rule
 
 Runtime cannot be built for a behavior until the relevant contract is present, reviewed, and linked to Guardian, approval, evidence, failure, and MVP acceptance gates.

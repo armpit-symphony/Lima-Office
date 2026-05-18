@@ -30,7 +30,7 @@ Use for suspected compromised worker, stolen secret, prompt injection, forged ap
 
 ## Approval Requirements
 
-Containment can happen immediately. Remediation, software changes, endpoint changes, production server touch, or network changes require approval.
+Containment can happen immediately. Remediation, software changes, endpoint changes, or network changes require approval and remain non-executing in Phase 0 unless future policy and contracts explicitly authorize them. Production server touch is blocked for MVP.
 
 ## Evidence To Capture
 

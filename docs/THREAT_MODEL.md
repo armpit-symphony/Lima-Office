@@ -63,6 +63,8 @@ Phase 0 status values:
 - Tenant memory boundary.
 - Secure update/rollback.
 - Incident runbooks.
+- Policy refs and policy snapshot/hash linkage for Guardian decisions.
+- Operator runbooks for approval token lifecycle, evidence writer failure, prompt injection response, worker re-enrollment, and LIMA IT handoff.
 
 ## Schema Control Map
 

@@ -18,9 +18,14 @@
 ## Identity And Access
 
 - What identity provider assumptions should be used for operators?
+- What operator identity provider should Phase 1A assume?
+- What identity assurance or MFA level is required for approvers?
 - Is hardware attestation required for mini PCs?
+- What attestation method should be used for Arc worker mini PCs?
 - What breakglass process is acceptable?
+- What breakglass policy is acceptable, and which actions remain blocked even during breakglass?
 - How often should access reviews happen?
+- Who can approve LIMA IT remediation requests, and what separation of duties is required?
 
 ## Connectors
 
@@ -52,3 +57,16 @@
 - What JSON Schema validator should be used in CI for draft 2020-12 validation?
 - What redaction matrix and retention schedule should bind evidence, memory, task, incident, and worker-cache records?
 - What runbooks are required before runtime for evidence-writer failure, approval timeout, worker replacement, update rollback, LIMA IT handoff, and customer exit/delete?
+- Should v1 schemas add conditionals for approval token lifecycle states, blocked-MVP approval denial, LIMA IT remediation authorization, and evidence-required completion?
+- Should v1 schemas add explicit fields for token verification result, taint status/source refs, evidence failure mode, last successful evidence artifact ID, and local cache purge evidence?
+
+## Policy Follow-Ups
+
+- What concrete default retention periods should replace placeholders in [Retention And Redaction Matrix](policies/retention-redaction-matrix.md)?
+- What redaction profile taxonomy should apply by record type and data classification?
+- What audit export manifest format is required?
+- What customer exit/delete/reset process and proof fields are required?
+- What local emergency evidence spool depth, retry/backoff, disk-full threshold, and reconciliation process should be approved?
+- What update rollback runbook and policy are required before runtime?
+- What connector consent, scope review, and revocation policy is required before any live connector review?
+- What access role/RBAC matrix should be enforced once the operator identity provider is selected?

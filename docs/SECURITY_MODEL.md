@@ -123,6 +123,8 @@ Approval is mandatory for:
 - Payment, legal, or regulated systems.
 - Sensitive HR/finance/legal/medical access.
 
+Approval-token lifecycle policy is defined in [Approval Token Lifecycle](policies/approval-token-lifecycle.md). Approval tokens are metadata-only, single-use, scoped, expiring, revocable, and non-executing in Phase 0.
+
 ## Secure Update And Rollback
 
 Update and rollback posture must include:
@@ -151,6 +153,18 @@ Connectors remain mock/readiness-only in Phase 0. Future connector trust must do
 ## Production Action Rule
 
 No production actions are allowed without policy, Guardian decision, required approval, evidence capture, and explicit future authorization.
+
+Current Phase 0 policy docs keep production server touch and remediation execution blocked. LIMA IT diagnostics are read-only; remediation remains draft/request-only until future policy and contracts explicitly authorize more.
+
+## Policy Runtime Blockers
+
+Before runtime scaffolding, the following policies must be resolved or carried as explicit fail-closed blockers:
+
+- [Evidence Writer Failure](policies/evidence-writer-failure.md)
+- [Retention And Redaction Matrix](policies/retention-redaction-matrix.md)
+- [Prompt Injection Handling](policies/prompt-injection-handling.md)
+- [Worker Quarantine And Re-Enrollment](policies/worker-quarantine-reenrollment.md)
+- [LIMA IT Diagnostic And Remediation Handoff](policies/lima-it-diagnostic-remediation-handoff.md)
 
 ## Schema Control Points
 

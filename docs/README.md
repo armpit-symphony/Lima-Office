@@ -20,9 +20,24 @@ This directory contains Phase 0 architecture, security, contracts, planning, and
 
 - [Worker onboarding](runbooks/worker-onboarding.md)
 - [Worker quarantine](runbooks/worker-quarantine.md)
+- [Worker re-enrollment](runbooks/worker-reenrollment.md)
 - [Approval flow](runbooks/approval-flow.md)
+- [Approval token lifecycle](runbooks/approval-token-lifecycle.md)
 - [Security incident](runbooks/security-incident.md)
 - [Health checks](runbooks/health-checks.md)
+- [Evidence writer failure](runbooks/evidence-writer-failure.md)
+- [Prompt injection response](runbooks/prompt-injection-response.md)
+- [LIMA IT handoff](runbooks/lima-it-handoff.md)
+
+## Policies
+
+- [Policy index](policies/README.md)
+- [Approval token lifecycle](policies/approval-token-lifecycle.md)
+- [Evidence writer failure](policies/evidence-writer-failure.md)
+- [Retention and redaction matrix](policies/retention-redaction-matrix.md)
+- [Prompt injection handling](policies/prompt-injection-handling.md)
+- [Worker quarantine and re-enrollment](policies/worker-quarantine-reenrollment.md)
+- [LIMA IT diagnostic and remediation handoff](policies/lima-it-diagnostic-remediation-handoff.md)
 
 ## Agent Role Docs
 

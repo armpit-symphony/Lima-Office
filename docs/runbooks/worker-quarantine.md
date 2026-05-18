@@ -21,11 +21,11 @@ Use when heartbeat fails, identity cannot be verified, capability manifest chang
 3. Mark worker `quarantined`.
 4. Record quarantine reason.
 5. Revoke active approval tokens scoped to that worker.
-6. Disable privileged tool packs for that worker.
+6. Revoke the worker capability lease and disable privileged tool packs for that worker.
 7. Preserve recent heartbeat, task, and evidence records.
 8. Review last capability manifest and task transitions.
 9. Determine whether LIMA IT diagnostic handoff is needed.
-10. Keep worker quarantined until operator review clears release or replacement.
+10. Keep worker quarantined until the re-enrollment runbook clears release, re-enrollment, revocation, or replacement.
 
 ## Approval Requirements
 
@@ -44,7 +44,7 @@ Quarantine can be initiated as containment. Release from quarantine requires ope
 
 ## Rollback/Containment
 
-Rollback is release from quarantine only after review. If compromise is suspected, revoke and replace instead.
+Rollback is release from quarantine only after review, identity/channel recheck, capability hash verification, evidence writer health, and evidence capture. If compromise is suspected, revoke and replace instead.
 
 ## Escalation
 
@@ -56,3 +56,4 @@ Escalate to security reviewer for suspected compromise. Escalate to LIMA IT for 
 - Quarantine state is visible.
 - Evidence is recorded.
 - Operator has a release, revoke, or replace path.
+- Re-enrollment uses the dedicated [Worker Re-Enrollment Runbook](worker-reenrollment.md).
