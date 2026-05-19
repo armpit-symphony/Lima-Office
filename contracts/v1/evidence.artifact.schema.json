@@ -109,7 +109,8 @@
         "lima_it_handoff",
         "slo_measurement",
         "denial",
-        "quarantine"
+        "quarantine",
+        "evidence_failure"
       ]
     },
     "producer": {
@@ -180,7 +181,8 @@
             "tool_invocation",
             "model_route",
             "incident",
-            "lima_it_handoff"
+            "lima_it_handoff",
+            "evidence_failure"
           ]
         },
         "subject_id": {
@@ -206,7 +208,8 @@
         "worker_lifecycle",
         "lima_it_diagnostic",
         "lima_it_remediation",
-        "slo_measurement"
+        "slo_measurement",
+        "evidence_failure"
       ]
     },
     "risk_tier": {
@@ -368,5 +371,121 @@
       "type": "string",
       "format": "date-time"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "data_classification": {
+            "enum": [
+              "sensitive_hr",
+              "sensitive_finance",
+              "sensitive_legal",
+              "sensitive_medical",
+              "secret"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "redaction_status": {
+            "enum": [
+              "payload_redacted",
+              "secret_redacted"
+            ]
+          },
+          "redaction_profile": {
+            "enum": [
+              "operator_safe_summary",
+              "secret_safe"
+            ]
+          },
+          "export_redaction_profile": {
+            "enum": [
+              "not_exportable",
+              "metadata_only",
+              "customer_safe_summary"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "data_classification": {
+            "const": "secret"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "redaction_status": {
+            "const": "secret_redacted"
+          },
+          "export_eligible": {
+            "const": false
+          },
+          "export_redaction_profile": {
+            "const": "not_exportable"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "storage_ref": {
+            "properties": {
+              "contains_sensitive_payload": {
+                "const": true
+              }
+            },
+            "required": [
+              "contains_sensitive_payload"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "redaction_status": {
+            "not": {
+              "const": "none"
+            }
+          },
+          "redacted_fields": {
+            "type": "array",
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "artifact_type": {
+            "const": "evidence_failure"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "action_class": {
+            "const": "evidence_failure"
+          },
+          "risk_tier": {
+            "enum": [
+              "high",
+              "blocked"
+            ]
+          },
+          "export_eligible": {
+            "const": false
+          }
+        }
+      }
+    }
+  ]
 }

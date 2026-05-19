@@ -400,6 +400,121 @@
         "string",
         "null"
       ]
+    },
+    "evidence_failure_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "incident_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "operator_action_required": {
+      "type": "boolean"
+    },
+    "runbook_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "evidence_writer_status": {
+            "const": "failed"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "evidence_failure_id",
+          "runbook_ref"
+        ],
+        "properties": {
+          "health_state": {
+            "enum": [
+              "degraded",
+              "quarantined"
+            ]
+          },
+          "risk_tier": {
+            "enum": [
+              "high",
+              "blocked"
+            ]
+          },
+          "last_evidence_error_code": {
+            "not": {
+              "enum": [
+                "none",
+                null
+              ]
+            }
+          },
+          "operator_action_required": {
+            "const": true
+          },
+          "evidence_failure_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "runbook_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "evidence_writer_status": {
+            "const": "degraded"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "health_state": {
+            "enum": [
+              "degraded",
+              "quarantined"
+            ]
+          },
+          "operator_action_required": {
+            "const": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "health_state": {
+            "const": "healthy"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "evidence_writer_status": {
+            "const": "healthy"
+          },
+          "guardian_reachability": {
+            "const": "reachable"
+          },
+          "missed_heartbeat_count": {
+            "const": 0
+          }
+        }
+      }
+    }
+  ]
 }

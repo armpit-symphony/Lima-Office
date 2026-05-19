@@ -1,0 +1,49 @@
+{
+  "contract_name": "taint.ref",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-taint-email-001",
+  "causation_id": "msg-ref-external-email-001",
+  "idempotency_key": "idem-taint-email-001",
+  "taint_ref_id": "taint-email-injection-001",
+  "source_type": "email",
+  "source_ref": "message-ref-external-email-001",
+  "content_origin": "external_contact",
+  "taint_status": "suspected",
+  "severity": "high",
+  "injection_signals": [
+    "ignore_prior_instructions",
+    "request_unapproved_tool",
+    "request_external_send"
+  ],
+  "propagation_chain": [
+    "message-ref-external-email-001",
+    "task-email-draft-001"
+  ],
+  "raw_content_stored": false,
+  "sanitized_summary_ref": null,
+  "blocked_uses": {
+    "tool_use": true,
+    "durable_memory_write": true,
+    "external_send": true,
+    "remediation": true,
+    "approval_scope": true
+  },
+  "allowed_uses": [
+    "display_to_operator",
+    "metadata_only_classification",
+    "security_review",
+    "evidence_reference_only"
+  ],
+  "containment_action": "deny_privileged_action",
+  "cleared_by_operator_id": null,
+  "guardian_decision_id": "gd-taint-email-deny-001",
+  "policy_version": "policy-phase0-v1",
+  "evidence_artifact_ids": [
+    "ev-taint-email-001"
+  ],
+  "detected_at": "2026-05-18T21:35:00Z"
+}

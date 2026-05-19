@@ -1,0 +1,77 @@
+{
+  "contract_name": "helper.scope",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-helper-file-001",
+  "causation_id": "task-file-sort-001",
+  "idempotency_key": "idem-helper-file-001",
+  "helper_scope_id": "hs-file-helper-001",
+  "helper_agent_id": "helper-file-plan-01",
+  "helper_role": "file_helper",
+  "parent_supervisor_id": "supervisor-lab-001",
+  "delegated_by_actor": {
+    "actor_type": "supervisor",
+    "actor_id": "supervisor-lab-001"
+  },
+  "supervisor_side_only": true,
+  "independent_worker": false,
+  "allowed_task_classes": [
+    "file_organization"
+  ],
+  "allowed_tool_packs": [
+    "document_read",
+    "file_organize"
+  ],
+  "blocked_tool_packs": [
+    "unrestricted_browser",
+    "unrestricted_filesystem",
+    "unrestricted_network",
+    "live_connector_write",
+    "production_remediation",
+    "payment_or_regulated_system"
+  ],
+  "data_classifications_allowed": [
+    "public",
+    "internal",
+    "customer_confidential"
+  ],
+  "connector_access": "none",
+  "network_scope": "none",
+  "file_scope": "draft_workspace",
+  "memory_scope": {
+    "tenant_namespace": "tenant-lab-001",
+    "read_allowed": false,
+    "write_summary_allowed": false,
+    "delete_or_export_allowed": false,
+    "raw_content_allowed": false
+  },
+  "may_request_approval_token": false,
+  "approval_required_capabilities": [
+    "file_move_or_rename"
+  ],
+  "blocked_capabilities": [
+    "external_send",
+    "file_delete",
+    "file_overwrite",
+    "customer_record_update",
+    "software_install_update",
+    "production_remediation",
+    "production_server_touch",
+    "payment_or_regulated_system",
+    "cross_tenant_memory",
+    "unrestricted_tool_execution"
+  ],
+  "status": "active",
+  "lease_expires_at": "2026-05-18T22:30:00Z",
+  "revoked_at": null,
+  "revocation_reason": null,
+  "guardian_decision_id": "gd-helper-file-001",
+  "policy_version": "policy-phase0-v1",
+  "evidence_artifact_ids": [
+    "ev-helper-file-001"
+  ],
+  "created_at": "2026-05-18T21:30:00Z"
+}

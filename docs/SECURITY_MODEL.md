@@ -125,6 +125,8 @@ Approval is mandatory for:
 
 Approval-token lifecycle policy is defined in [Approval Token Lifecycle](policies/approval-token-lifecycle.md). Approval tokens are metadata-only, single-use, scoped, expiring, revocable, and non-executing in Phase 0.
 
+Approval result and token verification records are separate controls. `approval.result` records the human decision outcome; `token.verification` records a point-in-time fail-closed check before an approval-required path can proceed.
+
 ## Secure Update And Rollback
 
 Update and rollback posture must include:
@@ -171,13 +173,19 @@ Before runtime scaffolding, the following policies must be resolved or carried a
 The Phase 0 field-level schemas in [contracts/v1](../contracts/v1) define the minimum security metadata for future runtime work:
 
 - Approval token: [approval.token.schema.json](../contracts/v1/approval.token.schema.json) requires task/action/resource binding, expiry, one-time use, replay-protection refs, revocation state, and evidence. It must not contain token material.
+- Approval result: [approval.result.schema.json](../contracts/v1/approval.result.schema.json) records approved, denied, expired, cancelled, superseded, partial, and blocked-MVP outcomes with evidence.
+- Token verification: [token.verification.schema.json](../contracts/v1/token.verification.schema.json) records valid and fail-closed results for expired, revoked, used, missing, mismatched, ambiguous, and wrong-scope tokens.
+- Helper scope: [helper.scope.schema.json](../contracts/v1/helper.scope.schema.json) keeps helper agents supervisor-side, leased, narrowly scoped, and unable to inherit worker trust.
+- Taint reference: [taint.ref.schema.json](../contracts/v1/taint.ref.schema.json) propagates prompt-injection and untrusted-content state across model, task, tool, memory, approval, and evidence records.
 - Worker identity: [worker.lifecycle.schema.json](../contracts/v1/worker.lifecycle.schema.json) and [worker.heartbeat.schema.json](../contracts/v1/worker.heartbeat.schema.json) require device identity refs, channel identity refs, capability lease/hash posture, heartbeat sequence, supervisor receive time, evidence writer state, quarantine, and revoke metadata.
 - Model routing: [model.route.schema.json](../contracts/v1/model.route.schema.json) records provider class, local/cloud boundary, egress posture, prompt/response refs, redaction, prompt-injection handling, Guardian decision, and evidence.
 - Tool invocation: [tool.invocation.schema.json](../contracts/v1/tool.invocation.schema.json) requires tool pack/version, sandbox profile, side-effect class, file/network/connector scope, dry-run posture, approval token linkage where needed, and evidence.
 - Memory access: [memory.access.schema.json](../contracts/v1/memory.access.schema.json) requires tenant namespace, purpose, retention class, delete/export posture, prompt-injection scan state, and `cross_tenant_access: false`.
 - Connector trust: [connector.trust.schema.json](../contracts/v1/connector.trust.schema.json) is mock/readiness-only in Phase 0 with `mock_only: true`, `live_access_enabled: false`, `secret_material_present: false`, consent/scope review posture, and revocation state.
 - Evidence artifact: [evidence.artifact.schema.json](../contracts/v1/evidence.artifact.schema.json) defines redaction, retention, payload/integrity refs, export/delete posture, access-control refs, and evidence chain metadata.
+- Evidence failure: [evidence.failure.schema.json](../contracts/v1/evidence.failure.schema.json) records pre-action blocks, post-action degraded state, emergency spool refs, reconciliation, incidents, and quarantine/token-revoke posture.
 - LIMA IT handoff: [lima_it.handoff.schema.json](../contracts/v1/lima_it.handoff.schema.json) separates read-only diagnostics from approval-required remediation and blocks production touch in MVP.
+- LIMA IT remediation-denied example: [lima_it.handoff.remediation-denied-mvp.example.json](../contracts/examples/lima_it.handoff.remediation-denied-mvp.example.json) shows remediation request metadata denied for Phase 0 with no execution authorization.
 
 ## Conceptual Standards Mapping
 

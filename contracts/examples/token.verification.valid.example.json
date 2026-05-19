@@ -1,0 +1,34 @@
+{
+  "contract_name": "token.verification",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "dry_run",
+  "correlation_id": "corr-email-draft-001",
+  "causation_id": "apt-email-draft-001",
+  "idempotency_key": "idem-token-verify-valid-001",
+  "token_verification_id": "tv-email-valid-001",
+  "approval_token_id": "apt-email-draft-001",
+  "approval_request_id": "apr-email-draft-001",
+  "task_id": "task-email-draft-001",
+  "action_class": "external_message_send",
+  "actor": {
+    "actor_type": "supervisor",
+    "actor_id": "supervisor-lab-001"
+  },
+  "presented_scope_hash": "hash-ref-approved-scope-email-001",
+  "approved_scope_hash": "hash-ref-approved-scope-email-001",
+  "scope_match_result": "match",
+  "token_status_observed": "active",
+  "verification_result": "valid",
+  "fail_closed": false,
+  "can_proceed": true,
+  "denial_reason": null,
+  "guardian_decision_id": "gd-email-send-requires-approval-001",
+  "policy_version": "policy-phase0-v1",
+  "evidence_artifact_ids": [
+    "ev-token-verify-valid-001"
+  ],
+  "checked_at": "2026-05-18T21:43:00Z"
+}

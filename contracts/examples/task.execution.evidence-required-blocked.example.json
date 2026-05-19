@@ -1,0 +1,76 @@
+{
+  "contract_name": "task.execution",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-task-evidence-block-001",
+  "causation_id": "ef-pre-action-blocked-001",
+  "idempotency_key": "idem-task-evidence-block-001",
+  "task_id": "task-file-cleanup-001",
+  "task_class": "file_mutation",
+  "status": "blocked_evidence_unavailable",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:39:00Z"
+  },
+  "requested_by": {
+    "actor_type": "worker",
+    "actor_id": "arc-file-clerk-01"
+  },
+  "assigned_worker_id": "arc-file-clerk-01",
+  "data_classification": "customer_confidential",
+  "risk_tier": "high",
+  "execution_mode": "approval_required_write",
+  "task_scope": {
+    "description": "File mutation request blocked because required evidence could not be written.",
+    "external_effect": "approval_required",
+    "allowed_actions": [],
+    "blocked_actions": [
+      "delete_file",
+      "overwrite_file",
+      "proceed_without_evidence"
+    ],
+    "target_resource_refs": [
+      "file-ref-archive-candidate-001"
+    ]
+  },
+  "required_tool_packs": [
+    "file_organize"
+  ],
+  "model_route_id": null,
+  "policy_version": "policy-phase0-v1",
+  "guardian_decision_id": "gd-evidence-pre-block-001",
+  "approval_required": true,
+  "approval_request_id": "apr-file-cleanup-001",
+  "approval_token_id": null,
+  "evidence_artifact_ids": [
+    "ev-evidence-pre-block-request-001"
+  ],
+  "retry_policy": {
+    "max_attempts": 0,
+    "retry_on_worker_offline": false,
+    "retry_on_model_unavailable": false
+  },
+  "timeout_at": "2026-05-18T22:00:00Z",
+  "failure_behavior": {
+    "on_approval_timeout": "block_task",
+    "on_worker_offline": "block_task",
+    "on_evidence_failure": "block_task"
+  },
+  "result_summary": null,
+  "failure_reason": "Required pre-action evidence could not be written, so the task failed closed.",
+  "taint_ref_ids": [],
+  "approval_result_id": null,
+  "token_verification_id": null,
+  "evidence_failure_id": "ef-pre-action-blocked-001",
+  "blocked_reason_code": "evidence_writer_unavailable",
+  "failure_code": "evidence_failure",
+  "incident_id": null,
+  "blocked_at": "2026-05-18T21:39:00Z",
+  "operator_visible": true,
+  "runbook_ref": "docs/runbooks/evidence-writer-failure.md",
+  "created_at": "2026-05-18T21:38:30Z",
+  "updated_at": "2026-05-18T21:39:00Z"
+}

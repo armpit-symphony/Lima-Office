@@ -1,0 +1,407 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/helper.scope.schema.json",
+  "title": "Helper Scope Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "helper_scope_id",
+    "helper_agent_id",
+    "helper_role",
+    "parent_supervisor_id",
+    "delegated_by_actor",
+    "supervisor_side_only",
+    "independent_worker",
+    "allowed_task_classes",
+    "allowed_tool_packs",
+    "blocked_tool_packs",
+    "data_classifications_allowed",
+    "connector_access",
+    "network_scope",
+    "file_scope",
+    "memory_scope",
+    "may_request_approval_token",
+    "approval_required_capabilities",
+    "blocked_capabilities",
+    "status",
+    "lease_expires_at",
+    "guardian_decision_id",
+    "policy_version",
+    "evidence_artifact_ids",
+    "created_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "helper.scope"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "helper_scope_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "helper_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "helper_role": {
+      "type": "string",
+      "enum": [
+        "file_helper",
+        "memory_helper",
+        "it_helper_readonly",
+        "background_review_helper"
+      ]
+    },
+    "parent_supervisor_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "delegated_by_actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor_type",
+        "actor_id"
+      ],
+      "properties": {
+        "actor_type": {
+          "type": "string",
+          "enum": [
+            "operator",
+            "supervisor",
+            "guardian"
+          ]
+        },
+        "actor_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "supervisor_side_only": {
+      "type": "boolean",
+      "const": true
+    },
+    "independent_worker": {
+      "type": "boolean",
+      "const": false
+    },
+    "allowed_task_classes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "document_summary",
+          "ticket_classification",
+          "email_draft",
+          "form_preparation",
+          "diagnostic_gathering",
+          "file_organization",
+          "customer_service_draft",
+          "it_health_check"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "allowed_tool_packs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "document_read",
+          "draft_workspace",
+          "ticket_triage",
+          "file_organize",
+          "it_diagnostics_read_only",
+          "mock_connector_readiness"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "blocked_tool_packs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "unrestricted_browser",
+          "unrestricted_filesystem",
+          "unrestricted_network",
+          "live_connector_write",
+          "production_remediation",
+          "payment_or_regulated_system"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "data_classifications_allowed": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "public",
+          "internal",
+          "customer_confidential"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "connector_access": {
+      "type": "string",
+      "enum": [
+        "none",
+        "mock_readiness_only"
+      ]
+    },
+    "network_scope": {
+      "type": "string",
+      "enum": [
+        "none",
+        "local_supervisor_only"
+      ]
+    },
+    "file_scope": {
+      "type": "string",
+      "enum": [
+        "none",
+        "read_only",
+        "draft_workspace"
+      ]
+    },
+    "memory_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tenant_namespace",
+        "read_allowed",
+        "write_summary_allowed",
+        "delete_or_export_allowed",
+        "raw_content_allowed"
+      ],
+      "properties": {
+        "tenant_namespace": {
+          "type": "string",
+          "minLength": 1
+        },
+        "read_allowed": {
+          "type": "boolean"
+        },
+        "write_summary_allowed": {
+          "type": "boolean"
+        },
+        "delete_or_export_allowed": {
+          "type": "boolean",
+          "const": false
+        },
+        "raw_content_allowed": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "may_request_approval_token": {
+      "type": "boolean",
+      "const": false
+    },
+    "approval_required_capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "blocked_capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "external_send",
+          "file_delete",
+          "file_overwrite",
+          "customer_record_update",
+          "software_install_update",
+          "production_remediation",
+          "production_server_touch",
+          "payment_or_regulated_system",
+          "cross_tenant_memory",
+          "unrestricted_tool_execution"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "suspended",
+        "revoked"
+      ]
+    },
+    "lease_expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "revoked_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "revocation_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_artifact_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "helper_role": {
+            "const": "it_helper_readonly"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "network_scope": {
+            "const": "local_supervisor_only"
+          },
+          "file_scope": {
+            "enum": [
+              "none",
+              "read_only"
+            ]
+          },
+          "connector_access": {
+            "const": "none"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "helper_role": {
+            "const": "memory_helper"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "memory_scope": {
+            "properties": {
+              "read_allowed": {
+                "const": true
+              },
+              "raw_content_allowed": {
+                "const": false
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "revoked"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "revoked_at",
+          "revocation_reason"
+        ],
+        "properties": {
+          "revoked_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "revocation_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
+}

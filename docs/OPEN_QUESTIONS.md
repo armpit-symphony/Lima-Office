@@ -52,21 +52,28 @@
 
 ## Contract Schema Follow-Ups
 
-- Should `approval.result` become a separate v1 schema, or remain represented by `approval.request` status/result fields and `approval.token` lifecycle fields?
-- Should supervisor-side helper agents get a dedicated `helper.scope` schema before any helper runtime work?
 - What JSON Schema validator should be used in CI for draft 2020-12 validation?
 - What redaction matrix and retention schedule should bind evidence, memory, task, incident, and worker-cache records?
 - What runbooks are required before runtime for evidence-writer failure, approval timeout, worker replacement, update rollback, LIMA IT handoff, and customer exit/delete?
-- Should v1 schemas add conditionals for approval token lifecycle states, blocked-MVP approval denial, LIMA IT remediation authorization, and evidence-required completion?
-- Should v1 schemas add explicit fields for token verification result, taint status/source refs, evidence failure mode, last successful evidence artifact ID, and local cache purge evidence?
+
+Resolved in [Schema Hardening Notes](SCHEMA_HARDENING_NOTES.md) and [contracts/v1](../contracts/v1):
+
+- `approval.result` is a separate v1 schema.
+- `helper.scope` is a separate v1 schema.
+- v1 schemas include conditionals for approval token lifecycle states, blocked-MVP denial, LIMA IT remediation constraints, evidence-required completion, evidence failure, token verification, and taint refs.
 
 ## Policy Follow-Ups
 
 - What concrete default retention periods should replace placeholders in [Retention And Redaction Matrix](policies/retention-redaction-matrix.md)?
 - What redaction profile taxonomy should apply by record type and data classification?
+- What redaction strategy should apply to free-text reason fields such as `denial_reason`, `failure_reason`, `summary`, and `result_summary`?
 - What audit export manifest format is required?
 - What customer exit/delete/reset process and proof fields are required?
 - What local emergency evidence spool depth, retry/backoff, disk-full threshold, and reconciliation process should be approved?
 - What update rollback runbook and policy are required before runtime?
 - What connector consent, scope review, and revocation policy is required before any live connector review?
 - What access role/RBAC matrix should be enforced once the operator identity provider is selected?
+- What operator identity provider and MFA level should be assumed for approval and token verification?
+- What worker attestation method should be used before re-enrollment can be automated?
+- What breakglass policy is acceptable, and which actions remain blocked during breakglass?
+- Who can approve LIMA IT remediation requests, and what separation of duties is required?

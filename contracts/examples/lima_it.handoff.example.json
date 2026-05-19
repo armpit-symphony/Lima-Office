@@ -44,7 +44,7 @@
   "remediation_scope": {
     "requested": false,
     "requested_actions": [],
-    "approval_required": true,
+    "approval_required": false,
     "production_system_touch": "none"
   },
   "policy_version": "policy-phase0-v1",

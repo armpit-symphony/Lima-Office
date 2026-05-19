@@ -26,6 +26,18 @@ Phase 0 policies are pre-runtime requirements and are indexed in [docs/policies/
 - Runtime implementation remains blocked until the specific contract it needs is present, reviewed, and mapped to Guardian, approval, and evidence behavior.
 - Runtime implementation also remains blocked when the relevant policy or operator runbook is missing or ambiguous.
 
+## Conditional Validity Notes
+
+Version 1 schemas now use JSON Schema draft 2020-12 conditionals for the highest-risk cross-field rules. These rules are contract guardrails, not runtime implementation:
+
+- Denied, blocked-MVP, failed, expired, revoked, quarantined, and evidence-failure states require matching reason, evidence, or failure fields.
+- Approved approval requests/results require approver identity, decision time, narrowed scope, token linkage, and evidence.
+- Blocked-MVP actions cannot issue approval tokens.
+- Token verification must fail closed for missing, expired, revoked, used, mismatched, ambiguous, or wrong-scope tokens.
+- Evidence-required task/tool paths cannot be represented as completed when evidence failure blocks the action.
+- Tainted content must remain data-only unless a later policy review clears it; it cannot directly become tool args, durable memory, approval scope, external sends, or remediation.
+- LIMA IT remediation is non-executing in Phase 0; diagnostic handoff remains read-only.
+
 ## Common Field Groups
 
 - Envelope: `contract_name`, `contract_version`, `schema_version`, `tenant_id`, `customer_context_id`, `environment`, `correlation_id`, `causation_id`, `idempotency_key`, `producer`, `created_at` or event timestamp.
@@ -81,8 +93,8 @@ Phase 0 policies are pre-runtime requirements and are indexed in [docs/policies/
 - Consumer: Task router, worker inbox/outbox, Guardian, approval workflow, evidence ledger, operator dashboard.
 - Required fields: common envelope; `task_id`, `task_class`, `status`, `requested_by`, `assigned_worker_id`, `execution_mode`, `task_scope`, `required_tool_packs`, `model_route_id`, `guardian_decision_id`, `approval_required`, `approval_request_id`, `approval_token_id`, `evidence_artifact_ids`, `retry_policy`, `timeout_at`, `failure_behavior`.
 - Optional fields: `result_summary`, `failure_reason`.
-- Allowed states: `task_created`, `classified`, `assigned_to_worker`, `accepted`, `rejected`, `in_progress`, `needs_approval`, `draft_ready`, `blocked`, `failed`, `blocked_evidence_unavailable`, `completed_mock`, `evidence_recorded`, `cancelled`, `timed_out`.
-- Terminal states: `blocked`, `failed`, `blocked_evidence_unavailable`, `completed_mock`, `evidence_recorded`, `cancelled`, `timed_out`.
+- Allowed states: `task_created`, `classified`, `assigned_to_worker`, `accepted`, `rejected`, `in_progress`, `needs_approval`, `draft_ready`, `blocked`, `denied`, `failed`, `blocked_evidence_unavailable`, `completed_mock`, `evidence_recorded`, `cancelled`, `timed_out`.
+- Terminal states: `blocked`, `denied`, `failed`, `blocked_evidence_unavailable`, `completed_mock`, `evidence_recorded`, `cancelled`, `timed_out`.
 - Security requirements: Guardian classification occurs before assignment; task scope blocks unrestricted file, browser, connector, network, or shell access.
 - Approval requirements: high-risk or privileged tasks require approval request and token before execution can leave draft/mock/read-only mode.
 - Evidence requirements: task creation, classification, assignment, worker acceptance/rejection, approval need, result, failure, and blocked states produce evidence.
@@ -128,7 +140,24 @@ Phase 0 policies are pre-runtime requirements and are indexed in [docs/policies/
 - Backwards compatibility notes: new approval action classes require autonomy-boundary and threat-model mapping.
 - MVP acceptance gates: approval-required external email draft can be represented without performing a live send.
 
-Open question: a separate `approval.result` schema remains under review. Until then, approval outcome is represented by `approval.request` result/status fields, `approval.token` lifecycle fields, and linked evidence.
+## Approval Result Contract v1
+
+- Schema: [approval.result.schema.json](../contracts/v1/approval.result.schema.json)
+- Example objects: [approval.result.approved.example.json](../contracts/examples/approval.result.approved.example.json), [approval.result.denied-blocked-mvp.example.json](../contracts/examples/approval.result.denied-blocked-mvp.example.json)
+- Purpose: records the approval outcome as a separate decision event, including denied blocked-MVP outcomes.
+- Version: `1.0.0`.
+- Producer: Supervisor approval service or operator console.
+- Consumer: Guardian, task orchestrator, tool boundary, evidence ledger, operator dashboard.
+- Required fields: common envelope; `approval_result_id`, `approval_request_id`, `task_id`, `guardian_decision_id`, `result`, `result_reason_code`, approver fields, `action_class`, `risk_tier`, `data_classification`, requested/approved scope hashes, `approval_token_id`, `blocked_mvp_action`, `denial_reason`, `fresh_operator_intent_ref`, evidence refs, `decided_at`.
+- Optional fields: nullable approver/token/scope/denial refs where the result is denied, expired, cancelled, superseded, or partial.
+- Allowed states: `approved`, `denied`, `expired`, `cancelled`, `superseded`, `partial_approved`.
+- Terminal states: all result states are terminal for the referenced approval request event.
+- Security requirements: approval cannot broaden requested scope; blocked-MVP denial cannot produce a token; partial approval requires a new request before action.
+- Approval requirements: approver role and fresh operator intent are required for approved results.
+- Evidence requirements: every result links evidence.
+- Failure behavior: missing or contradictory approval result means the privileged action fails closed.
+- Backwards compatibility notes: result semantics and reason codes are compatibility-sensitive.
+- MVP acceptance gates: external email draft approval and blocked production-touch denial can both be represented without live execution.
 
 ## Approval Token Contract v1
 
@@ -143,11 +172,30 @@ Open question: a separate `approval.result` schema remains under review. Until t
 - Allowed states: `issued`, `active`, `used`, `expired`, `revoked`.
 - Terminal states: `used`, `expired`, `revoked`.
 - Security requirements: token is metadata only, single-use, expiring, revocable, task/action/resource/tenant-bound, and replay-protected.
-- Approval requirements: token exists only after an approved `approval.request`; it cannot approve `blocked_mvp` actions.
+- Approval requirements: token exists only after an approved `approval.request`; it cannot approve `blocked_mvp` actions. Phase 0 v1 conditionals do not allow approval-token records for software install/update, remediation, production server touch, or regulated system use.
 - Evidence requirements: issue, use, expiry, revoke, and replay rejection produce evidence.
 - Failure behavior: expired, missing, mismatched, reused, or revoked tokens fail closed.
 - Backwards compatibility notes: token binding semantics cannot be weakened without a major version.
 - MVP acceptance gates: external effect tokens can be represented only as dry-run/mock metadata unless future contracts approve live execution.
+
+## Token Verification Contract v1
+
+- Schema: [token.verification.schema.json](../contracts/v1/token.verification.schema.json)
+- Example objects: [token.verification.valid.example.json](../contracts/examples/token.verification.valid.example.json), [token.verification.expired.example.json](../contracts/examples/token.verification.expired.example.json), [token.verification.revoked.example.json](../contracts/examples/token.verification.revoked.example.json)
+- Purpose: records scoped token verification results before any approval-required path can proceed.
+- Version: `1.0.0`.
+- Producer: Supervisor approval boundary or Guardian policy gate.
+- Consumer: Task orchestrator, tool boundary, evidence ledger, operator dashboard.
+- Required fields: common envelope; `token_verification_id`, approval request/token refs, task/action/actor refs, presented and approved scope hashes, `scope_match_result`, `token_status_observed`, `verification_result`, `fail_closed`, `can_proceed`, `denial_reason`, Guardian/policy/evidence refs, `checked_at`.
+- Optional fields: nullable token/request/scope refs for missing-token failures.
+- Allowed states: `valid`, `expired`, `revoked`, `used`, `mismatched`, `missing`, `ambiguous`, `wrong_scope`.
+- Terminal states: each verification record is point-in-time; invalid outcomes are terminal for that action attempt.
+- Security requirements: valid requires active token, matching scope, evidence, and `can_proceed: true`; all invalid outcomes require `fail_closed: true`.
+- Approval requirements: verification does not approve work; it only checks a previously approved token.
+- Evidence requirements: every verification links evidence.
+- Failure behavior: missing, expired, revoked, used, mismatched, ambiguous, or wrong-scope token blocks the action.
+- Backwards compatibility notes: verification result semantics cannot be weakened without a major version.
+- MVP acceptance gates: valid, expired, and revoked metadata records can be represented without bearer token material.
 
 ## Model Route Contract v1
 
@@ -187,7 +235,43 @@ Open question: a separate `approval.result` schema remains under review. Until t
 - Backwards compatibility notes: new tool types require tool-pack review and Guardian policy mapping.
 - MVP acceptance gates: unauthorized file deletion is denied; read-only diagnostics and draft work can be represented.
 
-Open question: supervisor-side helper agents may need a dedicated `helper.scope` schema before any helper runtime work. Until then, helper agents remain supervisor-side actors inside existing task/tool/memory scopes and cannot inherit worker trust.
+## Helper Scope Contract v1
+
+- Schema: [helper.scope.schema.json](../contracts/v1/helper.scope.schema.json)
+- Example objects: [helper.scope.file-helper.example.json](../contracts/examples/helper.scope.file-helper.example.json), [helper.scope.memory-helper.example.json](../contracts/examples/helper.scope.memory-helper.example.json), [helper.scope.it-helper-readonly.example.json](../contracts/examples/helper.scope.it-helper-readonly.example.json)
+- Purpose: bounds supervisor-side helper agents before any helper runtime work exists.
+- Version: `1.0.0`.
+- Producer: Supervisor after Guardian policy check.
+- Consumer: Supervisor delegation layer, Guardian, tool boundary, memory boundary, evidence ledger.
+- Required fields: common envelope; `helper_scope_id`, `helper_agent_id`, `helper_role`, `parent_supervisor_id`, delegation actor, `supervisor_side_only`, `independent_worker`, allowed task/tool/data/memory scope, blocked capabilities, lease expiry, status, Guardian/policy/evidence refs.
+- Optional fields: revoke timestamp and reason.
+- Allowed states: `draft`, `active`, `suspended`, `revoked`.
+- Terminal states: `revoked`.
+- Security requirements: helper agents are not workers, cannot request approval tokens, cannot use live connectors, cannot access cross-tenant memory, and cannot execute unrestricted tools.
+- Approval requirements: helper scopes are Guardian-gated and operator-visible; privileged capabilities remain approval-required or blocked.
+- Evidence requirements: creation, scope change, suspension, and revoke link evidence.
+- Failure behavior: missing helper scope or expired/revoked scope blocks helper action.
+- Backwards compatibility notes: new helper roles/capabilities require MVP and threat-model review.
+- MVP acceptance gates: file, memory, and read-only IT helpers can be represented with narrow scopes.
+
+## Taint Reference Contract v1
+
+- Schema: [taint.ref.schema.json](../contracts/v1/taint.ref.schema.json)
+- Example object: [taint.ref.prompt-injection-email.example.json](../contracts/examples/taint.ref.prompt-injection-email.example.json)
+- Purpose: carries taint state and source refs across Guardian, model, task, tool, memory, approval, and evidence records.
+- Version: `1.0.0`.
+- Producer: Guardian or supervisor prompt-injection review.
+- Consumer: Guardian, model router, tool boundary, memory boundary, approval workflow, evidence ledger.
+- Required fields: common envelope; `taint_ref_id`, source type/ref/origin, `taint_status`, `severity`, injection signals, propagation chain, `raw_content_stored: false`, blocked/allowed uses, containment action, Guardian/policy/evidence refs, `detected_at`.
+- Optional fields: sanitized summary and clearing operator refs.
+- Allowed states: `untrusted`, `suspected`, `confirmed`, `cleared`.
+- Terminal states: none; taint may be cleared only by policy and evidence.
+- Security requirements: suspected/confirmed taint blocks privileged tool use, durable memory writes, external sends, remediation, and approval scope.
+- Approval requirements: taint clearance requires operator/security review policy; tainted content cannot create fresh approval intent.
+- Evidence requirements: detection, containment, and clearing link evidence.
+- Failure behavior: unresolved taint fails closed for privileged paths.
+- Backwards compatibility notes: taint status and blocked-use meanings are compatibility-sensitive.
+- MVP acceptance gates: prompt-injection email taint can be represented without raw customer content.
 
 ## Memory Access Contract v1
 
@@ -246,6 +330,25 @@ Open question: supervisor-side helper agents may need a dedicated `helper.scope`
 - Backwards compatibility notes: artifact integrity and retention semantics cannot be weakened without a major version.
 - MVP acceptance gates: denial, quarantine, approval, route, tool, memory, connector, incident, and LIMA IT evidence can be represented as metadata-only records.
 
+## Evidence Failure Contract v1
+
+- Schema: [evidence.failure.schema.json](../contracts/v1/evidence.failure.schema.json)
+- Example objects: [evidence.failure.pre-action-blocked.example.json](../contracts/examples/evidence.failure.pre-action-blocked.example.json), [evidence.failure.post-action-degraded.example.json](../contracts/examples/evidence.failure.post-action-degraded.example.json)
+- Purpose: records evidence writer failures, pre-action blocks, post-action degraded states, retry/reconciliation posture, and incident/quarantine linkage.
+- Version: `1.0.0`.
+- Producer: Supervisor, Guardian, or worker evidence writer through supervisor-owned records.
+- Consumer: Task/tool boundaries, incident workflow, operator dashboard, runbooks, evidence ledger reconciliation.
+- Required fields: common envelope; `evidence_failure_id`, `failure_stage`, `failure_code`, affected contract/action, `evidence_required`, action block/degrade booleans, task/worker/tool refs, last successful artifact, failure/spool/hash refs, retry/reconciliation state, incident/quarantine/token revoke fields, Guardian/policy refs, `detected_at`.
+- Optional fields: nullable task/worker/tool/incident/spool refs where not applicable.
+- Allowed states: failure stages `pre_action`, `post_action`, `reconciliation`; retry states `not_started`, `queued`, `retrying`, `exhausted`, `not_allowed`; reconciliation states `not_started`, `pending`, `reconciled`, `failed`.
+- Terminal states: `reconciled` or `failed` reconciliation.
+- Security requirements: if evidence is required and pre-action evidence cannot be written, the privileged action is blocked.
+- Approval requirements: evidence failure does not grant approval; it may revoke or block token use.
+- Evidence requirements: the failure record uses refs/hashes and may create incident evidence when the normal writer fails.
+- Failure behavior: pre-action failures block; post-action failures degrade, spool, reconcile, and may quarantine.
+- Backwards compatibility notes: failure code and reconciliation semantics are compatibility-sensitive.
+- MVP acceptance gates: pre-action block and post-action degraded records can be represented with no runtime remediation.
+
 ## Incident Operations Contract v1
 
 - Schema: [incident.ops.schema.json](../contracts/v1/incident.ops.schema.json)
@@ -297,7 +400,7 @@ Open question: supervisor-side helper agents may need a dedicated `helper.scope`
 - Allowed states: `draft`, `requested`, `awaiting_approval`, `diagnostic_ready`, `remediation_approval_required`, `blocked`, `denied`, `completed_mock`, `failed`, `cancelled`.
 - Terminal states: `blocked`, `denied`, `completed_mock`, `failed`, `cancelled`.
 - Security requirements: diagnostic scope is read-only; remediation is separate, approval-gated, and cannot touch production systems in MVP.
-- Approval requirements: remediation requests require Guardian decision, approval request, scoped token, operator owner, and evidence.
+- Approval requirements: Phase 0 remediation request metadata requires Guardian decision, approval request/result posture, operator owner, and evidence. Remediation execution and production touch do not receive execution authorization or approval tokens in v1.
 - Evidence requirements: diagnostic handoff, remediation request, denial, approval, closure, and incident escalation produce evidence.
 - Failure behavior: missing approval, production touch, or evidence failure blocks remediation.
 - Backwards compatibility notes: future remediation execution contracts require a major review and must not reuse diagnostic states.

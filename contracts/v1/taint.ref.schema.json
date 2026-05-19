@@ -1,0 +1,317 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/taint.ref.schema.json",
+  "title": "Taint Reference Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "taint_ref_id",
+    "source_type",
+    "source_ref",
+    "content_origin",
+    "taint_status",
+    "severity",
+    "injection_signals",
+    "propagation_chain",
+    "raw_content_stored",
+    "sanitized_summary_ref",
+    "blocked_uses",
+    "allowed_uses",
+    "containment_action",
+    "guardian_decision_id",
+    "policy_version",
+    "evidence_artifact_ids",
+    "detected_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "taint.ref"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taint_ref_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "email",
+        "document",
+        "chat",
+        "browser",
+        "ticket",
+        "form",
+        "file",
+        "connector_payload",
+        "tool_output",
+        "memory_record",
+        "model_output"
+      ]
+    },
+    "source_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "content_origin": {
+      "type": "string",
+      "enum": [
+        "operator",
+        "customer",
+        "external_contact",
+        "connector",
+        "worker_telemetry",
+        "unknown"
+      ]
+    },
+    "taint_status": {
+      "type": "string",
+      "enum": [
+        "untrusted",
+        "suspected",
+        "confirmed",
+        "cleared"
+      ]
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "injection_signals": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "ignore_prior_instructions",
+          "request_secret",
+          "request_unapproved_tool",
+          "request_external_send",
+          "request_memory_write",
+          "request_remediation",
+          "encoded_instruction",
+          "none"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "propagation_chain": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "raw_content_stored": {
+      "type": "boolean",
+      "const": false
+    },
+    "sanitized_summary_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "blocked_uses": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tool_use",
+        "durable_memory_write",
+        "external_send",
+        "remediation",
+        "approval_scope"
+      ],
+      "properties": {
+        "tool_use": {
+          "type": "boolean"
+        },
+        "durable_memory_write": {
+          "type": "boolean"
+        },
+        "external_send": {
+          "type": "boolean"
+        },
+        "remediation": {
+          "type": "boolean"
+        },
+        "approval_scope": {
+          "type": "boolean"
+        }
+      }
+    },
+    "allowed_uses": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "display_to_operator",
+          "metadata_only_classification",
+          "security_review",
+          "evidence_reference_only"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "containment_action": {
+      "type": "string",
+      "enum": [
+        "treat_as_data",
+        "deny_privileged_action",
+        "block_memory_write",
+        "block_external_send",
+        "quarantine_subject"
+      ]
+    },
+    "cleared_by_operator_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_artifact_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "detected_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "taint_status": {
+            "enum": [
+              "suspected",
+              "confirmed"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "blocked_uses": {
+            "properties": {
+              "tool_use": {
+                "const": true
+              },
+              "durable_memory_write": {
+                "const": true
+              },
+              "external_send": {
+                "const": true
+              },
+              "remediation": {
+                "const": true
+              },
+              "approval_scope": {
+                "const": true
+              }
+            }
+          },
+          "containment_action": {
+            "enum": [
+              "deny_privileged_action",
+              "block_memory_write",
+              "block_external_send",
+              "quarantine_subject"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "taint_status": {
+            "const": "cleared"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "sanitized_summary_ref",
+          "cleared_by_operator_id"
+        ],
+        "properties": {
+          "sanitized_summary_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cleared_by_operator_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
+}

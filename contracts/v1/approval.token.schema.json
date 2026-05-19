@@ -327,5 +327,148 @@
         "null"
       ]
     }
-  }
+  },
+  "allOf": [
+    {
+      "not": {
+        "properties": {
+          "action_class": {
+            "enum": [
+              "software_install_update",
+              "remediation",
+              "production_server_touch",
+              "regulated_system_use"
+            ]
+          }
+        },
+        "required": [
+          "action_class"
+        ]
+      }
+    },
+    {
+      "not": {
+        "properties": {
+          "bound_action_class": {
+            "enum": [
+              "software_install_update",
+              "remediation",
+              "production_server_touch",
+              "regulated_system_use"
+            ]
+          }
+        },
+        "required": [
+          "bound_action_class"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "issued",
+              "active"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "used_count": {
+            "const": 0
+          },
+          "used_at": {
+            "const": null
+          },
+          "revoked_at": {
+            "const": null
+          },
+          "revocation_reason": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "used"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "used_at"
+        ],
+        "properties": {
+          "used_count": {
+            "const": 1
+          },
+          "used_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "revoked_at": {
+            "const": null
+          },
+          "revocation_reason": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "revoked"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "revoked_at",
+          "revocation_reason"
+        ],
+        "properties": {
+          "revoked_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "revocation_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "expired"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "used_count": {
+            "const": 0
+          },
+          "used_at": {
+            "const": null
+          },
+          "revoked_at": {
+            "const": null
+          },
+          "revocation_reason": {
+            "const": null
+          }
+        }
+      }
+    }
+  ]
 }

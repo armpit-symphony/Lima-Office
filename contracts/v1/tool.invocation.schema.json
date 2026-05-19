@@ -382,6 +382,85 @@
         "null"
       ]
     },
+    "denial_code": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "approval_missing",
+        "approval_denied",
+        "blocked_mvp",
+        "tainted_input",
+        "scope_mismatch",
+        "evidence_unavailable",
+        "worker_quarantined",
+        null
+      ]
+    },
+    "failure_code": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "none",
+        "timeout",
+        "evidence_failure",
+        "policy_denial",
+        "tool_unavailable",
+        "unexpected_error",
+        null
+      ]
+    },
+    "operator_message": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "taint_ref_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "input_taint_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "untrusted",
+        "suspected",
+        "confirmed",
+        "cleared"
+      ]
+    },
+    "approval_result_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "token_verification_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "evidence_failure_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "incident_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "requested_at": {
       "type": "string",
       "format": "date-time"
@@ -393,5 +472,246 @@
       ],
       "format": "date-time"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "policy_result": {
+            "enum": [
+              "deny",
+              "block_mvp",
+              "quarantine_subject"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "denial_reason",
+          "denial_code"
+        ],
+        "properties": {
+          "approval_required": {
+            "const": false
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "evidence_required": {
+            "const": true
+          },
+          "status": {
+            "enum": [
+              "denied",
+              "blocked_mvp",
+              "evidence_failed",
+              "blocked_evidence_unavailable"
+            ]
+          },
+          "denial_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "denial_code": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "risk_tier": {
+            "const": "blocked"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "policy_result": {
+            "enum": [
+              "deny",
+              "block_mvp",
+              "quarantine_subject"
+            ]
+          },
+          "approval_required": {
+            "const": false
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "status": {
+            "enum": [
+              "denied",
+              "blocked_mvp"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "execution_mode": {
+            "const": "approval_required_write"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "approval_required": {
+            "const": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "approved_to_run",
+              "in_progress",
+              "completed"
+            ]
+          },
+          "side_effect_class": {
+            "const": "approval_required_write"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "approval_token_id",
+          "token_verification_id",
+          "approval_result_id"
+        ],
+        "properties": {
+          "approval_required": {
+            "const": true
+          },
+          "approval_token_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "token_verification_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approval_result_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "completed"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "completed_at"
+        ],
+        "properties": {
+          "policy_result": {
+            "enum": [
+              "allow",
+              "allow_with_evidence"
+            ]
+          },
+          "evidence_required": {
+            "const": true
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "blocked_evidence_unavailable",
+              "evidence_failed"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "evidence_failure_id",
+          "failure_code"
+        ],
+        "properties": {
+          "approval_token_id": {
+            "const": null
+          },
+          "evidence_failure_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "failure_code": {
+            "const": "evidence_failure"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "input_taint_status": {
+            "enum": [
+              "untrusted",
+              "suspected",
+              "confirmed"
+            ]
+          }
+        },
+        "required": [
+          "input_taint_status"
+        ]
+      },
+      "then": {
+        "required": [
+          "taint_ref_ids",
+          "denial_code"
+        ],
+        "properties": {
+          "policy_result": {
+            "enum": [
+              "deny",
+              "block_mvp"
+            ]
+          },
+          "status": {
+            "enum": [
+              "denied",
+              "blocked_mvp"
+            ]
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "denial_code": {
+            "const": "tainted_input"
+          },
+          "taint_ref_ids": {
+            "type": "array",
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
 }

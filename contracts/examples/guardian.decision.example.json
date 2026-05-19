@@ -38,7 +38,7 @@
   "policy_snapshot_hash": "hash-ref-policy-snapshot-001",
   "valid_for_action_ref": "action-hash-file-delete-001",
   "decision": "deny",
-  "approval_required": true,
+  "approval_required": false,
   "approval_request_id": null,
   "approval_token_id": null,
   "denial_reason": "File deletion requested without a matching approval request and scoped approval token.",

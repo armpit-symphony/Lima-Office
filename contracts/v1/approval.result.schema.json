@@ -1,0 +1,367 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/approval.result.schema.json",
+  "title": "Approval Result Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "approval_result_id",
+    "approval_request_id",
+    "task_id",
+    "guardian_decision_id",
+    "producer",
+    "result",
+    "result_reason_code",
+    "approver_operator_id",
+    "approver_role_ref",
+    "action_class",
+    "risk_tier",
+    "data_classification",
+    "requested_scope_hash",
+    "approved_scope_hash",
+    "approval_token_id",
+    "blocked_mvp_action",
+    "denial_reason",
+    "fresh_operator_intent_ref",
+    "policy_version",
+    "evidence_artifact_ids",
+    "decided_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "approval.result"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approval_result_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approval_request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "operator_console"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "approved",
+        "denied",
+        "expired",
+        "cancelled",
+        "superseded",
+        "partial_approved"
+      ]
+    },
+    "result_reason_code": {
+      "type": "string",
+      "enum": [
+        "approved",
+        "denied_by_approver",
+        "blocked_mvp",
+        "expired",
+        "cancelled",
+        "superseded",
+        "partial_scope_requires_new_request"
+      ]
+    },
+    "approver_operator_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approver_role_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "operator",
+        "approver",
+        "supervisor_admin",
+        "field_it_reviewer",
+        "security_reviewer",
+        null
+      ]
+    },
+    "action_class": {
+      "type": "string",
+      "enum": [
+        "external_message_send",
+        "form_submit",
+        "file_delete",
+        "file_overwrite",
+        "customer_record_update",
+        "software_install_update",
+        "remediation",
+        "sensitive_data_access",
+        "production_server_touch",
+        "regulated_system_use"
+      ]
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": [
+        "medium",
+        "high",
+        "blocked"
+      ]
+    },
+    "data_classification": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "customer_confidential",
+        "sensitive_hr",
+        "sensitive_finance",
+        "sensitive_legal",
+        "sensitive_medical",
+        "secret"
+      ]
+    },
+    "requested_scope_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approved_scope_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_token_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "blocked_mvp_action": {
+      "type": "boolean"
+    },
+    "denial_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "fresh_operator_intent_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_artifact_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "decided_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "const": "approved"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "result_reason_code": {
+            "const": "approved"
+          },
+          "approver_operator_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approver_role_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approved_scope_hash": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approval_token_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "blocked_mvp_action": {
+            "const": false
+          },
+          "denial_reason": {
+            "const": null
+          },
+          "fresh_operator_intent_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "const": "denied"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "approval_token_id": {
+            "const": null
+          },
+          "approved_scope_hash": {
+            "const": null
+          },
+          "denial_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "blocked_mvp_action": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "const": "denied"
+          },
+          "result_reason_code": {
+            "const": "blocked_mvp"
+          },
+          "risk_tier": {
+            "const": "blocked"
+          },
+          "approval_token_id": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "const": "partial_approved"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "result_reason_code": {
+            "const": "partial_scope_requires_new_request"
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "approved_scope_hash": {
+            "type": "string",
+            "minLength": 1
+          },
+          "denial_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
+}

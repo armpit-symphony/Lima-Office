@@ -14,6 +14,7 @@ This directory contains Phase 0 contract schemas and sanitized example objects f
 
 - Producers must emit only fields allowed by the schema. Schemas default to `additionalProperties: false`.
 - A new runtime behavior is blocked until the matching contract schema and example exist.
+- Runtime must fail closed when a contract is missing, policy is missing, state is ambiguous, evidence cannot be written, a token verification fails, or taint is unresolved for a privileged path.
 - Guardian, approval, evidence, tenant isolation, and failure behavior are compatibility-sensitive. They cannot be weakened in a minor version.
 - Consumers must fail closed on unknown contract versions, missing Guardian decisions, missing approval tokens, missing evidence, tenant mismatches, expired approvals, or evidence writer failure.
 - Approval token records are metadata only. They must never contain bearer token material, OAuth codes, API keys, signatures, passwords, PINs, cookies, or plaintext secrets.
@@ -27,12 +28,17 @@ Version 1 schemas are in [v1](v1):
 - [task.execution.schema.json](v1/task.execution.schema.json)
 - [guardian.decision.schema.json](v1/guardian.decision.schema.json)
 - [approval.request.schema.json](v1/approval.request.schema.json)
+- [approval.result.schema.json](v1/approval.result.schema.json)
 - [approval.token.schema.json](v1/approval.token.schema.json)
+- [token.verification.schema.json](v1/token.verification.schema.json)
 - [model.route.schema.json](v1/model.route.schema.json)
 - [tool.invocation.schema.json](v1/tool.invocation.schema.json)
 - [memory.access.schema.json](v1/memory.access.schema.json)
+- [helper.scope.schema.json](v1/helper.scope.schema.json)
+- [taint.ref.schema.json](v1/taint.ref.schema.json)
 - [connector.trust.schema.json](v1/connector.trust.schema.json)
 - [evidence.artifact.schema.json](v1/evidence.artifact.schema.json)
+- [evidence.failure.schema.json](v1/evidence.failure.schema.json)
 - [incident.ops.schema.json](v1/incident.ops.schema.json)
 - [sla.slo.schema.json](v1/sla.slo.schema.json)
 - [lima_it.handoff.schema.json](v1/lima_it.handoff.schema.json)
@@ -46,15 +52,31 @@ Sanitized example objects are in [examples](examples):
 - [task.execution.example.json](examples/task.execution.example.json)
 - [guardian.decision.example.json](examples/guardian.decision.example.json)
 - [approval.request.example.json](examples/approval.request.example.json)
+- [approval.result.approved.example.json](examples/approval.result.approved.example.json)
+- [approval.result.denied-blocked-mvp.example.json](examples/approval.result.denied-blocked-mvp.example.json)
 - [approval.token.example.json](examples/approval.token.example.json)
+- [token.verification.valid.example.json](examples/token.verification.valid.example.json)
+- [token.verification.expired.example.json](examples/token.verification.expired.example.json)
+- [token.verification.revoked.example.json](examples/token.verification.revoked.example.json)
 - [model.route.example.json](examples/model.route.example.json)
 - [tool.invocation.example.json](examples/tool.invocation.example.json)
+- [tool.invocation.tainted-input-denied.example.json](examples/tool.invocation.tainted-input-denied.example.json)
 - [memory.access.example.json](examples/memory.access.example.json)
+- [helper.scope.file-helper.example.json](examples/helper.scope.file-helper.example.json)
+- [helper.scope.memory-helper.example.json](examples/helper.scope.memory-helper.example.json)
+- [helper.scope.it-helper-readonly.example.json](examples/helper.scope.it-helper-readonly.example.json)
+- [taint.ref.prompt-injection-email.example.json](examples/taint.ref.prompt-injection-email.example.json)
 - [connector.trust.example.json](examples/connector.trust.example.json)
 - [evidence.artifact.example.json](examples/evidence.artifact.example.json)
+- [evidence.failure.pre-action-blocked.example.json](examples/evidence.failure.pre-action-blocked.example.json)
+- [evidence.failure.post-action-degraded.example.json](examples/evidence.failure.post-action-degraded.example.json)
 - [incident.ops.example.json](examples/incident.ops.example.json)
 - [sla.slo.example.json](examples/sla.slo.example.json)
 - [lima_it.handoff.example.json](examples/lima_it.handoff.example.json)
+- [lima_it.handoff.remediation-denied-mvp.example.json](examples/lima_it.handoff.remediation-denied-mvp.example.json)
+- [task.execution.evidence-required-blocked.example.json](examples/task.execution.evidence-required-blocked.example.json)
+
+Examples are sample records only. Runtime may not treat an example object as authorization, approval, evidence, policy, identity, token validity, connector readiness, or remediation permission.
 
 ## Shared Envelope
 
@@ -82,6 +104,28 @@ Most action-bearing schemas also require:
 - `approval_request_id`
 - `approval_token_id`
 - `evidence_artifact_id` or `evidence_artifact_ids`
+
+## Conditional Hardening
+
+The v1 schemas use JSON Schema draft 2020-12 conditionals to block unsafe state combinations:
+
+- `approval.request`, `approval.result`, `approval.token`, and `token.verification` bind approval status, approver identity, token state, token verification, denial, expiry, revoke, and blocked-MVP outcomes.
+- `guardian.decision`, `task.execution`, `tool.invocation`, `memory.access`, and `model.route` bind policy result, approval state, taint refs, evidence failure, terminal states, and denial/failure reasons.
+- `worker.lifecycle` and `worker.heartbeat` bind identity failure, quarantine, revoke, evidence-writer failure, and healthy states.
+- `lima_it.handoff` keeps diagnostics read-only and keeps remediation non-executing for Phase 0.
+- `evidence.artifact` and `evidence.failure` bind redaction, evidence-writer failure, emergency spool refs, reconciliation, incident, and quarantine fields.
+
+See [Schema Hardening Notes](../docs/SCHEMA_HARDENING_NOTES.md) for the reasoning and Phase 1A test expectations.
+
+## Schema-Hardening Rules
+
+- Blocked-MVP actions produce denial metadata, not approval tokens.
+- Approval tokens are never bearer tokens and never broaden the approved scope.
+- Token verification fails closed for missing, expired, revoked, used, mismatched, ambiguous, or wrong-scope tokens.
+- Tainted content cannot directly authorize tool use, durable memory writes, external sends, approval scope, or remediation.
+- Evidence-required privileged actions cannot proceed when evidence cannot be written.
+- Helper scopes are supervisor-side, leased, narrow, visible, and cannot inherit worker trust.
+- LIMA IT remediation remains request/denial metadata only in Phase 0; diagnostics are read-only.
 
 ## Review Process
 

@@ -47,7 +47,7 @@
   "policy_result": "deny",
   "policy_version": "policy-phase0-v1",
   "guardian_decision_id": "gd-file-delete-deny-001",
-  "approval_required": true,
+  "approval_required": false,
   "approval_token_id": null,
   "evidence_required": true,
   "evidence_artifact_ids": [
@@ -62,6 +62,7 @@
   "rollback_available": false,
   "status": "denied",
   "denial_reason": "Unapproved file deletion is blocked for the MVP.",
+  "denial_code": "approval_missing",
   "requested_at": "2026-05-18T21:24:55Z",
   "completed_at": null
 }

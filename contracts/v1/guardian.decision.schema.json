@@ -404,5 +404,150 @@
       ],
       "format": "date-time"
     }
-  }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "evidence_required": {
+          "const": true
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "requires_approval"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "approval_required": {
+            "const": true
+          },
+          "approval_request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "denial_reason": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "enum": [
+              "deny",
+              "block_mvp",
+              "quarantine_subject"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "approval_required": {
+            "const": false
+          },
+          "approval_request_id": {
+            "const": null
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "denial_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "allow"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "approval_required": {
+            "const": false
+          },
+          "approval_request_id": {
+            "const": null
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "denial_reason": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "risk_tier": {
+            "const": "blocked"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "enum": [
+              "deny",
+              "block_mvp",
+              "quarantine_subject"
+            ]
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "denial_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "prompt_injection": {
+            "properties": {
+              "injection_suspected": {
+                "const": true
+              }
+            },
+            "required": [
+              "injection_suspected"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "enum": [
+              "requires_approval",
+              "deny",
+              "block_mvp",
+              "quarantine_subject"
+            ]
+          }
+        }
+      }
+    }
+  ]
 }
