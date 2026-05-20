@@ -1,6 +1,6 @@
 # LIMA Office OS Docs
 
-This directory contains Phase 0 architecture, security, contracts, planning, and runbook docs for LIMA Office OS.
+This directory contains Phase 0 architecture, security, contracts, planning, Phase 1A mock runtime scaffolding notes, and runbook docs for LIMA Office OS.
 
 ## Core Docs
 
@@ -15,6 +15,8 @@ This directory contains Phase 0 architecture, security, contracts, planning, and
 - [Autonomy boundaries](AUTONOMY_BOUNDARIES.md)
 - [Decisions](DECISIONS.md)
 - [Open questions](OPEN_QUESTIONS.md)
+- [Validation](VALIDATION.md)
+- [Phase 1A runtime scaffolding](PHASE_1A_RUNTIME_SCAFFOLDING.md)
 
 ## Runbooks
 
@@ -48,6 +50,6 @@ This directory contains Phase 0 architecture, security, contracts, planning, and
 - [Compliance reviewer](agents/compliance-reviewer.md)
 - [Product scope guardian](agents/product-scope-guardian.md)
 
-## Phase 0 Rule
+## Phase Rule
 
-These docs define boundaries and contracts. They do not approve live connectors, runtime dispatch, customer-system mutation, hidden background work, or production operation.
+These docs define boundaries, contracts, and mock scaffolding. They do not approve live connectors, external sends, customer-system mutation, hidden background work, remediation execution, or production operation.

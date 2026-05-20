@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.metadata
 import json
 import re
 import sys
@@ -47,7 +48,7 @@ try:
     from jsonschema.exceptions import SchemaError
 
     JSONSCHEMA_AVAILABLE = True
-    JSONSCHEMA_VERSION = getattr(jsonschema_pkg, "__version__", "unknown")
+    JSONSCHEMA_VERSION = importlib.metadata.version("jsonschema")
 except ModuleNotFoundError:  # pragma: no cover - exercised where dependency is absent
     Draft202012Validator = None  # type: ignore[assignment]
     FormatChecker = None  # type: ignore[assignment]

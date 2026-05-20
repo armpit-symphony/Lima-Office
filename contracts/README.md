@@ -89,10 +89,10 @@ python scripts/validate-contracts.py
 python scripts/check-doc-links.py
 ```
 
-For full JSON Schema draft 2020-12 validation, install Python `jsonschema`:
+For full JSON Schema draft 2020-12 validation with format checks, install the development validation dependencies:
 
 ```powershell
-python -m pip install "jsonschema>=4.18,<5"
+python -m pip install -r requirements-dev.txt
 ```
 
 CI runs strict validation with:
@@ -110,7 +110,7 @@ If `jsonschema` is unavailable locally, the validator falls back to JSON syntax,
 schema structure, mapping, required top-level fields, unknown top-level fields,
 example coverage, and unsafe-content scanning. That fallback is advisory only
 and does not prove nested constraints, conditionals, enums, formats, or all type
-rules. CI requires `jsonschema`, so full JSON Schema validation runs there.
+rules. CI requires `jsonschema` and format-check support, so full JSON Schema validation runs there.
 
 Validation does not authorize runtime behavior. It does not make live connectors,
 external sends, software updates, remediation, production operations, or

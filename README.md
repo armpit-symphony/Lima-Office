@@ -2,7 +2,7 @@
 
 LIMA Office OS is the SparkPit Labs / LIMA AI Office control-plane project for governed small-business AI office operations.
 
-The repo is currently Phase 0 architecture, security, contracts, and planning. It is not production-ready. It does not contain live connectors, runtime dispatch, hidden background jobs, approval enforcement, production server control, or customer-system mutation.
+The repo is currently Phase 1A mock runtime scaffolding on top of Phase 0 architecture, security, contracts, and planning. It is not production-ready. It does not contain live connectors, runtime dispatch, hidden background jobs, approval enforcement for live actions, production server control, or customer-system mutation.
 
 ## What LIMA Office OS Is
 
@@ -75,16 +75,18 @@ No remediation runtime, endpoint control, production server change, or network c
 - [Autonomy boundaries](docs/AUTONOMY_BOUNDARIES.md)
 - [Decisions](docs/DECISIONS.md)
 - [Open questions](docs/OPEN_QUESTIONS.md)
+- [Phase 1A runtime scaffolding](docs/PHASE_1A_RUNTIME_SCAFFOLDING.md)
 - [Runbooks](docs/runbooks/)
 
 ## Current Repo Status
 
-This repo is Phase 0 only:
+This repo is Phase 1A mock runtime scaffolding only:
 
 - Docs and scaffolding are allowed.
 - Contracts are required before implementation.
-- Mock connectors come before live connectors.
+- Mock in-memory worker, heartbeat, task, Guardian, and evidence flows are allowed.
 - No production-readiness claims.
 - No live customer connectors.
-- No runtime implementation unless a tiny scaffold is explicitly required by docs.
+- No live runtime behavior beyond the tiny in-memory scaffold.
+- No external sends, external model APIs, browser automation, OAuth/provider wiring, or remediation execution.
 - No marketing, pricing, financial projections, TAM, investor content, or sales copy.

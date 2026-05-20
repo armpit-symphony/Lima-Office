@@ -58,8 +58,11 @@
 
 ### Deliverables
 
-- Supervisor skeleton if approved.
-- Worker skeleton if approved.
+- Phase 1A mock runtime scaffold for contract loading and validation.
+- In-memory mock worker registry, heartbeat intake, task queue, Guardian decisions, and evidence writer.
+- Runtime tests for fail-closed policy, validation, worker state, heartbeat, task, and evidence behavior.
+- Supervisor skeleton if separately approved beyond mock scaffolding.
+- Worker skeleton if separately approved beyond mock scaffolding.
 - Mock task queue.
 - Mock Guardian decision log.
 - Mock evidence ledger.
@@ -71,6 +74,8 @@
 - Worker registration and heartbeat states are visible.
 - Every task transition has a Guardian decision and evidence reference.
 - No external writes or live connector calls.
+- Runtime validation requires real `jsonschema` and fails closed without it.
+- Mock queues remain synchronous in-memory records only; no tool execution, services, daemons, or background loops.
 
 ### Risks
 
@@ -84,6 +89,8 @@
 - Customer-system writes.
 - Autonomous remediation.
 - Production installer.
+- External model API calls.
+- Browser automation.
 
 ## Phase 2: Office MVP Workflows
 

@@ -41,6 +41,8 @@
 - What tasks are allowed to use subscription/cloud models?
 - What data classifications block cloud routing?
 - What prompt-injection evaluation is required before connector handling?
+- What additional cross-contract runtime invariants should be enforced before mock scaffolding can become lab runtime?
+- What health summary fields should the Supervisor expose for contract validation, Guardian decisions, worker state, queue depth, and evidence status?
 
 ## Worker Hardware And Operations
 
@@ -63,7 +65,12 @@ Resolved in [Schema Hardening Notes](SCHEMA_HARDENING_NOTES.md) and [contracts/v
 
 Resolved in [Phase 0 Validation](VALIDATION.md) and [Phase 0 validation workflow](../.github/workflows/phase0-validation.yml):
 
-- CI uses Python `jsonschema>=4.18,<5` for JSON Schema draft 2020-12 validation with format checks.
+- CI uses [requirements-dev.txt](../requirements-dev.txt) for JSON Schema draft 2020-12 validation with format checks.
+
+Resolved in [Phase 1A Runtime Scaffolding](PHASE_1A_RUNTIME_SCAFFOLDING.md):
+
+- Runtime contract validation requires `jsonschema` and fails closed if it is unavailable.
+- Phase 1A runtime state is in-memory mock scaffolding only, with no live connectors, external sends, remediation execution, external model API calls, browser automation, services, databases, or production-system access.
 
 ## Policy Follow-Ups
 

@@ -21,7 +21,7 @@ python scripts/check-doc-links.py
 Optional full JSON Schema validation dependency:
 
 ```powershell
-python -m pip install "jsonschema>=4.18,<5"
+python -m pip install -r requirements-dev.txt
 ```
 
 Strict mode, matching CI:
@@ -103,7 +103,7 @@ This scan is a guardrail, not a data-loss-prevention system.
 
 [phase0-validation.yml](../.github/workflows/phase0-validation.yml) runs on
 `push`, `pull_request`, and `workflow_dispatch` without repository secrets. It
-installs `jsonschema>=4.18,<5`, then runs:
+installs [requirements-dev.txt](../requirements-dev.txt), then runs:
 
 ```bash
 python scripts/validate-contracts.py --require-jsonschema --check-formats --warnings-as-errors
@@ -111,8 +111,18 @@ python scripts/check-doc-links.py
 git diff --check
 ```
 
-Because CI installs and requires `jsonschema`, full JSON Schema draft 2020-12
-validation runs in CI.
+Because CI installs and requires `jsonschema` plus date-time format support,
+full JSON Schema draft 2020-12 validation runs in CI.
+
+Phase 1A runtime tests also run in CI:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+Runtime validation is stricter than the local docs fallback: the
+`lima_office.contracts.ContractValidator` requires `jsonschema` and format
+support and fails closed if they are unavailable.
 
 ## What Validation Does Not Prove
 
