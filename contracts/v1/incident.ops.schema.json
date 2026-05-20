@@ -330,7 +330,9 @@
       ]
     },
     "remediation_authorized": {
-      "type": "boolean"
+      "type": "boolean",
+      "const": false,
+      "description": "Phase 0 incident records may describe remediation requests or denial metadata, but they never authorize remediation execution."
     },
     "post_review_required": {
       "type": "boolean"
@@ -409,5 +411,29 @@
       "type": "string",
       "format": "date-time"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "handoff_mode": {
+            "const": "remediation_request"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "remediation_authorized": {
+            "const": false
+          },
+          "post_review_required": {
+            "const": true
+          },
+          "approval_token_id": {
+            "const": null
+          }
+        }
+      }
+    }
+  ]
 }

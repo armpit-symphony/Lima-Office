@@ -8,6 +8,10 @@
   "correlation_id": "corr-email-draft-001",
   "causation_id": "apt-email-draft-001",
   "idempotency_key": "idem-token-verify-valid-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T21:41:00Z"
+  },
   "token_verification_id": "tv-email-valid-001",
   "approval_token_id": "apt-email-draft-001",
   "approval_request_id": "apr-email-draft-001",

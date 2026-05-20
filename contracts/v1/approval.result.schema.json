@@ -339,6 +339,43 @@
     {
       "if": {
         "properties": {
+          "action_class": {
+            "enum": [
+              "software_install_update",
+              "remediation",
+              "production_server_touch",
+              "regulated_system_use"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "const": "denied"
+          },
+          "result_reason_code": {
+            "const": "blocked_mvp"
+          },
+          "risk_tier": {
+            "const": "blocked"
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "blocked_mvp_action": {
+            "const": true
+          },
+          "denial_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
           "result": {
             "const": "partial_approved"
           }

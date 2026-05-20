@@ -138,7 +138,7 @@ Version 1 schemas now use JSON Schema draft 2020-12 conditionals for the highest
 - Evidence requirements: request creation, approval, denial, expiry, cancellation, and supersession produce evidence.
 - Failure behavior: timeout expires the request and blocks the task.
 - Backwards compatibility notes: new approval action classes require autonomy-boundary and threat-model mapping.
-- MVP acceptance gates: approval-required external email draft can be represented without performing a live send.
+- MVP acceptance gates: approval-required external email draft can be represented without performing a live send; software install/update, remediation execution, production server touch, and regulated-system use remain denied blocked-MVP request outcomes.
 
 ## Approval Result Contract v1
 
@@ -157,7 +157,7 @@ Version 1 schemas now use JSON Schema draft 2020-12 conditionals for the highest
 - Evidence requirements: every result links evidence.
 - Failure behavior: missing or contradictory approval result means the privileged action fails closed.
 - Backwards compatibility notes: result semantics and reason codes are compatibility-sensitive.
-- MVP acceptance gates: external email draft approval and blocked production-touch denial can both be represented without live execution.
+- MVP acceptance gates: external email draft approval and blocked-MVP denials can be represented without live execution; software install/update, remediation execution, production server touch, and regulated-system use cannot produce approval-result tokens.
 
 ## Approval Token Contract v1
 
@@ -361,8 +361,8 @@ Version 1 schemas now use JSON Schema draft 2020-12 conditionals for the highest
 - Optional fields: `lima_it_handoff_id`, `operator_owner`.
 - Allowed states: `reported`, `triaged`, `contained`, `quarantined`, `escalated`, `resolved`, `post_review_needed`, `closed`.
 - Terminal states: `resolved`, `closed`.
-- Security requirements: containment actions are explicit; remediation authorization is false unless approval and token are present.
-- Approval requirements: remediation and privileged containment require approval; worker quarantine can be Guardian/operator containment with evidence.
+- Security requirements: containment actions are explicit; remediation authorization is always false in Phase 0 incident records.
+- Approval requirements: remediation handoff can be represented only as request or denial metadata; worker quarantine can be Guardian/operator containment with evidence.
 - Evidence requirements: detection, containment, escalation, LIMA IT handoff, remediation request, and post-review produce evidence.
 - Failure behavior: unresolved containment escalates; evidence failure blocks remediation and raises a separate incident.
 - Backwards compatibility notes: new incident types require threat-model mapping.

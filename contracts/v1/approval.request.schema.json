@@ -540,6 +540,8 @@
         "properties": {
           "action_class": {
             "enum": [
+              "software_install_update",
+              "remediation",
               "production_server_touch",
               "regulated_system_use"
             ]
@@ -553,6 +555,9 @@
           },
           "approval_result": {
             "const": "denied"
+          },
+          "risk_tier": {
+            "const": "blocked"
           },
           "approval_token_id": {
             "const": null

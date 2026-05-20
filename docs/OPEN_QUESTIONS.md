@@ -52,7 +52,6 @@
 
 ## Contract Schema Follow-Ups
 
-- What JSON Schema validator should be used in CI for draft 2020-12 validation?
 - What redaction matrix and retention schedule should bind evidence, memory, task, incident, and worker-cache records?
 - What runbooks are required before runtime for evidence-writer failure, approval timeout, worker replacement, update rollback, LIMA IT handoff, and customer exit/delete?
 
@@ -61,6 +60,10 @@ Resolved in [Schema Hardening Notes](SCHEMA_HARDENING_NOTES.md) and [contracts/v
 - `approval.result` is a separate v1 schema.
 - `helper.scope` is a separate v1 schema.
 - v1 schemas include conditionals for approval token lifecycle states, blocked-MVP denial, LIMA IT remediation constraints, evidence-required completion, evidence failure, token verification, and taint refs.
+
+Resolved in [Phase 0 Validation](VALIDATION.md) and [Phase 0 validation workflow](../.github/workflows/phase0-validation.yml):
+
+- CI uses Python `jsonschema>=4.18,<5` for JSON Schema draft 2020-12 validation with format checks.
 
 ## Policy Follow-Ups
 

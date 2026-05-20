@@ -8,6 +8,10 @@
   "correlation_id": "corr-token-revoked-001",
   "causation_id": "apt-email-revoked-001",
   "idempotency_key": "idem-token-verify-revoked-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T21:55:00Z"
+  },
   "token_verification_id": "tv-email-revoked-001",
   "approval_token_id": "apt-email-revoked-001",
   "approval_request_id": "apr-email-revoked-001",

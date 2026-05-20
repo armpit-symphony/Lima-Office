@@ -8,6 +8,10 @@
   "correlation_id": "corr-token-expired-001",
   "causation_id": "apt-email-expired-001",
   "idempotency_key": "idem-token-verify-expired-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T22:06:00Z"
+  },
   "token_verification_id": "tv-email-expired-001",
   "approval_token_id": "apt-email-expired-001",
   "approval_request_id": "apr-email-expired-001",

@@ -14,6 +14,7 @@
     "correlation_id",
     "causation_id",
     "idempotency_key",
+    "producer",
     "helper_scope_id",
     "helper_agent_id",
     "helper_role",
@@ -82,6 +83,28 @@
     "idempotency_key": {
       "type": "string",
       "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "guardian",
+            "operator_console"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
     },
     "helper_scope_id": {
       "type": "string",

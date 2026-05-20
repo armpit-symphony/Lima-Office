@@ -8,6 +8,10 @@
   "correlation_id": "corr-helper-memory-001",
   "causation_id": "task-email-draft-001",
   "idempotency_key": "idem-helper-memory-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:30:00Z"
+  },
   "helper_scope_id": "hs-memory-helper-001",
   "helper_agent_id": "helper-memory-review-01",
   "helper_role": "memory_helper",

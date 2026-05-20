@@ -8,6 +8,10 @@
   "correlation_id": "corr-taint-email-001",
   "causation_id": "msg-ref-external-email-001",
   "idempotency_key": "idem-taint-email-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T21:35:00Z"
+  },
   "taint_ref_id": "taint-email-injection-001",
   "source_type": "email",
   "source_ref": "message-ref-external-email-001",

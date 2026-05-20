@@ -8,6 +8,10 @@
   "correlation_id": "corr-helper-it-001",
   "causation_id": "task-it-health-001",
   "idempotency_key": "idem-helper-it-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:30:00Z"
+  },
   "helper_scope_id": "hs-it-helper-readonly-001",
   "helper_agent_id": "helper-it-diagnostics-01",
   "helper_role": "it_helper_readonly",

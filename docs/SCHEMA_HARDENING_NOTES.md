@@ -25,10 +25,11 @@ Conditionals are used where a single field changes the safety meaning of other f
 - Used, expired, or revoked approval token with contradictory lifecycle fields.
 - Valid token verification when scope does not match or observed status is not active.
 - Guardian denial or blocked-MVP decision with an approval token.
+- Software install/update, remediation execution, production server touch, or regulated-system approval outcome with an approval token.
 - Privileged tool completion with denied policy, missing token verification, or unresolved taint.
 - Evidence-required task completion when pre-action evidence failed.
 - Healthy worker state when evidence writer failed or identity verification failed.
-- LIMA IT remediation represented as executable authorization in Phase 0.
+- LIMA IT or incident remediation represented as executable authorization in Phase 0.
 - Cloud model route when egress/cloud routing is blocked.
 - Secret evidence exported without secret redaction.
 

@@ -14,6 +14,7 @@
     "correlation_id",
     "causation_id",
     "idempotency_key",
+    "producer",
     "token_verification_id",
     "approval_token_id",
     "approval_request_id",
@@ -76,6 +77,27 @@
     "idempotency_key": {
       "type": "string",
       "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "guardian",
+            "supervisor"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
     },
     "token_verification_id": {
       "type": "string",

@@ -78,6 +78,46 @@ Sanitized example objects are in [examples](examples):
 
 Examples are sample records only. Runtime may not treat an example object as authorization, approval, evidence, policy, identity, token validity, connector readiness, or remediation permission.
 
+## Validation
+
+Contract validation is documented in [Phase 0 Validation](../docs/VALIDATION.md).
+
+Run locally:
+
+```powershell
+python scripts/validate-contracts.py
+python scripts/check-doc-links.py
+```
+
+For full JSON Schema draft 2020-12 validation, install Python `jsonschema`:
+
+```powershell
+python -m pip install "jsonschema>=4.18,<5"
+```
+
+CI runs strict validation with:
+
+```bash
+python scripts/validate-contracts.py --require-jsonschema --check-formats --warnings-as-errors
+```
+
+Examples map to schemas by explicit override table, declared `$schema_ref`,
+`schema_ref`, `contract_name`, `contract_type`, or `type`, then by filename
+longest-prefix convention. Current examples use `contract_name`, and each
+schema must have at least one mapped example.
+
+If `jsonschema` is unavailable locally, the validator falls back to JSON syntax,
+schema structure, mapping, required top-level fields, unknown top-level fields,
+example coverage, and unsafe-content scanning. That fallback is advisory only
+and does not prove nested constraints, conditionals, enums, formats, or all type
+rules. CI requires `jsonschema`, so full JSON Schema validation runs there.
+
+Validation does not authorize runtime behavior. It does not make live connectors,
+external sends, software updates, remediation, production operations, or
+privileged actions safe or approved. Future runtime behavior still needs
+Guardian classification, approval policy, evidence capture, and fail-closed
+handling.
+
 ## Shared Envelope
 
 Every v1 schema requires a shared envelope:
@@ -120,6 +160,7 @@ See [Schema Hardening Notes](../docs/SCHEMA_HARDENING_NOTES.md) for the reasonin
 ## Schema-Hardening Rules
 
 - Blocked-MVP actions produce denial metadata, not approval tokens.
+- Software install/update, remediation execution, production server touch, and regulated-system use remain blocked-MVP outcomes in v1 approval request/result/token records.
 - Approval tokens are never bearer tokens and never broaden the approved scope.
 - Token verification fails closed for missing, expired, revoked, used, mismatched, ambiguous, or wrong-scope tokens.
 - Tainted content cannot directly authorize tool use, durable memory writes, external sends, approval scope, or remediation.
@@ -137,7 +178,7 @@ Before a schema can unlock runtime design:
 4. Confirm evidence capture, redaction, retention, and export/delete posture are explicit.
 5. Confirm no schema allows unrestricted tool execution, live connector use, external sends without approval, cross-tenant memory access, direct production remediation, or plaintext secrets.
 6. Confirm the relevant threat scenario in [Threat Model](../docs/THREAT_MODEL.md) has a matching schema/control.
-7. Validate JSON syntax for schemas and examples.
+7. Run Phase 0 validation for schemas, examples, local Markdown links, and unsafe content.
 
 ## Policy References
 
