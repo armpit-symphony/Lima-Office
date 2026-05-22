@@ -7,6 +7,31 @@ mutation.
 
 Latest captured run: 2026-05-22 on Windows with Python 3.12.10.
 
+## Invariant Branch Reconciliation
+
+Command:
+
+```powershell
+git fetch --all --prune
+git cat-file -t e71431007ddbe96c3e141b77591efc2508c53e5d
+git branch -a
+git ls-remote --heads origin phase-1a-cross-contract-invariants
+```
+
+Result:
+
+```text
+git fetch --all --prune: PASS
+git cat-file -t e71431007ddbe96c3e141b77591efc2508c53e5d: fatal: git cat-file: could not get object info
+git branch -a: no local or remote phase-1a-cross-contract-invariants branch listed
+git ls-remote --heads origin phase-1a-cross-contract-invariants: no matching head returned
+```
+
+Conclusion: `e71431007ddbe96c3e141b77591efc2508c53e5d` does not exist in this
+local checkout after fetch, and `origin/phase-1a-cross-contract-invariants` is
+not advertised. The branch could not be checked out or validated from this
+workspace, and it could not be pushed because the local commit object is absent.
+
 Environment note: the requested `python3` command form is not available in this
 checkout. `python3 scripts/validate-contracts.py --require-jsonschema
 --check-formats --warnings-as-errors` returned:
@@ -82,7 +107,7 @@ python3 -B -m unittest discover -s tests -v
 Result with available interpreter:
 
 ```text
-Ran 50 tests in 0.720s
+Ran 50 tests in 0.685s
 
 OK
 ```
@@ -98,7 +123,7 @@ python3 -m pytest -q
 Result with available interpreter:
 
 ```text
-50 passed, 1 warning, 39 subtests passed in 0.80s
+50 passed, 1 warning, 39 subtests passed in 0.77s
 ```
 
 Warning: pytest could not create/write `.pytest_cache` because access was
@@ -124,9 +149,9 @@ git diff --check
 git diff --cached --check
 ```
 
-Final staged result: `git diff --check` and `git diff --cached --check`
-returned exit 0. `git diff --check` emitted LF-to-CRLF warnings for Markdown
-files in this Windows checkout; no whitespace errors were reported.
+Reconciliation patch result before staging: `git diff --check` returned exit 0
+with LF-to-CRLF warnings for Markdown files in this Windows checkout; no
+whitespace errors were reported.
 
 ## Git Status
 
@@ -136,8 +161,8 @@ Command:
 git status
 ```
 
-Pre-commit result: branch `phase-0-1a-closeout-archive` with eight staged docs
-changes for the closeout archive.
+Reconciliation patch result before staging: branch
+`phase-0-1a-closeout-archive` with modified closeout docs only.
 
 ## CI Expectations
 

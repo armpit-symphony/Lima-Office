@@ -11,10 +11,12 @@ Task-provided later baseline: `phase-1a-cross-contract-invariants` at
 
 Current phase: Phase 1A hardening complete for the reachable `d259409` mock
 runtime baseline, with expansion blocked until the remaining gates in this file
-and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md) are resolved. In this checkout,
-the task-provided cross-contract invariant commit is not reachable from local
-refs or advertised `origin` refs; treat that as a checkpoint blocker until the
-branch/commit source is restored, recreated, or formally superseded.
+and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md) are resolved. A reconciliation
+check on 2026-05-22 confirmed that the task-provided cross-contract invariant
+commit is not present in the local object database and `origin` does not
+advertise `phase-1a-cross-contract-invariants`; treat that as a checkpoint
+blocker until the branch/commit source is pushed, restored, recreated, or
+formally superseded.
 
 ## What Exists
 
@@ -61,8 +63,9 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 
 ## Remaining Blockers
 
-- Restore or recreate the missing cross-contract invariant checkpoint source if
-  `phase-1a-cross-contract-invariants` is required as the final Phase 1A input.
+- Push, restore, recreate, or formally supersede the missing cross-contract
+  invariant checkpoint source if `phase-1a-cross-contract-invariants` is
+  required as the final Phase 1A input.
 - Bind approval-token runtime records to concrete task/action/resource inputs
   before any approval-required runtime path can expand.
 - Define non-test Guardian decision expiry and replay policy.

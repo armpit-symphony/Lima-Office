@@ -59,9 +59,11 @@ mutation.
 - Small-business supportability: what network segmentation, offline/ISP outage,
   power-loss recovery, log retention, disk-full behavior, device replacement,
   and operator escalation assumptions are required?
-- Cross-contract invariant source: should the missing
+- Cross-contract invariant source: the 2026-05-22 reconciliation check found no
+  local object and no `origin` branch for
   `phase-1a-cross-contract-invariants` / `e71431007ddbe96c3e141b77591efc2508c53e5d`
-  checkpoint be restored, recreated, or formally superseded?
+  after `git fetch --all --prune`; should the checkpoint be pushed, restored,
+  recreated, or formally superseded?
 
 ## Connectors And Deployment
 

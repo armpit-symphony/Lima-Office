@@ -17,10 +17,12 @@ Task-provided later baseline: `phase-1a-cross-contract-invariants` at
 
 Repository evidence note: the task-provided cross-contract invariant commit was
 not reachable from local refs, advertised `origin` refs, PR refs, or a direct
-fetch by SHA during this checkpoint. Any statement about that branch is
-therefore recorded as an expected checkpoint input, not as validated local
-repository evidence. Runtime expansion remains blocked until that source is
-restored, recreated, or formally superseded.
+fetch by SHA during the original closeout. A 2026-05-22 reconciliation check
+after `git fetch --all --prune` again found that the local object is absent and
+`origin` does not advertise `phase-1a-cross-contract-invariants`. Any statement
+about that branch is therefore recorded as an expected checkpoint input, not as
+validated repository evidence. Runtime expansion remains blocked until that
+source is pushed, restored, recreated, or formally superseded.
 
 ## Timeline
 
@@ -33,7 +35,7 @@ restored, recreated, or formally superseded.
 | `phase-0-schema-conditionals-followups` / `fd5421d` | JSON Schema conditional hardening and follow-up contracts for approval results, token verification, helper scope, taint refs, model routing, tool invocation, memory access, evidence failure, and LIMA IT denial examples. | Accepted schema hardening baseline. |
 | `phase-0-ci-schema-validation` / `0be4ced` | Strict schema validation, doc link checks, CI workflow, unsafe-content scan, and validation docs. | Accepted validation/CI baseline. |
 | `phase-1a-runtime-scaffolding` / `d259409` | Mock in-memory Python runtime scaffolding, runtime contract loading/validation, default-deny Guardian policy stub, worker registry, heartbeat validation, task queue, evidence writer, and unit tests. | Available local Phase 1A runtime baseline. |
-| `phase-1a-cross-contract-invariants` / `e71431007ddbe96c3e141b77591efc2508c53e5d` | Expected cross-contract invariant hardening checkpoint based on the task input. | Not locally reachable in this checkout; remains a closeout evidence blocker until restored or recreated. |
+| `phase-1a-cross-contract-invariants` / `e71431007ddbe96c3e141b77591efc2508c53e5d` | Expected cross-contract invariant hardening checkpoint based on the task input. | Reconciliation on 2026-05-22 found no local commit object and no `origin` branch; remains a closeout evidence blocker until pushed, restored, recreated, or formally superseded. |
 
 ## Architecture Baseline
 
@@ -150,9 +152,10 @@ background loops, durable storage, UI, or production operations.
 
 The task requested use of `docs/CROSS_CONTRACT_INVARIANTS.md`; that file is not
 present in this checkout. The task also identifies
-`phase-1a-cross-contract-invariants` / `e71431007ddbe96c3e141b77591efc2508c53e5d`,
-but that commit is not reachable from the local repository or advertised
-`origin` refs at checkpoint time.
+`phase-1a-cross-contract-invariants` / `e71431007ddbe96c3e141b77591efc2508c53e5d`.
+The original checkpoint and the 2026-05-22 reconciliation check both found that
+the commit is not reachable from the local repository and `origin` does not
+advertise the branch.
 
 Current available evidence supports these invariant themes:
 
