@@ -63,6 +63,7 @@ No remediation runtime, endpoint control, production server change, or network c
 
 ## Core Docs
 
+- [Current status](STATUS.md)
 - [Docs index](docs/README.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [MVP scope](docs/MVP_SCOPE.md)
@@ -76,6 +77,9 @@ No remediation runtime, endpoint control, production server change, or network c
 - [Decisions](docs/DECISIONS.md)
 - [Open questions](docs/OPEN_QUESTIONS.md)
 - [Phase 1A runtime scaffolding](docs/PHASE_1A_RUNTIME_SCAFFOLDING.md)
+- [Phase 0 / Phase 1A closeout](docs/PHASE_0_1A_CLOSEOUT.md)
+- [Next phase plan](docs/NEXT_PHASE_PLAN.md)
+- [Runtime boundaries](docs/RUNTIME_BOUNDARIES.md)
 - [Runbooks](docs/runbooks/)
 
 ## Current Repo Status

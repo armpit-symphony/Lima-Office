@@ -1,61 +1,83 @@
 # Open Questions
 
-## Product And Deployment
+This file tracks remaining blockers after the Phase 0 / Phase 1A closeout. The
+questions below must stay visible until they are resolved in docs, contracts,
+policies, runbooks, and tests. None of these items approve live connectors,
+external sends, real remediation, production operations, or customer-system
+mutation.
 
-- What is the first target vertical / ICP?
-- Is the intended first deployment on-prem, hybrid, or managed private cloud?
-- What is the first pilot acceptance threshold after lab mode?
-- Who is the human approver role in a small business?
+## Security / Governance
 
-## Compliance And Privacy
+- Operator IdP/MFA: what identity provider assumptions and MFA level should be
+  required for operators, approvers, supervisor admins, security reviewers, and
+  field IT reviewers?
+- Breakglass: what breakglass process is acceptable, who can invoke it, what
+  evidence is required, and which action classes remain blocked during
+  breakglass?
+- Access review cadence: how often should operator, approver, helper-agent,
+  worker, and LIMA IT roles be reviewed?
+- LIMA IT approver separation: who can approve LIMA IT diagnostic handoff and
+  remediation requests, and what separation of duties is required?
+- RBAC matrix: what exact role/action matrix applies after the operator IdP is
+  selected?
 
-- What compliance target matters first?
-- What data retention policy should apply to evidence, memory, logs, and task records?
-- What customer exit/delete process is required?
-- What audit export format is needed?
-- Are phone/call consent requirements in scope for the first workflows?
+## Data / Compliance
 
-## Identity And Access
+- Retention defaults: what default retention periods apply to evidence, memory,
+  logs, task records, incidents, worker cache refs, and LIMA IT handoff records?
+- Redaction taxonomy: what redaction profiles apply by record type, data
+  classification, and free-text field?
+- Audit export: what export manifest format, integrity metadata, redaction
+  posture, and access-control refs are required?
+- Customer exit/delete: what customer exit, delete, reset, and proof process is
+  required?
+- Durable evidence/export posture: what storage, emergency spool, retry/backoff,
+  disk-full threshold, reconciliation, and export posture must exist before
+  runtime expansion?
+- First compliance target: what governance or compliance mapping matters first,
+  without claiming certification?
 
-- What identity provider assumptions should be used for operators?
-- What operator identity provider should Phase 1A assume?
-- What identity assurance or MFA level is required for approvers?
-- Is hardware attestation required for mini PCs?
-- What attestation method should be used for Arc worker mini PCs?
-- What breakglass process is acceptable?
-- What breakglass policy is acceptable, and which actions remain blocked even during breakglass?
-- How often should access reviews happen?
-- Who can approve LIMA IT remediation requests, and what separation of duties is required?
+## Runtime
 
-## Connectors
+- Approval-token runtime record binding: how should runtime bind approval tokens
+  to exact task IDs, action classes, resource refs, policy snapshots, tenant,
+  customer context, fresh operator intent, expiry, and one-time use?
+- Non-test Guardian expiry policy: what decision expiry, replay rejection,
+  clock-skew tolerance, and reclassification behavior apply outside tests?
+- Health reason taxonomy: what reason codes should the Supervisor use for
+  contract validation, Guardian decisions, worker state, queue depth, evidence
+  status, connector readiness, LIMA IT handoff, and degraded/offline/quarantine
+  transitions?
+- Heartbeat thresholds: what heartbeat interval, missed-heartbeat thresholds,
+  stale-age limits, and escalation timing should apply in lab mode?
+- Worker attestation: what attestation method is required for Arc worker mini
+  PCs before re-enrollment can be automated?
+- Update rollback: what update channel, signed/verified source, known-good
+  version, rollback trigger, and quarantine behavior should be required?
+- Worker hardware baseline: what mini PC CPU, RAM, disk, OS, TPM, local model,
+  and LAN assumptions are realistic for lab mode?
+- Small-business supportability: what network segmentation, offline/ISP outage,
+  power-loss recovery, log retention, disk-full behavior, device replacement,
+  and operator escalation assumptions are required?
+- Cross-contract invariant source: should the missing
+  `phase-1a-cross-contract-invariants` / `e71431007ddbe96c3e141b77591efc2508c53e5d`
+  checkpoint be restored, recreated, or formally superseded?
 
-- What are the first real connectors to evaluate after mock mode?
-- What consent and scope review process is required?
-- Which connector actions remain read-only for the first pilot?
-- What revocation evidence is required?
+## Connectors And Deployment
 
-## Models And Runtime
-
-- What are the model provider defaults?
-- What tasks are allowed to use local models?
-- What tasks are allowed to use subscription/cloud models?
-- What data classifications block cloud routing?
-- What prompt-injection evaluation is required before connector handling?
-- What additional cross-contract runtime invariants should be enforced before mock scaffolding can become lab runtime?
-- What health summary fields should the Supervisor expose for contract validation, Guardian decisions, worker state, queue depth, and evidence status?
-
-## Worker Hardware And Operations
-
-- What is the mini PC hardware baseline?
-- What operating system baseline should be assumed?
-- What heartbeat interval and missed-heartbeat thresholds are acceptable?
-- What update channel and rollback mechanism should be used?
-- What small-business LAN assumptions are realistic?
-
-## Contract Schema Follow-Ups
-
-- What redaction matrix and retention schedule should bind evidence, memory, task, incident, and worker-cache records?
-- What runbooks are required before runtime for evidence-writer failure, approval timeout, worker replacement, update rollback, LIMA IT handoff, and customer exit/delete?
+- Connector consent/scope/revocation: what consent process, scope review,
+  revocation evidence, and read-only limits are required before any live
+  connector review?
+- Model routing defaults: what tasks can use local models, what tasks can use
+  subscription/cloud model classes, and what data classifications block cloud
+  routing?
+- First deployment posture: is the first lab deployment on-prem, hybrid, or
+  managed private cloud, and what acceptance threshold moves it from lab-only to
+  pilot-review?
+- First workflow posture: what target vertical or workflow should be considered
+  first while staying draft-only or mock-only?
+- Connector prompt-injection evaluation: what test and review evidence is
+  required before connector-handled content can influence model/tool decisions?
 
 Resolved in [Schema Hardening Notes](SCHEMA_HARDENING_NOTES.md) and [contracts/v1](../contracts/v1):
 

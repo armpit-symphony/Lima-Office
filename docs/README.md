@@ -4,6 +4,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 
 ## Core Docs
 
+- [Current status](../STATUS.md)
 - [Architecture](ARCHITECTURE.md)
 - [MVP scope](MVP_SCOPE.md)
 - [Roadmap](ROADMAP.md)
@@ -17,6 +18,10 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Open questions](OPEN_QUESTIONS.md)
 - [Validation](VALIDATION.md)
 - [Phase 1A runtime scaffolding](PHASE_1A_RUNTIME_SCAFFOLDING.md)
+- [Phase 0 / Phase 1A closeout](PHASE_0_1A_CLOSEOUT.md)
+- [Next phase plan](NEXT_PHASE_PLAN.md)
+- [Runtime boundaries](RUNTIME_BOUNDARIES.md)
+- [Validation evidence](VALIDATION_EVIDENCE.md)
 
 ## Runbooks
 
