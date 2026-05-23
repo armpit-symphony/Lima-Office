@@ -6,6 +6,8 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
+Current working branch: `approval-token-runtime-binding-design`
+
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
 
@@ -13,11 +15,13 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A invariant hardening. Phase 1A mock runtime scaffolding
-is present, and this branch adds cross-contract invariant checks plus
-metadata-only supervisor health reporting. Runtime expansion remains blocked
-until the remaining gates in this file, [Baseline](docs/BASELINE.md), and
-[Next Phase Plan](docs/NEXT_PHASE_PLAN.md) are resolved.
+Current phase: Phase 1A approval-token binding hardening. Phase 1A mock
+runtime scaffolding is present, the v2 invariant checkpoint is reachable, and
+this branch adds first-class approval binding contracts, approval-chain example
+bundles, mock/in-memory one-time binding verification, and tests. Runtime
+expansion remains blocked until the remaining gates in this file,
+[Baseline](docs/BASELINE.md), and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md)
+are resolved.
 
 Superseded missing checkpoint: the previously reported
 `phase-1a-cross-contract-invariants` commit
@@ -50,6 +54,12 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
   action-review records.
 - `supervisor.health` contract schema and examples for metadata-only mock
   Supervisor health summaries.
+- `approval.binding` contract schema and examples for normalized
+  approval-request/result/token/verification/Guardian/task/tool/worker/evidence
+  binding.
+- `approval.chain` validation-bundle schema and examples for valid one-time,
+  replay-denied, scope-mismatch, tenant-mismatch, expired, revoked, tainted,
+  denied blocked-MVP, and LIMA IT remediation-blocked chains.
 - Strict contract validation through [scripts/validate-contracts.py](scripts/validate-contracts.py).
 - Local Markdown link validation through [scripts/check-doc-links.py](scripts/check-doc-links.py).
 - Phase 1A mock Python runtime scaffolding in [lima_office](lima_office).
@@ -59,6 +69,9 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
   verification binding, evidence-required completion, worker capability
   routing, taint propagation, LIMA IT remediation blocking, and helper scope
   boundaries.
+- Mock-only approval binding verifier that validates binding-shaped payloads,
+  compares them to requested action metadata, and tracks one-time nonce
+  consumption in memory for tests.
 - Metadata-only Supervisor health reporter for mock/lab status records.
 - Unit tests for contract loading, validation, fail-closed policy, worker state,
   heartbeat, task queue, evidence behavior, cross-contract invariants, and
@@ -97,9 +110,10 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 
 ## Remaining Blockers
 
-- First-class approval-token runtime records still need concrete
-  task/action/resource binding, nonce/replay state, and one-time consumption
-  before any approval-required runtime path can expand.
+- Approval-token binding now exists as contracts, docs, and mock/in-memory
+  tests. Future runtime still needs durable atomic consumption, replay storage,
+  and evidence export posture before any side-effecting approval path can
+  expand.
 - Final Guardian expiry, replay, nonce, idempotency, action/resource binding,
   and clock-skew policy remains open beyond the Phase 1A reference-time check.
 - Promote the initial health reason taxonomy in
@@ -119,8 +133,7 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 
 ## Next Recommended Lane
 
-After this invariant checkpoint is reviewed, the next safe lane is
-approval-token runtime binding design, followed by Guardian expiry/replay policy
-and durable evidence/export posture. Phase 1B lab runtime expansion remains
-blocked until those gates are approved. Mainline update should wait for
-explicit approval.
+After this binding checkpoint is reviewed, the next safe lane is Guardian
+expiry/replay policy design, followed by durable evidence/export posture.
+Phase 1B lab runtime expansion remains blocked until those gates are approved.
+Mainline update should wait for explicit approval.

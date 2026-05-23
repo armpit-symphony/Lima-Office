@@ -17,7 +17,10 @@ Individually valid schemas can still form unsafe flows when their references do
 not agree. Phase 1A v2 adds runtime invariant checks and tests that fail closed
 when valid contract records are combined across the wrong tenant, task,
 Guardian decision, token, evidence, taint, worker, tool, memory, helper, or LIMA
-IT boundary.
+IT boundary. [Approval Token Runtime Binding](APPROVAL_TOKEN_RUNTIME_BINDING.md)
+extends that checkpoint by normalizing the approval
+request/result/token/verification/Guardian/task/tool chain into
+`approval.binding`.
 
 ## Enforced Invariants
 
@@ -31,6 +34,14 @@ IT boundary.
 - Approval-required tasks require a valid `token.verification` bound to the same
   tenant, customer context, task, approval request, approval token, and Guardian
   decision.
+- Approval-required mock task assignment also requires a valid
+  `approval.binding` bound to the same tenant, customer context, task, approval
+  chain, binding, approval result, token, token verification, Guardian decision,
+  policy snapshot, worker when applicable, and evidence refs.
+- Approval bindings cannot authorize replayed, expired, revoked, consumed,
+  mismatched, tainted, blocked-MVP, or wider-than-approved action metadata.
+- One-time binding consumption is tracked in memory by the mock verifier for
+  tests only; durable nonce/replay storage remains future work.
 - Expired, revoked, missing, mismatched, ambiguous, wrong-scope, or fail-closed
   token verifications block assignment and completion.
 - Evidence-required completion cannot proceed without evidence refs; when a
@@ -82,6 +93,11 @@ The new tests show that these combinations fail closed:
 - a denied Guardian decision used for task completion;
 - expired and revoked token verifications on approval-required tasks;
 - wrong-scope token verification on approval-required tasks;
+- one-time approval binding replay;
+- approval binding tenant, task, worker, action, tool scope, or Guardian
+  decision mismatch;
+- blocked-MVP approval binding used for live connector, external send,
+  remediation, production touch, or regulated-system action;
 - expired or stale Guardian decisions;
 - tainted privileged tool invocation;
 - tainted durable memory summary write;
@@ -99,9 +115,9 @@ The new tests show that these combinations fail closed:
 This checkpoint narrows unsafe combinations, but it does not finish all future
 runtime policy. The remaining blockers stay open:
 
-- first-class approval-token runtime record binding and one-time consumption;
-- final Guardian expiry, replay, nonce, idempotency, and action/resource
-  binding policy;
+- durable approval-token consumption storage, replay evidence, and export
+  posture beyond the in-memory mock verifier;
+- final Guardian expiry, replay, nonce, idempotency, and clock-skew policy;
 - durable evidence storage, integrity chain, audit export, retention,
   redaction, and customer exit/delete posture;
 - final RBAC, IdP, MFA, session, and device trust decisions;

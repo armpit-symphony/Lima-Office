@@ -24,6 +24,17 @@ operations, customer-system mutation, or compliance certification claims.
 - Scope: mock/in-memory invariant checks, `supervisor.health` contract/reporting,
   tests, and docs. No live runtime expansion is authorized.
 
+## Approval Binding Checkpoint
+
+- Branch: `approval-token-runtime-binding-design`
+- Base: `phase-1a-invariant-checkpoint-v2`
+- Purpose: define and test first-class approval-token runtime binding so
+  approval metadata cannot be replayed, widened, copied across tenants, used
+  after expiry, or used for the wrong action.
+- Scope: docs, schemas, examples, tests, and mock/in-memory binding verifier
+  only. No live connector, external send, real remediation, durable service, UI,
+  or production operation is authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:
@@ -83,6 +94,8 @@ health evidence only; it is not production certification.
   metadata-only evidence writer.
 - Phase 1A v2 cross-contract invariant checks and metadata-only Supervisor
   health reporter.
+- Phase 1A approval-token binding contracts, approval-chain examples, and
+  mock/in-memory one-time binding verifier.
 - Closeout archive, runtime boundaries, worker deployment blueprint, governance
   policy details, and operator console UX specification.
 - Worker deployment, governance, and console metadata contracts and examples.
@@ -118,9 +131,10 @@ closes the relevant gates:
 
 Recommended order after stabilization:
 
-1. Approval-token runtime binding design.
-2. Guardian expiry and replay policy design.
-3. Durable evidence/export posture design.
+1. Guardian expiry and replay policy design.
+2. Durable evidence/export posture design, including durable approval-token
+   consumption and replay evidence.
+3. Final RBAC/IdP/MFA/session/device trust matrix.
 4. Phase 1B lab runtime expansion only after the gates above are approved.
 
 Alternative non-runtime lanes:

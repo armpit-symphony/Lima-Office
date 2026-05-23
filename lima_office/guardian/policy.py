@@ -25,7 +25,7 @@ ALLOWED_MOCK_ACTIONS = {
     "read_only_diagnostic",
 }
 
-BAD_TOKEN_STATES = {"expired", "revoked", "used", "missing", "mismatched", "wrong_scope", "ambiguous"}
+BAD_TOKEN_STATES = {"expired", "revoked", "used", "replayed", "missing", "mismatched", "wrong_scope", "ambiguous"}
 BLOCKED_SCHEMA_ACTION_CLASSES = {
     "connector_access",
     "file_delete",

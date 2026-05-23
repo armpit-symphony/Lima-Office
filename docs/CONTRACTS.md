@@ -11,7 +11,10 @@ Phase 0 policies are pre-runtime requirements and are indexed in [docs/policies/
 - Every contract includes tenant scope through `tenant_id` and `customer_context_id`.
 - Every contract includes a common envelope: `contract_name`, `contract_version`, `schema_version`, `environment`, `correlation_id`, `causation_id`, `idempotency_key`, `producer`, `policy_version`, timestamps, Guardian linkage where applicable, and evidence linkage.
 - Automatic means no human approval is required; it does not bypass Guardian.
-- Approval-required actions need an `approval.request` and, after approval, a scoped one-time `approval.token` metadata record.
+- Approval-required actions need an `approval.request`, an approved
+  `approval.result`, a scoped one-time `approval.token`, a valid
+  `token.verification`, and a normalized `approval.binding` before any
+  mock/dry-run path can proceed.
 - Approval tokens are references and metadata only. They must never contain bearer token material, PINs, OAuth codes, API keys, signatures, or plaintext secrets.
 - Evidence is required for allow, deny, approval, failure, quarantine, revoke, incident, connector readiness, memory access, model route, tool invocation, and LIMA IT handoff events.
 - Denied, blocked, failed, expired, revoked, and quarantined states are first-class outcomes.
@@ -33,7 +36,9 @@ Version 1 schemas now use JSON Schema draft 2020-12 conditionals for the highest
 - Denied, blocked-MVP, failed, expired, revoked, quarantined, and evidence-failure states require matching reason, evidence, or failure fields.
 - Approved approval requests/results require approver identity, decision time, narrowed scope, token linkage, and evidence.
 - Blocked-MVP actions cannot issue approval tokens.
-- Token verification must fail closed for missing, expired, revoked, used, mismatched, ambiguous, or wrong-scope tokens.
+- Token verification and approval binding must fail closed for missing,
+  expired, revoked, used, replayed, mismatched, tainted, blocked-MVP,
+  ambiguous, wrong-scope, or wider-than-approved tokens and actions.
 - Evidence-required task/tool paths cannot be represented as completed when evidence failure blocks the action.
 - Tainted content must remain data-only unless a later policy review clears it; it cannot directly become tool args, durable memory, approval scope, external sends, or remediation.
 - LIMA IT remediation is non-executing in Phase 0; diagnostic handoff remains read-only.
@@ -52,6 +57,10 @@ The runtime invariant checks cover:
 - Approval-required task binding to valid token verification for the same
   tenant, customer context, task, approval request, approval token, and Guardian
   decision.
+- Approval-required mock task/tool binding to `approval.binding` for the same
+  tenant, customer context, task, approval chain, binding, approval result,
+  approval token, token verification, Guardian decision, worker where
+  applicable, policy snapshot, scope hash, and evidence refs.
 - Evidence-required task completion with evidence refs validated by the
   in-memory evidence writer when attached.
 - Worker routing that blocks quarantined, revoked, offline, wrong-tenant, stale,
@@ -349,6 +358,30 @@ monitoring.
 - Failure behavior: missing, expired, revoked, used, mismatched, ambiguous, or wrong-scope token blocks the action.
 - Backwards compatibility notes: verification result semantics cannot be weakened without a major version.
 - MVP acceptance gates: valid, expired, and revoked metadata records can be represented without bearer token material.
+
+## Approval Binding Contract v1
+
+- Schema: [approval.binding.schema.json](../contracts/v1/approval.binding.schema.json)
+- Example objects: [approval.binding.bound-valid.example.json](../contracts/examples/approval.binding.bound-valid.example.json), [approval.binding.consumed-one-time.example.json](../contracts/examples/approval.binding.consumed-one-time.example.json), [approval.binding.replay-denied.example.json](../contracts/examples/approval.binding.replay-denied.example.json), [approval.binding.scope-mismatch.example.json](../contracts/examples/approval.binding.scope-mismatch.example.json), [approval.binding.blocked-mvp.example.json](../contracts/examples/approval.binding.blocked-mvp.example.json)
+- Purpose: normalizes the approval request/result/token/verification/Guardian/task/tool/worker/evidence chain so a valid-looking token cannot be replayed, widened, copied across tenants, used after expiry, or used for the wrong action.
+- Version: `1.0.0`.
+- Producer: Guardian or supervisor in mock/dry-run verification flow.
+- Consumer: Phase 1A invariant checks, task queue mock assignment, future operator review, and evidence review.
+- Required fields: common envelope; `approval_chain_id`, `binding_id`, approval request/result/token/verification refs, Guardian decision, task/tool/worker refs, requester/approver refs, approver role, separation result, identity assurance refs, action type, tool scope, requested/approved scope hashes, policy snapshot hash, token use policy, nonce ref, status, verification result, blocked-MVP and taint state, mismatch reasons, evidence refs, `created_at`, `checked_at`, `expires_at`, `consumed_at`, and `revoked_at`.
+- Allowed states: `pending`, `bound`, `consumed`, `denied`, `expired`, `revoked`, `mismatched`, `blocked_mvp`.
+- Security requirements: only `one_time` bindings can be valid in MVP; `bounded_window` is represented but cannot authorize; blocked-MVP action types cannot issue usable tokens; requester and approver must be separated; identity assurance and evidence refs are required for bound use.
+- Approval requirements: a binding exists only after request/result/token/verification metadata agree. It never stores bearer token material or secrets.
+- Evidence requirements: request, result, token issuance, verification, consumption, replay denial, scope mismatch, expiry, revocation, taint, and blocked-MVP outcomes link evidence refs.
+- Failure behavior: missing, expired, revoked, consumed, replayed, mismatched, tainted, wider-than-approved, blocked-MVP, missing-evidence, self-approval, or wrong-scope bindings fail closed.
+- MVP acceptance gates: mock helper tests prove valid one-time use passes once; replay, expiry, revocation, tenant/task/worker/action/scope/Guardian mismatch, missing evidence, taint, live connector, external send, remediation, and blocked-MVP paths fail closed.
+
+## Approval Chain Example Bundle Contract v1
+
+- Schema: [approval.chain.schema.json](../contracts/v1/approval.chain.schema.json)
+- Example objects: [approval.chain.valid-one-time.example.json](../contracts/examples/approval.chain.valid-one-time.example.json), [approval.chain.denied-blocked-mvp.example.json](../contracts/examples/approval.chain.denied-blocked-mvp.example.json), [approval.chain.expired-token-denied.example.json](../contracts/examples/approval.chain.expired-token-denied.example.json), [approval.chain.revoked-token-denied.example.json](../contracts/examples/approval.chain.revoked-token-denied.example.json), [approval.chain.scope-mismatch-denied.example.json](../contracts/examples/approval.chain.scope-mismatch-denied.example.json), [approval.chain.tenant-mismatch-denied.example.json](../contracts/examples/approval.chain.tenant-mismatch-denied.example.json), [approval.chain.replay-denied.example.json](../contracts/examples/approval.chain.replay-denied.example.json), [approval.chain.lima-it-remediation-blocked.example.json](../contracts/examples/approval.chain.lima-it-remediation-blocked.example.json), [approval.chain.tainted-input-denied.example.json](../contracts/examples/approval.chain.tainted-input-denied.example.json)
+- Purpose: validates sanitized approval-chain scenario bundles for review and documentation. These are examples only and do not authorize runtime behavior.
+- Security requirements: valid bundles are mock/dry-run only; denied and blocked bundles must stay fail-closed.
+- MVP acceptance gates: every bundle maps to a schema and preserves blocked work for live connectors, external sends, remediation, production operation, model provider calls, OAuth wiring, browser automation, and durable services.
 
 ## Model Route Contract v1
 

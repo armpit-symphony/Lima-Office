@@ -42,6 +42,8 @@ Version 1 schemas are in [v1](v1):
 - [approval.result.schema.json](v1/approval.result.schema.json)
 - [approval.token.schema.json](v1/approval.token.schema.json)
 - [token.verification.schema.json](v1/token.verification.schema.json)
+- [approval.binding.schema.json](v1/approval.binding.schema.json)
+- [approval.chain.schema.json](v1/approval.chain.schema.json)
 - [model.route.schema.json](v1/model.route.schema.json)
 - [tool.invocation.schema.json](v1/tool.invocation.schema.json)
 - [memory.access.schema.json](v1/memory.access.schema.json)
@@ -86,6 +88,20 @@ Sanitized example objects are in [examples](examples):
 - [token.verification.valid.example.json](examples/token.verification.valid.example.json)
 - [token.verification.expired.example.json](examples/token.verification.expired.example.json)
 - [token.verification.revoked.example.json](examples/token.verification.revoked.example.json)
+- [approval.binding.bound-valid.example.json](examples/approval.binding.bound-valid.example.json)
+- [approval.binding.consumed-one-time.example.json](examples/approval.binding.consumed-one-time.example.json)
+- [approval.binding.replay-denied.example.json](examples/approval.binding.replay-denied.example.json)
+- [approval.binding.scope-mismatch.example.json](examples/approval.binding.scope-mismatch.example.json)
+- [approval.binding.blocked-mvp.example.json](examples/approval.binding.blocked-mvp.example.json)
+- [approval.chain.valid-one-time.example.json](examples/approval.chain.valid-one-time.example.json)
+- [approval.chain.denied-blocked-mvp.example.json](examples/approval.chain.denied-blocked-mvp.example.json)
+- [approval.chain.expired-token-denied.example.json](examples/approval.chain.expired-token-denied.example.json)
+- [approval.chain.revoked-token-denied.example.json](examples/approval.chain.revoked-token-denied.example.json)
+- [approval.chain.scope-mismatch-denied.example.json](examples/approval.chain.scope-mismatch-denied.example.json)
+- [approval.chain.tenant-mismatch-denied.example.json](examples/approval.chain.tenant-mismatch-denied.example.json)
+- [approval.chain.replay-denied.example.json](examples/approval.chain.replay-denied.example.json)
+- [approval.chain.lima-it-remediation-blocked.example.json](examples/approval.chain.lima-it-remediation-blocked.example.json)
+- [approval.chain.tainted-input-denied.example.json](examples/approval.chain.tainted-input-denied.example.json)
 - [model.route.example.json](examples/model.route.example.json)
 - [tool.invocation.example.json](examples/tool.invocation.example.json)
 - [tool.invocation.tainted-input-denied.example.json](examples/tool.invocation.tainted-input-denied.example.json)
@@ -177,7 +193,12 @@ Most action-bearing schemas also require:
 
 The v1 schemas use JSON Schema draft 2020-12 conditionals to block unsafe state combinations:
 
-- `approval.request`, `approval.result`, `approval.token`, and `token.verification` bind approval status, approver identity, token state, token verification, denial, expiry, revoke, and blocked-MVP outcomes.
+- `approval.request`, `approval.result`, `approval.token`, `token.verification`,
+  and `approval.binding` bind approval status, approver identity, token state,
+  token verification, one-time nonce use, denial, expiry, revoke, replay,
+  scope mismatch, and blocked-MVP outcomes.
+- `approval.chain` examples summarize valid and denied approval-chain bundles
+  for review. They do not authorize runtime behavior.
 - `guardian.decision`, `task.execution`, `tool.invocation`, `memory.access`, and `model.route` bind policy result, approval state, taint refs, evidence failure, terminal states, and denial/failure reasons.
 - `worker.lifecycle`, `worker.heartbeat`, and `worker.deployment` bind identity failure, quarantine, revoke, evidence-writer failure, deployment refs, update/rollback posture, and healthy states.
 - `supervisor.health` summarizes mock/lab worker, task, Guardian, and evidence
@@ -202,7 +223,9 @@ See [Schema Hardening Notes](../docs/SCHEMA_HARDENING_NOTES.md) for the reasonin
 - Blocked-MVP actions produce denial metadata, not approval tokens.
 - Software install/update, remediation execution, production server touch, and regulated-system use remain blocked-MVP outcomes in v1 approval request/result/token records.
 - Approval tokens are never bearer tokens and never broaden the approved scope.
-- Token verification fails closed for missing, expired, revoked, used, mismatched, ambiguous, or wrong-scope tokens.
+- Token verification and approval binding fail closed for missing, expired,
+  revoked, used, replayed, mismatched, ambiguous, wrong-scope, tainted, or
+  blocked-MVP tokens and actions.
 - Tainted content cannot directly authorize tool use, durable memory writes, external sends, approval scope, or remediation.
 - Evidence-required privileged actions cannot proceed when evidence cannot be written.
 - Cross-contract invariant checks fail closed when individually valid records

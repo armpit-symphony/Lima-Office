@@ -10,7 +10,10 @@ Define the Phase 0 approval lifecycle for privileged and high-risk LIMA Office a
 - Version: `policy-phase0-v1`
 - Status: Draft scaffold.
 - Owner role: Security reviewer.
-- Applies to contracts: `guardian.decision`, `approval.request`, `approval.token`, `task.execution`, `tool.invocation`, `lima_it.handoff`, `incident.ops`, `evidence.artifact`.
+- Applies to contracts: `guardian.decision`, `approval.request`,
+  `approval.result`, `approval.token`, `token.verification`,
+  `approval.binding`, `approval.chain`, `task.execution`, `tool.invocation`,
+  `lima_it.handoff`, `incident.ops`, `evidence.artifact`.
 - Evidence artifact types: `guardian_decision`, `approval_request`, `approval_token`, `denial`, `incident`.
 - Fail-closed outcome: block action, deny token use, revoke related tokens, record evidence or evidence-failure incident.
 - Runbook: [Approval Token Lifecycle Runbook](../runbooks/approval-token-lifecycle.md).
@@ -75,6 +78,23 @@ Approval tokens are metadata records only. They must never contain bearer token 
 
 Approval tokens are non-executing Phase 0 records. They do not unlock live external sends, live connector writes, customer-system mutation, remediation execution, or production server touch during Phase 0.
 
+## Runtime Binding Record
+
+Before any approval-required mock/dry-run path can proceed, the supervisor or
+Guardian must produce and validate an `approval.binding` record. The binding
+ties together the approval request, result, token, token verification, Guardian
+decision, task, tool invocation where applicable, worker where applicable,
+requester, approver, action type, tool scope, nonce ref, policy snapshot,
+approved scope hash, and evidence refs.
+
+The binding is not a bearer capability. It is a fail-closed comparison record.
+If any requested action metadata differs from the binding, the action is
+denied and evidence must be recorded.
+
+For Phase 1A, the mock verifier tracks one-time nonce consumption in memory for
+tests only. Durable atomic consumption, replay tables, and exportable replay
+evidence remain future runtime work.
+
 ## Token TTL
 
 Default Phase 0 placeholder TTL: policy decision needed.
@@ -104,13 +124,17 @@ The token cannot authorize a broader action than the original request. Any misma
 
 ## One-Time Use Vs Reusable Decision
 
-Phase 0 approval tokens are single-use.
+Phase 0 and Phase 1A approval tokens are single-use.
 
 Guardian decisions may be reused only as evidence references, not as execution authorization. If the same privileged action is attempted again, a new scoped approval request and token are required unless a future policy explicitly defines a bounded reusable approval class.
 
 Reusable approvals are deferred.
 
-Token use must be atomic in future runtime: validation and consumption happen in one guarded transition. If consumption cannot be recorded with evidence, the token is not considered safely consumed and the action must fail closed.
+Token use must be atomic in future runtime: validation and consumption happen
+in one guarded transition. If consumption cannot be recorded with evidence, the
+token is not considered safely consumed and the action must fail closed. The
+current branch proves the rule with an in-memory mock verifier only; it does
+not create durable replay protection.
 
 ## Token Revocation
 
@@ -180,7 +204,11 @@ Replay, reuse, or mismatch must:
 - Record evidence.
 - Create an incident when suspicious or repeated.
 
-Scope mismatch includes tenant, task, action, resource refs, capability lease, worker/helper identity, approval request, Guardian decision, policy version, or data classification mismatch.
+Scope mismatch includes tenant, customer context, task, action, resource refs,
+allowed operations, prohibited operations, capability lease, worker/helper
+identity, approval request, approval result, approval token, token
+verification, Guardian decision, policy version, policy snapshot, scope hash,
+evidence refs, or data classification mismatch.
 
 ## Partial Approval Behavior
 
@@ -252,3 +280,8 @@ Privileged action must fail closed if the token is:
 - LIMA IT remediation cannot proceed beyond draft/request metadata without approval and evidence; execution remains blocked in Phase 0.
 - Expired, revoked, mismatched, or missing tokens block action execution.
 - Approval lifecycle links to `guardian.decision`, `approval.request`, `approval.token`, action contract, and `evidence.artifact`.
+- Approval-required mock runtime paths require `approval.binding`; token
+  verification alone is not sufficient.
+- Replay, scope widening, tenant mismatch, task mismatch, worker mismatch,
+  action mismatch, Guardian mismatch, blocked-MVP action, tainted chain, and
+  missing evidence fail closed in tests.

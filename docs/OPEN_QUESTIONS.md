@@ -48,9 +48,10 @@ documents the reachable v2 checkpoint that supersedes it.
 
 ## Runtime
 
-- Approval-token runtime record binding: how should runtime bind approval tokens
-  to exact task IDs, action classes, resource refs, policy snapshots, tenant,
-  customer context, fresh operator intent, expiry, and one-time use?
+- Durable approval-token consumption: `approval.binding` now defines and tests
+  the mock/in-memory binding model, but what durable atomic consume mechanism,
+  replay store, concurrency rule, evidence export, and incident path should be
+  approved before any side-effecting approval path exists?
 - Non-test Guardian expiry policy: what decision expiry, replay rejection,
   clock-skew tolerance, and reclassification behavior apply outside tests?
 - Health reason taxonomy: which reason code set should become normative for
@@ -145,6 +146,18 @@ Resolved in [Schema Hardening Notes](SCHEMA_HARDENING_NOTES.md) and [contracts/v
 - `approval.result` is a separate v1 schema.
 - `helper.scope` is a separate v1 schema.
 - v1 schemas include conditionals for approval token lifecycle states, blocked-MVP denial, LIMA IT remediation constraints, evidence-required completion, evidence failure, token verification, and taint refs.
+
+Resolved in [Approval Token Runtime Binding](APPROVAL_TOKEN_RUNTIME_BINDING.md)
+and `approval.binding` / `approval.chain`:
+
+- Approval request/result/token/verification/Guardian/task/tool/worker/evidence
+  binding is represented as a first-class `approval.binding` record.
+- Valid one-time binding, consumed binding, replay denial, scope mismatch,
+  blocked-MVP, tenant mismatch, expired token, revoked token, LIMA IT
+  remediation block, and tainted input denial are covered by schemas, examples,
+  and mock tests.
+- Approval-required mock task enqueueing requires a valid binding in addition
+  to token verification.
 
 Resolved in [Phase 0 Validation](VALIDATION.md) and [Phase 0 validation workflow](../.github/workflows/phase0-validation.yml):
 

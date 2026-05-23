@@ -27,7 +27,8 @@ MVP capabilities are documentation-first until explicitly approved:
 - Worker capability manifest.
 - Task assignment and status reporting.
 - Guardian risk tiering.
-- Manual approval tokens for privileged tasks.
+- Manual approval tokens plus mock approval binding for privileged-task
+  metadata.
 - Evidence capture.
 - Quarantine and revoke states.
 - Basic operator dashboard specification.
@@ -71,6 +72,7 @@ No remediation runtime, endpoint control, production server change, or network c
 - [Roadmap](docs/ROADMAP.md)
 - [Contracts](docs/CONTRACTS.md)
 - [Cross-contract invariants](docs/CROSS_CONTRACT_INVARIANTS.md)
+- [Approval token runtime binding](docs/APPROVAL_TOKEN_RUNTIME_BINDING.md)
 - [Security model](docs/SECURITY_MODEL.md)
 - [Threat model](docs/THREAT_MODEL.md)
 - [Worker node spec](docs/WORKER_NODE_SPEC.md)

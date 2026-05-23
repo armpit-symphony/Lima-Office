@@ -1,0 +1,47 @@
+{
+  "contract_name": "approval.chain",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "dry_run",
+  "correlation_id": "corr-email-tenant-mismatch-001",
+  "causation_id": "tv-email-tenant-mismatch-001",
+  "idempotency_key": "idem-chain-tenant-mismatch-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T21:44:15Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "approval_chain_id": "chain-email-tenant-mismatch-001",
+  "chain_status": "tenant_mismatch_denied",
+  "expected_runtime_result": "deny_fail_closed",
+  "approval_binding_ref": "bind-email-tenant-mismatch-001",
+  "records": [
+    {
+      "contract_name": "task.execution",
+      "record_id": "task-email-draft-001",
+      "schema_ref": "task.execution",
+      "summary": "Requested action tenant differs from the approval binding tenant."
+    },
+    {
+      "contract_name": "token.verification",
+      "record_id": "tv-email-tenant-mismatch-001",
+      "schema_ref": "token.verification",
+      "summary": "Verification reports mismatch and fails closed."
+    },
+    {
+      "contract_name": "approval.binding",
+      "record_id": "bind-email-tenant-mismatch-001",
+      "schema_ref": "approval.binding",
+      "summary": "Binding mismatch reasons include tenant mismatch."
+    }
+  ],
+  "blocked_work": [
+    "external_send"
+  ],
+  "evidence_refs": [
+    "ev-token-tenant-mismatch-denied-001"
+  ],
+  "created_at": "2026-05-18T21:44:15Z"
+}

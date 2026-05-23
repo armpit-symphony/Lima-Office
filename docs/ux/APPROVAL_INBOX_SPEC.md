@@ -64,11 +64,13 @@ external sends, durable memory writes, connector actions, or remediation.
 Approval tokens are metadata refs only. The card shows:
 
 - Token ID when issued.
+- Approval chain ID and binding ID when available.
 - Scope hash.
 - Max uses.
 - Expiry.
 - Revocation state.
 - Token verification result where relevant.
+- Binding mismatch reasons, nonce/replay status, and evidence refs.
 
 The inbox never displays bearer token material.
 
@@ -97,6 +99,9 @@ Approve and deny are spec-only controls. Future implementation must:
 - Re-check Guardian decision, policy refs, evidence, expiry, and taint state.
 - Record `approval.result`.
 - Issue token metadata only when allowed by policy.
+- Require a matching `approval.binding` before any mock/dry-run
+  approval-required path can proceed; display-only approval is not execution
+  authorization.
 
 ## Fail-Closed UX
 

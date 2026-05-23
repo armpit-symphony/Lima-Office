@@ -140,9 +140,9 @@ Approval is mandatory for:
 - Payment, legal, or regulated systems.
 - Sensitive HR/finance/legal/medical access.
 
-Approval-token lifecycle policy is defined in [Approval Token Lifecycle](policies/approval-token-lifecycle.md). Approval tokens are metadata-only, single-use, scoped, expiring, revocable, and non-executing in Phase 0.
+Approval-token lifecycle policy is defined in [Approval Token Lifecycle](policies/approval-token-lifecycle.md), with binding details in [Approval Token Runtime Binding](APPROVAL_TOKEN_RUNTIME_BINDING.md). Approval tokens are metadata-only, single-use, scoped, expiring, revocable, and non-executing in Phase 0/Phase 1A.
 
-Approval result and token verification records are separate controls. `approval.result` records the human decision outcome; `token.verification` records a point-in-time fail-closed check before an approval-required path can proceed.
+Approval result, token verification, and binding records are separate controls. `approval.result` records the human decision outcome; `token.verification` records a point-in-time fail-closed check; `approval.binding` proves the request/result/token/verification/Guardian/task/tool/worker/evidence chain matches before an approval-required mock path can proceed. Token verification alone is not enough.
 
 The [Approval Inbox Spec](ux/APPROVAL_INBOX_SPEC.md) requires the console to
 show Guardian decision, policy refs, evidence refs, taint status, scope hash,
@@ -230,7 +230,7 @@ The Phase 0 field-level schemas in [contracts/v1](../contracts/v1) define the mi
 - Taint reference: [taint.ref.schema.json](../contracts/v1/taint.ref.schema.json) propagates prompt-injection and untrusted-content state across model, task, tool, memory, approval, and evidence records.
 - Worker identity: [worker.lifecycle.schema.json](../contracts/v1/worker.lifecycle.schema.json), [worker.heartbeat.schema.json](../contracts/v1/worker.heartbeat.schema.json), and [worker.deployment.schema.json](../contracts/v1/worker.deployment.schema.json) require device identity refs, channel identity refs, deployment refs, capability lease/hash posture, heartbeat sequence, supervisor receive time, evidence writer state, quarantine, revoke, update/rollback, and deployment metadata.
 - Model routing: [model.route.schema.json](../contracts/v1/model.route.schema.json) records provider class, local/cloud boundary, egress posture, prompt/response refs, redaction, prompt-injection handling, Guardian decision, and evidence.
-- Tool invocation: [tool.invocation.schema.json](../contracts/v1/tool.invocation.schema.json) requires tool pack/version, sandbox profile, side-effect class, file/network/connector scope, dry-run posture, approval token linkage where needed, and evidence.
+- Tool invocation: [tool.invocation.schema.json](../contracts/v1/tool.invocation.schema.json) requires tool pack/version, sandbox profile, side-effect class, file/network/connector scope, dry-run posture, approval token/binding linkage where needed, and evidence.
 - Memory access: [memory.access.schema.json](../contracts/v1/memory.access.schema.json) requires tenant namespace, purpose, retention class, delete/export posture, prompt-injection scan state, and `cross_tenant_access: false`.
 - Connector trust: [connector.trust.schema.json](../contracts/v1/connector.trust.schema.json) is mock/readiness-only in Phase 0 with `mock_only: true`, `live_access_enabled: false`, `secret_material_present: false`, consent/scope review posture, and revocation state.
 - Evidence artifact: [evidence.artifact.schema.json](../contracts/v1/evidence.artifact.schema.json) defines redaction, retention, payload/integrity refs, export/delete posture, access-control refs, and evidence chain metadata.

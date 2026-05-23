@@ -77,7 +77,8 @@ evidence path, failure behavior, runbook, and tests must exist and pass.
 
 Do not expand runtime behavior until these gates are closed:
 
-- First-class approval-token runtime record binding and one-time consumption.
+- Durable approval-token consumption, replay evidence/export posture, and
+  concurrency behavior beyond the mock/in-memory verifier.
 - Final non-test Guardian decision expiry and replay policy.
 - Final Supervisor health reason thresholds, owner/escalation rules, and
   operations posture.

@@ -1,0 +1,48 @@
+{
+  "contract_name": "approval.chain",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "dry_run",
+  "correlation_id": "corr-tainted-tool-deny-001",
+  "causation_id": "taint-email-injection-001",
+  "idempotency_key": "idem-chain-tainted-input-denied-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T21:38:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "approval_chain_id": "chain-tainted-input-denied-001",
+  "chain_status": "tainted_input_denied",
+  "expected_runtime_result": "deny_fail_closed",
+  "approval_binding_ref": "bind-tainted-input-denied-001",
+  "records": [
+    {
+      "contract_name": "taint.ref",
+      "record_id": "taint-email-injection-001",
+      "schema_ref": "taint.ref",
+      "summary": "Untrusted content is tracked as tainted input."
+    },
+    {
+      "contract_name": "tool.invocation",
+      "record_id": "tool-tainted-send-deny-001",
+      "schema_ref": "tool.invocation",
+      "summary": "Privileged tool use from tainted input is denied."
+    },
+    {
+      "contract_name": "approval.binding",
+      "record_id": "bind-tainted-input-denied-001",
+      "schema_ref": "approval.binding",
+      "summary": "Binding cannot authorize privileged action from tainted input."
+    }
+  ],
+  "blocked_work": [
+    "external_send",
+    "live_connector"
+  ],
+  "evidence_refs": [
+    "ev-tainted-tool-deny-001"
+  ],
+  "created_at": "2026-05-18T21:38:00Z"
+}

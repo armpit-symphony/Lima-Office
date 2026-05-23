@@ -212,6 +212,111 @@
         "null"
       ]
     },
+    "approval_chain_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "binding_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "token_use_policy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "one_time",
+        "bounded_window",
+        "blocked_mvp",
+        null
+      ]
+    },
+    "nonce_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Opaque replay-protection reference. Do not store nonce secret material."
+    },
+    "bound_tenant_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_task_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_action_type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_tool_scope": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "resource_refs",
+        "allowed_operations",
+        "prohibited_operations"
+      ],
+      "properties": {
+        "resource_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "allowed_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prohibited_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "bound_worker_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_requester_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_approver_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "blocked_mvp_action": {
       "type": "boolean"
     },

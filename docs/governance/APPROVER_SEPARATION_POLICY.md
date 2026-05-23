@@ -94,6 +94,9 @@ payloads, or bearer token material.
 ## MVP Acceptance Gates
 
 - Approval records include distinct requester and approver refs where required.
+- `approval.binding` records include requester/approver refs, approver role,
+  separation check result, identity assurance refs, and evidence refs before
+  any approval-required mock path can proceed.
 - Self-approval and conflicted approval records fail closed.
 - LIMA IT remediation execution remains blocked.
 - All approval outcomes create evidence.

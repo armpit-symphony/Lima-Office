@@ -35,6 +35,17 @@ BLOCKED_TOOL_OPERATIONS = {
     "unrestricted_filesystem",
     "unrestricted_network",
 }
+BLOCKED_MVP_APPROVAL_ACTIONS = {
+    "external_message_send",
+    "external_send",
+    "connector_access",
+    "live_connector_access",
+    "software_install_update",
+    "remediation",
+    "lima_it_remediation",
+    "production_server_touch",
+    "regulated_system_use",
+}
 
 
 def assert_guardian_decision_authorizes_task(
@@ -67,6 +78,7 @@ def assert_guardian_decision_authorizes_task(
 def assert_token_verification_authorizes_task(
     task: dict[str, Any],
     token_verification: dict[str, Any] | None,
+    approval_binding: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
     """Require a valid token verification when the task asks for approval."""
 
@@ -89,7 +101,81 @@ def assert_token_verification_authorizes_task(
         raise PolicyDenyError("approval token is not active")
     if token_verification.get("can_proceed") is not True or token_verification.get("fail_closed") is not False:
         raise PolicyDenyError("token verification does not permit proceeding")
+    if approval_binding is not None:
+        assert_approval_binding_authorizes_action(
+            approval_binding,
+            {
+                "tenant_id": task.get("tenant_id"),
+                "customer_context_id": task.get("customer_context_id"),
+                "task_id": task.get("task_id"),
+                "worker_id": task.get("assigned_worker_id"),
+                "guardian_decision_id": task.get("guardian_decision_id"),
+                "approval_request_id": task.get("approval_request_id"),
+                "approval_result_id": task.get("approval_result_id"),
+                "approval_token_id": task.get("approval_token_id"),
+                "token_verification_id": task.get("token_verification_id"),
+                "evidence_required": True,
+                "evidence_refs": task.get("evidence_artifact_ids"),
+            },
+            reference_time=None,
+            consume_nonce=False,
+        )
     return token_verification
+
+
+def assert_approval_binding_authorizes_action(
+    approval_binding: dict[str, Any],
+    requested_action: dict[str, Any],
+    *,
+    reference_time: str | None = DEFAULT_REFERENCE_TIME,
+    consumed_nonces: set[str] | None = None,
+    consume_nonce: bool = False,
+) -> dict[str, Any]:
+    """Require one exact, fresh, non-replayed binding for an approval-gated mock action."""
+
+    if approval_binding.get("contract_name") != "approval.binding":
+        raise PolicyDenyError("approval binding record is required")
+    if approval_binding.get("status") != "bound":
+        raise PolicyDenyError("approval binding is not active")
+    if approval_binding.get("verification_result") != "valid":
+        raise PolicyDenyError("approval binding verification is not valid")
+    if approval_binding.get("token_use_policy") != "one_time":
+        raise PolicyDenyError("MVP approval binding requires one-time token use")
+    if approval_binding.get("blocked_mvp_action") is True:
+        raise PolicyDenyError("blocked-MVP approval binding cannot authorize action")
+    if approval_binding.get("action_type") in BLOCKED_MVP_APPROVAL_ACTIONS:
+        raise PolicyDenyError("approval binding action type is blocked in MVP")
+    if approval_binding.get("approval_token_id") is None or approval_binding.get("token_verification_id") is None:
+        raise PolicyDenyError("approval binding requires token and verification refs")
+    if approval_binding.get("consumed_at") is not None:
+        raise PolicyDenyError("approval binding has already been consumed")
+    if approval_binding.get("revoked_at") is not None:
+        raise PolicyDenyError("approval binding has been revoked")
+    if approval_binding.get("separation_check_result") != "pass":
+        raise PolicyDenyError("approval binding lacks approver separation")
+    if approval_binding.get("requester_ref") == approval_binding.get("approver_ref"):
+        raise PolicyDenyError("approval binding requester and approver must be separated")
+    if not approval_binding.get("identity_assurance_refs"):
+        raise PolicyDenyError("approval binding lacks identity assurance refs")
+    if approval_binding.get("input_taint_status") in TAINTED_STATUSES or approval_binding.get("taint_ref_ids"):
+        raise PolicyDenyError("tainted approval chain cannot authorize privileged action")
+    if approval_binding.get("evidence_required") is not True or not approval_binding.get("evidence_refs"):
+        raise EvidenceRequiredError("approval binding requires evidence refs")
+
+    _assert_binding_times_fresh(approval_binding, requested_action, reference_time=reference_time)
+    _assert_binding_matches_action(approval_binding, requested_action)
+    _assert_binding_scope_allows_action(approval_binding, requested_action)
+    _assert_binding_evidence_present(approval_binding, requested_action)
+
+    nonce_ref = approval_binding.get("nonce_ref")
+    if not isinstance(nonce_ref, str) or not nonce_ref:
+        raise PolicyDenyError("approval binding requires a nonce ref")
+    if consumed_nonces is not None:
+        if nonce_ref in consumed_nonces:
+            raise PolicyDenyError("approval binding nonce has already been consumed")
+        if consume_nonce:
+            consumed_nonces.add(nonce_ref)
+    return approval_binding
 
 
 def assert_task_completion_allowed(
@@ -118,6 +204,7 @@ def assert_tool_invocation_consistent(
     task: dict[str, Any] | None = None,
     worker: Any | None = None,
     approval_result: dict[str, Any] | None = None,
+    approval_binding: dict[str, Any] | None = None,
 ) -> None:
     """Validate a tool invocation record against task, worker, taint, and approval state."""
 
@@ -134,6 +221,13 @@ def assert_tool_invocation_consistent(
     if approval_result is not None and _approval_result_blocks_runtime(approval_result):
         if tool_invocation.get("status") in RUNNING_STATUSES or tool_invocation.get("approval_token_id"):
             raise PolicyDenyError("blocked-MVP approval result cannot authorize tool invocation")
+    if approval_binding is not None:
+        assert_approval_binding_authorizes_action(
+            approval_binding,
+            _requested_action_from_tool(tool_invocation, task=task, worker=worker),
+            reference_time=None,
+            consume_nonce=False,
+        )
     tainted = tool_invocation.get("input_taint_status") in TAINTED_STATUSES or bool(tool_invocation.get("taint_ref_ids"))
     requested_tool = tool_invocation.get("requested_tool") if isinstance(tool_invocation.get("requested_tool"), dict) else {}
     side_effect_class = tool_invocation.get("side_effect_class")
@@ -271,6 +365,122 @@ def _assert_guardian_decision_fresh(
         age_seconds = (reference - _parse_datetime(created_at)).total_seconds()
         if age_seconds > MAX_GUARDIAN_DECISION_AGE_SECONDS:
             raise PolicyDenyError("stale Guardian decision cannot authorize action")
+
+
+def _assert_binding_times_fresh(
+    approval_binding: dict[str, Any],
+    requested_action: dict[str, Any],
+    *,
+    reference_time: str | None,
+) -> None:
+    if reference_time is not None:
+        reference = _parse_datetime(reference_time)
+        expires_at = approval_binding.get("expires_at")
+        if not isinstance(expires_at, str):
+            raise PolicyDenyError("approval binding without expiry cannot authorize action")
+        if _parse_datetime(expires_at) <= reference:
+            raise PolicyDenyError("expired approval binding cannot authorize action")
+
+    checked_at = approval_binding.get("checked_at")
+    expires_at = approval_binding.get("expires_at")
+    if isinstance(checked_at, str) and isinstance(expires_at, str):
+        if _parse_datetime(checked_at) > _parse_datetime(expires_at):
+            raise PolicyDenyError("approval binding was checked after expiry")
+
+    guardian_decision = requested_action.get("guardian_decision")
+    if isinstance(guardian_decision, dict):
+        _assert_guardian_decision_fresh(guardian_decision, reference_time=reference_time)
+
+
+def _assert_binding_matches_action(approval_binding: dict[str, Any], requested_action: dict[str, Any]) -> None:
+    fields = (
+        "tenant_id",
+        "customer_context_id",
+        "task_id",
+        "tool_invocation_id",
+        "worker_id",
+        "guardian_decision_id",
+        "approval_request_id",
+        "approval_result_id",
+        "approval_token_id",
+        "token_verification_id",
+        "binding_id",
+        "approval_chain_id",
+        "policy_version",
+        "policy_snapshot_hash",
+        "approved_scope_hash",
+    )
+    for field in fields:
+        value = requested_action.get(field)
+        if value is not None and approval_binding.get(field) != value:
+            raise PolicyDenyError(f"approval binding {field} mismatch")
+    action_type = requested_action.get("action_type")
+    if action_type in BLOCKED_MVP_APPROVAL_ACTIONS:
+        raise PolicyDenyError("requested action is blocked in MVP")
+    if action_type is not None and approval_binding.get("action_type") != action_type:
+        raise PolicyDenyError("approval binding action_type mismatch")
+
+
+def _assert_binding_scope_allows_action(approval_binding: dict[str, Any], requested_action: dict[str, Any]) -> None:
+    requested_scope = requested_action.get("tool_scope")
+    if requested_scope is None:
+        return
+    if not isinstance(requested_scope, dict):
+        raise PolicyDenyError("requested tool scope must be an object")
+    binding_scope = approval_binding.get("tool_scope")
+    if not isinstance(binding_scope, dict):
+        raise PolicyDenyError("approval binding has no tool scope")
+    bound_resources = set(binding_scope.get("resource_refs", []))
+    requested_resources = set(requested_scope.get("resource_refs", []))
+    if not requested_resources or not requested_resources <= bound_resources:
+        raise PolicyDenyError("approval binding resource scope mismatch")
+    bound_allowed = set(binding_scope.get("allowed_operations", []))
+    requested_allowed = set(requested_scope.get("allowed_operations", []))
+    if not requested_allowed or not requested_allowed <= bound_allowed:
+        raise PolicyDenyError("approval binding operation scope mismatch")
+    bound_prohibited = set(binding_scope.get("prohibited_operations", []))
+    if requested_allowed & bound_prohibited:
+        raise PolicyDenyError("approval binding requested a prohibited operation")
+    if requested_allowed & BLOCKED_TOOL_OPERATIONS:
+        raise PolicyDenyError("approval binding cannot authorize blocked tool operation")
+
+
+def _assert_binding_evidence_present(approval_binding: dict[str, Any], requested_action: dict[str, Any]) -> None:
+    if requested_action.get("evidence_required") is False:
+        raise EvidenceRequiredError("approval-bound action must require evidence")
+    requested_refs = requested_action.get("evidence_refs")
+    if requested_refs is not None and not requested_refs:
+        raise EvidenceRequiredError("approval-bound action requires evidence refs")
+    binding_refs = set(approval_binding.get("evidence_refs", []))
+    if requested_refs is not None and not set(requested_refs) <= binding_refs:
+        raise EvidenceRequiredError("requested evidence refs are not bound to approval")
+
+
+def _requested_action_from_tool(
+    tool_invocation: dict[str, Any],
+    *,
+    task: dict[str, Any] | None,
+    worker: Any | None,
+) -> dict[str, Any]:
+    return {
+        "tenant_id": tool_invocation.get("tenant_id"),
+        "customer_context_id": tool_invocation.get("customer_context_id"),
+        "task_id": tool_invocation.get("task_id"),
+        "tool_invocation_id": tool_invocation.get("tool_invocation_id"),
+        "worker_id": getattr(worker, "worker_id", None) if worker is not None else tool_invocation.get("bound_worker_id"),
+        "guardian_decision_id": tool_invocation.get("guardian_decision_id"),
+        "approval_chain_id": tool_invocation.get("approval_chain_id"),
+        "binding_id": tool_invocation.get("binding_id"),
+        "approval_result_id": tool_invocation.get("approval_result_id"),
+        "approval_token_id": tool_invocation.get("approval_token_id"),
+        "token_verification_id": tool_invocation.get("token_verification_id"),
+        "policy_version": tool_invocation.get("policy_version"),
+        "action_type": tool_invocation.get("bound_action_type"),
+        "tool_scope": tool_invocation.get("tool_scope"),
+        "evidence_required": tool_invocation.get("evidence_required"),
+        "evidence_refs": tool_invocation.get("evidence_artifact_ids"),
+        "assigned_worker_id": task.get("assigned_worker_id") if task is not None else None,
+    }
 
 
 def _approval_result_blocks_runtime(approval_result: dict[str, Any]) -> bool:

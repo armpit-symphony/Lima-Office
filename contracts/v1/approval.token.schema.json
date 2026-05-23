@@ -95,6 +95,24 @@
       "type": "string",
       "minLength": 1
     },
+    "approval_chain_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "binding_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_result_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "guardian_decision_id": {
       "type": "string",
       "minLength": 1
@@ -130,6 +148,74 @@
         "minLength": 1
       },
       "uniqueItems": true
+    },
+    "bound_tenant_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_action_type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_tool_scope": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "resource_refs",
+        "allowed_operations",
+        "prohibited_operations"
+      ],
+      "properties": {
+        "resource_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "allowed_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prohibited_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "bound_worker_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_requester_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_approver_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "approver_operator_id": {
       "type": "string",
@@ -269,6 +355,25 @@
       "type": "boolean",
       "const": true
     },
+    "token_use_policy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "one_time",
+        "bounded_window",
+        "blocked_mvp",
+        null
+      ]
+    },
+    "nonce_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Opaque replay-protection reference. Do not store nonce secret material."
+    },
     "token_digest_ref": {
       "type": "string",
       "minLength": 1,
@@ -308,6 +413,13 @@
       "uniqueItems": true
     },
     "used_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "consumed_at": {
       "type": [
         "string",
         "null"

@@ -1,0 +1,48 @@
+{
+  "contract_name": "approval.chain",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-prod-touch-deny-001",
+  "causation_id": "task-prod-touch-001",
+  "idempotency_key": "idem-chain-denied-blocked-mvp-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T21:44:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "approval_chain_id": "chain-prod-touch-blocked-001",
+  "chain_status": "denied_blocked_mvp",
+  "expected_runtime_result": "blocked_mvp",
+  "approval_binding_ref": "bind-prod-touch-blocked-001",
+  "records": [
+    {
+      "contract_name": "guardian.decision",
+      "record_id": "gd-prod-touch-block-mvp-001",
+      "schema_ref": "guardian.decision",
+      "summary": "Guardian denies production touch before any approval token can exist."
+    },
+    {
+      "contract_name": "approval.result",
+      "record_id": "apres-prod-touch-denied-001",
+      "schema_ref": "approval.result",
+      "summary": "Blocked-MVP result has no usable approval token."
+    },
+    {
+      "contract_name": "approval.binding",
+      "record_id": "bind-prod-touch-blocked-001",
+      "schema_ref": "approval.binding",
+      "summary": "Binding is blocked_mvp and cannot authorize runtime action."
+    }
+  ],
+  "blocked_work": [
+    "production_operation",
+    "real_remediation"
+  ],
+  "evidence_refs": [
+    "ev-prod-touch-denied-001"
+  ],
+  "created_at": "2026-05-18T21:44:00Z"
+}

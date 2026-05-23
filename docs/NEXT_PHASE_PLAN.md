@@ -16,14 +16,20 @@ cross-contract invariant checkpoint. The reachable replacement is
 
 Recommended order:
 
-1. Approval-token runtime binding design.
-2. Guardian expiry and replay policy design.
-3. Durable evidence/export posture design.
+1. Guardian expiry and replay policy design.
+2. Durable evidence/export posture design.
+3. Final RBAC/IdP/MFA/session/device trust matrix.
 4. Phase 1B lab runtime expansion only after the gates above are approved.
 
 Alternative non-runtime lanes can proceed when they do not obscure the blockers:
 model-routing defaults, final IdP/MFA/RBAC matrix, health taxonomy refinement,
 and worker attestation/update trust-root details.
+
+Approval-token runtime binding design is now represented in
+[Approval Token Runtime Binding](APPROVAL_TOKEN_RUNTIME_BINDING.md) with
+`approval.binding` and `approval.chain` contracts plus mock/in-memory tests.
+Future side-effecting runtime still needs durable atomic token consumption and
+replay evidence before expansion.
 
 ## Option A: Worker Deployment Blueprint
 
@@ -172,7 +178,9 @@ resolved and approved.
 
 Prerequisites:
 
-- Approval-token runtime record binding is defined and tested.
+- Approval-token runtime record binding is defined and tested for mock/in-memory
+  Phase 1A flows; durable atomic consumption and replay evidence posture are
+  explicitly deferred.
 - Non-test Guardian expiry and replay policy is defined.
 - Health reason taxonomy is defined.
 - Durable evidence/export posture is defined.

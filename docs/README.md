@@ -11,6 +11,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Roadmap](ROADMAP.md)
 - [Contracts](CONTRACTS.md)
 - [Cross-contract invariants](CROSS_CONTRACT_INVARIANTS.md)
+- [Approval token runtime binding](APPROVAL_TOKEN_RUNTIME_BINDING.md)
 - [Security model](SECURITY_MODEL.md)
 - [Threat model](THREAT_MODEL.md)
 - [Worker node spec](WORKER_NODE_SPEC.md)

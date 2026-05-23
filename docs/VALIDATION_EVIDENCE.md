@@ -5,14 +5,15 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `phase-1a-invariant-checkpoint-v2` on Windows with Python
-3.12.10.
+Latest captured run: `approval-token-runtime-binding-design` on Windows with
+Python 3.12.10.
 
 ## Canonical Integration Branch
 
 - Base branch: `integration/phase-0-1a-baseline`
 - Base commit: `f64d3a0447a76b24a5213487ce8836cb21511882`
 - Invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
+- Approval binding branch: `approval-token-runtime-binding-design`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -56,6 +57,14 @@ already verified the reachable stabilization targets as ancestors:
 - `governance-policy-details`
 - `operator-console-ux-spec`
 
+## Approval Binding Checkpoint
+
+This branch adds `approval.binding` and `approval.chain` contracts and
+mock/in-memory approval binding tests. Validation remains repository health
+evidence only; it does not approve live connectors, external sends, real
+remediation, durable services, production operations, or customer-system
+mutation.
+
 ## Strict Schema Validation
 
 Command:
@@ -68,13 +77,13 @@ Result:
 
 ```text
 LIMA Office contract validation
-- schemas parsed: 30
-- examples parsed: 45
-- mapped examples: 45
-- schemas with examples: 30
+- schemas parsed: 32
+- examples parsed: 59
+- mapped examples: 59
+- schemas with examples: 32
 - validation mode: full JSON Schema draft 2020-12 with format checks
 - jsonschema version: 4.26.0
-- unsafe-content scan: 45 example files, 82 markdown files
+- unsafe-content scan: 59 example files, 83 markdown files
 - warnings: 0
 - failures: 0
 Result: PASS
@@ -100,8 +109,8 @@ Result:
 
 ```text
 LIMA Office markdown link check
-- markdown files scanned: 90
-- local links checked: 571
+- markdown files scanned: 91
+- local links checked: 610
 - external/anchor links ignored: 0
 - failures: 0
 Result: PASS
@@ -118,7 +127,7 @@ python -B -m unittest discover -s tests -v
 Result:
 
 ```text
-Ran 71 tests
+Ran 89 tests
 
 OK
 ```
@@ -134,6 +143,10 @@ Coverage added by this checkpoint:
 - LIMA IT remediation blocking checks.
 - Helper scope overreach checks.
 - Supervisor health reporting checks.
+- Approval binding checks for one-time use, replay, expiry, revocation,
+  tenant/task/worker/action/tool scope/Guardian mismatch, blocked-MVP action,
+  LIMA IT remediation, tainted input, missing evidence, and approval-required
+  task enqueue binding.
 
 ## Pytest
 
@@ -146,7 +159,7 @@ python -m pytest -q
 Result:
 
 ```text
-71 passed, 1 warning, 56 subtests passed
+89 passed, 1 warning, 73 subtests passed
 ```
 
 Warning: pytest could not create/write `.pytest_cache` because access was

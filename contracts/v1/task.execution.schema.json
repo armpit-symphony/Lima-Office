@@ -298,6 +298,24 @@
         "null"
       ]
     },
+    "approval_chain_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "binding_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_result_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "approval_token_id": {
       "type": [
         "string",
@@ -394,11 +412,49 @@
       },
       "uniqueItems": true
     },
-    "approval_result_id": {
+    "bound_action_type": {
       "type": [
         "string",
         "null"
       ]
+    },
+    "bound_tool_scope": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "resource_refs",
+        "allowed_operations",
+        "prohibited_operations"
+      ],
+      "properties": {
+        "resource_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "allowed_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prohibited_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
     },
     "token_verification_id": {
       "type": [

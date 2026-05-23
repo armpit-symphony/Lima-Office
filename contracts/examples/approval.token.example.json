@@ -36,7 +36,7 @@
       "reuse_token"
     ]
   },
-  "scope_hash": "hash-ref-approval-scope-email-001",
+  "scope_hash": "hash-ref-approved-scope-email-001",
   "status": "issued",
   "producer": {
     "component": "supervisor",

@@ -65,6 +65,7 @@ class TaskQueue:
         payload: dict[str, Any],
         guardian_decision: dict[str, Any] | None = None,
         token_verification: dict[str, Any] | None = None,
+        approval_binding: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         task = self.validator.validate(payload, "task.execution")
         if guardian_decision is None:
@@ -77,7 +78,7 @@ class TaskQueue:
         if isinstance(assigned_worker_id, str):
             worker = self.registry.require_assignable(assigned_worker_id, task.get("tenant_id"))
             assert_worker_can_receive_task(worker, task)
-        verified_token = self._validate_token_if_required(task, token_verification)
+        verified_token = self._validate_token_if_required(task, token_verification, approval_binding)
         self._assert_safe_task(task)
         self._tasks[task_id] = copy.deepcopy(task)
         self._guardian_decisions[task_id] = copy.deepcopy(guardian_decision)
@@ -145,11 +146,15 @@ class TaskQueue:
         self,
         task: dict[str, Any],
         token_verification: dict[str, Any] | None,
+        approval_binding: dict[str, Any] | None,
     ) -> dict[str, Any] | None:
         if not task.get("approval_required"):
             return None
         if token_verification is None:
             raise PolicyDenyError("approval-required task requires token verification metadata")
         verified = self.validator.validate(token_verification, "token.verification")
-        assert_token_verification_authorizes_task(task, verified)
+        if approval_binding is None:
+            raise PolicyDenyError("approval-required task requires approval binding metadata")
+        binding = self.validator.validate(approval_binding, "approval.binding")
+        assert_token_verification_authorizes_task(task, verified, binding)
         return verified

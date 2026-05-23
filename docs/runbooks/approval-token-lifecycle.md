@@ -8,8 +8,13 @@ Guide an operator through review, approval, denial, expiry, revocation, and evid
 
 - Policy ref: `policy.approval_token_lifecycle.phase0`
 - Version: `policy-phase0-v1`
-- Triggering contracts: `guardian.decision`, `approval.request`, `approval.token`, action-specific contract, `evidence.artifact`.
-- Required fields: tenant/customer context, actor, task/action/resource refs, Guardian decision ID, approval request ID, approval token ID when issued, evidence artifact IDs, correlation ID.
+- Triggering contracts: `guardian.decision`, `approval.request`,
+  `approval.result`, `approval.token`, `token.verification`,
+  `approval.binding`, action-specific contract, `evidence.artifact`.
+- Required fields: tenant/customer context, actor, task/action/resource refs,
+  Guardian decision ID, approval request/result/token/verification IDs,
+  approval chain ID, binding ID, nonce ref when issued, evidence artifact IDs,
+  correlation ID.
 - Fail-closed outcome: block action and revoke token when missing, expired, revoked, mismatched, reused, ambiguous, tainted, or unsupported by evidence.
 
 ## When To Use
@@ -50,8 +55,12 @@ Use this runbook when the operator dashboard shows:
    - Request a narrower superseding request.
    - Expire or cancel stale request.
 7. If approved, ensure the token metadata is single-use, expiring, tenant/task/action/resource-bound, and linked to evidence.
-8. If denied or expired, confirm no token was issued or that any existing token is revoked.
-9. Record the approval result evidence.
+8. Verify the `approval.binding` record matches the request/result/token,
+   Guardian decision, task, worker where applicable, tool scope, policy snapshot,
+   approved scope hash, nonce ref, and evidence refs.
+9. If denied or expired, confirm no token was issued or that any existing token
+   is revoked.
+10. Record the approval result and binding/verification evidence.
 
 ## Approval Requirements
 
@@ -65,6 +74,8 @@ Partial approval requires a new narrowed request or a token bound only to the ap
 - Approval request ID.
 - Approval result.
 - Approval token ID if issued.
+- Approval chain ID and binding ID.
+- Token verification ID and nonce ref.
 - Scope hash.
 - Presented scope hash and approved scope hash when different.
 - Approver identity ref and role.
@@ -99,6 +110,8 @@ Escalate to field IT reviewer when the request involves LIMA IT handoff or remed
 ## Done Criteria
 
 - Guardian decision, approval request, approval result, and evidence refs are present.
+- Approval binding is present for approval-required mock paths; token
+  verification alone is insufficient.
 - Approved token, if any, is scoped, single-use, expiring, and metadata-only.
 - Denied/expired/revoked requests cannot execute.
 - Correlation ID and tenant/customer context are recorded.

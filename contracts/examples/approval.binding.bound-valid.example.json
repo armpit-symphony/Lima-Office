@@ -1,0 +1,71 @@
+{
+  "contract_name": "approval.binding",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "dry_run",
+  "correlation_id": "corr-email-draft-001",
+  "causation_id": "tv-email-valid-001",
+  "idempotency_key": "idem-approval-binding-email-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T21:43:10Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "approval_chain_id": "chain-email-draft-001",
+  "binding_id": "bind-email-draft-001",
+  "approval_request_id": "apr-email-draft-001",
+  "approval_result_id": "apres-email-draft-001",
+  "approval_token_id": "apt-email-draft-001",
+  "token_verification_id": "tv-email-valid-001",
+  "guardian_decision_id": "gd-email-send-requires-approval-001",
+  "task_id": "task-email-draft-001",
+  "tool_invocation_id": "tool-email-draft-review-001",
+  "worker_id": "arc-admin-01",
+  "requester_ref": "worker:arc-admin-01",
+  "approver_ref": "operator:operator-lab-001",
+  "approver_role_ref": "approver",
+  "separation_check_result": "pass",
+  "identity_assurance_refs": [
+    "identity-assurance-operator-mfa-placeholder-001"
+  ],
+  "action_type": "draft_external_message_review",
+  "tool_scope": {
+    "resource_refs": [
+      "draft-message-ref-customer-reply-001",
+      "recipient-ref-external-contact-001"
+    ],
+    "allowed_operations": [
+      "operator_review_draft"
+    ],
+    "prohibited_operations": [
+      "send_external_message",
+      "live_connector_write",
+      "reuse_token"
+    ]
+  },
+  "requested_scope_hash": "hash-ref-approval-scope-email-001",
+  "approved_scope_hash": "hash-ref-approved-scope-email-001",
+  "policy_snapshot_hash": "policy-snapshot-hash-phase0-approval-001",
+  "token_use_policy": "one_time",
+  "nonce_ref": "nonce-ref-email-draft-001",
+  "status": "bound",
+  "verification_result": "valid",
+  "blocked_mvp_action": false,
+  "input_taint_status": "none",
+  "taint_ref_ids": [],
+  "mismatch_reasons": [],
+  "evidence_required": true,
+  "evidence_refs": [
+    "ev-approval-email-draft-001",
+    "ev-approval-result-email-001",
+    "ev-token-email-draft-001",
+    "ev-token-verify-valid-001"
+  ],
+  "created_at": "2026-05-18T21:43:10Z",
+  "checked_at": "2026-05-18T21:43:10Z",
+  "expires_at": "2026-05-18T21:50:00Z",
+  "consumed_at": null,
+  "revoked_at": null
+}
