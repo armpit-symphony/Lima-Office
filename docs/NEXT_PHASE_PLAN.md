@@ -24,6 +24,10 @@ Recommended order:
 Purpose: define the lab deployment shape for one Supervisor Server and 1-8 Arc
 worker mini PCs without installing or running production services.
 
+Status: documented in [Deployment Docs](deployment/README.md). Remaining work
+is review, merge, and follow-up policy closure; the blueprint still does not
+authorize runtime services or production deployment.
+
 Prerequisites:
 
 - Current Phase 0 docs, contracts, policies, and runbooks remain authoritative.

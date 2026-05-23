@@ -25,6 +25,7 @@ Version 1 schemas are in [v1](v1):
 
 - [worker.lifecycle.schema.json](v1/worker.lifecycle.schema.json)
 - [worker.heartbeat.schema.json](v1/worker.heartbeat.schema.json)
+- [worker.deployment.schema.json](v1/worker.deployment.schema.json)
 - [task.execution.schema.json](v1/task.execution.schema.json)
 - [guardian.decision.schema.json](v1/guardian.decision.schema.json)
 - [approval.request.schema.json](v1/approval.request.schema.json)
@@ -49,6 +50,9 @@ Sanitized example objects are in [examples](examples):
 
 - [worker.lifecycle.example.json](examples/worker.lifecycle.example.json)
 - [worker.heartbeat.example.json](examples/worker.heartbeat.example.json)
+- [worker.deployment.lightweight.example.json](examples/worker.deployment.lightweight.example.json)
+- [worker.deployment.local-model.example.json](examples/worker.deployment.local-model.example.json)
+- [worker.deployment.quarantined.example.json](examples/worker.deployment.quarantined.example.json)
 - [task.execution.example.json](examples/task.execution.example.json)
 - [guardian.decision.example.json](examples/guardian.decision.example.json)
 - [approval.request.example.json](examples/approval.request.example.json)
@@ -151,7 +155,7 @@ The v1 schemas use JSON Schema draft 2020-12 conditionals to block unsafe state 
 
 - `approval.request`, `approval.result`, `approval.token`, and `token.verification` bind approval status, approver identity, token state, token verification, denial, expiry, revoke, and blocked-MVP outcomes.
 - `guardian.decision`, `task.execution`, `tool.invocation`, `memory.access`, and `model.route` bind policy result, approval state, taint refs, evidence failure, terminal states, and denial/failure reasons.
-- `worker.lifecycle` and `worker.heartbeat` bind identity failure, quarantine, revoke, evidence-writer failure, and healthy states.
+- `worker.lifecycle`, `worker.heartbeat`, and `worker.deployment` bind identity failure, quarantine, revoke, evidence-writer failure, deployment refs, update/rollback posture, and healthy states.
 - `lima_it.handoff` keeps diagnostics read-only and keeps remediation non-executing for Phase 0.
 - `evidence.artifact` and `evidence.failure` bind redaction, evidence-writer failure, emergency spool refs, reconciliation, incident, and quarantine fields.
 

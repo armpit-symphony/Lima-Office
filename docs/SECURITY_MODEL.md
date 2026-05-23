@@ -18,6 +18,12 @@ Supervisor-to-worker communication must use authenticated device identity before
 - Quarantine.
 - Replacement flow.
 
+The [Network Blueprint](deployment/NETWORK_BLUEPRINT.md) keeps worker
+communication local-supervisor-first, denies public inbound worker exposure, and
+blocks direct cross-worker trust. The trust bootstrap, CA/certificate lifecycle,
+key storage, rotation, and recovery process remain open governance/security
+items.
+
 ## Worker Identity And Attestation Plan
 
 Each Arc worker must have:
@@ -33,6 +39,11 @@ Each Arc worker must have:
 - Quarantine/revoke state.
 
 Hardware attestation is an open question for Phase 0.
+
+Deployment planning records may use `attestation_status: not_required_phase0`
+or `manual_review_only`. These values mean weak lab trust only; they do not
+allow privileged work, automated re-enrollment, live connector access, or
+production operation.
 
 ## Secret Storage Rules
 
@@ -139,6 +150,11 @@ Update and rollback posture must include:
 - Approval for software changes.
 - Quarantine on failed or suspicious update.
 
+The [Update Rollback Blueprint](deployment/UPDATE_ROLLBACK_BLUEPRINT.md)
+defines update channels as policy bundle, worker runtime, model bundle, and
+config refs. Automatic update execution is blocked for MVP. Software
+install/update remains approval-required and non-executing in this docs lane.
+
 ## Connector Trust Program
 
 Connectors remain mock/readiness-only in Phase 0. Future connector trust must document:
@@ -177,7 +193,7 @@ The Phase 0 field-level schemas in [contracts/v1](../contracts/v1) define the mi
 - Token verification: [token.verification.schema.json](../contracts/v1/token.verification.schema.json) records valid and fail-closed results for expired, revoked, used, missing, mismatched, ambiguous, and wrong-scope tokens.
 - Helper scope: [helper.scope.schema.json](../contracts/v1/helper.scope.schema.json) keeps helper agents supervisor-side, leased, narrowly scoped, and unable to inherit worker trust.
 - Taint reference: [taint.ref.schema.json](../contracts/v1/taint.ref.schema.json) propagates prompt-injection and untrusted-content state across model, task, tool, memory, approval, and evidence records.
-- Worker identity: [worker.lifecycle.schema.json](../contracts/v1/worker.lifecycle.schema.json) and [worker.heartbeat.schema.json](../contracts/v1/worker.heartbeat.schema.json) require device identity refs, channel identity refs, capability lease/hash posture, heartbeat sequence, supervisor receive time, evidence writer state, quarantine, and revoke metadata.
+- Worker identity: [worker.lifecycle.schema.json](../contracts/v1/worker.lifecycle.schema.json), [worker.heartbeat.schema.json](../contracts/v1/worker.heartbeat.schema.json), and [worker.deployment.schema.json](../contracts/v1/worker.deployment.schema.json) require device identity refs, channel identity refs, deployment refs, capability lease/hash posture, heartbeat sequence, supervisor receive time, evidence writer state, quarantine, revoke, update/rollback, and deployment metadata.
 - Model routing: [model.route.schema.json](../contracts/v1/model.route.schema.json) records provider class, local/cloud boundary, egress posture, prompt/response refs, redaction, prompt-injection handling, Guardian decision, and evidence.
 - Tool invocation: [tool.invocation.schema.json](../contracts/v1/tool.invocation.schema.json) requires tool pack/version, sandbox profile, side-effect class, file/network/connector scope, dry-run posture, approval token linkage where needed, and evidence.
 - Memory access: [memory.access.schema.json](../contracts/v1/memory.access.schema.json) requires tenant namespace, purpose, retention class, delete/export posture, prompt-injection scan state, and `cross_tenant_access: false`.

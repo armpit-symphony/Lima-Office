@@ -44,16 +44,23 @@ The approval service manages requests for privileged or high-risk work. Approval
 
 The worker registry tracks:
 
+- Deployment ID.
 - Worker ID.
 - Device identity reference.
+- Channel identity reference.
 - Role.
+- Hardware and OS profile refs.
+- Supervisor endpoint ref.
 - Capability manifest.
+- Policy and model bundle refs.
 - Health state.
 - Last heartbeat timestamp.
 - Missed heartbeat count.
 - Assigned tasks.
 - Quarantine/revoke status.
 - Update version.
+- Rollback state.
+- Evidence refs.
 
 ## Model Router
 
@@ -144,6 +151,9 @@ Supervisor health checks should cover:
 - Guardian decision flow.
 - Disk, memory, CPU, and network posture.
 - Mock connector readiness.
+- Worker deployment record completeness.
+- Policy/model bundle ref mismatch.
+- Public inbound exposure or cross-worker trust flags in deployment records.
 
 ## Failure Modes
 
@@ -161,3 +171,11 @@ Planned failure modes:
 - LIMA IT handoff unavailable.
 
 Each failure must have visible status, evidence, and a runbook or open question.
+
+## Deployment Planning
+
+The Supervisor Server owns the worker deployment registry posture for lab and
+planned local deployments. It must treat `worker.deployment` records as planning
+metadata only, not execution permission. A deployment record cannot authorize
+worker services, live connectors, external sends, external model calls,
+remediation, software install/update execution, or production-system access.

@@ -80,6 +80,7 @@ No remediation runtime, endpoint control, production server change, or network c
 - [Phase 0 / Phase 1A closeout](docs/PHASE_0_1A_CLOSEOUT.md)
 - [Next phase plan](docs/NEXT_PHASE_PLAN.md)
 - [Runtime boundaries](docs/RUNTIME_BOUNDARIES.md)
+- [Worker deployment blueprint](docs/deployment/WORKER_DEPLOYMENT_BLUEPRINT.md)
 - [Runbooks](docs/runbooks/)
 
 ## Current Repo Status

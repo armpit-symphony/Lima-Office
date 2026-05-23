@@ -22,7 +22,11 @@ formally superseded.
 
 - Phase 0 architecture, MVP scope, autonomy, security, threat model, supervisor,
   worker, decision, roadmap, validation, policy, and runbook docs.
+- Worker deployment blueprint docs for mini PC hardware, network, install
+  layout, lifecycle, update/rollback, and field IT preflight.
 - Versioned v1 contract schemas and sanitized examples in [contracts](contracts).
+- `worker.deployment` contract schema and examples for deployment planning
+  metadata.
 - Strict contract validation through [scripts/validate-contracts.py](scripts/validate-contracts.py).
 - Local Markdown link validation through [scripts/check-doc-links.py](scripts/check-doc-links.py).
 - Phase 1A mock Python runtime scaffolding in [lima_office](lima_office).
@@ -81,6 +85,7 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 
 ## Next Recommended Lane
 
-The next safe lane is the Worker deployment blueprint. It should remain a docs
-and contracts lane for one Supervisor Server and 1-8 Arc worker mini PCs, with
-no live connectors, no real remediation, and no new runtime services.
+After this worker deployment blueprint branch is reviewed, the next safe lane is
+Governance policy details. It should close IdP/MFA, RBAC, breakglass, access
+review, retention, redaction, audit export, customer exit/delete, attestation,
+and LIMA IT approver separation before runtime expansion.

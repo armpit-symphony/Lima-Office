@@ -23,11 +23,25 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Runtime boundaries](RUNTIME_BOUNDARIES.md)
 - [Validation evidence](VALIDATION_EVIDENCE.md)
 
+## Deployment Docs
+
+- [Deployment index](deployment/README.md)
+- [Worker deployment blueprint](deployment/WORKER_DEPLOYMENT_BLUEPRINT.md)
+- [Network blueprint](deployment/NETWORK_BLUEPRINT.md)
+- [Worker hardware baseline](deployment/WORKER_HARDWARE_BASELINE.md)
+- [Worker install layout](deployment/WORKER_INSTALL_LAYOUT.md)
+- [Worker lifecycle](deployment/WORKER_LIFECYCLE.md)
+- [Update rollback blueprint](deployment/UPDATE_ROLLBACK_BLUEPRINT.md)
+- [Field IT checklist](deployment/FIELD_IT_CHECKLIST.md)
+
 ## Runbooks
 
 - [Worker onboarding](runbooks/worker-onboarding.md)
+- [Worker deployment](runbooks/worker-deployment.md)
 - [Worker quarantine](runbooks/worker-quarantine.md)
 - [Worker re-enrollment](runbooks/worker-reenrollment.md)
+- [Worker update rollback](runbooks/worker-update-rollback.md)
+- [Field IT preflight](runbooks/field-it-preflight.md)
 - [Approval flow](runbooks/approval-flow.md)
 - [Approval token lifecycle](runbooks/approval-token-lifecycle.md)
 - [Security incident](runbooks/security-incident.md)

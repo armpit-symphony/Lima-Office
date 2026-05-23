@@ -83,6 +83,25 @@ Version 1 schemas now use JSON Schema draft 2020-12 conditionals for the highest
 - Backwards compatibility notes: new metrics should be optional until dashboard consumers support them.
 - MVP acceptance gates: heartbeat age, missed count, evidence writer state, clock skew, and update/rollback posture are visible for 1-8 workers.
 
+## Worker Deployment Contract v1
+
+- Schema: [worker.deployment.schema.json](../contracts/v1/worker.deployment.schema.json)
+- Example objects: [worker.deployment.lightweight.example.json](../contracts/examples/worker.deployment.lightweight.example.json), [worker.deployment.local-model.example.json](../contracts/examples/worker.deployment.local-model.example.json), [worker.deployment.quarantined.example.json](../contracts/examples/worker.deployment.quarantined.example.json)
+- Purpose: records docs-only Arc worker deployment planning metadata for mini PC hardware, OS, network, Supervisor endpoint, policy/model refs, install state, lifecycle state, encryption, attestation placeholder, update channel, rollback state, and evidence refs.
+- Version: `1.0.0`.
+- Producer: field IT reviewer, supervisor, operator console, or security reviewer.
+- Consumer: Supervisor registry planning, field IT checklist, security review, operator deployment review, evidence ledger.
+- Required fields: common envelope; `deployment_id`, `worker_id`, `role`, `hardware_profile`, `os_profile`, `network_profile`, `supervisor_endpoint_ref`, `policy_bundle_ref`, `policy_bundle_hash_ref`, `model_bundle_ref`, `model_bundle_hash_ref`, `install_state`, `lifecycle_state`, `encryption_status`, `attestation_status`, `update_channel`, `rollback_state`, approval fields, Guardian decision, policy version, evidence refs, `created_at`, and `updated_at`.
+- Optional fields: support owner, field IT reviewer, security reviewer, and blocked reason.
+- Allowed states: install states `planned`, `preflight_ready`, `enrollment_requested`, `enrolled_mock`, `blocked`, `quarantined`, `retired`; lifecycle states `provisioned`, `enrolled`, `active`, `degraded`, `quarantined`, `revoked`, `reenrollment_pending`, `retired`.
+- Terminal states: `retired` for deployment planning; `revoked` blocks assignment until replacement or retirement.
+- Security requirements: no public inbound worker exposure, no direct cross-worker trust, no automatic updates, refs rather than secrets, and attestation absence is weak lab trust only.
+- Approval requirements: enrollment and deployment review are approval-required metadata paths; software install/update execution remains blocked until a future approved runtime plan.
+- Evidence requirements: preflight, hardware/OS inventory, network readiness, policy/model refs, enrollment, quarantine, update/rollback planning, and retirement link evidence refs.
+- Failure behavior: public inbound exposure, cross-worker trust, missing evidence, failed attestation, blocked install state, or quarantine state fails closed and blocks assignment.
+- Backwards compatibility notes: adding deployment metadata is additive; weakening public exposure, cross-worker trust, automatic update, or attestation failure semantics requires major review.
+- MVP acceptance gates: lightweight, local-model, and quarantined worker deployment records can be represented without installers, worker daemons, live connectors, external sends, external model calls, or remediation.
+
 ## Task Execution Contract v1
 
 - Schema: [task.execution.schema.json](../contracts/v1/task.execution.schema.json)

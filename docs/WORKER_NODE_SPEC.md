@@ -6,7 +6,7 @@ Arc worker nodes are mini PCs that execute bounded office roles under Supervisor
 
 ## Mini PC Requirements
 
-Minimum lab assumptions:
+Minimum lab assumptions are defined in the [Worker Hardware Baseline](deployment/WORKER_HARDWARE_BASELINE.md). The baseline remains vendor-neutral:
 
 - 4-core CPU.
 - 16 GB RAM.
@@ -16,7 +16,14 @@ Minimum lab assumptions:
 - Disk encryption where available.
 - TPM or equivalent device identity support preferred.
 
-Local model workloads may require stronger CPU, RAM, GPU, or NPU resources. Hardware selection remains an open Phase 0 question.
+Local model workloads may require stronger CPU, RAM, GPU, or NPU resources.
+Exact product SKU and local-model sizing thresholds remain open planning
+questions.
+
+The [Worker Deployment Blueprint](deployment/WORKER_DEPLOYMENT_BLUEPRINT.md)
+separates lightweight, standard, local-model, and supervisor/helper-capable
+machine classes. The blueprint does not recommend exact consumer products and
+does not authorize production deployment.
 
 ## Runtime Components
 
@@ -35,6 +42,8 @@ Planned components:
 - Update/rollback agent boundary.
 
 These are planning components, not implementation in this pass.
+
+The proposed install layout is documented in [Worker Install Layout](deployment/WORKER_INSTALL_LAYOUT.md). It is a filesystem and naming convention only; it does not create services, daemons, updater agents, or endpoint control.
 
 ## Local Encrypted Cache
 
@@ -57,6 +66,8 @@ Local models may be used for low-risk or local-first tasks when policy allows. L
 
 Subscription/cloud models may be used when task capability requires it and data classification permits it. Routing requires Guardian decision, tenant boundary, provider class, approval posture, and evidence.
 
+For MVP planning, cloud/subscription model workers are contract-only. External model API calls and provider account wiring remain blocked until model-routing defaults, data classification, egress, redaction, and approval gates are resolved.
+
 ## Heartbeat Behavior
 
 Workers report heartbeat on a configured interval. Heartbeat includes:
@@ -75,9 +86,11 @@ Workers report heartbeat on a configured interval. Heartbeat includes:
 
 Missed heartbeat thresholds:
 
-- `degraded`: first threshold crossed.
-- `offline`: second threshold crossed.
+- `degraded`: planning default is 2 missed heartbeats or evidence writer degradation.
+- `offline`: planning default is 5 missed heartbeats or supervisor unreachable.
 - `quarantined`: operator or policy containment.
+
+These are planning defaults from [Worker Deployment Blueprint](deployment/WORKER_DEPLOYMENT_BLUEPRINT.md). Runtime thresholds remain policy-controlled and must be tested before lab expansion.
 
 ## Task Inbox And Outbox
 
@@ -132,6 +145,8 @@ Update posture must include:
 
 Software install/update requires approval.
 
+Update and rollback planning is expanded in [Update Rollback Blueprint](deployment/UPDATE_ROLLBACK_BLUEPRINT.md). Automatic update execution remains blocked; update channels are policy bundle, worker runtime, model bundle, and config metadata refs only.
+
 ## Quarantine Behavior
 
 Quarantine stops new assignments and blocks privileged actions. Quarantine triggers include:
@@ -152,8 +167,8 @@ Logs should include operational state and correlation IDs. Logs must not include
 
 ## Open Questions
 
-- Exact mini PC baseline.
 - Required hardware attestation level.
 - Local model default.
 - Cache retention period.
 - Network segmentation assumptions.
+- Exact product SKU remains intentionally undecided.

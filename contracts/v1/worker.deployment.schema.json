@@ -1,0 +1,678 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/worker.deployment.schema.json",
+  "title": "Worker Deployment Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "deployment_id",
+    "worker_id",
+    "role",
+    "producer",
+    "hardware_profile",
+    "os_profile",
+    "network_profile",
+    "supervisor_endpoint_ref",
+    "policy_bundle_ref",
+    "policy_bundle_hash_ref",
+    "model_bundle_ref",
+    "model_bundle_hash_ref",
+    "install_state",
+    "lifecycle_state",
+    "encryption_status",
+    "attestation_status",
+    "update_channel",
+    "rollback_state",
+    "data_classification",
+    "risk_tier",
+    "approval_required",
+    "approval_request_id",
+    "approval_token_id",
+    "guardian_decision_id",
+    "policy_version",
+    "evidence_refs",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "worker.deployment"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "deployment_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "worker_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin_worker",
+        "file_clerk_worker",
+        "customer_service_draft_worker",
+        "it_diagnostic_helper_worker",
+        "general_office_worker"
+      ]
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "operator_console",
+            "field_it_reviewer",
+            "security_reviewer"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "hardware_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hardware_class",
+        "cpu_class",
+        "ram_gb",
+        "storage_gb",
+        "network_adapter",
+        "tpm_present",
+        "secure_boot_present",
+        "asset_ref",
+        "location_ref"
+      ],
+      "properties": {
+        "hardware_class": {
+          "type": "string",
+          "enum": [
+            "lightweight_worker",
+            "standard_worker",
+            "local_model_worker",
+            "supervisor_helper_capable"
+          ]
+        },
+        "cpu_class": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ram_gb": {
+          "type": "integer",
+          "minimum": 8
+        },
+        "storage_gb": {
+          "type": "integer",
+          "minimum": 128
+        },
+        "network_adapter": {
+          "type": "string",
+          "enum": [
+            "wired_ethernet",
+            "wifi_lab_only",
+            "unknown"
+          ]
+        },
+        "tpm_present": {
+          "type": "boolean"
+        },
+        "secure_boot_present": {
+          "type": "boolean"
+        },
+        "asset_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "location_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "os_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "os_family",
+        "os_version_ref",
+        "dedicated_account",
+        "local_admin_required",
+        "disk_encryption_available",
+        "patch_posture"
+      ],
+      "properties": {
+        "os_family": {
+          "type": "string",
+          "enum": [
+            "windows",
+            "linux",
+            "other_planned"
+          ]
+        },
+        "os_version_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dedicated_account": {
+          "type": "boolean"
+        },
+        "local_admin_required": {
+          "type": "boolean"
+        },
+        "disk_encryption_available": {
+          "type": "boolean"
+        },
+        "patch_posture": {
+          "type": "string",
+          "enum": [
+            "recorded_current",
+            "update_pending_approval",
+            "unknown",
+            "blocked"
+          ]
+        }
+      }
+    },
+    "network_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "network_mode",
+        "hostname_ref",
+        "dns_mode",
+        "ip_assignment",
+        "time_sync_ref",
+        "supervisor_reachability",
+        "public_inbound_exposure",
+        "cross_worker_trust",
+        "internet_egress"
+      ],
+      "properties": {
+        "network_mode": {
+          "type": "string",
+          "enum": [
+            "lab_local",
+            "small_business_local",
+            "hybrid_planned"
+          ]
+        },
+        "hostname_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dns_mode": {
+          "type": "string",
+          "enum": [
+            "local_dns",
+            "static_hosts",
+            "dhcp_registered",
+            "unresolved"
+          ]
+        },
+        "ip_assignment": {
+          "type": "string",
+          "enum": [
+            "dhcp_reserved",
+            "static_ip",
+            "dhcp_dynamic_lab_only",
+            "unresolved"
+          ]
+        },
+        "time_sync_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "supervisor_reachability": {
+          "type": "string",
+          "enum": [
+            "verified",
+            "degraded",
+            "unreachable",
+            "not_tested"
+          ]
+        },
+        "public_inbound_exposure": {
+          "type": "boolean"
+        },
+        "cross_worker_trust": {
+          "type": "boolean"
+        },
+        "internet_egress": {
+          "type": "string",
+          "enum": [
+            "blocked",
+            "supervisor_only",
+            "guardian_approved_future",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "supervisor_endpoint_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_bundle_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_bundle_hash_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model_bundle_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "model_bundle_hash_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "install_state": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "preflight_ready",
+        "enrollment_requested",
+        "enrolled_mock",
+        "blocked",
+        "quarantined",
+        "retired"
+      ]
+    },
+    "lifecycle_state": {
+      "type": "string",
+      "enum": [
+        "provisioned",
+        "enrolled",
+        "active",
+        "degraded",
+        "quarantined",
+        "revoked",
+        "reenrollment_pending",
+        "retired"
+      ]
+    },
+    "encryption_status": {
+      "type": "string",
+      "enum": [
+        "enabled",
+        "available_not_enabled",
+        "not_available",
+        "unknown"
+      ]
+    },
+    "attestation_status": {
+      "type": "string",
+      "enum": [
+        "not_required_phase0",
+        "manual_review_only",
+        "pending",
+        "verified",
+        "failed"
+      ]
+    },
+    "update_channel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_bundle",
+        "worker_runtime",
+        "model_bundle",
+        "config",
+        "automatic_update_enabled"
+      ],
+      "properties": {
+        "policy_bundle": {
+          "type": "string",
+          "enum": [
+            "manual_review",
+            "staged_planned",
+            "blocked"
+          ]
+        },
+        "worker_runtime": {
+          "type": "string",
+          "enum": [
+            "manual_review",
+            "staged_planned",
+            "blocked"
+          ]
+        },
+        "model_bundle": {
+          "type": "string",
+          "enum": [
+            "none",
+            "manual_review",
+            "staged_planned",
+            "blocked"
+          ]
+        },
+        "config": {
+          "type": "string",
+          "enum": [
+            "manual_review",
+            "staged_planned",
+            "blocked"
+          ]
+        },
+        "automatic_update_enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "rollback_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "known_good_ref",
+        "rollback_available",
+        "rollback_tested",
+        "rollback_reason"
+      ],
+      "properties": {
+        "known_good_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rollback_available": {
+          "type": "boolean"
+        },
+        "rollback_tested": {
+          "type": "boolean"
+        },
+        "rollback_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "data_classification": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "customer_confidential",
+        "sensitive_hr",
+        "sensitive_finance",
+        "sensitive_legal",
+        "sensitive_medical",
+        "secret"
+      ]
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "blocked"
+      ]
+    },
+    "approval_required": {
+      "type": "boolean"
+    },
+    "approval_request_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_token_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "support_owner_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "field_it_reviewer_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "security_reviewer_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "blocked_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "network_profile": {
+          "properties": {
+            "public_inbound_exposure": {
+              "const": false
+            },
+            "cross_worker_trust": {
+              "const": false
+            }
+          }
+        },
+        "update_channel": {
+          "properties": {
+            "automatic_update_enabled": {
+              "const": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "const": "quarantined"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "blocked_reason",
+          "security_reviewer_ref"
+        ],
+        "properties": {
+          "install_state": {
+            "const": "quarantined"
+          },
+          "risk_tier": {
+            "enum": [
+              "high",
+              "blocked"
+            ]
+          },
+          "blocked_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "security_reviewer_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "install_state": {
+            "const": "blocked"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "blocked_reason"
+        ],
+        "properties": {
+          "blocked_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "risk_tier": {
+            "enum": [
+              "high",
+              "blocked"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "approval_required": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "approval_request_id"
+        ],
+        "properties": {
+          "approval_request_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "attestation_status": {
+            "const": "failed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "lifecycle_state": {
+            "enum": [
+              "quarantined",
+              "revoked"
+            ]
+          },
+          "install_state": {
+            "enum": [
+              "blocked",
+              "quarantined"
+            ]
+          },
+          "risk_tier": {
+            "enum": [
+              "high",
+              "blocked"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

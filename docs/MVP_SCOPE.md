@@ -10,6 +10,7 @@ The MVP is governed, visible, and evidence-producing. It is not a production dep
 
 Required lab capabilities:
 
+- Worker deployment planning record.
 - Supervisor Server inventory and status.
 - 1-3 registered Arc workers.
 - Worker heartbeat and health state.
@@ -27,6 +28,7 @@ Required lab capabilities:
 
 The architecture should scale from 1-3 lab workers to 1-8 office workers by adding:
 
+- Deployment IDs and hardware/OS/network inventory.
 - Worker identity enrollment.
 - Capability versioning.
 - Heartbeat age and missed heartbeat count.
@@ -39,6 +41,7 @@ The architecture should scale from 1-3 lab workers to 1-8 office workers by addi
 
 Worker registration must capture:
 
+- `deployment_id`
 - `worker_id`
 - `tenant_id`
 - `device_identity`
@@ -51,6 +54,10 @@ Worker registration must capture:
 - `status`
 
 Registration is not active until the supervisor accepts the worker and Guardian records the registration decision.
+
+Deployment records are metadata-only planning records. They do not authorize
+worker services, software installation, external model calls, live connectors,
+external sends, remediation, or production operation.
 
 ## Heartbeat
 
@@ -176,6 +183,8 @@ The dashboard should show:
 - Mock connector readiness.
 - Evidence write status.
 - Open incidents.
+- Worker deployment completeness.
+- Policy/model bundle ref mismatch.
 
 ## Mock Connectors First
 
@@ -202,3 +211,5 @@ Connector work is mock/readiness-only until contracts and threat model are appro
 - Cross-tenant memory sharing.
 - Unrestricted browser, file, or network access.
 - Runtime implementation beyond explicitly approved tiny scaffolding.
+- Worker installers, daemons, endpoint control, automatic updates, or production
+  deployment.

@@ -44,21 +44,23 @@ mutation.
   customer context, fresh operator intent, expiry, and one-time use?
 - Non-test Guardian expiry policy: what decision expiry, replay rejection,
   clock-skew tolerance, and reclassification behavior apply outside tests?
-- Health reason taxonomy: what reason codes should the Supervisor use for
-  contract validation, Guardian decisions, worker state, queue depth, evidence
+- Health reason taxonomy: which reason code set should become normative for
+  Supervisor health, Guardian decisions, worker state, queue depth, evidence
   status, connector readiness, LIMA IT handoff, and degraded/offline/quarantine
-  transitions?
+  transitions beyond the planning defaults in [Worker Deployment Blueprint](deployment/WORKER_DEPLOYMENT_BLUEPRINT.md)?
 - Heartbeat thresholds: what heartbeat interval, missed-heartbeat thresholds,
   stale-age limits, and escalation timing should apply in lab mode?
 - Worker attestation: what attestation method is required for Arc worker mini
   PCs before re-enrollment can be automated?
-- Update rollback: what update channel, signed/verified source, known-good
-  version, rollback trigger, and quarantine behavior should be required?
-- Worker hardware baseline: what mini PC CPU, RAM, disk, OS, TPM, local model,
-  and LAN assumptions are realistic for lab mode?
-- Small-business supportability: what network segmentation, offline/ISP outage,
-  power-loss recovery, log retention, disk-full behavior, device replacement,
-  and operator escalation assumptions are required?
+- Update rollback: what signed/verified source format, known-good selection,
+  rollback trigger matrix, and approval workflow should be required beyond the
+  planning channels in [Update Rollback Blueprint](deployment/UPDATE_ROLLBACK_BLUEPRINT.md)?
+- Worker hardware baseline: what exceptions, local-model sizing thresholds, and
+  exact lab acceptance criteria should be applied to the vendor-neutral classes
+  in [Worker Hardware Baseline](deployment/WORKER_HARDWARE_BASELINE.md)?
+- Small-business supportability: what offline/ISP outage, power-loss recovery,
+  log retention, disk-full behavior, device replacement, support RACI, and
+  operator escalation assumptions remain required beyond the field checklist?
 - Cross-contract invariant source: the 2026-05-22 reconciliation check found no
   local object and no `origin` branch for
   `phase-1a-cross-contract-invariants` / `e71431007ddbe96c3e141b77591efc2508c53e5d`
@@ -80,6 +82,19 @@ mutation.
   first while staying draft-only or mock-only?
 - Connector prompt-injection evaluation: what test and review evidence is
   required before connector-handled content can influence model/tool decisions?
+
+Resolved in [Deployment Docs](deployment/README.md) and `worker.deployment`:
+
+- Vendor-neutral worker hardware classes are documented for lightweight,
+  standard, local-model, and supervisor/helper-capable machines.
+- Lab/default network posture is documented as no public inbound worker exposure,
+  no direct cross-worker trust, local-supervisor-first communication, and no
+  direct production-system remediation.
+- Worker deployment records can represent hardware, OS, network, Supervisor
+  endpoint, policy/model refs, encryption, attestation placeholder,
+  update/rollback posture, and evidence refs.
+- Worker deployment, update/rollback, and field IT preflight runbooks exist as
+  manual operator docs only.
 
 Resolved in [Schema Hardening Notes](SCHEMA_HARDENING_NOTES.md) and [contracts/v1](../contracts/v1):
 

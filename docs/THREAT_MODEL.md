@@ -54,6 +54,9 @@ Phase 0 status values:
 | Model/tool hallucination causing business action | Tampering, repudiation | Model invents action, recipient, or record update | Draft-first workflow, approval for writes, evidence checks | High-risk action request, confidence mismatch | Task result, approval record, Guardian decision | schema_defined |
 | Update supply-chain compromise | Tampering, elevation | Bad update changes worker/supervisor behavior | Verified update source, known-good rollback, approval | Version mismatch, failed verification | Update evidence, incident record, rollback record | future_review |
 | Customer network compromise | Spoofing, denial, disclosure | Local attacker targets supervisor/worker channel | Authenticated channel, firewall assumptions, quarantine | Connection anomaly, repeated failures | Network incident record, worker containment | schema_defined |
+| Worker deployment spoofing | Spoofing, elevation | Unapproved mini PC is enrolled as a trusted worker | Deployment record, device/channel identity refs, operator approval, Guardian decision | Deployment preflight mismatch, duplicate worker ID, missing evidence | `worker.deployment`, worker lifecycle, Guardian decision, enrollment evidence | schema_defined |
+| Public worker exposure | Disclosure, elevation, denial | Worker exposes inbound service or remote support path | Network blueprint blocks public inbound exposure and direct cross-worker trust | Firewall/preflight mismatch, unexpected reachability | Worker deployment evidence, incident record, field IT checklist | schema_defined |
+| Device reuse without purge | Disclosure, repudiation | Retired or replacement worker carries tenant cache or stale evidence | Revoke, cache purge evidence, customer exit/delete posture | Replacement review, cache purge missing, old device heartbeat | Worker lifecycle, worker deployment, evidence artifact, incident record | needs_contract |
 
 ## Required Controls Before Runtime
 
@@ -81,6 +84,7 @@ The Phase 0 schemas do not implement controls, but they define the required reco
 | Cross-tenant memory leak | `memory.access`, `guardian.decision`, `evidence.artifact`, `incident.ops` | Require tenant namespace, `tenant_match_required: true`, `cross_tenant_access: false`, cross-tenant check result, denial evidence, and incident escalation. |
 | Stolen API key | `connector.trust`, `guardian.decision`, `incident.ops`, `evidence.artifact` | Phase 0 connector records use refs only, `secret_material_present: false`, revocation status, scope review, and incident evidence on suspected exposure. |
 | Rogue worker | `worker.lifecycle`, `worker.heartbeat`, `guardian.decision`, `tool.invocation`, `incident.ops`, `evidence.artifact` | Capability mismatch, suspicious tools, evidence failure, or heartbeat anomalies trigger quarantine/revoke metadata and evidence. |
+| Worker deployment spoofing or unsafe deployment | `worker.deployment`, `worker.lifecycle`, `guardian.decision`, `evidence.artifact`, `incident.ops` | Deployment records require worker ID, deployment ID, hardware/OS/network profiles, Supervisor endpoint ref, policy/model refs, encryption and attestation posture, no public inbound exposure, no cross-worker trust, Guardian decision, and evidence refs. |
 | Rogue helper agent | `helper.scope`, `task.execution`, `tool.invocation`, `memory.access`, `guardian.decision`, `incident.ops`, `evidence.artifact` | Helper agents remain supervisor-side actors with scoped tasks; out-of-scope tool/memory requests are denied and evidenced. |
 | Invalid/expired/revoked token use | `token.verification`, `approval.token`, `approval.result`, `guardian.decision`, `tool.invocation`, `evidence.artifact` | Missing, expired, revoked, used, mismatched, ambiguous, or wrong-scope tokens fail closed and cannot authorize action. |
 | Evidence writer failure | `evidence.failure`, `task.execution`, `tool.invocation`, `worker.heartbeat`, `worker.lifecycle`, `incident.ops`, `evidence.artifact` | Pre-action evidence failure blocks privileged actions; post-action failure degrades, spools, reconciles, and may quarantine. |
@@ -93,4 +97,6 @@ The Phase 0 schemas do not implement controls, but they define the required reco
 - Is hardware attestation required for worker mini PCs?
 - What is the first data retention period?
 - Which connector is first eligible for live review?
-- What local network assumptions are acceptable for the first lab?
+- What exceptions to the local-supervisor-first network posture are acceptable
+  for the first lab?
+- What customer exit/delete proof is required before device reuse or retirement?
