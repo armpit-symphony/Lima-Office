@@ -5,6 +5,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 ## Core Docs
 
 - [Current status](../STATUS.md)
+- [Canonical baseline](BASELINE.md)
 - [Architecture](ARCHITECTURE.md)
 - [MVP scope](MVP_SCOPE.md)
 - [Roadmap](ROADMAP.md)

@@ -6,6 +6,11 @@ policies, runbooks, and tests. None of these items approve live connectors,
 external sends, real remediation, production operations, or customer-system
 mutation.
 
+Current canonical integration status is tracked in [Baseline](BASELINE.md). The
+missing cross-contract invariant checkpoint remains absent from this checkout
+and from `origin`; do not treat it as integrated or validated unless it is
+restored, rebuilt, replaced, or formally superseded.
+
 ## Security / Governance
 
 - Operator IdP/MFA implementation: which IdP, MFA mechanism, session TTL,
@@ -70,8 +75,8 @@ mutation.
 - Cross-contract invariant source: the 2026-05-22 reconciliation check found no
   local object and no `origin` branch for
   `phase-1a-cross-contract-invariants` / `e71431007ddbe96c3e141b77591efc2508c53e5d`
-  after `git fetch --all --prune`; should the checkpoint be pushed, restored,
-  recreated, or formally superseded?
+  after `git fetch --all --prune`; should the checkpoint be restored, rebuilt,
+  replaced, or formally superseded?
 
 ## Connectors And Deployment
 

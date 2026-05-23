@@ -6,18 +6,24 @@ connectors, OAuth/provider wiring, external model calls, external sends,
 browser automation, real remediation, durable services, production operations,
 or customer-system mutation.
 
+Current canonical integration branch: `integration/phase-0-1a-baseline`. See
+[Baseline](BASELINE.md) for the included reachable branches and the missing
+cross-contract invariant checkpoint.
+
 ## Recommendation
 
 Recommended order:
 
-1. Worker deployment blueprint.
-2. Governance policy details.
-3. Operator console UX spec.
-4. Phase 1B lab runtime expansion only after approval-token runtime record
-   binding, Guardian expiry policy, health reason taxonomy, and durable
-   evidence/export posture are addressed.
-5. Merge strategy / mainline stabilization can run in parallel with the docs
-   lanes when it does not hide unresolved gates.
+1. Rebuild or replace the missing Phase 1A cross-contract invariant branch if
+   needed, or formally supersede it.
+2. Approval-token runtime binding design.
+3. Guardian expiry and replay policy design.
+4. Durable evidence/export posture design.
+5. Phase 1B lab runtime expansion only after the gates above are approved.
+
+Alternative non-runtime lanes can proceed when they do not obscure the blockers:
+model-routing defaults, final IdP/MFA/RBAC matrix, health taxonomy refinement,
+and worker attestation/update trust-root details.
 
 ## Option A: Worker Deployment Blueprint
 
@@ -25,8 +31,8 @@ Purpose: define the lab deployment shape for one Supervisor Server and 1-8 Arc
 worker mini PCs without installing or running production services.
 
 Status: documented in [Deployment Docs](deployment/README.md). Remaining work
-is review, merge, and follow-up policy closure; the blueprint still does not
-authorize runtime services or production deployment.
+is review and follow-up policy closure inside the canonical baseline; the
+blueprint still does not authorize runtime services or production deployment.
 
 Prerequisites:
 
@@ -74,7 +80,7 @@ placeholders, access review, approver separation, breakglass denial, retention
 and redaction, audit export/customer exit, connector consent/revocation, worker
 attestation, and signed update/rollback. It does not select providers, final
 legal retention periods, signing roots, attestation mechanisms, or runtime
-enforcement.
+enforcement. It is included in the canonical integration baseline.
 
 Prerequisites:
 
@@ -121,7 +127,7 @@ Status: documented in [UX / Control-Room Docs](ux/README.md). This lane defines
 operator console information architecture, workflows, permission model, approval
 inbox, evidence viewer, worker fleet, LIMA IT panel, and health reason taxonomy
 as specs only. It does not add UI code, a web server, frontend framework, or
-runtime control plane.
+runtime control plane. It is included in the canonical integration baseline.
 
 Prerequisites:
 
@@ -175,8 +181,8 @@ Prerequisites:
 - Model-routing defaults are defined for local versus subscription/cloud model
   classes, including data classifications that force local-only handling or
   denial.
-- Missing cross-contract invariant checkpoint source is restored, recreated, or
-  formally superseded.
+- Missing cross-contract invariant checkpoint source is restored, rebuilt,
+  replaced, or formally superseded.
 
 Allowed work after prerequisites:
 
@@ -213,6 +219,10 @@ Recommended order: fourth, only after the named gates are closed.
 
 Purpose: choose the safest way to bring completed Phase 0 and Phase 1A branches
 back to mainline without losing evidence or hiding blockers.
+
+Status: active in [Baseline](BASELINE.md) on
+`integration/phase-0-1a-baseline`. Do not update `main` without explicit
+approval.
 
 Prerequisites:
 

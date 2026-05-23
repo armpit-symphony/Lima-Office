@@ -64,6 +64,7 @@ No remediation runtime, endpoint control, production server change, or network c
 ## Core Docs
 
 - [Current status](STATUS.md)
+- [Canonical baseline](docs/BASELINE.md)
 - [Docs index](docs/README.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [MVP scope](docs/MVP_SCOPE.md)
@@ -87,7 +88,9 @@ No remediation runtime, endpoint control, production server change, or network c
 
 ## Current Repo Status
 
-This repo is Phase 1A mock runtime scaffolding only:
+This repo is currently stabilized on the
+`integration/phase-0-1a-baseline` branch as Phase 0 docs/contracts/governance,
+deployment and UX specs, plus Phase 1A mock runtime scaffolding only:
 
 - Docs and scaffolding are allowed.
 - Contracts are required before implementation.
