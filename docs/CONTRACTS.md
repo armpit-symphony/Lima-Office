@@ -102,6 +102,58 @@ Version 1 schemas now use JSON Schema draft 2020-12 conditionals for the highest
 - Backwards compatibility notes: adding deployment metadata is additive; weakening public exposure, cross-worker trust, automatic update, or attestation failure semantics requires major review.
 - MVP acceptance gates: lightweight, local-model, and quarantined worker deployment records can be represented without installers, worker daemons, live connectors, external sends, external model calls, or remediation.
 
+## Governance Identity Contract v1
+
+- Schema: [governance.identity.schema.json](../contracts/v1/governance.identity.schema.json)
+- Example object: [governance.identity.operator-mfa-required.example.json](../contracts/examples/governance.identity.operator-mfa-required.example.json)
+- Purpose: records operator, approver, service, worker, helper, and reviewer identity posture without storing credentials or implementing IdP/MFA.
+- Version: `1.0.0`.
+- Producer: operator console, supervisor, security reviewer, or compliance reviewer metadata flow.
+- Consumer: approval workflow, access review, Guardian policy review, evidence ledger, and operator console spec.
+- Required fields: common envelope; identity record ID, subject ref/type, IdP ref placeholder, MFA status, session assurance, device trust status, roles, least-privilege review, access review ref, joiner/mover/leaver state, policy refs, status, Guardian decision, and evidence refs.
+- Security requirements: human roles must use named identity refs; service and worker identities cannot approve human approval requests; missing or blocked MFA posture fails closed for privileged runtime expansion.
+- MVP acceptance gates: identity/MFA posture can be represented as required but not configured without adding IdP, MFA, OAuth, sessions, or provider wiring.
+
+## Governance Access Review Contract v1
+
+- Schema: [governance.access_review.schema.json](../contracts/v1/governance.access_review.schema.json)
+- Example object: [governance.access_review.quarterly-placeholder.example.json](../contracts/examples/governance.access_review.quarterly-placeholder.example.json)
+- Purpose: records access review cadence placeholder, reviewed subject refs, findings, and separation-of-duties posture.
+- Security requirements: self-review is blocked; conflicted access reviews require independent review or fail closed.
+- MVP acceptance gates: quarterly placeholder and joiner/mover/leaver reviews can be represented without runtime role enforcement.
+
+## Governance Breakglass Contract v1
+
+- Schema: [governance.breakglass.schema.json](../contracts/v1/governance.breakglass.schema.json)
+- Example object: [governance.breakglass.blocked-mvp.example.json](../contracts/examples/governance.breakglass.blocked-mvp.example.json)
+- Purpose: records breakglass requests as denied or blocked metadata in MVP.
+- Security requirements: breakglass cannot bypass Guardian, evidence, incident review, tenant isolation, or blocked-MVP action classes.
+- MVP acceptance gates: breakglass attempts can be evidenced as denied without creating executable emergency access.
+
+## Governance Audit Export Contract v1
+
+- Schema: [governance.audit_export.schema.json](../contracts/v1/governance.audit_export.schema.json)
+- Example object: [governance.audit_export.requested-placeholder.example.json](../contracts/examples/governance.audit_export.requested-placeholder.example.json)
+- Purpose: records audit export, customer exit, delete request, redaction profile, non-exportable classes, integrity refs, and evidence preservation conflict posture.
+- Privacy requirements: export records use metadata refs and exclude credentials, raw prompts, raw connector payloads, raw tool output, raw customer files, and out-of-scope tenant data.
+- MVP acceptance gates: export/delete posture can be represented without adding an export service, delete service, durable database, or customer portal.
+
+## Governance Connector Consent Contract v1
+
+- Schema: [governance.connector_consent.schema.json](../contracts/v1/governance.connector_consent.schema.json)
+- Example object: [governance.connector_consent.revoked.example.json](../contracts/examples/governance.connector_consent.revoked.example.json)
+- Purpose: records connector owner, consent, scope review, blocked scopes, revocation, rotation placeholder, data class, and prompt-injection review posture.
+- Security requirements: `live_access_enabled` and `secret_material_present` remain false; scope expansion requires future independent review.
+- MVP acceptance gates: revoked or blocked connector consent can be represented without OAuth, tokens, webhooks, live reads, writes, or sends.
+
+## Governance Update Record Contract v1
+
+- Schema: [governance.update_record.schema.json](../contracts/v1/governance.update_record.schema.json)
+- Example object: [governance.update_record.rollback-required.example.json](../contracts/examples/governance.update_record.rollback-required.example.json)
+- Purpose: records policy bundle, worker runtime, model bundle, or config update posture; hash/signature placeholders; staged rollout; approval; rollback; attestation; and evidence refs.
+- Security requirements: signature or verification is required as policy posture, automatic updates are false, and failed verification or suspicious posture can require rollback or quarantine.
+- MVP acceptance gates: update/rollback decisions can be represented without implementing an updater, installer, scheduler, daemon, endpoint control, or software update execution.
+
 ## Task Execution Contract v1
 
 - Schema: [task.execution.schema.json](../contracts/v1/task.execution.schema.json)

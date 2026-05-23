@@ -146,6 +146,9 @@ Update posture must include:
 Software install/update requires approval.
 
 Update and rollback planning is expanded in [Update Rollback Blueprint](deployment/UPDATE_ROLLBACK_BLUEPRINT.md). Automatic update execution remains blocked; update channels are policy bundle, worker runtime, model bundle, and config metadata refs only.
+Governance details are in [Signed Update Rollback Policy](governance/SIGNED_UPDATE_ROLLBACK_POLICY.md)
+and [Update Rollback Approval](runbooks/update-rollback-approval.md). These
+docs do not implement an updater, installer, scheduler, or rollback service.
 
 ## Quarantine Behavior
 
@@ -167,7 +170,8 @@ Logs should include operational state and correlation IDs. Logs must not include
 
 ## Open Questions
 
-- Required hardware attestation level.
+- Required hardware attestation method, trust root, and key lifecycle beyond
+  the placeholder in [Worker Attestation Policy](governance/WORKER_ATTESTATION_POLICY.md).
 - Local model default.
 - Cache retention period.
 - Network segmentation assumptions.

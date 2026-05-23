@@ -1,0 +1,61 @@
+{
+  "contract_name": "governance.connector_consent",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-connector-consent-001",
+  "causation_id": null,
+  "idempotency_key": "idem-connector-consent-001",
+  "connector_consent_id": "connector-consent-revoked-001",
+  "connector_id": "connector-email-mock-001",
+  "connector_type": "email",
+  "connector_owner_ref": "connector-owner-ref-001",
+  "consent_grantor_ref": "operator-ref-001",
+  "consent_status": "revoked",
+  "scope_review_status": "blocked",
+  "requested_scopes": [
+    "read_metadata",
+    "draft_only"
+  ],
+  "approved_scopes": [],
+  "blocked_scopes": [
+    "read_content",
+    "write_send",
+    "admin",
+    "regulated_or_sensitive",
+    "live_access",
+    "webhook",
+    "token_storage"
+  ],
+  "secrets_ref": null,
+  "secret_material_present": false,
+  "live_access_enabled": false,
+  "revocation": {
+    "revocation_status": "revoked",
+    "revoked_at": "2026-05-22T21:20:00Z",
+    "revoked_by_ref": "security-reviewer-ref-001",
+    "revocation_evidence_ref": "ev-connector-revoked-001"
+  },
+  "rotation_placeholder": "required_before_live",
+  "data_classification": "customer_confidential",
+  "prompt_injection_review": "required_before_live",
+  "policy_refs": [
+    "policy.connector_consent_scope_revocation.phase0"
+  ],
+  "status": "revoked",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-22T21:20:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "guardian_decision_id": "gd-connector-consent-001",
+  "evidence_refs": [
+    "ev-connector-consent-001",
+    "ev-connector-revoked-001"
+  ],
+  "blocked_reason": null,
+  "created_at": "2026-05-22T21:20:00Z",
+  "updated_at": "2026-05-22T21:20:00Z"
+}

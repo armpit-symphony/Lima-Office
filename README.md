@@ -81,6 +81,7 @@ No remediation runtime, endpoint control, production server change, or network c
 - [Next phase plan](docs/NEXT_PHASE_PLAN.md)
 - [Runtime boundaries](docs/RUNTIME_BOUNDARIES.md)
 - [Worker deployment blueprint](docs/deployment/WORKER_DEPLOYMENT_BLUEPRINT.md)
+- [Governance policy details](docs/governance/README.md)
 - [Runbooks](docs/runbooks/)
 
 ## Current Repo Status
@@ -90,6 +91,7 @@ This repo is Phase 1A mock runtime scaffolding only:
 - Docs and scaffolding are allowed.
 - Contracts are required before implementation.
 - Mock in-memory worker, heartbeat, task, Guardian, and evidence flows are allowed.
+- Governance policy details are docs/contracts scaffolding only.
 - No production-readiness claims.
 - No live customer connectors.
 - No live runtime behavior beyond the tiny in-memory scaffold.

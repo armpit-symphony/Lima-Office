@@ -32,6 +32,10 @@ health/heartbeat posture, quarantine, and rollback gates are exercised.
 - Supervisor restart must be visible to workers as degraded or unreachable
   heartbeat state, not hidden background recovery.
 - Operator access to Supervisor status requires future IdP/MFA and RBAC policy.
+- Governance scaffolding for identity/MFA, access review, approver separation,
+  breakglass, attestation, and update/rollback is documented in
+  [Governance Docs](../governance/README.md). Provider selection and runtime
+  enforcement remain blocked.
 
 ## Deployment Modes
 
@@ -176,6 +180,8 @@ Each worker must have:
 
 Attestation is a placeholder in this phase. TPM/secure boot are preferred future
 inputs, but absence of attestation cannot be treated as stronger trust.
+See [Worker Attestation Policy](../governance/WORKER_ATTESTATION_POLICY.md) and
+[Worker Attestation Failure](../runbooks/worker-attestation-failure.md).
 
 ## Policy/Model Hash Expectations
 
@@ -248,6 +254,8 @@ Update channels:
 All update plans require evidence refs, operator visibility, known-good rollback
 state, and quarantine on failed or suspicious update. Software install/update
 execution requires approval and is not implemented by this blueprint.
+See [Signed Update Rollback Policy](../governance/SIGNED_UPDATE_ROLLBACK_POLICY.md)
+and [Update Rollback Approval](../runbooks/update-rollback-approval.md).
 
 ## Quarantine/Re-Enrollment Expectations
 

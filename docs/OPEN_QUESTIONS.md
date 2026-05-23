@@ -8,29 +8,33 @@ mutation.
 
 ## Security / Governance
 
-- Operator IdP/MFA: what identity provider assumptions and MFA level should be
-  required for operators, approvers, supervisor admins, security reviewers, and
-  field IT reviewers?
-- Breakglass: what breakglass process is acceptable, who can invoke it, what
-  evidence is required, and which action classes remain blocked during
-  breakglass?
-- Access review cadence: how often should operator, approver, helper-agent,
-  worker, and LIMA IT roles be reviewed?
-- LIMA IT approver separation: who can approve LIMA IT diagnostic handoff and
-  remediation requests, and what separation of duties is required?
-- RBAC matrix: what exact role/action matrix applies after the operator IdP is
-  selected?
+- Operator IdP/MFA implementation: which IdP, MFA mechanism, session TTL,
+  device trust posture, and identity assurance evidence should back the
+  placeholders in [Identity And MFA Policy](governance/IDENTITY_AND_MFA_POLICY.md)?
+- Access review cadence: should the quarterly placeholder in
+  [Access Review](runbooks/access-review.md) become the default cadence, and
+  which events trigger additional reviews?
+- Runtime RBAC matrix: what exact role/action matrix applies after the operator
+  IdP is selected?
+- Breakglass implementation decision: breakglass is currently blocked in
+  [Breakglass Policy](governance/BREAKGLASS_POLICY.md). Should a future lane
+  implement any emergency path, and which action classes remain blocked?
+- LIMA IT approver separation implementation: [Approver Separation Policy](governance/APPROVER_SEPARATION_POLICY.md)
+  defines self-approval and conflict blocks, but who is the final independent
+  remediation approver if remediation is ever reviewed after MVP?
 
 ## Data / Compliance
 
-- Retention defaults: what default retention periods apply to evidence, memory,
-  logs, task records, incidents, worker cache refs, and LIMA IT handoff records?
-- Redaction taxonomy: what redaction profiles apply by record type, data
-  classification, and free-text field?
-- Audit export: what export manifest format, integrity metadata, redaction
-  posture, and access-control refs are required?
-- Customer exit/delete: what customer exit, delete, reset, and proof process is
-  required?
+- Retention defaults: what concrete retention periods replace the placeholders
+  in [Retention Redaction Policy](governance/RETENTION_REDACTION_POLICY.md)?
+- Redaction taxonomy: are the initial profiles in
+  [Retention Redaction Policy](governance/RETENTION_REDACTION_POLICY.md)
+  sufficient, and what redaction rule applies to each free-text field?
+- Audit export: what final export manifest format, integrity metadata, package
+  retention, and access-control refs are required beyond
+  [Audit Export And Customer Exit Policy](governance/AUDIT_EXPORT_AND_CUSTOMER_EXIT_POLICY.md)?
+- Customer exit/delete: what exact proof fields, preservation conflict rules,
+  and device/memory/cache reset evidence are required before implementation?
 - Durable evidence/export posture: what storage, emergency spool, retry/backoff,
   disk-full threshold, reconciliation, and export posture must exist before
   runtime expansion?
@@ -50,11 +54,12 @@ mutation.
   transitions beyond the planning defaults in [Worker Deployment Blueprint](deployment/WORKER_DEPLOYMENT_BLUEPRINT.md)?
 - Heartbeat thresholds: what heartbeat interval, missed-heartbeat thresholds,
   stale-age limits, and escalation timing should apply in lab mode?
-- Worker attestation: what attestation method is required for Arc worker mini
-  PCs before re-enrollment can be automated?
-- Update rollback: what signed/verified source format, known-good selection,
-  rollback trigger matrix, and approval workflow should be required beyond the
-  planning channels in [Update Rollback Blueprint](deployment/UPDATE_ROLLBACK_BLUEPRINT.md)?
+- Worker attestation: what trust root, attestation method, TPM/secure boot
+  requirement, and key lifecycle should replace the placeholder in
+  [Worker Attestation Policy](governance/WORKER_ATTESTATION_POLICY.md)?
+- Update rollback: what signed/verified source format, signer authority,
+  known-good selection, rollback trigger matrix, and approval workflow should
+  replace the placeholders in [Signed Update Rollback Policy](governance/SIGNED_UPDATE_ROLLBACK_POLICY.md)?
 - Worker hardware baseline: what exceptions, local-model sizing thresholds, and
   exact lab acceptance criteria should be applied to the vendor-neutral classes
   in [Worker Hardware Baseline](deployment/WORKER_HARDWARE_BASELINE.md)?
@@ -69,9 +74,10 @@ mutation.
 
 ## Connectors And Deployment
 
-- Connector consent/scope/revocation: what consent process, scope review,
-  revocation evidence, and read-only limits are required before any live
-  connector review?
+- Connector consent/scope/revocation: what final consent expiry, provider scope
+  mapping, live-review threshold, revocation verification, and prompt-injection
+  test evidence should replace the placeholders in
+  [Connector Consent Scope Revocation Policy](governance/CONNECTOR_CONSENT_SCOPE_REVOCATION_POLICY.md)?
 - Model routing defaults: what tasks can use local models, what tasks can use
   subscription/cloud model classes, and what data classifications block cloud
   routing?
@@ -96,6 +102,23 @@ Resolved in [Deployment Docs](deployment/README.md) and `worker.deployment`:
 - Worker deployment, update/rollback, and field IT preflight runbooks exist as
   manual operator docs only.
 
+Resolved as fail-closed governance scaffolding in [Governance Docs](governance/README.md)
+and governance contracts:
+
+- Identity/MFA, role, session, device trust, and access review posture can be
+  represented by `governance.identity` and `governance.access_review`.
+- Approver separation and blocked self-approval cases are documented.
+- Breakglass is explicitly blocked for MVP and can be represented by
+  `governance.breakglass` denial metadata.
+- Retention/redaction record coverage, export/delete review posture, and
+  customer exit process are documented as placeholders without final legal
+  retention periods.
+- Connector consent, scope review, revocation, rotation placeholder, data
+  class, and prompt-injection review posture can be represented by
+  `governance.connector_consent`.
+- Worker attestation and signed update/rollback posture can be represented by
+  policy docs, runbooks, and `governance.update_record`.
+
 Resolved in [Schema Hardening Notes](SCHEMA_HARDENING_NOTES.md) and [contracts/v1](../contracts/v1):
 
 - `approval.result` is a separate v1 schema.
@@ -119,10 +142,14 @@ Resolved in [Phase 1A Runtime Scaffolding](PHASE_1A_RUNTIME_SCAFFOLDING.md):
 - What audit export manifest format is required?
 - What customer exit/delete/reset process and proof fields are required?
 - What local emergency evidence spool depth, retry/backoff, disk-full threshold, and reconciliation process should be approved?
-- What update rollback runbook and policy are required before runtime?
-- What connector consent, scope review, and revocation policy is required before any live connector review?
+- What final signing root, source format, known-good selection, and rollback
+  trigger matrix should replace the placeholders in the update rollback policy?
+- What final connector consent expiry, provider scope mapping, and revocation
+  verification are required before any live connector review?
 - What access role/RBAC matrix should be enforced once the operator identity provider is selected?
 - What operator identity provider and MFA level should be assumed for approval and token verification?
 - What worker attestation method should be used before re-enrollment can be automated?
-- What breakglass policy is acceptable, and which actions remain blocked during breakglass?
-- Who can approve LIMA IT remediation requests, and what separation of duties is required?
+- Should any future breakglass implementation be allowed beyond the current
+  blocked placeholder, and which actions remain blocked during breakglass?
+- If LIMA IT remediation is reviewed after MVP, who is the independent approver
+  and what separation evidence is required?

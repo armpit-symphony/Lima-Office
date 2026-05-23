@@ -4,6 +4,8 @@
 
 Define Phase 0 retention, redaction, export, delete, and access placeholders for LIMA Office records. This matrix is not a legal or compliance claim. Unknown values remain policy decisions needed before runtime.
 
+Detailed governance scaffolding is in [Retention Redaction Policy](../governance/RETENTION_REDACTION_POLICY.md) and [Audit Export And Customer Exit Policy](../governance/AUDIT_EXPORT_AND_CUSTOMER_EXIT_POLICY.md). The policies expand record coverage and fail-closed posture, but final legal retention periods remain open.
+
 ## Policy Metadata
 
 - Policy ref: `policy.retention_redaction.phase0`
@@ -13,7 +15,7 @@ Define Phase 0 retention, redaction, export, delete, and access placeholders for
 - Applies to contracts: all v1 contracts with data classification, retention, redaction, export, delete, or evidence fields.
 - Evidence artifact types: `evidence_artifact`, `memory_access`, `tool_invocation`, `model_route`, `connector_trust`, `incident`, `lima_it_handoff`.
 - Fail-closed outcome: if retention, redaction, export, or delete posture is unclear for sensitive data, block durable writes and external export.
-- Runbook: customer exit/delete runbook needed before runtime.
+- Runbook: [Customer Exit Delete Runbook](../runbooks/customer-exit-delete.md).
 
 ## Must Not
 

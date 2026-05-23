@@ -68,6 +68,14 @@ Recommended order: first.
 
 Purpose: close the policy blockers that currently prevent runtime expansion.
 
+Status: documented in [Governance Docs](governance/README.md). The lane adds
+fail-closed policy scaffolding and metadata contracts for identity/MFA
+placeholders, access review, approver separation, breakglass denial, retention
+and redaction, audit export/customer exit, connector consent/revocation, worker
+attestation, and signed update/rollback. It does not select providers, final
+legal retention periods, signing roots, attestation mechanisms, or runtime
+enforcement.
+
 Prerequisites:
 
 - Approval-token lifecycle, evidence writer failure, prompt-injection handling,
@@ -114,6 +122,9 @@ Prerequisites:
 - Supervisor health fields and reason taxonomy have a draft.
 - Approval, evidence, quarantine, worker state, and LIMA IT handoff states are
   mapped to contracts.
+- Governance identity, access review, breakglass denial, audit export/delete,
+  connector revocation, attestation failure, and update/rollback states are
+  mapped to contracts and runbooks.
 - The spec is framed as UX requirements only.
 
 Allowed work:

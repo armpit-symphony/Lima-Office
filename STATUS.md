@@ -24,9 +24,14 @@ formally superseded.
   worker, decision, roadmap, validation, policy, and runbook docs.
 - Worker deployment blueprint docs for mini PC hardware, network, install
   layout, lifecycle, update/rollback, and field IT preflight.
+- Governance policy details for identity/MFA placeholders, approver separation,
+  breakglass blocked status, retention/redaction, audit export/customer exit,
+  connector consent, worker attestation, and signed update/rollback posture.
 - Versioned v1 contract schemas and sanitized examples in [contracts](contracts).
 - `worker.deployment` contract schema and examples for deployment planning
   metadata.
+- Governance metadata contract schemas and examples for identity, access
+  review, breakglass, audit export, connector consent, and update records.
 - Strict contract validation through [scripts/validate-contracts.py](scripts/validate-contracts.py).
 - Local Markdown link validation through [scripts/check-doc-links.py](scripts/check-doc-links.py).
 - Phase 1A mock Python runtime scaffolding in [lima_office](lima_office).
@@ -78,14 +83,19 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 - Define durable evidence storage, audit export, retention, redaction, and
   customer exit/delete posture.
 - Select operator IdP/MFA, breakglass, access review cadence, and LIMA IT
-  approver separation.
-- Define worker attestation and update rollback gates.
-- Define connector consent, scope review, revocation, and first deployment
-  posture before any live connector review.
+  approver separation implementation. Governance scaffolding now defines
+  fail-closed metadata, role separation, and blocked breakglass posture, but no
+  provider, runtime enforcement, or final cadence is selected.
+- Define final worker attestation method, trust root, signed update format,
+  and rollback trigger defaults. Governance scaffolding now blocks automatic
+  update behavior and automated re-enrollment.
+- Define final connector consent expiry, live-review criteria, provider scope
+  mapping, and prompt-injection test evidence before any live connector review.
 
 ## Next Recommended Lane
 
-After this worker deployment blueprint branch is reviewed, the next safe lane is
-Governance policy details. It should close IdP/MFA, RBAC, breakglass, access
-review, retention, redaction, audit export, customer exit/delete, attestation,
-and LIMA IT approver separation before runtime expansion.
+After this governance policy details branch is reviewed, the next safe lane is
+Operator console UX spec. It should define what an operator sees for identity,
+approval, evidence, quarantine, export/delete, connector revocation, attestation
+failure, and update/rollback states without adding a UI framework or runtime
+controls.

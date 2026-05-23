@@ -26,6 +26,12 @@ Version 1 schemas are in [v1](v1):
 - [worker.lifecycle.schema.json](v1/worker.lifecycle.schema.json)
 - [worker.heartbeat.schema.json](v1/worker.heartbeat.schema.json)
 - [worker.deployment.schema.json](v1/worker.deployment.schema.json)
+- [governance.identity.schema.json](v1/governance.identity.schema.json)
+- [governance.access_review.schema.json](v1/governance.access_review.schema.json)
+- [governance.breakglass.schema.json](v1/governance.breakglass.schema.json)
+- [governance.audit_export.schema.json](v1/governance.audit_export.schema.json)
+- [governance.connector_consent.schema.json](v1/governance.connector_consent.schema.json)
+- [governance.update_record.schema.json](v1/governance.update_record.schema.json)
 - [task.execution.schema.json](v1/task.execution.schema.json)
 - [guardian.decision.schema.json](v1/guardian.decision.schema.json)
 - [approval.request.schema.json](v1/approval.request.schema.json)
@@ -53,6 +59,12 @@ Sanitized example objects are in [examples](examples):
 - [worker.deployment.lightweight.example.json](examples/worker.deployment.lightweight.example.json)
 - [worker.deployment.local-model.example.json](examples/worker.deployment.local-model.example.json)
 - [worker.deployment.quarantined.example.json](examples/worker.deployment.quarantined.example.json)
+- [governance.identity.operator-mfa-required.example.json](examples/governance.identity.operator-mfa-required.example.json)
+- [governance.access_review.quarterly-placeholder.example.json](examples/governance.access_review.quarterly-placeholder.example.json)
+- [governance.breakglass.blocked-mvp.example.json](examples/governance.breakglass.blocked-mvp.example.json)
+- [governance.audit_export.requested-placeholder.example.json](examples/governance.audit_export.requested-placeholder.example.json)
+- [governance.connector_consent.revoked.example.json](examples/governance.connector_consent.revoked.example.json)
+- [governance.update_record.rollback-required.example.json](examples/governance.update_record.rollback-required.example.json)
 - [task.execution.example.json](examples/task.execution.example.json)
 - [guardian.decision.example.json](examples/guardian.decision.example.json)
 - [approval.request.example.json](examples/approval.request.example.json)
@@ -156,6 +168,11 @@ The v1 schemas use JSON Schema draft 2020-12 conditionals to block unsafe state 
 - `approval.request`, `approval.result`, `approval.token`, and `token.verification` bind approval status, approver identity, token state, token verification, denial, expiry, revoke, and blocked-MVP outcomes.
 - `guardian.decision`, `task.execution`, `tool.invocation`, `memory.access`, and `model.route` bind policy result, approval state, taint refs, evidence failure, terminal states, and denial/failure reasons.
 - `worker.lifecycle`, `worker.heartbeat`, and `worker.deployment` bind identity failure, quarantine, revoke, evidence-writer failure, deployment refs, update/rollback posture, and healthy states.
+- Governance schemas bind identity/MFA placeholder posture, access review,
+  breakglass denial, audit export/delete request posture, connector consent and
+  revocation, and signed update/rollback metadata. They do not implement
+  identity providers, breakglass sessions, export/delete services, live
+  connectors, update agents, or attestation mechanisms.
 - `lima_it.handoff` keeps diagnostics read-only and keeps remediation non-executing for Phase 0.
 - `evidence.artifact` and `evidence.failure` bind redaction, evidence-writer failure, emergency spool refs, reconciliation, incident, and quarantine fields.
 
@@ -194,6 +211,7 @@ Phase 0 policies are indexed in [docs/policies/README.md](../docs/policies/READM
 - [Prompt Injection Handling](../docs/policies/prompt-injection-handling.md)
 - [Worker Quarantine And Re-Enrollment](../docs/policies/worker-quarantine-reenrollment.md)
 - [LIMA IT Diagnostic And Remediation Handoff](../docs/policies/lima-it-diagnostic-remediation-handoff.md)
+- [Governance Policies](../docs/governance/README.md)
 
 Guardian decisions must link to relevant `policy_refs`, `policy_version`, approval state, and evidence artifact refs. If the needed policy is missing or ambiguous, consumers fail closed.
 

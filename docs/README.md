@@ -34,8 +34,26 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Update rollback blueprint](deployment/UPDATE_ROLLBACK_BLUEPRINT.md)
 - [Field IT checklist](deployment/FIELD_IT_CHECKLIST.md)
 
+## Governance Docs
+
+- [Governance index](governance/README.md)
+- [Identity and MFA policy](governance/IDENTITY_AND_MFA_POLICY.md)
+- [Approver separation policy](governance/APPROVER_SEPARATION_POLICY.md)
+- [Breakglass policy](governance/BREAKGLASS_POLICY.md)
+- [Retention redaction policy](governance/RETENTION_REDACTION_POLICY.md)
+- [Audit export and customer exit policy](governance/AUDIT_EXPORT_AND_CUSTOMER_EXIT_POLICY.md)
+- [Connector consent scope revocation policy](governance/CONNECTOR_CONSENT_SCOPE_REVOCATION_POLICY.md)
+- [Worker attestation policy](governance/WORKER_ATTESTATION_POLICY.md)
+- [Signed update rollback policy](governance/SIGNED_UPDATE_ROLLBACK_POLICY.md)
+
 ## Runbooks
 
+- [Access review](runbooks/access-review.md)
+- [Breakglass review](runbooks/breakglass-review.md)
+- [Customer exit delete](runbooks/customer-exit-delete.md)
+- [Connector revocation](runbooks/connector-revocation.md)
+- [Worker attestation failure](runbooks/worker-attestation-failure.md)
+- [Update rollback approval](runbooks/update-rollback-approval.md)
 - [Worker onboarding](runbooks/worker-onboarding.md)
 - [Worker deployment](runbooks/worker-deployment.md)
 - [Worker quarantine](runbooks/worker-quarantine.md)

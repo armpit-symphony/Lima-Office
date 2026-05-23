@@ -1,0 +1,320 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/governance.access_review.schema.json",
+  "title": "Governance Access Review Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "access_review_id",
+    "review_type",
+    "review_period",
+    "reviewed_subject_refs",
+    "reviewer_identity_ref",
+    "approver_identity_ref",
+    "separation_check",
+    "policy_refs",
+    "findings",
+    "status",
+    "producer",
+    "policy_version",
+    "guardian_decision_id",
+    "evidence_refs",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "governance.access_review"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "access_review_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "review_type": {
+      "type": "string",
+      "enum": [
+        "quarterly_placeholder",
+        "joiner",
+        "mover",
+        "leaver",
+        "privileged_role",
+        "incident_triggered",
+        "customer_exit"
+      ]
+    },
+    "review_period": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "starts_at",
+        "ends_at",
+        "cadence"
+      ],
+      "properties": {
+        "starts_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ends_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "cadence": {
+          "type": "string",
+          "enum": [
+            "placeholder_quarterly",
+            "event_driven",
+            "not_selected"
+          ]
+        }
+      }
+    },
+    "reviewed_subject_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reviewer_identity_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approver_identity_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "separation_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requester_ref",
+        "reviewer_ref",
+        "approver_ref",
+        "self_review_blocked",
+        "conflict_status"
+      ],
+      "properties": {
+        "requester_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reviewer_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "approver_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "self_review_blocked": {
+          "type": "boolean"
+        },
+        "conflict_status": {
+          "type": "string",
+          "enum": [
+            "not_evaluated",
+            "no_conflict",
+            "conflict_found",
+            "blocked"
+          ]
+        }
+      }
+    },
+    "policy_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "finding_ref",
+          "finding_type",
+          "action_required"
+        ],
+        "properties": {
+          "finding_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "finding_type": {
+            "type": "string",
+            "enum": [
+              "role_confirmed",
+              "role_remove",
+              "role_change",
+              "mfa_missing",
+              "identity_ambiguous",
+              "conflict_review_required"
+            ]
+          },
+          "action_required": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "in_review",
+        "completed_placeholder",
+        "changes_required",
+        "blocked"
+      ]
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "operator_console",
+            "supervisor",
+            "security_reviewer",
+            "compliance_reviewer"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "blocked_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "separation_check": {
+          "properties": {
+            "self_review_blocked": {
+              "const": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "blocked"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "blocked_reason"
+        ],
+        "properties": {
+          "blocked_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "contract_name": "governance.update_record",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-update-record-001",
+  "causation_id": null,
+  "idempotency_key": "idem-update-record-001",
+  "update_record_id": "update-record-rollback-required-001",
+  "update_type": "policy_bundle",
+  "target_refs": [
+    "worker-ref-arc-file-01"
+  ],
+  "source_ref": "update-source-ref-placeholder-001",
+  "version_ref": "policy-bundle-version-candidate-001",
+  "hash_ref": "hash-ref-policy-bundle-candidate-001",
+  "signature_verification": {
+    "required": true,
+    "verification_status": "not_selected",
+    "signer_ref": null,
+    "trust_root_ref": null
+  },
+  "staged_rollout": {
+    "channel": "manual_review",
+    "canary_required": true,
+    "automatic_update_enabled": false,
+    "pause_on_failure": true
+  },
+  "approval": {
+    "approval_required": true,
+    "approval_request_id": "approval-request-update-001",
+    "approval_result_id": null,
+    "approver_identity_ref": null
+  },
+  "rollback": {
+    "rollback_available": true,
+    "known_good_ref": "policy-bundle-known-good-001",
+    "rollback_required": true,
+    "rollback_reason": "Verification source format is unresolved.",
+    "rollback_evidence_ref": "ev-update-rollback-required-001"
+  },
+  "attestation_status": "manual_review_only",
+  "policy_refs": [
+    "policy.signed_update_rollback.phase0"
+  ],
+  "status": "rollback_required",
+  "producer": {
+    "component": "field_it_reviewer",
+    "produced_at": "2026-05-22T21:25:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "guardian_decision_id": "gd-update-record-001",
+  "evidence_refs": [
+    "ev-update-record-001",
+    "ev-update-rollback-required-001"
+  ],
+  "blocked_reason": null,
+  "created_at": "2026-05-22T21:25:00Z",
+  "updated_at": "2026-05-22T21:25:00Z"
+}

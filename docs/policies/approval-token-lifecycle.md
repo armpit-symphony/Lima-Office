@@ -14,6 +14,11 @@ Define the Phase 0 approval lifecycle for privileged and high-risk LIMA Office a
 - Evidence artifact types: `guardian_decision`, `approval_request`, `approval_token`, `denial`, `incident`.
 - Fail-closed outcome: block action, deny token use, revoke related tokens, record evidence or evidence-failure incident.
 - Runbook: [Approval Token Lifecycle Runbook](../runbooks/approval-token-lifecycle.md).
+- Governance dependencies: [Identity And MFA Policy](../governance/IDENTITY_AND_MFA_POLICY.md),
+  [Approver Separation Policy](../governance/APPROVER_SEPARATION_POLICY.md),
+  and [Breakglass Policy](../governance/BREAKGLASS_POLICY.md). Missing or
+  ambiguous identity, MFA, separation, or breakglass posture blocks privileged
+  runtime expansion.
 
 ## Scope
 

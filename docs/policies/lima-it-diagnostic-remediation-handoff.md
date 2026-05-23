@@ -14,6 +14,9 @@ Define the Phase 0 boundary between LIMA Office and LIMA IT. This policy is scaf
 - Evidence artifact types: `lima_it_handoff`, `guardian_decision`, `approval_request`, `approval_token`, `incident`.
 - Fail-closed outcome: diagnostics remain read-only; remediation remains draft/request-only; production touch is blocked.
 - Runbook: [LIMA IT Handoff Runbook](../runbooks/lima-it-handoff.md).
+- Governance dependency: [Approver Separation Policy](../governance/APPROVER_SEPARATION_POLICY.md)
+  blocks self-approval and keeps LIMA IT remediation execution non-authorized
+  for MVP.
 
 ## Must Not
 

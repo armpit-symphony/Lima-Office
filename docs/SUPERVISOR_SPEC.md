@@ -40,6 +40,12 @@ Guardian remains the syscall gate for action decisions.
 
 The approval service manages requests for privileged or high-risk work. Approval records include approver identity, scope, action class, risk tier, expiration, replay protection, and evidence references.
 
+Approval review must also account for the governance policy scaffolding in
+[Governance Docs](governance/README.md): identity/MFA posture, access review,
+approver separation, breakglass denial, export/delete review, connector consent,
+attestation, and update/rollback posture. Missing or ambiguous governance
+posture blocks privileged runtime expansion.
+
 ## Worker Registry
 
 The worker registry tracks:
@@ -89,6 +95,8 @@ The ledger records references to evidence artifacts for:
 - LIMA IT handoff.
 
 Evidence must be redaction-aware, export-aware, and retention-aware.
+Audit export and customer exit/delete posture is defined as metadata-only in
+[Audit Export And Customer Exit Policy](governance/AUDIT_EXPORT_AND_CUSTOMER_EXIT_POLICY.md).
 
 ## Tenant Memory Service
 

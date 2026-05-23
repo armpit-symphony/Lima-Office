@@ -1,0 +1,55 @@
+{
+  "contract_name": "governance.access_review",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-access-review-001",
+  "causation_id": null,
+  "idempotency_key": "idem-access-review-001",
+  "access_review_id": "access-review-quarterly-placeholder-001",
+  "review_type": "quarterly_placeholder",
+  "review_period": {
+    "starts_at": "2026-04-01T00:00:00Z",
+    "ends_at": "2026-06-30T23:59:59Z",
+    "cadence": "placeholder_quarterly"
+  },
+  "reviewed_subject_refs": [
+    "operator-ref-001",
+    "approver-ref-001"
+  ],
+  "reviewer_identity_ref": "security-reviewer-ref-001",
+  "approver_identity_ref": null,
+  "separation_check": {
+    "requester_ref": null,
+    "reviewer_ref": "security-reviewer-ref-001",
+    "approver_ref": null,
+    "self_review_blocked": true,
+    "conflict_status": "not_evaluated"
+  },
+  "policy_refs": [
+    "policy.governance_identity.phase0",
+    "policy.approver_separation.phase0"
+  ],
+  "findings": [
+    {
+      "finding_ref": "finding-mfa-missing-001",
+      "finding_type": "mfa_missing",
+      "action_required": true
+    }
+  ],
+  "status": "in_review",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-22T21:05:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "guardian_decision_id": "gd-access-review-001",
+  "evidence_refs": [
+    "ev-access-review-001"
+  ],
+  "blocked_reason": null,
+  "created_at": "2026-05-22T21:05:00Z",
+  "updated_at": "2026-05-22T21:05:00Z"
+}

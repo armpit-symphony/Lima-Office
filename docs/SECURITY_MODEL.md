@@ -73,6 +73,12 @@ Initial roles:
 
 Privileged actions require role checks, Guardian decision, approval when required, and evidence.
 
+Governance scaffolding for identity, MFA, access review, and role separation is
+documented in [Identity And MFA Policy](governance/IDENTITY_AND_MFA_POLICY.md)
+and [Approver Separation Policy](governance/APPROVER_SEPARATION_POLICY.md).
+The exact IdP, MFA mechanism, session TTL, device trust rule, and runtime RBAC
+enforcement remain unresolved and must fail closed.
+
 ## Tenant Isolation
 
 Even with one tenant at a time, the system must design tenant isolation from day one:
@@ -154,6 +160,9 @@ The [Update Rollback Blueprint](deployment/UPDATE_ROLLBACK_BLUEPRINT.md)
 defines update channels as policy bundle, worker runtime, model bundle, and
 config refs. Automatic update execution is blocked for MVP. Software
 install/update remains approval-required and non-executing in this docs lane.
+Governance metadata for update review is represented by
+[governance.update_record.schema.json](../contracts/v1/governance.update_record.schema.json)
+and [Signed Update Rollback Policy](governance/SIGNED_UPDATE_ROLLBACK_POLICY.md).
 
 ## Connector Trust Program
 
@@ -167,6 +176,25 @@ Connectors remain mock/readiness-only in Phase 0. Future connector trust must do
 - Data classification.
 - Prompt injection exposure.
 - Audit/evidence.
+
+[Connector Consent Scope Revocation Policy](governance/CONNECTOR_CONSENT_SCOPE_REVOCATION_POLICY.md)
+defines the current fail-closed consent, scope, and revocation posture. It does
+not authorize live connector access.
+
+## Breakglass
+
+Breakglass is a blocked placeholder in MVP. Requests can be represented by
+[governance.breakglass.schema.json](../contracts/v1/governance.breakglass.schema.json)
+and [Breakglass Policy](governance/BREAKGLASS_POLICY.md), but no breakglass
+session, bypass, or emergency runtime authority exists.
+
+## Audit Export And Customer Exit
+
+Audit export and customer exit/delete posture is documented in
+[Audit Export And Customer Exit Policy](governance/AUDIT_EXPORT_AND_CUSTOMER_EXIT_POLICY.md)
+and [Retention Redaction Policy](governance/RETENTION_REDACTION_POLICY.md).
+Final legal retention periods, storage design, and delete conflict rules remain
+open; ambiguous export/delete requests fail closed.
 
 ## Production Action Rule
 
@@ -183,6 +211,7 @@ Before runtime scaffolding, the following policies must be resolved or carried a
 - [Prompt Injection Handling](policies/prompt-injection-handling.md)
 - [Worker Quarantine And Re-Enrollment](policies/worker-quarantine-reenrollment.md)
 - [LIMA IT Diagnostic And Remediation Handoff](policies/lima-it-diagnostic-remediation-handoff.md)
+- [Governance Policies](governance/README.md)
 
 ## Schema Control Points
 
@@ -202,6 +231,7 @@ The Phase 0 field-level schemas in [contracts/v1](../contracts/v1) define the mi
 - Evidence failure: [evidence.failure.schema.json](../contracts/v1/evidence.failure.schema.json) records pre-action blocks, post-action degraded state, emergency spool refs, reconciliation, incidents, and quarantine/token-revoke posture.
 - LIMA IT handoff: [lima_it.handoff.schema.json](../contracts/v1/lima_it.handoff.schema.json) separates read-only diagnostics from approval-required remediation and blocks production touch in MVP.
 - LIMA IT remediation-denied example: [lima_it.handoff.remediation-denied-mvp.example.json](../contracts/examples/lima_it.handoff.remediation-denied-mvp.example.json) shows remediation request metadata denied for Phase 0 with no execution authorization.
+- Governance identity/access review/breakglass/audit export/connector consent/update records: [governance.identity.schema.json](../contracts/v1/governance.identity.schema.json), [governance.access_review.schema.json](../contracts/v1/governance.access_review.schema.json), [governance.breakglass.schema.json](../contracts/v1/governance.breakglass.schema.json), [governance.audit_export.schema.json](../contracts/v1/governance.audit_export.schema.json), [governance.connector_consent.schema.json](../contracts/v1/governance.connector_consent.schema.json), and [governance.update_record.schema.json](../contracts/v1/governance.update_record.schema.json) record governance posture without implementing live capabilities.
 
 ## Conceptual Standards Mapping
 

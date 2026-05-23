@@ -1,0 +1,339 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/governance.identity.schema.json",
+  "title": "Governance Identity Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "identity_record_id",
+    "subject_ref",
+    "subject_type",
+    "identity_provider_ref",
+    "mfa_status",
+    "session_assurance",
+    "device_trust_status",
+    "roles",
+    "least_privilege_review_status",
+    "access_review_ref",
+    "joiner_mover_leaver_state",
+    "policy_refs",
+    "status",
+    "producer",
+    "policy_version",
+    "guardian_decision_id",
+    "evidence_refs",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "governance.identity"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "identity_record_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subject_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subject_type": {
+      "type": "string",
+      "enum": [
+        "human_operator",
+        "approver",
+        "supervisor_admin",
+        "field_it_reviewer",
+        "security_reviewer",
+        "compliance_reviewer",
+        "worker_identity",
+        "service_identity",
+        "helper_identity"
+      ]
+    },
+    "identity_provider_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "mfa_status": {
+      "type": "string",
+      "enum": [
+        "required_not_configured",
+        "configured",
+        "verified_for_session",
+        "not_applicable_service_identity",
+        "blocked"
+      ]
+    },
+    "session_assurance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session_ref",
+        "fresh_intent_ref",
+        "session_started_at",
+        "session_expires_at",
+        "assurance_status"
+      ],
+      "properties": {
+        "session_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fresh_intent_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "session_started_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "session_expires_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "assurance_status": {
+          "type": "string",
+          "enum": [
+            "placeholder",
+            "fresh",
+            "stale",
+            "expired",
+            "blocked"
+          ]
+        }
+      }
+    },
+    "device_trust_status": {
+      "type": "string",
+      "enum": [
+        "not_evaluated",
+        "trusted_placeholder",
+        "untrusted",
+        "blocked"
+      ]
+    },
+    "roles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "operator",
+          "approver",
+          "supervisor_admin",
+          "field_it_reviewer",
+          "security_reviewer",
+          "compliance_reviewer",
+          "lima_it_reviewer",
+          "worker_node",
+          "helper_agent",
+          "service_identity"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "least_privilege_review_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "reviewed",
+        "changes_required",
+        "blocked"
+      ]
+    },
+    "access_review_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "joiner_mover_leaver_state": {
+      "type": "string",
+      "enum": [
+        "joiner_pending",
+        "active",
+        "mover_review_required",
+        "leaver_revocation_pending",
+        "revoked",
+        "blocked"
+      ]
+    },
+    "policy_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active_placeholder",
+        "review_required",
+        "blocked",
+        "revoked"
+      ]
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "operator_console",
+            "supervisor",
+            "security_reviewer",
+            "compliance_reviewer"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "blocked_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "blocked"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "blocked_reason"
+        ],
+        "properties": {
+          "blocked_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "mfa_status": {
+            "const": "blocked"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "enum": [
+              "review_required",
+              "blocked",
+              "revoked"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
