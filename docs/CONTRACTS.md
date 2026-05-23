@@ -25,6 +25,9 @@ Phase 0 policies are pre-runtime requirements and are indexed in [docs/policies/
 - `contract_version` follows semantic versioning. Version `1.0.0` is the Phase 0 baseline.
 - Additive optional fields may be introduced in a minor version if old consumers can ignore them.
 - Required field changes, enum removals, renamed fields, or state semantic changes require a major version.
+- Phase 1A may tighten v1 mock-only schemas before any production consumer
+  exists, but those changes still require updated examples, tests, and docs.
+  This does not authorize production consumers or live runtime behavior.
 - New producers must not emit a contract version unless the relevant schema and example are present.
 - Runtime implementation remains blocked until the specific contract it needs is present, reviewed, and mapped to Guardian, approval, and evidence behavior.
 - Runtime implementation also remains blocked when the relevant policy or operator runbook is missing or ambiguous.
@@ -272,16 +275,59 @@ monitoring.
 - Version: `1.0.0`.
 - Producer: Guardian.
 - Consumer: Supervisor, workers, helper agents, approval workflow, tool/model/memory/connector boundaries, evidence ledger.
-- Required fields: common envelope; `decision_id`, `request_id`, `requested_by`, `subject`, `action_class`, `resource_ref`, `policy_refs`, `policy_snapshot_hash`, `valid_for_action_ref`, `decision`, `approval_required`, `approval_request_id`, `approval_token_id`, `denial_reason`, `redaction_level`, `evidence_required`, `evidence_artifact_id`, `evidence_artifact_ids`, `prompt_injection`, `expires_at`.
-- Optional fields: none for the core decision; nullable approval and denial fields are explicit.
+- Required fields: common envelope; `decision_id`, `guardian_decision_id`,
+  `request_id`, `requested_by`, `subject`, `action_class`, `resource_ref`,
+  `policy_refs`, `policy_snapshot_hash`, `valid_for_action_ref`, `decision`,
+  `approval_required`, approval refs, `denial_reason`, `redaction_level`,
+  `evidence_required`, evidence refs, `prompt_injection`, `issued_at`,
+  `effective_at`, `expires_at`, `max_age_seconds`,
+  `clock_skew_allowance_seconds`, `decision_nonce`, `replay_policy`,
+  `decision_scope_hash`, bound tenant/task/worker/action/tool scope,
+  approval binding/token verification refs, replay status, and revoke/consume
+  metadata.
+- Optional fields: nullable approval, denial, worker, consume, and revoke fields
+  are explicit.
 - Allowed decisions: `allow`, `allow_with_evidence`, `requires_approval`, `deny`, `block_mvp`, `quarantine_subject`.
 - Terminal states: `deny`, `block_mvp`, `quarantine_subject`.
-- Security requirements: decision is bound to tenant, task/action/resource/input refs and cannot be reused across changed inputs; blocked MVP actions cannot become approval-required actions.
+- Security requirements: decision is bound to tenant, task/action/resource/input
+  refs and cannot be reused across changed inputs. Runtime invariants require
+  `guardian_decision_id` to equal `decision_id`, enforce UTC-aware timestamp
+  windows, consume one-time decision nonces in memory for tests, and block
+  stale, replayed, revoked, tainted, or mismatched decisions. Blocked-MVP
+  actions cannot become approval-required actions.
 - Approval requirements: `requires_approval` creates or links an `approval.request`; it is not execution authorization.
 - Evidence requirements: every decision, including allow and deny, links evidence.
 - Failure behavior: no valid Guardian decision means fail closed.
 - Backwards compatibility notes: policy refs and decision meanings are compatibility-sensitive and require review before changes.
 - MVP acceptance gates: unauthorized file deletion, external sends, live connector writes, and remediation without approval are denied or blocked.
+
+## Guardian Replay Contract v1
+
+- Schema: [guardian.replay.schema.json](../contracts/v1/guardian.replay.schema.json)
+- Example objects: [guardian.replay.valid-first-use.example.json](../contracts/examples/guardian.replay.valid-first-use.example.json), [guardian.replay.replay-denied.example.json](../contracts/examples/guardian.replay.replay-denied.example.json), [guardian.replay.expired.example.json](../contracts/examples/guardian.replay.expired.example.json), [guardian.replay.scope-mismatch.example.json](../contracts/examples/guardian.replay.scope-mismatch.example.json), [guardian.replay.blocked-mvp.example.json](../contracts/examples/guardian.replay.blocked-mvp.example.json)
+- Purpose: records metadata-only Guardian decision replay-check outcomes.
+- Version: `1.0.0`.
+- Producer: Guardian or Supervisor mock verifier.
+- Consumer: invariant tests, future operator console planning, evidence review,
+  and runbook triage.
+- Required fields: common envelope; `replay_check_id`,
+  `guardian_decision_id`, `decision_nonce`, approval binding/token verification
+  refs, task/worker/action/tool scope, `decision_scope_hash`,
+  `policy_snapshot_hash`, `expires_at`, `replay_check_result`, `checked_at`,
+  evidence refs, mismatch reasons, data classification, redaction level,
+  retention placeholder, export eligibility, and delete policy ref.
+- Allowed outcomes: `valid_first_use`, `replay_denied`, `expired`, `stale`,
+  `revoked`, `scope_mismatch`, `tenant_mismatch`, `blocked_mvp`.
+- Security requirements: records use refs only, carry no secret material, and
+  do not authorize execution. A `valid_first_use` record is evidence metadata
+  for a mock check, not a durable runtime capability.
+- Evidence requirements: replay, expiry, stale, mismatch, and blocked-MVP
+  outcomes require evidence refs.
+- Failure behavior: any failed replay check blocks the requested action and
+  should become incident-review input if repeated.
+- MVP acceptance gates: valid first-use and denial examples validate without
+  adding durable replay storage, live connectors, external sends, remediation,
+  UI, or production monitoring.
 
 ## Approval Request Contract v1
 

@@ -6,7 +6,7 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
-Current working branch: `approval-token-runtime-binding-design`
+Current working branch: `guardian-expiry-replay-policy-design`
 
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
@@ -15,13 +15,13 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A approval-token binding hardening. Phase 1A mock
-runtime scaffolding is present, the v2 invariant checkpoint is reachable, and
-this branch adds first-class approval binding contracts, approval-chain example
-bundles, mock/in-memory one-time binding verification, and tests. Runtime
-expansion remains blocked until the remaining gates in this file,
-[Baseline](docs/BASELINE.md), and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md)
-are resolved.
+Current phase: Phase 1A Guardian expiry/replay hardening. Phase 1A mock runtime
+scaffolding is present, the v2 invariant checkpoint and approval-token binding
+checkpoint are reachable, and this branch adds first-class Guardian
+expiry/replay policy, `guardian.replay` metadata, mock/in-memory one-time
+Guardian decision nonce verification, and tests. Runtime expansion remains
+blocked until the remaining gates in this file, [Baseline](docs/BASELINE.md),
+and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md) are resolved.
 
 Superseded missing checkpoint: the previously reported
 `phase-1a-cross-contract-invariants` commit
@@ -60,6 +60,12 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
 - `approval.chain` validation-bundle schema and examples for valid one-time,
   replay-denied, scope-mismatch, tenant-mismatch, expired, revoked, tainted,
   denied blocked-MVP, and LIMA IT remediation-blocked chains.
+- `guardian.decision` expiry/replay fields for issued/effective/expires,
+  max-age, clock-skew allowance, decision nonce, replay policy, scope hash,
+  bound tenant/task/worker/action/tool scope, approval binding, token
+  verification, and evidence refs.
+- `guardian.replay` schema and examples for valid first use, replay denial,
+  expiry, scope mismatch, and blocked-MVP outcomes.
 - Strict contract validation through [scripts/validate-contracts.py](scripts/validate-contracts.py).
 - Local Markdown link validation through [scripts/check-doc-links.py](scripts/check-doc-links.py).
 - Phase 1A mock Python runtime scaffolding in [lima_office](lima_office).
@@ -72,6 +78,9 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
 - Mock-only approval binding verifier that validates binding-shaped payloads,
   compares them to requested action metadata, and tracks one-time nonce
   consumption in memory for tests.
+- Mock-only Guardian decision replay verifier that validates decision-shaped
+  payloads, compares them to requested action metadata, and tracks one-time
+  decision nonce consumption in memory for tests.
 - Metadata-only Supervisor health reporter for mock/lab status records.
 - Unit tests for contract loading, validation, fail-closed policy, worker state,
   heartbeat, task queue, evidence behavior, cross-contract invariants, and
@@ -114,8 +123,10 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
   tests. Future runtime still needs durable atomic consumption, replay storage,
   and evidence export posture before any side-effecting approval path can
   expand.
-- Final Guardian expiry, replay, nonce, idempotency, action/resource binding,
-  and clock-skew policy remains open beyond the Phase 1A reference-time check.
+- Guardian expiry/replay is now defined and tested for Phase 1A mock/in-memory
+  paths. Future runtime still needs a durable Guardian replay store, durable
+  atomic decision consumption, idempotency/concurrency handling, and exportable
+  replay evidence before any side-effecting path can expand.
 - Promote the initial health reason taxonomy in
   [Health Reason Taxonomy](docs/ux/HEALTH_REASON_TAXONOMY.md) to final runtime
   thresholds and owner/escalation rules.
@@ -133,7 +144,7 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 
 ## Next Recommended Lane
 
-After this binding checkpoint is reviewed, the next safe lane is Guardian
-expiry/replay policy design, followed by durable evidence/export posture.
-Phase 1B lab runtime expansion remains blocked until those gates are approved.
-Mainline update should wait for explicit approval.
+After this Guardian expiry/replay checkpoint is reviewed, the next safe lane is
+durable evidence/export posture design, including durable approval-token and
+Guardian replay evidence. Phase 1B lab runtime expansion remains blocked until
+those gates are approved. Mainline update should wait for explicit approval.

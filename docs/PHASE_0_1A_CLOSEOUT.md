@@ -173,8 +173,12 @@ Current available evidence supports these invariant themes:
 Remaining invariant gates before runtime expansion:
 
 - Approval-token runtime record binding to the exact task, action class,
-  resource refs, tenant, policy snapshot, and fresh operator intent.
-- Non-test Guardian decision expiry and replay policy.
+  resource refs, tenant, policy snapshot, and fresh operator intent. Later
+  Phase 1A branch `approval-token-runtime-binding-design` addresses the
+  mock/in-memory design.
+- Guardian decision expiry and replay policy. Later Phase 1A branch
+  `guardian-expiry-replay-policy-design` addresses the mock/in-memory design;
+  durable replay storage remains future work.
 - Health reason taxonomy across worker, Guardian, evidence, queue, connector,
   and LIMA IT handoff states.
 - Durable evidence/export posture for audit, retention, redaction, customer
@@ -244,8 +248,9 @@ The highest-priority blockers are:
   separation.
 - Retention defaults, redaction taxonomy, audit export, customer exit/delete,
   and durable evidence/export posture.
-- Approval-token runtime record binding, non-test Guardian expiry policy,
-  health reason taxonomy, worker attestation, and update rollback.
+- Approval-token runtime record binding and Guardian expiry/replay are covered
+  by later Phase 1A mock-hardening branches; durable evidence/export, final
+  health reason taxonomy, worker attestation, and update rollback remain open.
 - Connector consent/scope/revocation, model routing defaults, and first
   deployment posture.
 
@@ -256,5 +261,5 @@ The highest-priority blockers are:
 | A. Worker deployment blueprint | Yes, docs/contracts only | Define lab deployment shape for 1 Supervisor Server and 1-8 Arc workers. | Must avoid installers, agents, live services, and remediation. | Do first. |
 | B. Governance policy details | Yes, docs/contracts only | Resolve IdP/MFA, breakglass, access review, LIMA IT approver separation, retention, redaction, audit export, and customer exit/delete policy. | Needs clear choices before runtime expansion. | Do second. |
 | C. Operator console UX spec | Yes, spec only | Define health, approvals, evidence, quarantine, and runbook views without building UI. | Must not add UI framework or live actions. | Do third. |
-| D. Phase 1B lab runtime expansion | No, not yet | Expand mock lab runtime only after critical gates are closed. | Approval-token binding, Guardian expiry, health taxonomy, durable evidence/export posture. | Defer until gates are approved. |
+| D. Phase 1B lab runtime expansion | No, not yet | Expand mock lab runtime only after critical gates are closed. | Durable replay/evidence/export posture, final health taxonomy, and governance/runtime gates. | Defer until gates are approved. |
 | E. Merge strategy / mainline stabilization | Yes, repository hygiene only | Decide branch merge order and stabilize mainline docs/tests. | Missing cross-contract invariant source must be resolved or explicitly superseded. | Do alongside A/B as needed. |

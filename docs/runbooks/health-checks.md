@@ -23,12 +23,15 @@ Use during routine lab checks, before onboarding a worker, after a failed heartb
 4. Review missed heartbeat count.
 5. Review task queue depth and approval queue age.
 6. Review Guardian allow/deny/approval counts.
-7. Review evidence write success/failure.
-8. Review local model status and model routing posture.
-9. Review mock connector readiness states.
-10. Review disk, memory, CPU, and network posture.
-11. Record degraded, offline, or quarantined states.
-12. Open incident or quarantine runbook if thresholds are crossed.
+7. Review Guardian decision age, expiry remaining, replay-check result counts,
+   and clock-skew warnings.
+8. Review evidence write success/failure.
+9. Review local model status and model routing posture.
+10. Review mock connector readiness states.
+11. Review disk, memory, CPU, and network posture.
+12. Record degraded, offline, stale-decision, replay-denied, or quarantined
+   states.
+13. Open incident or quarantine runbook if thresholds are crossed.
 
 ## Approval Requirements
 
@@ -43,6 +46,8 @@ Software updates, remediation, endpoint changes, network changes, and production
 - Supervisor health.
 - Worker heartbeat summary.
 - Guardian decision summary.
+- Guardian replay summary, including stale, expired, replay-denied, and
+  clock-skew-denied counts when present.
 - Evidence writer status.
 - Quarantine or incident references.
 - LIMA IT handoff ID if created.

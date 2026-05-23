@@ -10,11 +10,12 @@ Guide an operator through review, approval, denial, expiry, revocation, and evid
 - Version: `policy-phase0-v1`
 - Triggering contracts: `guardian.decision`, `approval.request`,
   `approval.result`, `approval.token`, `token.verification`,
-  `approval.binding`, action-specific contract, `evidence.artifact`.
+  `approval.binding`, `guardian.replay`, action-specific contract,
+  `evidence.artifact`.
 - Required fields: tenant/customer context, actor, task/action/resource refs,
   Guardian decision ID, approval request/result/token/verification IDs,
-  approval chain ID, binding ID, nonce ref when issued, evidence artifact IDs,
-  correlation ID.
+  approval chain ID, binding ID, token nonce ref when issued, Guardian decision
+  nonce/ref, replay-check ID, evidence artifact IDs, correlation ID.
 - Fail-closed outcome: block action and revoke token when missing, expired, revoked, mismatched, reused, ambiguous, tainted, or unsupported by evidence.
 
 ## When To Use
@@ -58,9 +59,12 @@ Use this runbook when the operator dashboard shows:
 8. Verify the `approval.binding` record matches the request/result/token,
    Guardian decision, task, worker where applicable, tool scope, policy snapshot,
    approved scope hash, nonce ref, and evidence refs.
-9. If denied or expired, confirm no token was issued or that any existing token
+9. Verify the Guardian decision replay check is fresh, one-time,
+   non-replayed, unexpired, exact to scope, and linked to the same binding and
+   token verification.
+10. If denied or expired, confirm no token was issued or that any existing token
    is revoked.
-10. Record the approval result and binding/verification evidence.
+11. Record the approval result and binding/verification/replay evidence.
 
 ## Approval Requirements
 
@@ -76,6 +80,7 @@ Partial approval requires a new narrowed request or a token bound only to the ap
 - Approval token ID if issued.
 - Approval chain ID and binding ID.
 - Token verification ID and nonce ref.
+- Guardian replay check ID and decision nonce/ref.
 - Scope hash.
 - Presented scope hash and approved scope hash when different.
 - Approver identity ref and role.

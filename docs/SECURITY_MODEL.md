@@ -150,6 +150,21 @@ expiry, and separation checks before any approval metadata can be recorded.
 Blocked-MVP, stale, missing-evidence, tainted, self-approval, and token-mismatch
 states remain fail closed.
 
+## Guardian Expiry And Replay
+
+Guardian decisions are time-bounded and context-bound in Phase 1A mock
+hardening. [Guardian Expiry And Replay Policy](GUARDIAN_EXPIRY_REPLAY_POLICY.md)
+requires `issued_at`, `effective_at`, `expires_at`, `max_age_seconds`,
+`clock_skew_allowance_seconds`, one-time `decision_nonce`, decision scope hash,
+bound tenant/task/worker/action/tool scope, approval binding, token
+verification, and evidence refs.
+
+The mock `GuardianDecisionReplayVerifier` tracks consumed decision nonces in
+memory for tests only. A usable decision must be fresh, one-time, non-replayed,
+non-revoked, non-tainted, and exact to the requested action. Durable replay
+storage, atomic distributed consumption, idempotency, and non-test operations
+thresholds remain open gates.
+
 ## Secure Update And Rollback
 
 Update and rollback posture must include:
@@ -224,6 +239,9 @@ Before runtime scaffolding, the following policies must be resolved or carried a
 The Phase 0 field-level schemas in [contracts/v1](../contracts/v1) define the minimum security metadata for future runtime work:
 
 - Approval token: [approval.token.schema.json](../contracts/v1/approval.token.schema.json) requires task/action/resource binding, expiry, one-time use, replay-protection refs, revocation state, and evidence. It must not contain token material.
+- Guardian replay: [guardian.replay.schema.json](../contracts/v1/guardian.replay.schema.json)
+  records metadata-only valid first-use, replay denial, expiry, mismatch, and
+  blocked-MVP check outcomes. It does not authorize execution.
 - Approval result: [approval.result.schema.json](../contracts/v1/approval.result.schema.json) records approved, denied, expired, cancelled, superseded, partial, and blocked-MVP outcomes with evidence.
 - Token verification: [token.verification.schema.json](../contracts/v1/token.verification.schema.json) records valid and fail-closed results for expired, revoked, used, missing, mismatched, ambiguous, and wrong-scope tokens.
 - Helper scope: [helper.scope.schema.json](../contracts/v1/helper.scope.schema.json) keeps helper agents supervisor-side, leased, narrowly scoped, and unable to inherit worker trust.

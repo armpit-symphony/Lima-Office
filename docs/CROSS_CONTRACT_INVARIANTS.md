@@ -21,6 +21,9 @@ IT boundary. [Approval Token Runtime Binding](APPROVAL_TOKEN_RUNTIME_BINDING.md)
 extends that checkpoint by normalizing the approval
 request/result/token/verification/Guardian/task/tool chain into
 `approval.binding`.
+[Guardian Expiry And Replay Policy](GUARDIAN_EXPIRY_REPLAY_POLICY.md) further
+hardens the checkpoint by making `guardian.decision` authorization one-time,
+time-bounded, scope-bound, and replay-checked in memory for tests.
 
 ## Enforced Invariants
 
@@ -29,8 +32,14 @@ request/result/token/verification/Guardian/task/tool chain into
   ID.
 - A Guardian deny, block-MVP, or quarantine decision cannot produce task
   completion.
-- Expired or stale Guardian decisions cannot authorize mock task assignment or
-  completion in the Phase 1A reference-time check.
+- Expired, stale, future-effective, missing-expiry, ambiguous-timestamp,
+  replayed, consumed, revoked, tainted, or blocked-MVP Guardian decisions
+  cannot authorize mock task assignment, tool invocation, or completion.
+- One-time Guardian decision nonce consumption is tracked in memory by the mock
+  verifier for tests only; durable replay storage remains future work.
+- Guardian decisions must match bound tenant, customer context, task, worker
+  where present, action type, tool scope, decision scope hash, approval binding,
+  token verification, and evidence refs.
 - Approval-required tasks require a valid `token.verification` bound to the same
   tenant, customer context, task, approval request, approval token, and Guardian
   decision.
@@ -99,6 +108,10 @@ The new tests show that these combinations fail closed:
 - blocked-MVP approval binding used for live connector, external send,
   remediation, production touch, or regulated-system action;
 - expired or stale Guardian decisions;
+- replayed Guardian decision nonce;
+- future-effective Guardian decision beyond clock-skew allowance;
+- Guardian decision tenant, task, worker, action, tool scope, approval binding,
+  token verification, or decision-scope-hash mismatch;
 - tainted privileged tool invocation;
 - tainted durable memory summary write;
 - LIMA IT remediation authorization in MVP;
@@ -117,7 +130,9 @@ runtime policy. The remaining blockers stay open:
 
 - durable approval-token consumption storage, replay evidence, and export
   posture beyond the in-memory mock verifier;
-- final Guardian expiry, replay, nonce, idempotency, and clock-skew policy;
+- durable Guardian replay store, atomic decision consumption, idempotency,
+  concurrency handling, and exportable replay evidence beyond the mock
+  verifier;
 - durable evidence storage, integrity chain, audit export, retention,
   redaction, and customer exit/delete posture;
 - final RBAC, IdP, MFA, session, and device trust decisions;

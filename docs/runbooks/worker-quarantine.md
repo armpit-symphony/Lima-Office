@@ -6,7 +6,10 @@ Contain a worker that may be compromised, misconfigured, offline, or outside pol
 
 ## When To Use
 
-Use when heartbeat fails, identity cannot be verified, capability manifest changes unexpectedly, evidence writing fails, prompt injection is suspected, or an operator requests containment.
+Use when heartbeat fails, identity cannot be verified, capability manifest
+changes unexpectedly, evidence writing fails, prompt injection is suspected,
+repeated Guardian replay/stale-decision use appears, clock skew exceeds policy,
+or an operator requests containment.
 
 ## Prerequisites
 
@@ -23,9 +26,10 @@ Use when heartbeat fails, identity cannot be verified, capability manifest chang
 5. Revoke active approval tokens scoped to that worker.
 6. Revoke the worker capability lease and disable privileged tool packs for that worker.
 7. Preserve recent heartbeat, task, and evidence records.
-8. Review last capability manifest and task transitions.
-9. Determine whether LIMA IT diagnostic handoff is needed.
-10. Keep worker quarantined until the re-enrollment runbook clears release, re-enrollment, revocation, or replacement.
+8. Preserve Guardian decision and `guardian.replay` records tied to the worker.
+9. Review last capability manifest and task transitions.
+10. Determine whether LIMA IT diagnostic handoff is needed.
+11. Keep worker quarantined until the re-enrollment runbook clears release, re-enrollment, revocation, or replacement.
 
 ## Approval Requirements
 
@@ -38,6 +42,8 @@ Quarantine can be initiated as containment. Release from quarantine requires ope
 - Quarantine reason.
 - Triggering event.
 - Guardian decision ID.
+- Guardian replay check result, if replay, stale, expiry, or clock-skew
+  triggered containment.
 - Active tasks affected.
 - Approval tokens revoked.
 - Operator identity.

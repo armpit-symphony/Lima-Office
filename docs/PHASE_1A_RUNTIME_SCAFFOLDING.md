@@ -23,6 +23,10 @@ services, or production-readiness claims.
 - `guardian.approval_binding`: a mock-only, in-memory approval binding verifier
   that validates `approval.binding` records, compares them to requested action
   metadata, and tracks one-time nonce consumption for tests.
+- `guardian.replay`: a mock-only, in-memory Guardian decision replay verifier
+  that validates `guardian.decision` records, compares them to requested
+  action metadata, emits `guardian.replay` metadata, and tracks one-time
+  decision nonce consumption for tests.
 - `supervisor.worker_registry`: an in-memory mock registry for one tenant and up
   to eight Arc workers.
 - `supervisor.heartbeat`: validates mock `worker.heartbeat` payloads and blocks
@@ -33,9 +37,10 @@ services, or production-readiness claims.
   assignment, blocks quarantined/revoked/offline workers, and applies Phase 1A
   cross-contract invariant checks.
 - `runtime.invariants`: fail-closed cross-contract checks for Guardian decision
-  binding and freshness, approval-token verification and binding metadata,
-  evidence-required completion, worker capability routing, taint propagation,
-  LIMA IT remediation blocking, and helper scope limits.
+  binding, freshness, expiry/replay, clock skew, approval-token verification
+  and binding metadata, evidence-required completion, worker capability
+  routing, taint propagation, LIMA IT remediation blocking, and helper scope
+  limits.
 - `supervisor.health`: builds metadata-only `supervisor.health` mock/lab
   reports from in-memory worker, task, Guardian, and evidence state.
 - `evidence.writer`: writes metadata-only, in-memory, test-only
@@ -76,6 +81,11 @@ tools, memory, workers, helper scopes, evidence, and LIMA IT handoffs.
 [Approval Token Runtime Binding](APPROVAL_TOKEN_RUNTIME_BINDING.md) documents
 the additional Phase 1A binding design. Approval-required mock task assignment
 requires both valid token verification and valid approval binding metadata.
+
+[Guardian Expiry And Replay Policy](GUARDIAN_EXPIRY_REPLAY_POLICY.md)
+documents the additional Phase 1A Guardian decision expiry/replay design.
+Mock action checks require fresh, one-time, non-replayed, context-matched
+Guardian decisions; durable replay storage remains future work.
 
 The checks are hardening only. They do not add tool execution, live connectors,
 external sends, remediation, durable services, or production monitoring.

@@ -15,6 +15,8 @@ Each request card must show:
 - Risk tier.
 - Data classification.
 - Guardian decision ID.
+- Guardian issued/effective/expires timestamps, decision nonce status, and
+  replay-check status.
 - Policy refs and policy version.
 - Evidence/pre-evidence refs.
 - Taint status.
@@ -71,6 +73,7 @@ Approval tokens are metadata refs only. The card shows:
 - Revocation state.
 - Token verification result where relevant.
 - Binding mismatch reasons, nonce/replay status, and evidence refs.
+- Guardian replay-check result and decision scope hash when available.
 
 The inbox never displays bearer token material.
 
@@ -96,7 +99,8 @@ Approve and deny are spec-only controls. Future implementation must:
 
 - Require fresh operator intent.
 - Re-check role and separation.
-- Re-check Guardian decision, policy refs, evidence, expiry, and taint state.
+- Re-check Guardian decision, replay status, policy refs, evidence, expiry,
+  clock-skew posture, and taint state.
 - Record `approval.result`.
 - Issue token metadata only when allowed by policy.
 - Require a matching `approval.binding` before any mock/dry-run
@@ -107,4 +111,4 @@ Approve and deny are spec-only controls. Future implementation must:
 
 Show blocked state and disable approval-capable controls when any required
 field is missing, stale, contradictory, expired, revoked, mismatched, tainted,
-or outside role scope.
+replayed, future-effective beyond skew allowance, or outside role scope.

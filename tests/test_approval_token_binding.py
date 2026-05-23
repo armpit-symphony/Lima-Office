@@ -226,13 +226,19 @@ class ApprovalTokenBindingTests(unittest.TestCase):
         )
         guardian = guardian_allow_decision()
         guardian["decision_id"] = task["guardian_decision_id"]
+        guardian["guardian_decision_id"] = task["guardian_decision_id"]
         guardian["decision"] = "allow_with_evidence"
         guardian["approval_required"] = False
         guardian["approval_request_id"] = None
         guardian["approval_token_id"] = None
         guardian["subject"] = {"subject_type": "task", "subject_id": task["task_id"]}
         guardian["created_at"] = "2026-05-18T21:43:00Z"
+        guardian["issued_at"] = "2026-05-18T21:43:00Z"
+        guardian["effective_at"] = "2026-05-18T21:43:00Z"
         guardian["expires_at"] = "2026-05-18T21:50:00Z"
+        guardian["evidence_artifact_id"] = "ev-token-verify-valid-001"
+        guardian["evidence_artifact_ids"] = ["ev-token-verify-valid-001"]
+        guardian["evidence_refs"] = ["ev-token-verify-valid-001"]
         with self.assertRaises(PolicyDenyError):
             queue.enqueue(task, guardian, token)
 

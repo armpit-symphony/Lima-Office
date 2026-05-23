@@ -1,0 +1,100 @@
+{
+  "contract_name": "guardian.decision",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "dry_run",
+  "correlation_id": "corr-email-draft-001",
+  "causation_id": "tv-email-valid-001",
+  "idempotency_key": "idem-guardian-email-draft-allow-001",
+  "decision_id": "gd-email-send-requires-approval-001",
+  "request_id": "req-email-draft-review-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T21:43:20Z"
+  },
+  "requested_by": {
+    "actor_type": "worker",
+    "actor_id": "arc-admin-01"
+  },
+  "subject": {
+    "subject_type": "task",
+    "subject_id": "task-email-draft-001"
+  },
+  "action_class": "tool_invocation",
+  "resource_ref": {
+    "resource_type": "draft_message",
+    "resource_id": "draft-message-ref-customer-reply-001",
+    "resource_scope": "task_scoped"
+  },
+  "data_classification": "customer_confidential",
+  "risk_tier": "medium",
+  "policy_refs": [
+    "policy.approval_token_lifecycle.phase0",
+    "policy.guardian-expiry-replay.phase1a"
+  ],
+  "policy_version": "policy-phase0-v1",
+  "policy_snapshot_hash": "policy-snapshot-hash-phase0-approval-001",
+  "valid_for_action_ref": "hash-ref-approved-scope-email-001",
+  "decision": "allow_with_evidence",
+  "approval_required": false,
+  "approval_request_id": null,
+  "approval_chain_id": "chain-email-draft-001",
+  "binding_id": "bind-email-draft-001",
+  "approval_token_id": null,
+  "token_verification_id": "tv-email-valid-001",
+  "denial_reason": null,
+  "redaction_level": "metadata_only",
+  "evidence_required": true,
+  "evidence_artifact_id": "ev-guardian-email-draft-001",
+  "evidence_artifact_ids": [
+    "ev-guardian-email-draft-001",
+    "ev-token-verify-valid-001"
+  ],
+  "guardian_decision_id": "gd-email-send-requires-approval-001",
+  "decision_nonce": "decision-nonce-email-draft-001",
+  "issued_at": "2026-05-18T21:43:20Z",
+  "effective_at": "2026-05-18T21:43:20Z",
+  "max_age_seconds": 300,
+  "clock_skew_allowance_seconds": 30,
+  "replay_policy": "one_time",
+  "decision_scope_hash": "hash-ref-approved-scope-email-001",
+  "bound_tenant_id": "tenant-lab-001",
+  "bound_task_id": "task-email-draft-001",
+  "bound_worker_id": "arc-admin-01",
+  "bound_action_type": "draft_external_message_review",
+  "bound_tool_scope": {
+    "resource_refs": [
+      "draft-message-ref-customer-reply-001",
+      "recipient-ref-external-contact-001"
+    ],
+    "allowed_operations": [
+      "operator_review_draft"
+    ],
+    "prohibited_operations": [
+      "send_external_message",
+      "live_connector_write",
+      "reuse_token"
+    ]
+  },
+  "approval_binding_id": "bind-email-draft-001",
+  "evidence_refs": [
+    "ev-guardian-email-draft-001",
+    "ev-token-verify-valid-001"
+  ],
+  "replay_status": "unused",
+  "consumed_at": null,
+  "revoked_at": null,
+  "revocation_reason": null,
+  "prompt_injection": {
+    "untrusted_input_refs": [],
+    "content_origin": "operator",
+    "instruction_boundary": "operator_instruction",
+    "injection_suspected": false,
+    "injection_signals": [],
+    "containment_action": "none"
+  },
+  "created_at": "2026-05-18T21:43:20Z",
+  "expires_at": "2026-05-18T21:48:20Z"
+}

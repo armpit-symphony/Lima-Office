@@ -36,6 +36,26 @@
     "evidence_required",
     "evidence_artifact_id",
     "evidence_artifact_ids",
+    "guardian_decision_id",
+    "decision_nonce",
+    "issued_at",
+    "effective_at",
+    "max_age_seconds",
+    "clock_skew_allowance_seconds",
+    "replay_policy",
+    "decision_scope_hash",
+    "bound_tenant_id",
+    "bound_task_id",
+    "bound_worker_id",
+    "bound_action_type",
+    "bound_tool_scope",
+    "approval_binding_id",
+    "token_verification_id",
+    "evidence_refs",
+    "replay_status",
+    "consumed_at",
+    "revoked_at",
+    "revocation_reason",
     "prompt_injection",
     "created_at",
     "expires_at"
@@ -339,6 +359,163 @@
       },
       "uniqueItems": true
     },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Canonical Guardian decision reference. It is expected to match decision_id in runtime checks."
+    },
+    "decision_nonce": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Opaque replay-protection reference. Do not store nonce secret material."
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "effective_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "max_age_seconds": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3600
+    },
+    "clock_skew_allowance_seconds": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 300
+    },
+    "replay_policy": {
+      "type": "string",
+      "enum": [
+        "one_time",
+        "bounded_window",
+        "deny_replay",
+        "blocked_mvp"
+      ]
+    },
+    "decision_scope_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_tenant_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_task_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_worker_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_action_type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_tool_scope": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "resource_refs",
+        "allowed_operations",
+        "prohibited_operations"
+      ],
+      "properties": {
+        "resource_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "allowed_operations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prohibited_operations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "approval_binding_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "replay_status": {
+      "type": "string",
+      "enum": [
+        "unused",
+        "consumed",
+        "replay_denied",
+        "expired",
+        "revoked",
+        "stale",
+        "blocked_mvp"
+      ]
+    },
+    "consumed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "revoked_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "revocation_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "prompt_injection": {
       "type": "object",
       "additionalProperties": false,
@@ -453,6 +630,23 @@
           },
           "denial_reason": {
             "const": null
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "decision_nonce": {
+            "type": "string",
+            "minLength": 1
+          },
+          "replay_policy": {
+            "enum": [
+              "one_time",
+              "bounded_window"
+            ]
+          },
+          "replay_status": {
+            "const": "unused"
           }
         }
       }
@@ -483,6 +677,12 @@
           "denial_reason": {
             "type": "string",
             "minLength": 1
+          },
+          "replay_policy": {
+            "enum": [
+              "deny_replay",
+              "blocked_mvp"
+            ]
           }
         }
       }
@@ -508,6 +708,23 @@
           },
           "denial_reason": {
             "const": null
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "decision_nonce": {
+            "type": "string",
+            "minLength": 1
+          },
+          "replay_policy": {
+            "enum": [
+              "one_time",
+              "bounded_window"
+            ]
+          },
+          "replay_status": {
+            "const": "unused"
           }
         }
       }
@@ -535,6 +752,12 @@
           "denial_reason": {
             "type": "string",
             "minLength": 1
+          },
+          "replay_policy": {
+            "enum": [
+              "deny_replay",
+              "blocked_mvp"
+            ]
           }
         }
       }
@@ -562,6 +785,133 @@
               "deny",
               "block_mvp",
               "quarantine_subject"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_policy": {
+            "const": "one_time"
+          }
+        },
+        "required": [
+          "replay_policy"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decision_nonce": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_status": {
+            "const": "consumed"
+          }
+        },
+        "required": [
+          "replay_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "consumed_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_status": {
+            "enum": [
+              "expired",
+              "revoked",
+              "stale",
+              "replay_denied",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "replay_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "not": {
+              "enum": [
+                "allow",
+                "allow_with_evidence"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "token_verification_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "token_verification_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "approval_binding_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action_class": {
+            "enum": [
+              "connector_access",
+              "file_delete",
+              "file_write",
+              "network_access",
+              "outbound_message",
+              "privileged_operation",
+              "scheduled_action",
+              "lima_it_remediation"
+            ]
+          }
+        },
+        "required": [
+          "action_class"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "enum": [
+              "deny",
+              "block_mvp"
+            ]
+          },
+          "replay_policy": {
+            "enum": [
+              "deny_replay",
+              "blocked_mvp"
             ]
           }
         }

@@ -9,6 +9,9 @@ This directory contains Phase 0 contract schemas and sanitized example objects f
 - The Phase 0 baseline is `1.0.0`.
 - Additive optional fields may be added in a minor version when existing consumers can ignore them.
 - Required fields, enum removals, state semantic changes, or renamed fields require a major version.
+- Phase 1A pre-production mock hardening may tighten v1 schemas when the
+  matching examples, tests, and docs are updated. This does not authorize live
+  runtime consumers.
 
 ## Compatibility Rules
 
@@ -38,6 +41,7 @@ Version 1 schemas are in [v1](v1):
 - [console.action.schema.json](v1/console.action.schema.json)
 - [task.execution.schema.json](v1/task.execution.schema.json)
 - [guardian.decision.schema.json](v1/guardian.decision.schema.json)
+- [guardian.replay.schema.json](v1/guardian.replay.schema.json)
 - [approval.request.schema.json](v1/approval.request.schema.json)
 - [approval.result.schema.json](v1/approval.result.schema.json)
 - [approval.token.schema.json](v1/approval.token.schema.json)
@@ -81,6 +85,17 @@ Sanitized example objects are in [examples](examples):
 - [console.action.worker-quarantine-requested.example.json](examples/console.action.worker-quarantine-requested.example.json)
 - [task.execution.example.json](examples/task.execution.example.json)
 - [guardian.decision.example.json](examples/guardian.decision.example.json)
+- [guardian.decision.allowed-one-time.example.json](examples/guardian.decision.allowed-one-time.example.json)
+- [guardian.decision.expired-denied.example.json](examples/guardian.decision.expired-denied.example.json)
+- [guardian.decision.replay-denied.example.json](examples/guardian.decision.replay-denied.example.json)
+- [guardian.decision.blocked-mvp.example.json](examples/guardian.decision.blocked-mvp.example.json)
+- [guardian.decision.clock-skew-denied.example.json](examples/guardian.decision.clock-skew-denied.example.json)
+- [guardian.decision.lima-it-remediation-denied.example.json](examples/guardian.decision.lima-it-remediation-denied.example.json)
+- [guardian.replay.valid-first-use.example.json](examples/guardian.replay.valid-first-use.example.json)
+- [guardian.replay.replay-denied.example.json](examples/guardian.replay.replay-denied.example.json)
+- [guardian.replay.expired.example.json](examples/guardian.replay.expired.example.json)
+- [guardian.replay.scope-mismatch.example.json](examples/guardian.replay.scope-mismatch.example.json)
+- [guardian.replay.blocked-mvp.example.json](examples/guardian.replay.blocked-mvp.example.json)
 - [approval.request.example.json](examples/approval.request.example.json)
 - [approval.result.approved.example.json](examples/approval.result.approved.example.json)
 - [approval.result.denied-blocked-mvp.example.json](examples/approval.result.denied-blocked-mvp.example.json)
@@ -199,7 +214,12 @@ The v1 schemas use JSON Schema draft 2020-12 conditionals to block unsafe state 
   scope mismatch, and blocked-MVP outcomes.
 - `approval.chain` examples summarize valid and denied approval-chain bundles
   for review. They do not authorize runtime behavior.
-- `guardian.decision`, `task.execution`, `tool.invocation`, `memory.access`, and `model.route` bind policy result, approval state, taint refs, evidence failure, terminal states, and denial/failure reasons.
+- `guardian.decision` binds policy result, expiry, replay nonce, clock-skew
+  allowance, action/task/worker/tool scope, approval binding, token
+  verification, taint, evidence refs, and denial/failure reasons.
+- `guardian.replay` records metadata-only replay-check outcomes for valid
+  first use, replay denial, expiry, scope mismatch, and blocked-MVP checks.
+- `task.execution`, `tool.invocation`, `memory.access`, and `model.route` bind policy result, approval state, taint refs, evidence failure, terminal states, and denial/failure reasons.
 - `worker.lifecycle`, `worker.heartbeat`, and `worker.deployment` bind identity failure, quarantine, revoke, evidence-writer failure, deployment refs, update/rollback posture, and healthy states.
 - `supervisor.health` summarizes mock/lab worker, task, Guardian, and evidence
   state with reason codes. It is metadata-only reporting, not production
@@ -226,6 +246,11 @@ See [Schema Hardening Notes](../docs/SCHEMA_HARDENING_NOTES.md) for the reasonin
 - Token verification and approval binding fail closed for missing, expired,
   revoked, used, replayed, mismatched, ambiguous, wrong-scope, tainted, or
   blocked-MVP tokens and actions.
+- Guardian decisions fail closed for missing expiry, ambiguous timestamps,
+  future-effective timestamps beyond skew allowance, stale age, replayed
+  decision nonce, revoked/consumed replay status, tenant/task/worker/action/
+  tool-scope mismatch, approval-binding mismatch, token-verification mismatch,
+  tainted input, and blocked-MVP action classes.
 - Tainted content cannot directly authorize tool use, durable memory writes, external sends, approval scope, or remediation.
 - Evidence-required privileged actions cannot proceed when evidence cannot be written.
 - Cross-contract invariant checks fail closed when individually valid records

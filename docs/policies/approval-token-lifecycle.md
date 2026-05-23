@@ -12,8 +12,9 @@ Define the Phase 0 approval lifecycle for privileged and high-risk LIMA Office a
 - Owner role: Security reviewer.
 - Applies to contracts: `guardian.decision`, `approval.request`,
   `approval.result`, `approval.token`, `token.verification`,
-  `approval.binding`, `approval.chain`, `task.execution`, `tool.invocation`,
-  `lima_it.handoff`, `incident.ops`, `evidence.artifact`.
+  `approval.binding`, `approval.chain`, `guardian.replay`,
+  `task.execution`, `tool.invocation`, `lima_it.handoff`, `incident.ops`,
+  `evidence.artifact`.
 - Evidence artifact types: `guardian_decision`, `approval_request`, `approval_token`, `denial`, `incident`.
 - Fail-closed outcome: block action, deny token use, revoke related tokens, record evidence or evidence-failure incident.
 - Runbook: [Approval Token Lifecycle Runbook](../runbooks/approval-token-lifecycle.md).
@@ -95,6 +96,13 @@ For Phase 1A, the mock verifier tracks one-time nonce consumption in memory for
 tests only. Durable atomic consumption, replay tables, and exportable replay
 evidence remain future runtime work.
 
+Guardian decisions have a separate expiry/replay check. The decision must be
+within its issued/effective/expires window, inside clock-skew allowance, one
+time, non-replayed, exact to tenant/task/worker/action/tool scope, and linked
+to the same approval binding and token verification when applicable. A valid
+approval binding does not override a stale, expired, replayed, revoked,
+tainted, or mismatched Guardian decision.
+
 ## Token TTL
 
 Default Phase 0 placeholder TTL: policy decision needed.
@@ -135,6 +143,10 @@ in one guarded transition. If consumption cannot be recorded with evidence, the
 token is not considered safely consumed and the action must fail closed. The
 current branch proves the rule with an in-memory mock verifier only; it does
 not create durable replay protection.
+
+Guardian decision use follows the same future-runtime rule. The Phase 1A
+`GuardianDecisionReplayVerifier` consumes decision nonces in memory for tests
+only. Durable atomic decision consumption and replay evidence are still open.
 
 ## Token Revocation
 
@@ -249,6 +261,8 @@ Evidence is required for:
 - Scope mismatch.
 - Replay or reuse attempt.
 - Privileged action completion or block.
+- Guardian decision first use, replay denial, expiry, stale age, clock-skew
+  denial, and scope mismatch.
 
 Approval evidence should include:
 
@@ -282,6 +296,9 @@ Privileged action must fail closed if the token is:
 - Approval lifecycle links to `guardian.decision`, `approval.request`, `approval.token`, action contract, and `evidence.artifact`.
 - Approval-required mock runtime paths require `approval.binding`; token
   verification alone is not sufficient.
+- Approval-bound mock paths also require a fresh, one-time, non-replayed
+  Guardian decision under
+  [Guardian Expiry And Replay Policy](../GUARDIAN_EXPIRY_REPLAY_POLICY.md).
 - Replay, scope widening, tenant mismatch, task mismatch, worker mismatch,
   action mismatch, Guardian mismatch, blocked-MVP action, tainted chain, and
   missing evidence fail closed in tests.

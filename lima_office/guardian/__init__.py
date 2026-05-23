@@ -2,5 +2,6 @@
 
 from .approval_binding import ApprovalBindingVerifier
 from .policy import GuardianPolicy
+from .replay import GuardianDecisionReplayVerifier
 
-__all__ = ["ApprovalBindingVerifier", "GuardianPolicy"]
+__all__ = ["ApprovalBindingVerifier", "GuardianDecisionReplayVerifier", "GuardianPolicy"]

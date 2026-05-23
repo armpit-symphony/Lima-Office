@@ -35,6 +35,16 @@ operations, customer-system mutation, or compliance certification claims.
   only. No live connector, external send, real remediation, durable service, UI,
   or production operation is authorized.
 
+## Guardian Expiry Replay Checkpoint
+
+- Branch: `guardian-expiry-replay-policy-design`
+- Base: `approval-token-runtime-binding-design`
+- Purpose: define and test Guardian decision expiry, replay prevention, clock
+  skew handling, and context binding so stale or copied decisions fail closed.
+- Scope: docs, schemas, examples, tests, and mock/in-memory Guardian replay
+  verifier only. No live connector, external send, real remediation, durable
+  service, UI, or production operation is authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:
@@ -96,6 +106,8 @@ health evidence only; it is not production certification.
   health reporter.
 - Phase 1A approval-token binding contracts, approval-chain examples, and
   mock/in-memory one-time binding verifier.
+- Phase 1A Guardian expiry/replay policy, `guardian.replay` examples, and
+  mock/in-memory one-time Guardian decision replay verifier.
 - Closeout archive, runtime boundaries, worker deployment blueprint, governance
   policy details, and operator console UX specification.
 - Worker deployment, governance, and console metadata contracts and examples.
@@ -131,10 +143,10 @@ closes the relevant gates:
 
 Recommended order after stabilization:
 
-1. Guardian expiry and replay policy design.
-2. Durable evidence/export posture design, including durable approval-token
-   consumption and replay evidence.
-3. Final RBAC/IdP/MFA/session/device trust matrix.
+1. Durable evidence/export posture design, including durable approval-token and
+   Guardian decision consumption and replay evidence.
+2. Final RBAC/IdP/MFA/session/device trust matrix.
+3. Model-routing defaults and health taxonomy refinement.
 4. Phase 1B lab runtime expansion only after the gates above are approved.
 
 Alternative non-runtime lanes:

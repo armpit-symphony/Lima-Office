@@ -52,8 +52,12 @@ documents the reachable v2 checkpoint that supersedes it.
   the mock/in-memory binding model, but what durable atomic consume mechanism,
   replay store, concurrency rule, evidence export, and incident path should be
   approved before any side-effecting approval path exists?
-- Non-test Guardian expiry policy: what decision expiry, replay rejection,
-  clock-skew tolerance, and reclassification behavior apply outside tests?
+- Durable Guardian replay posture: Guardian expiry/replay is defined and tested
+  for mock/in-memory Phase 1A flows in
+  [Guardian Expiry And Replay Policy](GUARDIAN_EXPIRY_REPLAY_POLICY.md), but
+  what durable replay store, atomic decision consumption, concurrency rule,
+  idempotency behavior, exportable replay evidence, and incident path should be
+  approved before any side-effecting path exists?
 - Health reason taxonomy: which reason code set should become normative for
   Supervisor health, Guardian decisions, worker state, queue depth, evidence
   status, connector readiness, LIMA IT handoff, and degraded/offline/quarantine
@@ -158,6 +162,19 @@ and `approval.binding` / `approval.chain`:
   and mock tests.
 - Approval-required mock task enqueueing requires a valid binding in addition
   to token verification.
+
+Resolved in [Guardian Expiry And Replay Policy](GUARDIAN_EXPIRY_REPLAY_POLICY.md)
+and `guardian.decision` / `guardian.replay`:
+
+- Guardian decision expiry, issued/effective time, max age, clock-skew
+  allowance, one-time decision nonce, replay policy, scope hash, tenant/task/
+  worker/action/tool binding, approval binding, token verification, and
+  evidence refs are represented in contracts.
+- Valid first use, replay denial, expiry, scope mismatch, blocked-MVP,
+  clock-skew denial, and LIMA IT remediation denial are covered by schemas,
+  examples, and mock tests.
+- Phase 1A mock runtime rejects replayed, stale, expired, future-effective,
+  ambiguous, mismatched, tainted, and blocked-MVP Guardian decisions.
 
 Resolved in [Phase 0 Validation](VALIDATION.md) and [Phase 0 validation workflow](../.github/workflows/phase0-validation.yml):
 

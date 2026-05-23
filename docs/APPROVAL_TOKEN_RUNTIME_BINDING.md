@@ -31,10 +31,13 @@ The approval chain is:
 5. `approval.binding`: normalizes the exact runtime binding across request,
    result, token, verification, Guardian, task, tool, worker, tenant, scope,
    nonce, evidence, and policy snapshot.
-6. `guardian.decision`: remains the syscall gate and must match the binding.
-7. `task.execution` and `tool.invocation`: may proceed only in mock/dry-run
+6. `guardian.decision`: remains the syscall gate and must match the binding,
+   expiry window, decision nonce, and replay policy.
+7. `guardian.replay`: records the metadata-only replay check outcome for the
+   Guardian decision. It does not authorize execution by itself.
+8. `task.execution` and `tool.invocation`: may proceed only in mock/dry-run
    paths when the binding matches.
-8. `evidence.artifact`: records approval, denial, verification, consumption,
+9. `evidence.artifact`: records approval, denial, verification, consumption,
    replay denial, mismatch, and blocked-MVP evidence by reference only.
 
 `approval.chain` examples summarize safe and unsafe combinations for validation
@@ -68,6 +71,11 @@ The mock verifier refuses to authorize when any requested tenant, customer
 context, task, worker, action, tool scope, Guardian decision, token
 verification, policy snapshot, approval chain, binding, or evidence ref does
 not match.
+
+Guardian decisions have their own expiry/replay gate in
+[Guardian Expiry And Replay Policy](GUARDIAN_EXPIRY_REPLAY_POLICY.md). A valid
+approval binding cannot override an expired, stale, replayed, revoked, tainted,
+or mismatched Guardian decision.
 
 ## Token Lifecycle States
 
@@ -111,9 +119,10 @@ should become an incident in a future runtime lane.
 ## Expiry And Revocation
 
 The binding must have `expires_at` for `bound` use. The mock verifier denies
-bindings checked after expiry, and it denies revoked bindings. Final Guardian
-clock skew, replay window, idempotency, and reclassification policy remain a
-separate open lane.
+bindings checked after expiry, and it denies revoked bindings. Guardian
+expiry/replay policy now defines mock/in-memory timestamp, nonce, scope, and
+clock-skew checks. Durable replay storage, distributed idempotency, and
+non-test operations thresholds remain open.
 
 ## Blocked-MVP Handling
 

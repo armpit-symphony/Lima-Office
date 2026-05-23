@@ -23,8 +23,12 @@ class TaskQueueTests(unittest.TestCase):
     def bound_decision(self, task):
         decision = guardian_allow_decision()
         decision["decision_id"] = task["guardian_decision_id"]
+        decision["guardian_decision_id"] = task["guardian_decision_id"]
         decision["tenant_id"] = task["tenant_id"]
         decision["subject"] = {"subject_type": "task", "subject_id": task["task_id"]}
+        decision["evidence_artifact_id"] = task["evidence_artifact_ids"][0]
+        decision["evidence_artifact_ids"] = list(task["evidence_artifact_ids"])
+        decision["evidence_refs"] = list(task["evidence_artifact_ids"])
         return decision
 
     def test_enqueue_requires_guardian_decision(self):

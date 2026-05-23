@@ -62,6 +62,8 @@
 - In-memory mock worker registry, heartbeat intake, task queue, Guardian decisions, and evidence writer.
 - Runtime tests for fail-closed policy, validation, worker state, heartbeat, task, and evidence behavior.
 - Phase 1A v2 cross-contract invariant checks and Supervisor health contract/reporting.
+- Approval-token binding and Guardian expiry/replay mock-hardening
+  checkpoints.
 - Supervisor skeleton if separately approved beyond mock scaffolding.
 - Worker skeleton if separately approved beyond mock scaffolding.
 - Mock task queue.
@@ -77,6 +79,9 @@
 - Valid contracts cannot be combined into unsafe flows across Guardian,
   approval, token, evidence, taint, worker, tool, memory, helper, or LIMA IT
   records.
+- Guardian decisions are time-bounded, one-time in mock tests, scoped to the
+  requested tenant/task/worker/action/tool metadata, and fail closed on replay,
+  stale age, expiry, clock-skew violation, taint, or blocked-MVP actions.
 - No external writes or live connector calls.
 - Runtime validation requires real `jsonschema` and fails closed without it.
 - Mock queues remain synchronous in-memory records only; no tool execution, services, daemons, or background loops.

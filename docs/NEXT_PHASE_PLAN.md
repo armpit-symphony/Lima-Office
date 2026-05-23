@@ -16,9 +16,9 @@ cross-contract invariant checkpoint. The reachable replacement is
 
 Recommended order:
 
-1. Guardian expiry and replay policy design.
-2. Durable evidence/export posture design.
-3. Final RBAC/IdP/MFA/session/device trust matrix.
+1. Durable evidence/export posture design, including durable replay evidence.
+2. Final RBAC/IdP/MFA/session/device trust matrix.
+3. Model-routing defaults and health taxonomy refinement.
 4. Phase 1B lab runtime expansion only after the gates above are approved.
 
 Alternative non-runtime lanes can proceed when they do not obscure the blockers:
@@ -30,6 +30,13 @@ Approval-token runtime binding design is now represented in
 `approval.binding` and `approval.chain` contracts plus mock/in-memory tests.
 Future side-effecting runtime still needs durable atomic token consumption and
 replay evidence before expansion.
+
+Guardian expiry/replay policy is now represented in
+[Guardian Expiry And Replay Policy](GUARDIAN_EXPIRY_REPLAY_POLICY.md) with
+`guardian.decision` expiry/replay fields, `guardian.replay` metadata, and
+mock/in-memory tests. Future side-effecting runtime still needs durable atomic
+decision consumption, replay storage, idempotency/concurrency rules, and
+exportable replay evidence before expansion.
 
 ## Option A: Worker Deployment Blueprint
 
@@ -181,7 +188,9 @@ Prerequisites:
 - Approval-token runtime record binding is defined and tested for mock/in-memory
   Phase 1A flows; durable atomic consumption and replay evidence posture are
   explicitly deferred.
-- Non-test Guardian expiry and replay policy is defined.
+- Guardian expiry/replay policy is defined and tested for mock/in-memory
+  Phase 1A flows; durable replay storage and atomic decision consumption are
+  explicitly deferred.
 - Health reason taxonomy is defined.
 - Durable evidence/export posture is defined.
 - Durable memory retention, delete/export, raw-content, and customer exit

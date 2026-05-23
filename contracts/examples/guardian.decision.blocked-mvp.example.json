@@ -1,0 +1,97 @@
+{
+  "contract_name": "guardian.decision",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-guardian-live-connector-blocked-001",
+  "causation_id": "connector-live-access-001",
+  "idempotency_key": "idem-guardian-live-connector-blocked-001",
+  "decision_id": "gd-live-connector-blocked-001",
+  "request_id": "req-live-connector-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T21:43:20Z"
+  },
+  "requested_by": {
+    "actor_type": "supervisor",
+    "actor_id": "supervisor-lab-001"
+  },
+  "subject": {
+    "subject_type": "connector",
+    "subject_id": "connector-ref-crm-placeholder-001"
+  },
+  "action_class": "connector_access",
+  "resource_ref": {
+    "resource_type": "connector",
+    "resource_id": "connector-ref-crm-placeholder-001",
+    "resource_scope": "blocked_mvp"
+  },
+  "data_classification": "customer_confidential",
+  "risk_tier": "blocked",
+  "policy_refs": [
+    "mvp:block-live-connectors",
+    "policy.guardian-expiry-replay.phase1a"
+  ],
+  "policy_version": "policy-phase0-v1",
+  "policy_snapshot_hash": "policy-snapshot-hash-phase0-connector-001",
+  "valid_for_action_ref": "hash-ref-live-connector-blocked-001",
+  "decision": "block_mvp",
+  "approval_required": false,
+  "approval_request_id": null,
+  "approval_chain_id": null,
+  "binding_id": null,
+  "approval_token_id": null,
+  "token_verification_id": null,
+  "denial_reason": "Live connector access is blocked in MVP.",
+  "redaction_level": "metadata_only",
+  "evidence_required": true,
+  "evidence_artifact_id": "ev-guardian-live-connector-blocked-001",
+  "evidence_artifact_ids": [
+    "ev-guardian-live-connector-blocked-001"
+  ],
+  "guardian_decision_id": "gd-live-connector-blocked-001",
+  "decision_nonce": null,
+  "issued_at": "2026-05-18T21:43:20Z",
+  "effective_at": "2026-05-18T21:43:20Z",
+  "max_age_seconds": 300,
+  "clock_skew_allowance_seconds": 30,
+  "replay_policy": "blocked_mvp",
+  "decision_scope_hash": "hash-ref-live-connector-blocked-001",
+  "bound_tenant_id": "tenant-lab-001",
+  "bound_task_id": null,
+  "bound_worker_id": null,
+  "bound_action_type": "live_connector_access",
+  "bound_tool_scope": {
+    "resource_refs": [
+      "connector-ref-crm-placeholder-001"
+    ],
+    "allowed_operations": [
+      "none"
+    ],
+    "prohibited_operations": [
+      "live_connector_write",
+      "connector_read_live",
+      "connector_write_live"
+    ]
+  },
+  "approval_binding_id": null,
+  "evidence_refs": [
+    "ev-guardian-live-connector-blocked-001"
+  ],
+  "replay_status": "blocked_mvp",
+  "consumed_at": null,
+  "revoked_at": null,
+  "revocation_reason": null,
+  "prompt_injection": {
+    "untrusted_input_refs": [],
+    "content_origin": "operator",
+    "instruction_boundary": "operator_instruction",
+    "injection_suspected": false,
+    "injection_signals": [],
+    "containment_action": "none"
+  },
+  "created_at": "2026-05-18T21:43:20Z",
+  "expires_at": "2026-05-18T21:48:20Z"
+}

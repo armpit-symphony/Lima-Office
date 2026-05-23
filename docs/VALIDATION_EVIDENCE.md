@@ -5,7 +5,7 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `approval-token-runtime-binding-design` on Windows with
+Latest captured run: `guardian-expiry-replay-policy-design` on Windows with
 Python 3.12.10.
 
 ## Canonical Integration Branch
@@ -14,6 +14,7 @@ Python 3.12.10.
 - Base commit: `f64d3a0447a76b24a5213487ce8836cb21511882`
 - Invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 - Approval binding branch: `approval-token-runtime-binding-design`
+- Guardian expiry/replay branch: `guardian-expiry-replay-policy-design`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -65,6 +66,15 @@ evidence only; it does not approve live connectors, external sends, real
 remediation, durable services, production operations, or customer-system
 mutation.
 
+## Guardian Expiry Replay Checkpoint
+
+This branch adds `guardian.decision` expiry/replay fields, a `guardian.replay`
+metadata contract, sanitized examples, a mock/in-memory Guardian decision
+replay verifier, and fail-closed tests. Validation remains repository health
+evidence only; it does not approve live connectors, external sends, real
+remediation, durable services, production operations, or customer-system
+mutation.
+
 ## Strict Schema Validation
 
 Command:
@@ -77,13 +87,13 @@ Result:
 
 ```text
 LIMA Office contract validation
-- schemas parsed: 32
-- examples parsed: 59
-- mapped examples: 59
-- schemas with examples: 32
+- schemas parsed: 33
+- examples parsed: 70
+- mapped examples: 70
+- schemas with examples: 33
 - validation mode: full JSON Schema draft 2020-12 with format checks
 - jsonschema version: 4.26.0
-- unsafe-content scan: 59 example files, 83 markdown files
+- unsafe-content scan: 70 example files, 84 markdown files
 - warnings: 0
 - failures: 0
 Result: PASS
@@ -109,8 +119,8 @@ Result:
 
 ```text
 LIMA Office markdown link check
-- markdown files scanned: 91
-- local links checked: 610
+- markdown files scanned: 92
+- local links checked: 641
 - external/anchor links ignored: 0
 - failures: 0
 Result: PASS
@@ -127,7 +137,7 @@ python -B -m unittest discover -s tests -v
 Result:
 
 ```text
-Ran 89 tests
+Ran 109 tests
 
 OK
 ```
@@ -147,6 +157,12 @@ Coverage added by this checkpoint:
   tenant/task/worker/action/tool scope/Guardian mismatch, blocked-MVP action,
   LIMA IT remediation, tainted input, missing evidence, and approval-required
   task enqueue binding.
+- Guardian expiry/replay checks for first-use success, replay denial, expiry,
+  stale decision age, missing expiry, future-effective timestamp beyond skew,
+  clock-skew allowance, tenant/task/worker/action/tool-scope mismatch, decision
+  scope hash mismatch, approval-binding mismatch, blocked-MVP action, LIMA IT
+  remediation block, external-send/live-connector block, ambiguous timestamp,
+  and missing evidence.
 
 ## Pytest
 
@@ -159,7 +175,7 @@ python -m pytest -q
 Result:
 
 ```text
-89 passed, 1 warning, 73 subtests passed
+109 passed, 1 warning, 89 subtests passed
 ```
 
 Warning: pytest could not create/write `.pytest_cache` because access was

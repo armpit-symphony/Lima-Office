@@ -11,6 +11,9 @@ It contains contract loading, contract validation, a default-deny Guardian
 policy stub, in-memory worker registry, heartbeat validation, in-memory task
 queue, cross-contract invariant checks, metadata-only Supervisor health
 reporting, and metadata-only in-memory evidence writer.
+This branch also includes a mock-only Guardian decision replay verifier that
+validates expiry, replay nonce, scope, clock-skew, approval binding, token
+verification, and evidence refs in memory for tests.
 
 It does not contain live dispatch, live tool execution, durable persistence,
 external services, production operations, or customer-system mutation.
@@ -52,6 +55,9 @@ The current runtime can safely be used for:
   LIMA IT flows.
 - Building `supervisor.health` mock reports for tests and operator-facing
   planning.
+- Checking Guardian decision expiry/replay invariants in memory so one-time
+  decisions can pass once in tests and stale, replayed, mismatched, or
+  blocked-MVP decisions fail closed.
 
 ## Future Approval Required
 
@@ -79,7 +85,8 @@ Do not expand runtime behavior until these gates are closed:
 
 - Durable approval-token consumption, replay evidence/export posture, and
   concurrency behavior beyond the mock/in-memory verifier.
-- Final non-test Guardian decision expiry and replay policy.
+- Durable Guardian replay store, durable atomic decision consumption,
+  idempotency/concurrency behavior, and final non-test clock-skew thresholds.
 - Final Supervisor health reason thresholds, owner/escalation rules, and
   operations posture.
 - Durable evidence/export posture.

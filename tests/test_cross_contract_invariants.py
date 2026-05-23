@@ -46,9 +46,13 @@ class CrossContractInvariantTests(unittest.TestCase):
     def bound_decision(self, task):
         decision = guardian_allow_decision()
         decision["decision_id"] = task["guardian_decision_id"]
+        decision["guardian_decision_id"] = task["guardian_decision_id"]
         decision["tenant_id"] = task["tenant_id"]
         decision["customer_context_id"] = task["customer_context_id"]
         decision["subject"] = {"subject_type": "task", "subject_id": task["task_id"]}
+        decision["evidence_artifact_id"] = task["evidence_artifact_ids"][0]
+        decision["evidence_artifact_ids"] = list(task["evidence_artifact_ids"])
+        decision["evidence_refs"] = list(task["evidence_artifact_ids"])
         return decision
 
     def in_progress_task(self):
@@ -80,6 +84,7 @@ class CrossContractInvariantTests(unittest.TestCase):
         task = self.in_progress_task()
         denied = GuardianPolicy().decide("external_send")
         denied["decision_id"] = task["guardian_decision_id"]
+        denied["guardian_decision_id"] = task["guardian_decision_id"]
         denied["tenant_id"] = task["tenant_id"]
         denied["customer_context_id"] = task["customer_context_id"]
         denied["subject"] = {"subject_type": "task", "subject_id": task["task_id"]}
