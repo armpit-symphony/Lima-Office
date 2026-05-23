@@ -8,8 +8,8 @@ mutation.
 
 Current canonical integration status is tracked in [Baseline](BASELINE.md). The
 missing cross-contract invariant checkpoint remains absent from this checkout
-and from `origin`; do not treat it as integrated or validated unless it is
-restored, rebuilt, replaced, or formally superseded.
+and from `origin`; [Cross-Contract Invariants](CROSS_CONTRACT_INVARIANTS.md)
+documents the reachable v2 checkpoint that supersedes it.
 
 ## Security / Governance
 
@@ -75,8 +75,10 @@ restored, rebuilt, replaced, or formally superseded.
 - Cross-contract invariant source: the 2026-05-22 reconciliation check found no
   local object and no `origin` branch for
   `phase-1a-cross-contract-invariants` / `e71431007ddbe96c3e141b77591efc2508c53e5d`
-  after `git fetch --all --prune`; should the checkpoint be restored, rebuilt,
-  replaced, or formally superseded?
+  after `git fetch --all --prune`; `phase-1a-invariant-checkpoint-v2`
+  supersedes it as the reachable replacement candidate. Remaining question:
+  should the old branch name be permanently retired or kept as a historical
+  missing checkpoint note?
 
 ## Connectors And Deployment
 

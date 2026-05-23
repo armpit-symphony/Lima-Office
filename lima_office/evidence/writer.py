@@ -118,12 +118,28 @@ class EvidenceWriter:
         self._artifacts[artifact_id] = copy.deepcopy(artifact)
         return copy.deepcopy(artifact)
 
-    def require_evidence(self, evidence_artifact_ids: list[str] | None) -> None:
+    def require_evidence(
+        self,
+        evidence_artifact_ids: list[str] | None,
+        *,
+        tenant_id: str | None = None,
+        subject_id: str | None = None,
+        guardian_decision_id: str | None = None,
+    ) -> None:
         if not evidence_artifact_ids:
             raise EvidenceRequiredError("evidence artifact refs are required")
         missing = [artifact_id for artifact_id in evidence_artifact_ids if artifact_id not in self._artifacts]
         if missing:
             raise EvidenceRequiredError(f"unknown evidence artifact refs: {', '.join(missing)}")
+        for artifact_id in evidence_artifact_ids:
+            artifact = self._artifacts[artifact_id]
+            if tenant_id is not None and artifact.get("tenant_id") != tenant_id:
+                raise EvidenceRequiredError("evidence artifact tenant mismatch")
+            subject = artifact.get("subject")
+            if subject_id is not None and isinstance(subject, dict) and subject.get("subject_id") != subject_id:
+                raise EvidenceRequiredError("evidence artifact subject mismatch")
+            if guardian_decision_id is not None and artifact.get("guardian_decision_id") != guardian_decision_id:
+                raise EvidenceRequiredError("evidence artifact Guardian decision mismatch")
 
     def write_failure(
         self,

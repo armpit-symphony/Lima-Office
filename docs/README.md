@@ -10,6 +10,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [MVP scope](MVP_SCOPE.md)
 - [Roadmap](ROADMAP.md)
 - [Contracts](CONTRACTS.md)
+- [Cross-contract invariants](CROSS_CONTRACT_INVARIANTS.md)
 - [Security model](SECURITY_MODEL.md)
 - [Threat model](THREAT_MODEL.md)
 - [Worker node spec](WORKER_NODE_SPEC.md)

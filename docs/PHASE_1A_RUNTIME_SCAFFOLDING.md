@@ -27,7 +27,14 @@ services, or production-readiness claims.
   workers.
 - `supervisor.task_queue`: validates mock `task.execution` payloads and stores
   task records in memory only. It requires a validated Guardian decision before
-  assignment and blocks quarantined/revoked/offline workers.
+  assignment, blocks quarantined/revoked/offline workers, and applies Phase 1A
+  cross-contract invariant checks.
+- `runtime.invariants`: fail-closed cross-contract checks for Guardian decision
+  binding and freshness, approval-token verification binding, evidence-required
+  completion, worker capability routing, taint propagation, LIMA IT remediation
+  blocking, and helper scope limits.
+- `supervisor.health`: builds metadata-only `supervisor.health` mock/lab
+  reports from in-memory worker, task, Guardian, and evidence state.
 - `evidence.writer`: writes metadata-only, in-memory, test-only
   `evidence.artifact` records and `evidence.failure` records when simulated
   writes fail.
@@ -53,6 +60,17 @@ reject obvious secret-like content.
 
 If evidence is required and the mock evidence writer cannot write, the path
 fails closed with an `evidence.failure` record.
+
+## Cross-Contract Invariants
+
+[Cross-Contract Invariants](CROSS_CONTRACT_INVARIANTS.md) documents the Phase
+1A v2 checkpoint that replaces the absent `e714310...` branch. These checks
+prove that individually valid contracts cannot be combined into unsafe mock
+flows across Guardian decisions, token verifications, tasks, tools, memory,
+workers, helper scopes, evidence, and LIMA IT handoffs.
+
+The checks are hardening only. They do not add tool execution, live connectors,
+external sends, remediation, durable services, or production monitoring.
 
 ## Dependency Requirement
 

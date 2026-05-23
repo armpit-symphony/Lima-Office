@@ -108,6 +108,7 @@ class TaskQueueTests(unittest.TestCase):
             }
         )
         token = token_valid_example()
+        task["guardian_decision_id"] = token["guardian_decision_id"]
         accepted = self.queue.enqueue(task, self.bound_decision(task), token)
         self.assertEqual("task-email-draft-001", accepted["task_id"])
 

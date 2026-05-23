@@ -14,6 +14,16 @@ operations, customer-system mutation, or compliance certification claims.
 - Mainline status: `main` must remain untouched unless explicitly approved.
 - Stabilization mode: merge verification and docs-only baseline clarification.
 
+## Superseding Invariant Checkpoint
+
+- Branch: `phase-1a-invariant-checkpoint-v2`
+- Base: `integration/phase-0-1a-baseline`
+- Purpose: replace the absent `phase-1a-cross-contract-invariants` /
+  `e71431007ddbe96c3e141b77591efc2508c53e5d` checkpoint with reachable Phase 1A
+  invariant hardening.
+- Scope: mock/in-memory invariant checks, `supervisor.health` contract/reporting,
+  tests, and docs. No live runtime expansion is authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:
@@ -35,9 +45,9 @@ The following reachable branches are ancestors of the integration branch:
 
 - `phase-1a-cross-contract-invariants` /
   `e71431007ddbe96c3e141b77591efc2508c53e5d` is absent locally and absent from
-  `origin` after `git fetch --all --prune`. It is not integrated and must be
-  rebuilt, replaced, restored, or formally superseded before anyone relies on
-  it as a validated checkpoint.
+  `origin` after `git fetch --all --prune`. It is not integrated. The reachable
+  `phase-1a-invariant-checkpoint-v2` branch supersedes it for future baseline
+  review.
 - `roadmap-lima-office-control-plane` and `phase-0-codex-agents-skills` are
   historical ancestors in the repo graph, not explicit stabilization targets for
   this baseline.
@@ -71,6 +81,8 @@ health evidence only; it is not production certification.
 - Phase 1A mock in-memory runtime scaffolding with worker registry, heartbeat,
   task queue, Guardian policy stub, contract loader/validator, and
   metadata-only evidence writer.
+- Phase 1A v2 cross-contract invariant checks and metadata-only Supervisor
+  health reporter.
 - Closeout archive, runtime boundaries, worker deployment blueprint, governance
   policy details, and operator console UX specification.
 - Worker deployment, governance, and console metadata contracts and examples.
@@ -106,12 +118,10 @@ closes the relevant gates:
 
 Recommended order after stabilization:
 
-1. Rebuild or replace the missing Phase 1A cross-contract invariant branch if
-   needed, or formally supersede it.
-2. Approval-token runtime binding design.
-3. Guardian expiry and replay policy design.
-4. Durable evidence/export posture design.
-5. Phase 1B lab runtime expansion only after the gates above are approved.
+1. Approval-token runtime binding design.
+2. Guardian expiry and replay policy design.
+3. Durable evidence/export posture design.
+4. Phase 1B lab runtime expansion only after the gates above are approved.
 
 Alternative non-runtime lanes:
 

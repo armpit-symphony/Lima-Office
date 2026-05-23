@@ -9,7 +9,8 @@ Phase 1A runtime is mock/in-memory only.
 
 It contains contract loading, contract validation, a default-deny Guardian
 policy stub, in-memory worker registry, heartbeat validation, in-memory task
-queue, and metadata-only in-memory evidence writer.
+queue, cross-contract invariant checks, metadata-only Supervisor health
+reporting, and metadata-only in-memory evidence writer.
 
 It does not contain live dispatch, live tool execution, durable persistence,
 external services, production operations, or customer-system mutation.
@@ -46,6 +47,11 @@ The current runtime can safely be used for:
   unregistered workers.
 - Creating metadata-only, in-memory evidence refs for tests.
 - Simulating evidence writer failure so privileged paths can fail closed.
+- Checking cross-contract invariants in memory so valid schemas cannot be
+  combined into unsafe task, token, tool, memory, helper, worker, evidence, or
+  LIMA IT flows.
+- Building `supervisor.health` mock reports for tests and operator-facing
+  planning.
 
 ## Future Approval Required
 
@@ -71,9 +77,10 @@ evidence path, failure behavior, runbook, and tests must exist and pass.
 
 Do not expand runtime behavior until these gates are closed:
 
-- Approval-token runtime record binding.
-- Non-test Guardian decision expiry and replay policy.
-- Supervisor health reason taxonomy.
+- First-class approval-token runtime record binding and one-time consumption.
+- Final non-test Guardian decision expiry and replay policy.
+- Final Supervisor health reason thresholds, owner/escalation rules, and
+  operations posture.
 - Durable evidence/export posture.
 - Durable memory retention, delete/export, raw-content handling, and customer
   exit posture.

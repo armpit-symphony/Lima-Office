@@ -1,0 +1,60 @@
+{
+  "contract_name": "supervisor.health",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-supervisor-health-degraded-001",
+  "causation_id": null,
+  "idempotency_key": "idem-supervisor-health-degraded-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-20T00:01:00Z"
+  },
+  "supervisor_id": "supervisor-lab-001",
+  "generated_at": "2026-05-20T00:01:00Z",
+  "mode": "mock",
+  "worker_count": 1,
+  "worker_state_counts": {
+    "degraded": 1
+  },
+  "task_state_counts": {
+    "in_progress": 1
+  },
+  "guardian_decision_counts": {
+    "allow_with_evidence": 1
+  },
+  "evidence_status_counts": {
+    "degraded": 1,
+    "failure_recorded": 1,
+    "healthy": 1
+  },
+  "stale_heartbeat_count": 1,
+  "quarantined_worker_count": 0,
+  "revoked_worker_count": 0,
+  "blocked_task_count": 0,
+  "denied_action_count": 0,
+  "degraded_component_count": 2,
+  "health_status": "degraded",
+  "reasons": [
+    "worker_stale",
+    "evidence_writer_degraded"
+  ],
+  "evidence_refs": [
+    "ev-health-degraded-001"
+  ],
+  "policy_refs": [
+    "policy-phase1a-invariants-v2"
+  ],
+  "related_contract_refs": [
+    "guardian.decision:gd-health-degraded-001",
+    "task:task-health-degraded-001",
+    "worker:arc-file-clerk-01"
+  ],
+  "data_classification": "internal",
+  "redaction_level": "metadata_only",
+  "raw_customer_content_present": false,
+  "secret_material_present": false,
+  "policy_version": "policy-phase1a-invariants-v2"
+}

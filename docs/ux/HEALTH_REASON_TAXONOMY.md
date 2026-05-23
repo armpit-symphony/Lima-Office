@@ -1,7 +1,9 @@
 # Health Reason Taxonomy
 
 This is initial taxonomy scaffolding for console status and alert labels. It is
-not production monitoring, an alerting service, or runtime implementation.
+not production monitoring, an alerting service, or production runtime
+implementation. Phase 1A v2 uses these codes in metadata-only
+`supervisor.health` mock reports.
 
 | Reason code | Category | Meaning | Expected UX state | Primary records | Runbook |
 | --- | --- | --- | --- | --- | --- |
@@ -22,6 +24,7 @@ not production monitoring, an alerting service, or runtime implementation.
 | `retention_policy_missing` | Governance/data | Retention posture missing for record or action | Blocked for durable write/export/delete | `governance.audit_export`, `evidence.artifact`, `memory.access` | [Customer exit delete](../runbooks/customer-exit-delete.md) |
 | `export_delete_policy_missing` | Governance/data | Export/delete posture missing or preservation conflict unresolved | Blocked for export/delete | `governance.audit_export` | [Customer exit delete](../runbooks/customer-exit-delete.md) |
 | `idp_mfa_missing` | Governance/identity | Identity provider or MFA posture missing for privileged role | Blocked for approval-capable view | `governance.identity`, `governance.access_review` | [Access review](../runbooks/access-review.md) |
+| `task_blocked` | Task | Task is blocked, denied, or evidence-unavailable after policy/invariant review | Blocked | `task.execution`, `supervisor.health` | [Approval flow](../runbooks/approval-flow.md) |
 
 ## UX Rules
 

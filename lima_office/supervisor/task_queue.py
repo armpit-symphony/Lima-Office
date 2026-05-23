@@ -8,6 +8,13 @@ from typing import Any
 from lima_office.contracts.validator import ContractValidator
 from lima_office.evidence.writer import EvidenceWriter
 from lima_office.guardian.policy import GuardianPolicy
+from lima_office.runtime.invariants import (
+    DEFAULT_REFERENCE_TIME,
+    assert_guardian_decision_authorizes_task,
+    assert_task_completion_allowed,
+    assert_token_verification_authorizes_task,
+    assert_worker_can_receive_task,
+)
 from lima_office.runtime.errors import EvidenceRequiredError, PolicyDenyError, UnsafeRuntimeActionError
 
 from .worker_registry import WorkerRegistry
@@ -42,13 +49,16 @@ class TaskQueue:
         validator: ContractValidator,
         policy: GuardianPolicy | None = None,
         evidence_writer: EvidenceWriter | None = None,
+        reference_time: str | None = DEFAULT_REFERENCE_TIME,
     ) -> None:
         self.registry = registry
         self.validator = validator
         self.policy = policy or GuardianPolicy()
         self.evidence_writer = evidence_writer
+        self.reference_time = reference_time
         self._tasks: dict[str, dict[str, Any]] = {}
         self._token_verifications: dict[str, dict[str, Any]] = {}
+        self._guardian_decisions: dict[str, dict[str, Any]] = {}
 
     def enqueue(
         self,
@@ -60,32 +70,38 @@ class TaskQueue:
         if guardian_decision is None:
             raise PolicyDenyError("Guardian decision is required before task assignment")
         guardian_decision = self.validator.validate(guardian_decision, "guardian.decision")
-        if guardian_decision.get("decision") not in {"allow", "allow_with_evidence"}:
-            raise PolicyDenyError(guardian_decision.get("denial_reason") or "Guardian denied task assignment")
-        if guardian_decision.get("tenant_id") != task.get("tenant_id"):
-            raise PolicyDenyError("Guardian decision tenant mismatch")
-        if guardian_decision.get("decision_id") != task.get("guardian_decision_id"):
-            raise PolicyDenyError("Guardian decision is not bound to task guardian_decision_id")
+        assert_guardian_decision_authorizes_task(task, guardian_decision, reference_time=self.reference_time)
 
         task_id = task["task_id"]
         assigned_worker_id = task.get("assigned_worker_id")
         if isinstance(assigned_worker_id, str):
-            self.registry.require_assignable(assigned_worker_id, task.get("tenant_id"))
+            worker = self.registry.require_assignable(assigned_worker_id, task.get("tenant_id"))
+            assert_worker_can_receive_task(worker, task)
         verified_token = self._validate_token_if_required(task, token_verification)
         self._assert_safe_task(task)
         self._tasks[task_id] = copy.deepcopy(task)
+        self._guardian_decisions[task_id] = copy.deepcopy(guardian_decision)
         if verified_token is not None:
             self._token_verifications[task_id] = copy.deepcopy(verified_token)
         return copy.deepcopy(task)
 
     def complete_mock(self, task_id: str, evidence_artifact_ids: list[str] | None = None) -> dict[str, Any]:
         task = self.get(task_id)
-        if task.get("approval_required") and task_id not in self._token_verifications:
-            raise PolicyDenyError("approval-required task cannot complete without approved token metadata")
-        if not evidence_artifact_ids:
-            raise EvidenceRequiredError("mock completion requires evidence artifact refs")
-        if self.evidence_writer is not None:
-            self.evidence_writer.require_evidence(evidence_artifact_ids)
+        assert_task_completion_allowed(
+            task,
+            guardian_decision=copy.deepcopy(self._guardian_decisions.get(task_id)),
+            token_verification=copy.deepcopy(self._token_verifications.get(task_id)),
+            evidence_artifact_ids=evidence_artifact_ids,
+            reference_time=self.reference_time,
+        )
+        if self.evidence_writer is None:
+            raise EvidenceRequiredError("mock completion requires an evidence writer to validate evidence refs")
+        self.evidence_writer.require_evidence(
+            evidence_artifact_ids,
+            tenant_id=task.get("tenant_id"),
+            subject_id=task_id,
+            guardian_decision_id=self._guardian_decisions[task_id].get("decision_id"),
+        )
         task["status"] = "completed_mock"
         task["evidence_artifact_ids"] = evidence_artifact_ids
         task = self.validator.validate(task, "task.execution")
@@ -135,12 +151,5 @@ class TaskQueue:
         if token_verification is None:
             raise PolicyDenyError("approval-required task requires token verification metadata")
         verified = self.validator.validate(token_verification, "token.verification")
-        if verified.get("tenant_id") != task.get("tenant_id"):
-            raise PolicyDenyError("token verification tenant mismatch")
-        if verified.get("task_id") != task.get("task_id"):
-            raise PolicyDenyError("token verification task mismatch")
-        if verified.get("approval_token_id") != task.get("approval_token_id"):
-            raise PolicyDenyError("token verification approval token mismatch")
-        if verified.get("verification_result") != "valid" or verified.get("can_proceed") is not True:
-            raise PolicyDenyError(verified.get("denial_reason") or "token verification failed closed")
+        assert_token_verification_authorizes_task(task, verified)
         return verified

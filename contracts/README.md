@@ -26,6 +26,7 @@ Version 1 schemas are in [v1](v1):
 - [worker.lifecycle.schema.json](v1/worker.lifecycle.schema.json)
 - [worker.heartbeat.schema.json](v1/worker.heartbeat.schema.json)
 - [worker.deployment.schema.json](v1/worker.deployment.schema.json)
+- [supervisor.health.schema.json](v1/supervisor.health.schema.json)
 - [governance.identity.schema.json](v1/governance.identity.schema.json)
 - [governance.access_review.schema.json](v1/governance.access_review.schema.json)
 - [governance.breakglass.schema.json](v1/governance.breakglass.schema.json)
@@ -62,6 +63,9 @@ Sanitized example objects are in [examples](examples):
 - [worker.deployment.lightweight.example.json](examples/worker.deployment.lightweight.example.json)
 - [worker.deployment.local-model.example.json](examples/worker.deployment.local-model.example.json)
 - [worker.deployment.quarantined.example.json](examples/worker.deployment.quarantined.example.json)
+- [supervisor.health.healthy.example.json](examples/supervisor.health.healthy.example.json)
+- [supervisor.health.degraded.example.json](examples/supervisor.health.degraded.example.json)
+- [supervisor.health.blocked.example.json](examples/supervisor.health.blocked.example.json)
 - [governance.identity.operator-mfa-required.example.json](examples/governance.identity.operator-mfa-required.example.json)
 - [governance.access_review.quarterly-placeholder.example.json](examples/governance.access_review.quarterly-placeholder.example.json)
 - [governance.breakglass.blocked-mvp.example.json](examples/governance.breakglass.blocked-mvp.example.json)
@@ -176,6 +180,9 @@ The v1 schemas use JSON Schema draft 2020-12 conditionals to block unsafe state 
 - `approval.request`, `approval.result`, `approval.token`, and `token.verification` bind approval status, approver identity, token state, token verification, denial, expiry, revoke, and blocked-MVP outcomes.
 - `guardian.decision`, `task.execution`, `tool.invocation`, `memory.access`, and `model.route` bind policy result, approval state, taint refs, evidence failure, terminal states, and denial/failure reasons.
 - `worker.lifecycle`, `worker.heartbeat`, and `worker.deployment` bind identity failure, quarantine, revoke, evidence-writer failure, deployment refs, update/rollback posture, and healthy states.
+- `supervisor.health` summarizes mock/lab worker, task, Guardian, and evidence
+  state with reason codes. It is metadata-only reporting, not production
+  monitoring.
 - Governance schemas bind identity/MFA placeholder posture, access review,
   breakglass denial, audit export/delete request posture, connector consent and
   revocation, and signed update/rollback metadata. They do not implement
@@ -198,6 +205,10 @@ See [Schema Hardening Notes](../docs/SCHEMA_HARDENING_NOTES.md) for the reasonin
 - Token verification fails closed for missing, expired, revoked, used, mismatched, ambiguous, or wrong-scope tokens.
 - Tainted content cannot directly authorize tool use, durable memory writes, external sends, approval scope, or remediation.
 - Evidence-required privileged actions cannot proceed when evidence cannot be written.
+- Cross-contract invariant checks fail closed when individually valid records
+  disagree across tenant, customer context, task, Guardian decision, token
+  verification, evidence, worker capability, taint, helper scope, memory, tool,
+  or LIMA IT handoff boundaries.
 - Helper scopes are supervisor-side, leased, narrow, visible, and cannot inherit worker trust.
 - LIMA IT remediation remains request/denial metadata only in Phase 0; diagnostics are read-only.
 

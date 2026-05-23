@@ -1,18 +1,18 @@
 # Validation Evidence
 
-This file records the validation baseline for the Phase 0 / Phase 1A closeout
-and the canonical integration branch. Validation is not production
-certification and does not approve live connectors, external sends, real
-remediation, production operations, or customer-system mutation.
+This file records the validation baseline for the Phase 0 / Phase 1A closeout,
+canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
+is not production certification and does not approve live connectors, external
+sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `integration/phase-0-1a-baseline` on Windows with Python
+Latest captured run: `phase-1a-invariant-checkpoint-v2` on Windows with Python
 3.12.10.
 
 ## Canonical Integration Branch
 
-- Branch: `integration/phase-0-1a-baseline`
-- Source base: `operator-console-ux-spec` /
-  `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
+- Base branch: `integration/phase-0-1a-baseline`
+- Base commit: `f64d3a0447a76b24a5213487ce8836cb21511882`
+- Invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -24,7 +24,6 @@ Commands:
 ```powershell
 git fetch --all --prune
 git cat-file -t e71431007ddbe96c3e141b77591efc2508c53e5d
-git branch -a
 git ls-remote --heads origin phase-1a-cross-contract-invariants
 ```
 
@@ -33,24 +32,18 @@ Result:
 ```text
 git fetch --all --prune: PASS
 git cat-file -t e71431007ddbe96c3e141b77591efc2508c53e5d: fatal: git cat-file: could not get object info
-git branch -a: no local or remote phase-1a-cross-contract-invariants branch listed
 git ls-remote --heads origin phase-1a-cross-contract-invariants: no matching head returned
 ```
 
 Conclusion: `e71431007ddbe96c3e141b77591efc2508c53e5d` does not exist in this
 local checkout after fetch, and `origin/phase-1a-cross-contract-invariants` is
-not advertised. The branch is not integrated or validated in the canonical
-baseline.
+not advertised. [Cross-Contract Invariants](CROSS_CONTRACT_INVARIANTS.md)
+documents the reachable v2 checkpoint that supersedes the absent commit.
 
 ## Branch Inclusion Checks
 
-Command:
-
-```powershell
-git merge-base --is-ancestor <branch> HEAD
-```
-
-Result: PASS for each reachable stabilization target:
+The v2 checkpoint was created from `integration/phase-0-1a-baseline`, which had
+already verified the reachable stabilization targets as ancestors:
 
 - `phase-0-architecture-contracts-roadmap`
 - `phase-0-contract-schemas`
@@ -62,9 +55,6 @@ Result: PASS for each reachable stabilization target:
 - `worker-deployment-blueprint`
 - `governance-policy-details`
 - `operator-console-ux-spec`
-
-No merge was required because all target branches were already ancestors of the
-integration branch.
 
 ## Strict Schema Validation
 
@@ -78,13 +68,13 @@ Result:
 
 ```text
 LIMA Office contract validation
-- schemas parsed: 29
-- examples parsed: 42
-- mapped examples: 42
-- schemas with examples: 29
+- schemas parsed: 30
+- examples parsed: 45
+- mapped examples: 45
+- schemas with examples: 30
 - validation mode: full JSON Schema draft 2020-12 with format checks
 - jsonschema version: 4.26.0
-- unsafe-content scan: 42 example files, 81 markdown files
+- unsafe-content scan: 45 example files, 82 markdown files
 - warnings: 0
 - failures: 0
 Result: PASS
@@ -110,8 +100,8 @@ Result:
 
 ```text
 LIMA Office markdown link check
-- markdown files scanned: 89
-- local links checked: 552
+- markdown files scanned: 90
+- local links checked: 571
 - external/anchor links ignored: 0
 - failures: 0
 Result: PASS
@@ -128,10 +118,22 @@ python -B -m unittest discover -s tests -v
 Result:
 
 ```text
-Ran 50 tests
+Ran 71 tests
 
 OK
 ```
+
+Coverage added by this checkpoint:
+
+- Cross-contract invariant checks.
+- Guardian decision expiry/staleness checks.
+- Approval-token verification binding checks.
+- Evidence-required completion checks.
+- Worker state and capability routing checks.
+- Taint propagation checks for tool and memory paths.
+- LIMA IT remediation blocking checks.
+- Helper scope overreach checks.
+- Supervisor health reporting checks.
 
 ## Pytest
 
@@ -144,7 +146,7 @@ python -m pytest -q
 Result:
 
 ```text
-50 passed, 1 warning, 53 subtests passed
+71 passed, 1 warning, 56 subtests passed
 ```
 
 Warning: pytest could not create/write `.pytest_cache` because access was
@@ -171,8 +173,8 @@ git diff --cached --check
 ```
 
 Working-tree result before staging: `git diff --check` returned exit 0 with
-LF-to-CRLF warnings for Markdown files in this Windows checkout; no whitespace
-errors were reported.
+LF-to-CRLF warnings for files in this Windows checkout; no whitespace errors
+were reported.
 
 Cached result after staging: PASS, no whitespace errors reported.
 
@@ -184,8 +186,8 @@ Command:
 git status
 ```
 
-Integration patch result before staging: modified docs only plus new
-`docs/BASELINE.md`.
+Checkpoint patch result before staging: modified runtime hardening, tests,
+schemas/examples, and documentation only.
 
 ## CI Expectations
 

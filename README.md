@@ -70,6 +70,7 @@ No remediation runtime, endpoint control, production server change, or network c
 - [MVP scope](docs/MVP_SCOPE.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Contracts](docs/CONTRACTS.md)
+- [Cross-contract invariants](docs/CROSS_CONTRACT_INVARIANTS.md)
 - [Security model](docs/SECURITY_MODEL.md)
 - [Threat model](docs/THREAT_MODEL.md)
 - [Worker node spec](docs/WORKER_NODE_SPEC.md)

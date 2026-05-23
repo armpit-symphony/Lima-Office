@@ -8,18 +8,18 @@ or customer-system mutation.
 
 Current canonical integration branch: `integration/phase-0-1a-baseline`. See
 [Baseline](BASELINE.md) for the included reachable branches and the missing
-cross-contract invariant checkpoint.
+cross-contract invariant checkpoint. The reachable replacement is
+`phase-1a-invariant-checkpoint-v2`; see
+[Cross-Contract Invariants](CROSS_CONTRACT_INVARIANTS.md).
 
 ## Recommendation
 
 Recommended order:
 
-1. Rebuild or replace the missing Phase 1A cross-contract invariant branch if
-   needed, or formally supersede it.
-2. Approval-token runtime binding design.
-3. Guardian expiry and replay policy design.
-4. Durable evidence/export posture design.
-5. Phase 1B lab runtime expansion only after the gates above are approved.
+1. Approval-token runtime binding design.
+2. Guardian expiry and replay policy design.
+3. Durable evidence/export posture design.
+4. Phase 1B lab runtime expansion only after the gates above are approved.
 
 Alternative non-runtime lanes can proceed when they do not obscure the blockers:
 model-routing defaults, final IdP/MFA/RBAC matrix, health taxonomy refinement,
@@ -181,8 +181,9 @@ Prerequisites:
 - Model-routing defaults are defined for local versus subscription/cloud model
   classes, including data classifications that force local-only handling or
   denial.
-- Missing cross-contract invariant checkpoint source is restored, rebuilt,
-  replaced, or formally superseded.
+- Cross-contract invariant checkpoint source is restored, rebuilt, replaced, or
+  formally superseded. The reachable v2 branch provides the current replacement
+  candidate.
 
 Allowed work after prerequisites:
 

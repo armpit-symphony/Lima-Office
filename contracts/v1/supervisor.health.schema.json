@@ -1,0 +1,324 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/supervisor.health.schema.json",
+  "title": "Supervisor Health Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "supervisor_id",
+    "generated_at",
+    "mode",
+    "worker_count",
+    "worker_state_counts",
+    "task_state_counts",
+    "guardian_decision_counts",
+    "evidence_status_counts",
+    "stale_heartbeat_count",
+    "quarantined_worker_count",
+    "revoked_worker_count",
+    "blocked_task_count",
+    "denied_action_count",
+    "degraded_component_count",
+    "health_status",
+    "reasons",
+    "evidence_refs",
+    "policy_refs",
+    "related_contract_refs",
+    "data_classification",
+    "redaction_level",
+    "raw_customer_content_present",
+    "secret_material_present",
+    "policy_version"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "supervisor.health"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "const": "supervisor"
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "supervisor_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "mock",
+        "lab_planned"
+      ]
+    },
+    "worker_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 8
+    },
+    "worker_state_counts": {
+      "$ref": "#/$defs/counts"
+    },
+    "task_state_counts": {
+      "$ref": "#/$defs/counts"
+    },
+    "guardian_decision_counts": {
+      "$ref": "#/$defs/counts"
+    },
+    "evidence_status_counts": {
+      "$ref": "#/$defs/counts"
+    },
+    "stale_heartbeat_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "quarantined_worker_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "revoked_worker_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "blocked_task_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "denied_action_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "degraded_component_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "health_status": {
+      "type": "string",
+      "enum": [
+        "healthy",
+        "degraded",
+        "blocked"
+      ]
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "worker_stale",
+          "worker_quarantined",
+          "worker_revoked",
+          "evidence_missing",
+          "evidence_writer_degraded",
+          "guardian_denied",
+          "approval_expired",
+          "approval_revoked",
+          "token_mismatch",
+          "tainted_input",
+          "connector_revoked",
+          "attestation_failed",
+          "update_rollback_required",
+          "lima_it_remediation_blocked",
+          "retention_policy_missing",
+          "export_delete_policy_missing",
+          "idp_mfa_missing",
+          "task_blocked"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "policy_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "related_contract_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "data_classification": {
+      "type": "string",
+      "enum": [
+        "internal"
+      ]
+    },
+    "redaction_level": {
+      "type": "string",
+      "const": "metadata_only"
+    },
+    "raw_customer_content_present": {
+      "type": "boolean",
+      "const": false
+    },
+    "secret_material_present": {
+      "type": "boolean",
+      "const": false
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "$defs": {
+    "counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "health_status": {
+            "const": "healthy"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "stale_heartbeat_count": {
+            "const": 0
+          },
+          "quarantined_worker_count": {
+            "const": 0
+          },
+          "revoked_worker_count": {
+            "const": 0
+          },
+          "blocked_task_count": {
+            "const": 0
+          },
+          "denied_action_count": {
+            "const": 0
+          },
+          "degraded_component_count": {
+            "const": 0
+          },
+          "reasons": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "health_status": {
+            "const": "blocked"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "reasons": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "health_status": {
+            "const": "degraded"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "degraded_component_count": {
+            "minimum": 1
+          },
+          "reasons": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}

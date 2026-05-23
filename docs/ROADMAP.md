@@ -61,6 +61,7 @@
 - Phase 1A mock runtime scaffold for contract loading and validation.
 - In-memory mock worker registry, heartbeat intake, task queue, Guardian decisions, and evidence writer.
 - Runtime tests for fail-closed policy, validation, worker state, heartbeat, task, and evidence behavior.
+- Phase 1A v2 cross-contract invariant checks and Supervisor health contract/reporting.
 - Supervisor skeleton if separately approved beyond mock scaffolding.
 - Worker skeleton if separately approved beyond mock scaffolding.
 - Mock task queue.
@@ -73,6 +74,9 @@
 - 1 Supervisor Server and 1-3 lab workers represented.
 - Worker registration and heartbeat states are visible.
 - Every task transition has a Guardian decision and evidence reference.
+- Valid contracts cannot be combined into unsafe flows across Guardian,
+  approval, token, evidence, taint, worker, tool, memory, helper, or LIMA IT
+  records.
 - No external writes or live connector calls.
 - Runtime validation requires real `jsonschema` and fails closed without it.
 - Mock queues remain synchronous in-memory records only; no tool execution, services, daemons, or background loops.
@@ -82,6 +86,7 @@
 - Lab scaffolding becoming implicit production behavior.
 - Overfitting to one machine setup.
 - Tool access escaping role scope.
+- Treating metadata-only Supervisor health reports as production monitoring.
 
 ### What Not To Build Yet
 

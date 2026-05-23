@@ -3,6 +3,7 @@
 from .errors import (
     ContractLoadError,
     ContractValidationError,
+    CrossContractInvariantError,
     EvidenceRequiredError,
     EvidenceWriteError,
     PolicyDenyError,
@@ -13,6 +14,7 @@ from .errors import (
 __all__ = [
     "ContractLoadError",
     "ContractValidationError",
+    "CrossContractInvariantError",
     "EvidenceRequiredError",
     "EvidenceWriteError",
     "PolicyDenyError",

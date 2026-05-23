@@ -1,0 +1,56 @@
+{
+  "contract_name": "supervisor.health",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-supervisor-health-healthy-001",
+  "causation_id": null,
+  "idempotency_key": "idem-supervisor-health-healthy-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-20T00:01:00Z"
+  },
+  "supervisor_id": "supervisor-lab-001",
+  "generated_at": "2026-05-20T00:01:00Z",
+  "mode": "mock",
+  "worker_count": 1,
+  "worker_state_counts": {
+    "healthy": 1
+  },
+  "task_state_counts": {
+    "completed_mock": 1
+  },
+  "guardian_decision_counts": {
+    "allow_with_evidence": 1
+  },
+  "evidence_status_counts": {
+    "artifact_recorded": 1,
+    "healthy": 1
+  },
+  "stale_heartbeat_count": 0,
+  "quarantined_worker_count": 0,
+  "revoked_worker_count": 0,
+  "blocked_task_count": 0,
+  "denied_action_count": 0,
+  "degraded_component_count": 0,
+  "health_status": "healthy",
+  "reasons": [],
+  "evidence_refs": [
+    "ev-task-it-health-001"
+  ],
+  "policy_refs": [
+    "policy-phase1a-invariants-v2"
+  ],
+  "related_contract_refs": [
+    "guardian.decision:gd-it-health-001",
+    "task:task-it-health-001",
+    "worker:arc-it-helper-01"
+  ],
+  "data_classification": "internal",
+  "redaction_level": "metadata_only",
+  "raw_customer_content_present": false,
+  "secret_material_present": false,
+  "policy_version": "policy-phase1a-invariants-v2"
+}

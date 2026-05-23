@@ -31,3 +31,7 @@ class EvidenceWriteError(LimaOfficeRuntimeError):
 
 class UnsafeRuntimeActionError(LimaOfficeRuntimeError):
     """Raised when scaffolding is asked to perform out-of-scope runtime work."""
+
+
+class CrossContractInvariantError(UnsafeRuntimeActionError):
+    """Raised when individually valid contracts form an unsafe flow."""

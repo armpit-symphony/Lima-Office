@@ -4,6 +4,8 @@ Project name: LIMA Office OS
 
 Canonical integration branch: `integration/phase-0-1a-baseline`
 
+Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
+
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
 
@@ -11,15 +13,17 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 0 / Phase 1A baseline stabilization. Phase 1A mock runtime
-scaffolding is present, but expansion remains blocked until the remaining gates
-in this file, [Baseline](docs/BASELINE.md), and
+Current phase: Phase 1A invariant hardening. Phase 1A mock runtime scaffolding
+is present, and this branch adds cross-contract invariant checks plus
+metadata-only supervisor health reporting. Runtime expansion remains blocked
+until the remaining gates in this file, [Baseline](docs/BASELINE.md), and
 [Next Phase Plan](docs/NEXT_PHASE_PLAN.md) are resolved.
 
-Missing checkpoint: the previously reported `phase-1a-cross-contract-invariants`
-commit `e71431007ddbe96c3e141b77591efc2508c53e5d` remains absent from this
-checkout and from `origin` after fetch. Do not treat it as integrated or
-validated unless it is pushed, restored, recreated, or formally superseded.
+Superseded missing checkpoint: the previously reported
+`phase-1a-cross-contract-invariants` commit
+`e71431007ddbe96c3e141b77591efc2508c53e5d` remains absent from this checkout and
+from `origin` after fetch. This branch replaces it with a reachable v2
+checkpoint. Do not treat `e714310...` itself as integrated or validated.
 
 ## What Exists
 
@@ -35,6 +39,8 @@ validated unless it is pushed, restored, recreated, or formally superseded.
   deployment/update/attestation, governance, connector readiness, and
   audit/export/delete views.
 - Canonical integration inventory in [Baseline](docs/BASELINE.md).
+- Phase 1A v2 invariant checkpoint in
+  [Cross-Contract Invariants](docs/CROSS_CONTRACT_INVARIANTS.md).
 - Versioned v1 contract schemas and sanitized examples in [contracts](contracts).
 - `worker.deployment` contract schema and examples for deployment planning
   metadata.
@@ -42,13 +48,21 @@ validated unless it is pushed, restored, recreated, or formally superseded.
   review, breakglass, audit export, connector consent, and update records.
 - Console metadata contract schemas and examples for view, alert, and
   action-review records.
+- `supervisor.health` contract schema and examples for metadata-only mock
+  Supervisor health summaries.
 - Strict contract validation through [scripts/validate-contracts.py](scripts/validate-contracts.py).
 - Local Markdown link validation through [scripts/check-doc-links.py](scripts/check-doc-links.py).
 - Phase 1A mock Python runtime scaffolding in [lima_office](lima_office).
 - In-memory worker registry, heartbeat validation, task queue, Guardian policy
   stub, contract loader/validator, and metadata-only evidence writer.
+- Cross-contract invariant checks for Guardian decision binding, token
+  verification binding, evidence-required completion, worker capability
+  routing, taint propagation, LIMA IT remediation blocking, and helper scope
+  boundaries.
+- Metadata-only Supervisor health reporter for mock/lab status records.
 - Unit tests for contract loading, validation, fail-closed policy, worker state,
-  heartbeat, task queue, and evidence behavior.
+  heartbeat, task queue, evidence behavior, cross-contract invariants, and
+  Supervisor health reporting.
 
 ## What Does Not Exist
 
@@ -83,15 +97,14 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 
 ## Remaining Blockers
 
-- Rebuild or replace the missing cross-contract invariant branch if that
-  checkpoint is still needed, or formally supersede it with a documented
-  contract-invariant lane.
-- Bind approval-token runtime records to concrete task/action/resource inputs
+- First-class approval-token runtime records still need concrete
+  task/action/resource binding, nonce/replay state, and one-time consumption
   before any approval-required runtime path can expand.
-- Define non-test Guardian decision expiry and replay policy.
+- Final Guardian expiry, replay, nonce, idempotency, action/resource binding,
+  and clock-skew policy remains open beyond the Phase 1A reference-time check.
 - Promote the initial health reason taxonomy in
-  [Health Reason Taxonomy](docs/ux/HEALTH_REASON_TAXONOMY.md) to normative
-  runtime thresholds and owner/escalation rules.
+  [Health Reason Taxonomy](docs/ux/HEALTH_REASON_TAXONOMY.md) to final runtime
+  thresholds and owner/escalation rules.
 - Define durable evidence storage, audit export, retention, redaction, and
   customer exit/delete posture.
 - Select operator IdP/MFA, breakglass, access review cadence, and LIMA IT
@@ -106,9 +119,8 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 
 ## Next Recommended Lane
 
-After this integration branch is reviewed, the next safe lane is to rebuild or
-replace the missing Phase 1A cross-contract invariant checkpoint if needed, then
-work the Phase 1B prerequisite design lanes: approval-token runtime binding,
-Guardian expiry/replay policy, durable evidence/export posture, and only then
-Phase 1B lab runtime expansion. Mainline update should wait for explicit
-approval.
+After this invariant checkpoint is reviewed, the next safe lane is
+approval-token runtime binding design, followed by Guardian expiry/replay policy
+and durable evidence/export posture. Phase 1B lab runtime expansion remains
+blocked until those gates are approved. Mainline update should wait for
+explicit approval.

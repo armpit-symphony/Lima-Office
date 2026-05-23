@@ -38,6 +38,32 @@ Version 1 schemas now use JSON Schema draft 2020-12 conditionals for the highest
 - Tainted content must remain data-only unless a later policy review clears it; it cannot directly become tool args, durable memory, approval scope, external sends, or remediation.
 - LIMA IT remediation is non-executing in Phase 0; diagnostic handoff remains read-only.
 
+## Cross-Contract Invariant Checkpoint
+
+[Cross-Contract Invariants](CROSS_CONTRACT_INVARIANTS.md) defines the Phase 1A
+v2 checkpoint that supersedes the absent `e714310...` invariant branch. The
+checkpoint verifies that individually valid records cannot be combined into
+unsafe runtime flows.
+
+The runtime invariant checks cover:
+
+- Guardian decision binding to tenant, customer context, task, evidence, and
+  reference-time freshness.
+- Approval-required task binding to valid token verification for the same
+  tenant, customer context, task, approval request, approval token, and Guardian
+  decision.
+- Evidence-required task completion with evidence refs validated by the
+  in-memory evidence writer when attached.
+- Worker routing that blocks quarantined, revoked, offline, wrong-tenant, stale,
+  and capability-mismatched workers.
+- Tool, memory, helper, and LIMA IT records that fail closed on taint,
+  cross-tenant access, blocked-MVP approval results, remediation execution, or
+  helper scope overreach.
+
+These checks remain Phase 1A hardening. They do not add live connectors,
+external sends, model calls, remediation, durable persistence, UI, or production
+monitoring.
+
 ## Common Field Groups
 
 - Envelope: `contract_name`, `contract_version`, `schema_version`, `tenant_id`, `customer_context_id`, `environment`, `correlation_id`, `causation_id`, `idempotency_key`, `producer`, `created_at` or event timestamp.
@@ -101,6 +127,33 @@ Version 1 schemas now use JSON Schema draft 2020-12 conditionals for the highest
 - Failure behavior: public inbound exposure, cross-worker trust, missing evidence, failed attestation, blocked install state, or quarantine state fails closed and blocks assignment.
 - Backwards compatibility notes: adding deployment metadata is additive; weakening public exposure, cross-worker trust, automatic update, or attestation failure semantics requires major review.
 - MVP acceptance gates: lightweight, local-model, and quarantined worker deployment records can be represented without installers, worker daemons, live connectors, external sends, external model calls, or remediation.
+
+## Supervisor Health Contract v1
+
+- Schema: [supervisor.health.schema.json](../contracts/v1/supervisor.health.schema.json)
+- Example objects: [supervisor.health.healthy.example.json](../contracts/examples/supervisor.health.healthy.example.json), [supervisor.health.degraded.example.json](../contracts/examples/supervisor.health.degraded.example.json), [supervisor.health.blocked.example.json](../contracts/examples/supervisor.health.blocked.example.json)
+- Purpose: records metadata-only mock/lab Supervisor health summaries for one
+  Supervisor Server and 1-8 Arc workers.
+- Version: `1.0.0`.
+- Producer: Supervisor health reporter in the Phase 1A mock runtime.
+- Consumer: tests, future operator console planning, evidence review, and
+  runbook triage.
+- Required fields: common envelope; `supervisor_id`, `generated_at`, `mode`,
+  worker/task/Guardian/evidence count maps, stale/quarantined/revoked/blocked
+  counts, `health_status`, reason codes, evidence refs, policy refs, related
+  contract refs, and metadata-only redaction fields.
+- Allowed states: `healthy`, `degraded`, `blocked`.
+- Security requirements: health records are metadata-only, internal
+  classification, and explicitly mark raw customer content and secret material
+  absent.
+- Evidence requirements: health records link evidence refs when evidence exists
+  and link related contract refs for worker, task, and Guardian context.
+- Failure behavior: denied Guardian decisions, blocked tasks, quarantined or
+  revoked workers, and pre-action evidence failures produce blocked health;
+  stale heartbeat or degraded evidence status produce degraded health.
+- MVP acceptance gates: healthy, degraded, and blocked summaries validate
+  without adding monitoring services, telemetry daemons, UI, production alerts,
+  durable storage, or production SLAs.
 
 ## Governance Identity Contract v1
 
