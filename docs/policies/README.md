@@ -21,6 +21,7 @@ Runtime must fail closed when policy is missing, ambiguous, expired, contradicto
 | `policy.connector_consent_scope_revocation.phase0` | `policy-phase0-v1` | Draft scaffold | Security reviewer | `governance.connector_consent`, `connector.trust`, `taint.ref` | [Connector Consent Scope Revocation Policy](../governance/CONNECTOR_CONSENT_SCOPE_REVOCATION_POLICY.md) | [Connector Revocation Runbook](../runbooks/connector-revocation.md) |
 | `policy.worker_attestation.phase0` | `policy-phase0-v1` | Placeholder scaffold | Security reviewer | `worker.deployment`, `worker.lifecycle`, `worker.heartbeat`, `governance.update_record` | [Worker Attestation Policy](../governance/WORKER_ATTESTATION_POLICY.md) | [Worker Attestation Failure Runbook](../runbooks/worker-attestation-failure.md) |
 | `policy.signed_update_rollback.phase0` | `policy-phase0-v1` | Draft scaffold | Field IT reviewer | `governance.update_record`, `worker.deployment`, `worker.lifecycle`, `worker.heartbeat` | [Signed Update Rollback Policy](../governance/SIGNED_UPDATE_ROLLBACK_POLICY.md) | [Update Rollback Approval Runbook](../runbooks/update-rollback-approval.md) |
+| `policy.console_ux.phase0` | `policy-phase0-v1` | Draft scaffold | Supervisor admin | `console.view`, `console.alert`, `console.action`, all operator-visible records | [Operator Console Spec](../ux/OPERATOR_CONSOLE_SPEC.md) | [Operator Workflows](../ux/OPERATOR_WORKFLOWS.md) |
 
 ## Policy Versioning
 

@@ -48,3 +48,11 @@ production compliance.
 - [governance.audit_export](../../contracts/v1/governance.audit_export.schema.json)
 - [governance.connector_consent](../../contracts/v1/governance.connector_consent.schema.json)
 - [governance.update_record](../../contracts/v1/governance.update_record.schema.json)
+
+## Console Visibility
+
+Governance state is operator-visible through the
+[Operator Console Spec](../ux/OPERATOR_CONSOLE_SPEC.md), especially identity/MFA
+blockers, access review, approver separation, breakglass denial, connector
+revocation, audit/export/delete review, attestation failure, and update/rollback
+states.

@@ -144,6 +144,12 @@ Approval-token lifecycle policy is defined in [Approval Token Lifecycle](policie
 
 Approval result and token verification records are separate controls. `approval.result` records the human decision outcome; `token.verification` records a point-in-time fail-closed check before an approval-required path can proceed.
 
+The [Approval Inbox Spec](ux/APPROVAL_INBOX_SPEC.md) requires the console to
+show Guardian decision, policy refs, evidence refs, taint status, scope hash,
+expiry, and separation checks before any approval metadata can be recorded.
+Blocked-MVP, stale, missing-evidence, tainted, self-approval, and token-mismatch
+states remain fail closed.
+
 ## Secure Update And Rollback
 
 Update and rollback posture must include:
@@ -232,6 +238,7 @@ The Phase 0 field-level schemas in [contracts/v1](../contracts/v1) define the mi
 - LIMA IT handoff: [lima_it.handoff.schema.json](../contracts/v1/lima_it.handoff.schema.json) separates read-only diagnostics from approval-required remediation and blocks production touch in MVP.
 - LIMA IT remediation-denied example: [lima_it.handoff.remediation-denied-mvp.example.json](../contracts/examples/lima_it.handoff.remediation-denied-mvp.example.json) shows remediation request metadata denied for Phase 0 with no execution authorization.
 - Governance identity/access review/breakglass/audit export/connector consent/update records: [governance.identity.schema.json](../contracts/v1/governance.identity.schema.json), [governance.access_review.schema.json](../contracts/v1/governance.access_review.schema.json), [governance.breakglass.schema.json](../contracts/v1/governance.breakglass.schema.json), [governance.audit_export.schema.json](../contracts/v1/governance.audit_export.schema.json), [governance.connector_consent.schema.json](../contracts/v1/governance.connector_consent.schema.json), and [governance.update_record.schema.json](../contracts/v1/governance.update_record.schema.json) record governance posture without implementing live capabilities.
+- Console view/alert/action records: [console.view.schema.json](../contracts/v1/console.view.schema.json), [console.alert.schema.json](../contracts/v1/console.alert.schema.json), and [console.action.schema.json](../contracts/v1/console.action.schema.json) record metadata-only console posture without implementing UI or runtime controls.
 
 ## Conceptual Standards Mapping
 

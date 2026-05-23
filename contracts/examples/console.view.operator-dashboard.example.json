@@ -1,0 +1,42 @@
+{
+  "contract_name": "console.view",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-console-view-001",
+  "causation_id": null,
+  "idempotency_key": "idem-console-view-001",
+  "view_id": "console-view-dashboard-001",
+  "actor_ref": "operator-ref-001",
+  "role": "owner_operator",
+  "view_type": "operator_dashboard",
+  "view_mode": "review_only",
+  "related_contract_refs": [
+    "sla-slo-ref-supervisor-health-001",
+    "worker-heartbeat-ref-arc-file-01",
+    "approval-request-ref-pending-001"
+  ],
+  "visible_reason_codes": [
+    "worker_stale",
+    "evidence_missing",
+    "idp_mfa_missing"
+  ],
+  "policy_refs": [
+    "policy.console_ux.phase0",
+    "policy.governance_identity.phase0"
+  ],
+  "risk_tier": "medium",
+  "status": "rendered_metadata",
+  "producer": {
+    "component": "operator_console",
+    "produced_at": "2026-05-22T22:00:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "evidence_refs": [
+    "ev-console-view-dashboard-001"
+  ],
+  "blocked_reason": null,
+  "created_at": "2026-05-22T22:00:00Z"
+}

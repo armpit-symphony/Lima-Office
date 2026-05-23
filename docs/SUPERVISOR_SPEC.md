@@ -46,6 +46,11 @@ approver separation, breakglass denial, export/delete review, connector consent,
 attestation, and update/rollback posture. Missing or ambiguous governance
 posture blocks privileged runtime expansion.
 
+The operator-facing control room is specified in
+[Operator Console Spec](ux/OPERATOR_CONSOLE_SPEC.md). It defines dashboard
+areas, approval inbox behavior, evidence visibility, worker fleet views, LIMA IT
+handoff views, and fail-closed UX states without implementing UI code.
+
 ## Worker Registry
 
 The worker registry tracks:
@@ -97,6 +102,9 @@ The ledger records references to evidence artifacts for:
 Evidence must be redaction-aware, export-aware, and retention-aware.
 Audit export and customer exit/delete posture is defined as metadata-only in
 [Audit Export And Customer Exit Policy](governance/AUDIT_EXPORT_AND_CUSTOMER_EXIT_POLICY.md).
+
+Console-visible health reason labels are scaffolded in
+[Health Reason Taxonomy](ux/HEALTH_REASON_TAXONOMY.md).
 
 ## Tenant Memory Service
 

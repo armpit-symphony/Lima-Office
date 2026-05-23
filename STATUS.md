@@ -27,11 +27,17 @@ formally superseded.
 - Governance policy details for identity/MFA placeholders, approver separation,
   breakglass blocked status, retention/redaction, audit export/customer exit,
   connector consent, worker attestation, and signed update/rollback posture.
+- Operator console UX specification docs for Supervisor health, worker fleet,
+  approvals, Guardian decisions, evidence, incidents, LIMA IT handoffs,
+  deployment/update/attestation, governance, connector readiness, and
+  audit/export/delete views.
 - Versioned v1 contract schemas and sanitized examples in [contracts](contracts).
 - `worker.deployment` contract schema and examples for deployment planning
   metadata.
 - Governance metadata contract schemas and examples for identity, access
   review, breakglass, audit export, connector consent, and update records.
+- Console metadata contract schemas and examples for view, alert, and
+  action-review records.
 - Strict contract validation through [scripts/validate-contracts.py](scripts/validate-contracts.py).
 - Local Markdown link validation through [scripts/check-doc-links.py](scripts/check-doc-links.py).
 - Phase 1A mock Python runtime scaffolding in [lima_office](lima_office).
@@ -50,6 +56,7 @@ formally superseded.
 - No external model provider API calls.
 - No browser automation.
 - No durable database, queue, web server, background service, scheduler, or UI.
+- No frontend code or operator console implementation.
 - No production operations or production-readiness claim.
 - No marketing, pricing, sales, TAM, or financial projection content.
 
@@ -78,8 +85,9 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 - Bind approval-token runtime records to concrete task/action/resource inputs
   before any approval-required runtime path can expand.
 - Define non-test Guardian decision expiry and replay policy.
-- Define a supervisor health reason taxonomy for worker, Guardian, evidence,
-  queue, connector-readiness, and LIMA IT handoff states.
+- Promote the initial health reason taxonomy in
+  [Health Reason Taxonomy](docs/ux/HEALTH_REASON_TAXONOMY.md) to normative
+  runtime thresholds and owner/escalation rules.
 - Define durable evidence storage, audit export, retention, redaction, and
   customer exit/delete posture.
 - Select operator IdP/MFA, breakglass, access review cadence, and LIMA IT
@@ -94,8 +102,8 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 
 ## Next Recommended Lane
 
-After this governance policy details branch is reviewed, the next safe lane is
-Operator console UX spec. It should define what an operator sees for identity,
-approval, evidence, quarantine, export/delete, connector revocation, attestation
-failure, and update/rollback states without adding a UI framework or runtime
-controls.
+After this operator console UX spec branch is reviewed, the next safe lane is
+merge strategy / mainline stabilization or a focused Phase 1B prerequisite lane.
+Phase 1B runtime expansion remains blocked until approval-token runtime binding,
+Guardian expiry/replay policy, durable evidence/export posture, model-routing
+defaults, and remaining governance/deployment decisions are approved.

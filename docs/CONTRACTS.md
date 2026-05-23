@@ -154,6 +154,35 @@ Version 1 schemas now use JSON Schema draft 2020-12 conditionals for the highest
 - Security requirements: signature or verification is required as policy posture, automatic updates are false, and failed verification or suspicious posture can require rollback or quarantine.
 - MVP acceptance gates: update/rollback decisions can be represented without implementing an updater, installer, scheduler, daemon, endpoint control, or software update execution.
 
+## Console View Contract v1
+
+- Schema: [console.view.schema.json](../contracts/v1/console.view.schema.json)
+- Example object: [console.view.operator-dashboard.example.json](../contracts/examples/console.view.operator-dashboard.example.json)
+- Purpose: records metadata-only operator console view posture for dashboards, worker fleet, task queue, approvals, Guardian decisions, evidence, incidents, LIMA IT, deployment, governance, connectors, and audit/exit views.
+- Producer: operator console spec or supervisor metadata flow.
+- Consumer: future console planning, audit review, and UX validation.
+- Required fields: common envelope; view ID, actor ref, role, view type, view mode, related contract refs, policy refs, risk tier, status, producer, policy version, evidence refs, and created time.
+- Security requirements: read-only auditor views are read-only; blocked views require blocked reason; views do not authorize runtime behavior.
+- MVP acceptance gates: operator views can be represented without frontend code, web server, live runtime controls, or production operations.
+
+## Console Alert Contract v1
+
+- Schema: [console.alert.schema.json](../contracts/v1/console.alert.schema.json)
+- Example objects: [console.alert.worker-stale.example.json](../contracts/examples/console.alert.worker-stale.example.json), [console.alert.evidence-missing.example.json](../contracts/examples/console.alert.evidence-missing.example.json)
+- Purpose: records metadata-only console alerts for health reason taxonomy states.
+- Required fields: common envelope; alert ID, actor ref, role, alert type, severity, related contract refs, policy refs, risk tier, status, runbook ref, producer, policy version, evidence refs, and created time.
+- Security requirements: blocked severity requires blocked reason and blocked risk tier; every alert links evidence and runbook refs.
+- MVP acceptance gates: worker stale and evidence missing alerts can be represented without monitoring services or UI implementation.
+
+## Console Action Contract v1
+
+- Schema: [console.action.schema.json](../contracts/v1/console.action.schema.json)
+- Example objects: [console.action.approval-denied.example.json](../contracts/examples/console.action.approval-denied.example.json), [console.action.worker-quarantine-requested.example.json](../contracts/examples/console.action.worker-quarantine-requested.example.json)
+- Purpose: records metadata-only console review actions such as approval denial, worker quarantine request, connector revocation review, update rollback request, audit export request, LIMA IT remediation block, and breakglass denial.
+- Required fields: common envelope; action ID, actor ref, role, action type, action mode, related contract refs, policy refs, risk tier, `runtime_effect: false`, approval request ref, Guardian decision ID, status, producer, policy version, evidence refs, and created time.
+- Security requirements: runtime effect is always false; denied and blocked records require denial reason; read-only auditor action attempts are blocked.
+- MVP acceptance gates: review actions can be represented without executing sends, connector changes, remediation, software update, endpoint control, or worker control.
+
 ## Task Execution Contract v1
 
 - Schema: [task.execution.schema.json](../contracts/v1/task.execution.schema.json)

@@ -117,6 +117,12 @@ Recommended order: second.
 
 Purpose: define what an operator must see and approve before any UI is built.
 
+Status: documented in [UX / Control-Room Docs](ux/README.md). This lane defines
+operator console information architecture, workflows, permission model, approval
+inbox, evidence viewer, worker fleet, LIMA IT panel, and health reason taxonomy
+as specs only. It does not add UI code, a web server, frontend framework, or
+runtime control plane.
+
 Prerequisites:
 
 - Supervisor health fields and reason taxonomy have a draft.

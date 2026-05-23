@@ -46,6 +46,19 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Worker attestation policy](governance/WORKER_ATTESTATION_POLICY.md)
 - [Signed update rollback policy](governance/SIGNED_UPDATE_ROLLBACK_POLICY.md)
 
+## UX / Control-Room Docs
+
+- [UX index](ux/README.md)
+- [Operator console spec](ux/OPERATOR_CONSOLE_SPEC.md)
+- [Operator workflows](ux/OPERATOR_WORKFLOWS.md)
+- [Console information architecture](ux/CONSOLE_INFORMATION_ARCHITECTURE.md)
+- [Console permission model](ux/CONSOLE_PERMISSION_MODEL.md)
+- [Approval inbox spec](ux/APPROVAL_INBOX_SPEC.md)
+- [Evidence viewer spec](ux/EVIDENCE_VIEWER_SPEC.md)
+- [Worker fleet spec](ux/WORKER_FLEET_SPEC.md)
+- [LIMA IT panel spec](ux/LIMA_IT_PANEL_SPEC.md)
+- [Health reason taxonomy](ux/HEALTH_REASON_TAXONOMY.md)
+
 ## Runbooks
 
 - [Access review](runbooks/access-review.md)

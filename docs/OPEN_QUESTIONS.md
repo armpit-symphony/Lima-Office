@@ -51,7 +51,8 @@ mutation.
 - Health reason taxonomy: which reason code set should become normative for
   Supervisor health, Guardian decisions, worker state, queue depth, evidence
   status, connector readiness, LIMA IT handoff, and degraded/offline/quarantine
-  transitions beyond the planning defaults in [Worker Deployment Blueprint](deployment/WORKER_DEPLOYMENT_BLUEPRINT.md)?
+  transitions beyond the planning defaults in [Worker Deployment Blueprint](deployment/WORKER_DEPLOYMENT_BLUEPRINT.md)
+  and the scaffolding in [Health Reason Taxonomy](ux/HEALTH_REASON_TAXONOMY.md)?
 - Heartbeat thresholds: what heartbeat interval, missed-heartbeat thresholds,
   stale-age limits, and escalation timing should apply in lab mode?
 - Worker attestation: what trust root, attestation method, TPM/secure boot
@@ -118,6 +119,19 @@ and governance contracts:
   `governance.connector_consent`.
 - Worker attestation and signed update/rollback posture can be represented by
   policy docs, runbooks, and `governance.update_record`.
+
+Resolved as console UX scaffolding in [UX / Control-Room Docs](ux/README.md)
+and console contracts:
+
+- Operator console navigation, workflow coverage, approval inbox, evidence
+  viewer, worker fleet, LIMA IT panel, permissions, and information
+  architecture are documented as specs only.
+- Initial health reason taxonomy is documented for worker, evidence, Guardian,
+  approval, taint, connector, attestation, update/rollback, LIMA IT, retention,
+  export/delete, and IdP/MFA states.
+- `console.view`, `console.alert`, and `console.action` can represent
+  metadata-only console views, alerts, and review actions without UI code or
+  runtime effects.
 
 Resolved in [Schema Hardening Notes](SCHEMA_HARDENING_NOTES.md) and [contracts/v1](../contracts/v1):
 

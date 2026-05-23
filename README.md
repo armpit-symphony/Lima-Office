@@ -82,6 +82,7 @@ No remediation runtime, endpoint control, production server change, or network c
 - [Runtime boundaries](docs/RUNTIME_BOUNDARIES.md)
 - [Worker deployment blueprint](docs/deployment/WORKER_DEPLOYMENT_BLUEPRINT.md)
 - [Governance policy details](docs/governance/README.md)
+- [Operator console UX spec](docs/ux/OPERATOR_CONSOLE_SPEC.md)
 - [Runbooks](docs/runbooks/)
 
 ## Current Repo Status
@@ -92,6 +93,7 @@ This repo is Phase 1A mock runtime scaffolding only:
 - Contracts are required before implementation.
 - Mock in-memory worker, heartbeat, task, Guardian, and evidence flows are allowed.
 - Governance policy details are docs/contracts scaffolding only.
+- Operator console UX specs are docs/contracts scaffolding only; no frontend code exists.
 - No production-readiness claims.
 - No live customer connectors.
 - No live runtime behavior beyond the tiny in-memory scaffold.

@@ -32,6 +32,9 @@ Version 1 schemas are in [v1](v1):
 - [governance.audit_export.schema.json](v1/governance.audit_export.schema.json)
 - [governance.connector_consent.schema.json](v1/governance.connector_consent.schema.json)
 - [governance.update_record.schema.json](v1/governance.update_record.schema.json)
+- [console.view.schema.json](v1/console.view.schema.json)
+- [console.alert.schema.json](v1/console.alert.schema.json)
+- [console.action.schema.json](v1/console.action.schema.json)
 - [task.execution.schema.json](v1/task.execution.schema.json)
 - [guardian.decision.schema.json](v1/guardian.decision.schema.json)
 - [approval.request.schema.json](v1/approval.request.schema.json)
@@ -65,6 +68,11 @@ Sanitized example objects are in [examples](examples):
 - [governance.audit_export.requested-placeholder.example.json](examples/governance.audit_export.requested-placeholder.example.json)
 - [governance.connector_consent.revoked.example.json](examples/governance.connector_consent.revoked.example.json)
 - [governance.update_record.rollback-required.example.json](examples/governance.update_record.rollback-required.example.json)
+- [console.view.operator-dashboard.example.json](examples/console.view.operator-dashboard.example.json)
+- [console.alert.worker-stale.example.json](examples/console.alert.worker-stale.example.json)
+- [console.alert.evidence-missing.example.json](examples/console.alert.evidence-missing.example.json)
+- [console.action.approval-denied.example.json](examples/console.action.approval-denied.example.json)
+- [console.action.worker-quarantine-requested.example.json](examples/console.action.worker-quarantine-requested.example.json)
 - [task.execution.example.json](examples/task.execution.example.json)
 - [guardian.decision.example.json](examples/guardian.decision.example.json)
 - [approval.request.example.json](examples/approval.request.example.json)
@@ -173,6 +181,10 @@ The v1 schemas use JSON Schema draft 2020-12 conditionals to block unsafe state 
   revocation, and signed update/rollback metadata. They do not implement
   identity providers, breakglass sessions, export/delete services, live
   connectors, update agents, or attestation mechanisms.
+- Console schemas bind operator-visible views, alerts, and review actions to
+  actor refs, role, related contract refs, policy refs, risk tier, evidence refs,
+  status, and no-runtime-effect posture. They do not implement UI code or
+  console runtime behavior.
 - `lima_it.handoff` keeps diagnostics read-only and keeps remediation non-executing for Phase 0.
 - `evidence.artifact` and `evidence.failure` bind redaction, evidence-writer failure, emergency spool refs, reconciliation, incident, and quarantine fields.
 

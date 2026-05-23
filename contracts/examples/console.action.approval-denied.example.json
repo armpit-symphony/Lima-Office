@@ -1,0 +1,41 @@
+{
+  "contract_name": "console.action",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-console-action-denied-001",
+  "causation_id": null,
+  "idempotency_key": "idem-console-action-denied-001",
+  "console_action_id": "console-action-approval-denied-001",
+  "actor_ref": "approver-ref-001",
+  "role": "approver",
+  "action_type": "approval_denied",
+  "action_mode": "denial_metadata",
+  "related_contract_refs": [
+    "approval-request-ref-001",
+    "approval-result-ref-denied-001",
+    "guardian-decision-ref-001"
+  ],
+  "policy_refs": [
+    "policy.console_ux.phase0",
+    "policy.approval_token_lifecycle.phase0",
+    "policy.approver_separation.phase0"
+  ],
+  "risk_tier": "high",
+  "runtime_effect": false,
+  "approval_request_id": "approval-request-ref-001",
+  "guardian_decision_id": "guardian-decision-ref-001",
+  "status": "denied",
+  "producer": {
+    "component": "operator_console",
+    "produced_at": "2026-05-22T22:15:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "evidence_refs": [
+    "ev-console-action-approval-denied-001"
+  ],
+  "denial_reason": "Approval denied by reviewer; no token metadata issued.",
+  "created_at": "2026-05-22T22:15:00Z"
+}

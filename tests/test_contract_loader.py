@@ -9,11 +9,14 @@ from lima_office.runtime.errors import ContractLoadError
 class ContractLoaderTests(unittest.TestCase):
     def test_loads_all_v1_schemas(self):
         loader = ContractLoader().load()
-        self.assertEqual(26, len(loader.schema_keys))
+        self.assertEqual(29, len(loader.schema_keys))
         self.assertIn("guardian.decision", loader.contract_names)
         self.assertIn("worker.deployment", loader.contract_names)
         self.assertIn("governance.identity", loader.contract_names)
         self.assertIn("governance.update_record", loader.contract_names)
+        self.assertIn("console.view", loader.contract_names)
+        self.assertIn("console.alert", loader.contract_names)
+        self.assertIn("console.action", loader.contract_names)
         self.assertEqual("guardian.decision", loader.resolve_key("guardian.decision.schema.json"))
 
     def test_unknown_schema_fails_closed(self):
