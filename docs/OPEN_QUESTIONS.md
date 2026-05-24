@@ -40,6 +40,11 @@ documents the reachable v2 checkpoint that supersedes it.
   and [Evidence Reason Taxonomy](taxonomy/EVIDENCE_REASON_TAXONOMY.md); what
   final legal/compliance review and versioning governance is required before
   durable implementation?
+- Reason-code deprecation/removal governance: after
+  [Reason Code Registry](taxonomy/REASON_CODE_REGISTRY.md) and
+  [Reason Code Compatibility Policy](taxonomy/REASON_CODE_COMPATIBILITY_POLICY.md),
+  what mandatory migration window and evidence burden should be required before
+  any major taxonomy removal is allowed?
 - Audit export: what final export manifest format, integrity metadata, package
   retention, and access-control refs are required beyond
   [Audit Export And Customer Exit Policy](governance/AUDIT_EXPORT_AND_CUSTOMER_EXIT_POLICY.md)?

@@ -88,6 +88,9 @@ Canonical IDs are immutable once emitted. Rewrites are treated as drift.
   denied linkage status.
 - Conflict and denial reasons should use canonical taxonomy codes so
   reconciliation and governance records do not drift by free-form text.
+- Code lifecycle and migration semantics should follow
+  [Reason Code Registry](taxonomy/REASON_CODE_REGISTRY.md) and
+  [Reason Code Compatibility Policy](taxonomy/REASON_CODE_COMPATIBILITY_POLICY.md).
 
 ## Reconciliation Drift Detection
 Drift is detected when terminal states disagree across linked contracts, such as:

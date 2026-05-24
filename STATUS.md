@@ -6,7 +6,7 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
-Current working branch: `governance-export-delete-taxonomy-finalization`
+Current working branch: `reason-code-registry-compatibility-policy`
 
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
@@ -15,7 +15,7 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A governance export/delete taxonomy finalization.
+Current phase: Phase 1A reason-code registry and compatibility policy hardening.
 Phase 1A mock runtime scaffolding is present, the v2 invariant checkpoint and
 durable replay/evidence, transaction/storage, coordinator, linkage, and
 approval/Guardian reconciliation checkpoints are reachable, and this branch adds
@@ -98,6 +98,12 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
 - Reconciliation and evidence reason taxonomies in
   [docs/taxonomy/RECONCILIATION_REASON_TAXONOMY.md](docs/taxonomy/RECONCILIATION_REASON_TAXONOMY.md)
   and [docs/taxonomy/EVIDENCE_REASON_TAXONOMY.md](docs/taxonomy/EVIDENCE_REASON_TAXONOMY.md).
+- Canonical reason-code registry and compatibility policy in
+  [docs/taxonomy/REASON_CODE_REGISTRY.md](docs/taxonomy/REASON_CODE_REGISTRY.md)
+  and
+  [docs/taxonomy/REASON_CODE_COMPATIBILITY_POLICY.md](docs/taxonomy/REASON_CODE_COMPATIBILITY_POLICY.md).
+- `reason.code.registry` and `reason.code.compatibility` schemas/examples for
+  versioned reason-code lifecycle and migration metadata.
 - Export/delete conflict policy and runbook in
   [docs/governance/EXPORT_DELETE_CONFLICT_POLICY.md](docs/governance/EXPORT_DELETE_CONFLICT_POLICY.md)
   and [docs/runbooks/export-delete-conflict-review.md](docs/runbooks/export-delete-conflict-review.md).
@@ -208,6 +214,8 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
   thresholds and owner/escalation rules.
 - Define final storage engine choice, migration posture, retention periods,
   redaction taxonomy, export package format, and customer delete proof posture.
+- Finalize reason-code registry migration window and removal governance for
+  post-Phase-0 taxonomy major-version transitions.
 - Define final legal retention periods and external legal review for
   taxonomy/retention semantics before any live export/delete implementation.
 - Select operator IdP/MFA, breakglass, access review cadence, and LIMA IT
@@ -222,8 +230,8 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 
 ## Next Recommended Lane
 
-After governance export/delete taxonomy hardening is reviewed, the next safe
-lane is fail-closed reason-code registry enforcement across all runtime helpers
-and schemas, still without adding live services. Phase 1B lab runtime expansion
-remains blocked until those gates are approved. Mainline update should wait for
-explicit approval.
+After reason-code registry compatibility hardening is reviewed, the next safe
+lane is final RBAC/IdP/MFA/session/device trust matrix closure, still without
+adding live services. Phase 1B lab runtime expansion remains blocked until
+remaining gates are approved. Mainline update should wait for explicit
+approval.

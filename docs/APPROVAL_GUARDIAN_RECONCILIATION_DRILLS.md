@@ -68,7 +68,9 @@ The reconciliation taxonomy uses these classes:
 - `blocked_mvp_authorization_attempt`
 
 Canonical reason-code mappings are defined in
-[Reconciliation Reason Taxonomy](taxonomy/RECONCILIATION_REASON_TAXONOMY.md).
+[Reconciliation Reason Taxonomy](taxonomy/RECONCILIATION_REASON_TAXONOMY.md),
+[Reason Code Registry](taxonomy/REASON_CODE_REGISTRY.md), and
+[Reason Code Compatibility Policy](taxonomy/REASON_CODE_COMPATIBILITY_POLICY.md).
 
 ## Reconciliation Rules
 

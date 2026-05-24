@@ -111,6 +111,16 @@ operations, customer-system mutation, or compliance certification claims.
   validation only. No export/delete implementation, database, queue, migration,
   service, or durable production storage is authorized.
 
+## Reason-Code Registry Compatibility Policy Checkpoint
+
+- Branch: `reason-code-registry-compatibility-policy`
+- Base: `governance-export-delete-taxonomy-finalization`
+- Purpose: define canonical reason-code registry and compatibility lifecycle
+  rules so contracts/helpers do not drift on reason semantics.
+- Scope: docs, schemas, examples, tests, and mock/in-memory reason-code
+  validation only. No runtime authorization, export/delete execution, database,
+  queue, migration, service, or durable production storage is authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:

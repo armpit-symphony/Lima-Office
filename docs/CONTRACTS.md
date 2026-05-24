@@ -114,6 +114,21 @@ Phase 1A now includes:
 - Refs-only export/delete examples with blocked/denied/fail-closed metadata
   posture and no raw customer content or secret material fields.
 
+## Reason Code Registry Compatibility Hardening
+
+Phase 1A now includes:
+
+- `reason.code.registry` for canonical reason-code category/status/severity/
+  visibility/evidence/fail-closed metadata.
+- `reason.code.compatibility` for additive/deprecate/alias/block/remove-planned
+  compatibility records with migration and affected-contract evidence.
+- Registry and compatibility guidance in:
+  [Reason Code Registry](taxonomy/REASON_CODE_REGISTRY.md) and
+  [Reason Code Compatibility Policy](taxonomy/REASON_CODE_COMPATIBILITY_POLICY.md).
+
+These contracts are governance metadata only and do not authorize runtime
+actions.
+
 ## Common Field Groups
 
 - Envelope: `contract_name`, `contract_version`, `schema_version`, `tenant_id`, `customer_context_id`, `environment`, `correlation_id`, `causation_id`, `idempotency_key`, `producer`, `created_at` or event timestamp.

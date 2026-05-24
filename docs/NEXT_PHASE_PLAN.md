@@ -19,13 +19,16 @@ Recommended order:
 1. Governance/export/delete conflict policy finalization and reconciliation
    evidence taxonomy hardening (checkpoint completed as docs/contracts/tests
    hardening on `governance-export-delete-taxonomy-finalization`).
-2. Final RBAC/IdP/MFA/session/device trust matrix.
-3. Model-routing defaults and health taxonomy refinement.
-4. Phase 1B lab runtime expansion only after the gates above are approved.
+2. Reason-code registry compatibility policy and canonical lifecycle hardening
+   (checkpoint completed as docs/contracts/tests hardening on
+   `reason-code-registry-compatibility-policy`).
+3. Final RBAC/IdP/MFA/session/device trust matrix.
+4. Model-routing defaults and health taxonomy refinement.
+5. Phase 1B lab runtime expansion only after the gates above are approved.
 
-Next recommended lane after this checkpoint: enforce canonical reason-code
-registries across all reconciliation/linkage/governance helpers and schemas
-with negative-path drift tests, still without adding live services.
+Next recommended lane after this checkpoint: finalize RBAC/IdP/MFA/session/
+device trust matrix and keep reason-code removal/deprecation windows as
+explicit open governance blockers, still without adding live services.
 
 Alternative non-runtime lanes can proceed when they do not obscure the blockers:
 model-routing defaults, final IdP/MFA/RBAC matrix, health taxonomy refinement,

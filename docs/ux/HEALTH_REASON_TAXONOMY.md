@@ -39,3 +39,6 @@ implementation. Phase 1A v2 uses these codes in metadata-only
 - Governance/export/delete reason-code alignment is defined in
   [Reconciliation Reason Taxonomy](../taxonomy/RECONCILIATION_REASON_TAXONOMY.md)
   and [Evidence Reason Taxonomy](../taxonomy/EVIDENCE_REASON_TAXONOMY.md).
+- Registry versioning/deprecation/alias handling is defined in
+  [Reason Code Registry](../taxonomy/REASON_CODE_REGISTRY.md) and
+  [Reason Code Compatibility Policy](../taxonomy/REASON_CODE_COMPATIBILITY_POLICY.md).

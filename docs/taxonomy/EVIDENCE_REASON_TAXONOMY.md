@@ -87,3 +87,9 @@ reconciliation, and governance export/delete review records.
   examples.
 - Ref-only metadata is required for export and reconciliation artifacts.
 
+## Registry Compatibility
+
+Canonical lifecycle and compatibility posture are governed by:
+
+- [Reason Code Registry](REASON_CODE_REGISTRY.md)
+- [Reason Code Compatibility Policy](REASON_CODE_COMPATIBILITY_POLICY.md)

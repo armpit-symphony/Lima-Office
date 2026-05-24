@@ -1,0 +1,286 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/reason.code.compatibility.schema.json",
+  "title": "Reason Code Compatibility Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "policy_version",
+    "taxonomy_version",
+    "compatibility_record_id",
+    "reason_code",
+    "previous_reason_code",
+    "compatibility_action",
+    "compatibility_status",
+    "migration_required",
+    "migration_notes",
+    "affected_contracts",
+    "evidence_refs",
+    "created_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "reason.code.compatibility"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "operator_console",
+            "supervisor",
+            "security_reviewer",
+            "compliance_reviewer"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "compatibility_record_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reason_code": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "previous_reason_code": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "compatibility_action": {
+      "type": "string",
+      "enum": [
+        "add",
+        "deprecate",
+        "alias",
+        "reserve",
+        "block",
+        "remove_planned"
+      ]
+    },
+    "compatibility_status": {
+      "type": "string",
+      "enum": [
+        "compatible",
+        "breaking_change",
+        "blocked_mvp",
+        "review_required"
+      ]
+    },
+    "migration_required": {
+      "type": "boolean"
+    },
+    "migration_notes": {
+      "type": "string"
+    },
+    "affected_contracts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "compatibility_action": {
+            "const": "add"
+          }
+        },
+        "required": [
+          "compatibility_action"
+        ]
+      },
+      "then": {
+        "properties": {
+          "previous_reason_code": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "compatibility_action": {
+            "enum": [
+              "deprecate",
+              "alias",
+              "remove_planned"
+            ]
+          }
+        },
+        "required": [
+          "compatibility_action"
+        ]
+      },
+      "then": {
+        "properties": {
+          "previous_reason_code": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "compatibility_action": {
+            "const": "block"
+          }
+        },
+        "required": [
+          "compatibility_action"
+        ]
+      },
+      "then": {
+        "properties": {
+          "compatibility_status": {
+            "enum": [
+              "blocked_mvp",
+              "breaking_change",
+              "review_required"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "compatibility_status": {
+            "const": "breaking_change"
+          }
+        },
+        "required": [
+          "compatibility_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "migration_required": {
+            "const": true
+          },
+          "migration_notes": {
+            "minLength": 1
+          },
+          "affected_contracts": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "compatibility_status": {
+            "const": "blocked_mvp"
+          }
+        },
+        "required": [
+          "compatibility_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "environment": {
+            "const": "blocked_mvp"
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}

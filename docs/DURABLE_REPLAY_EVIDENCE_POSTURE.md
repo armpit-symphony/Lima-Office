@@ -75,7 +75,10 @@ process restart and denial-path evidence can be incomplete.
   transition as deny/block decisions.
 - Reason codes should use the canonical registries in
   [Reconciliation Reason Taxonomy](taxonomy/RECONCILIATION_REASON_TAXONOMY.md)
-  and [Evidence Reason Taxonomy](taxonomy/EVIDENCE_REASON_TAXONOMY.md).
+  and [Evidence Reason Taxonomy](taxonomy/EVIDENCE_REASON_TAXONOMY.md), with
+  lifecycle/alias compatibility from
+  [Reason Code Registry](taxonomy/REASON_CODE_REGISTRY.md) and
+  [Reason Code Compatibility Policy](taxonomy/REASON_CODE_COMPATIBILITY_POLICY.md).
 
 ## Evidence Artifact Integrity
 

@@ -5,7 +5,7 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `governance-export-delete-taxonomy-finalization` on Windows with
+Latest captured run: `reason-code-registry-compatibility-policy` on Windows with
 Python 3.12.10.
 
 ## Canonical Integration Branch
@@ -23,6 +23,8 @@ Python 3.12.10.
   `approval-guardian-linkage-reconciliation-drills`
 - Governance export/delete taxonomy finalization branch:
   `governance-export-delete-taxonomy-finalization`
+- Reason-code registry compatibility policy branch:
+  `reason-code-registry-compatibility-policy`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -141,6 +143,17 @@ it does not approve export or delete implementation, databases, queues, durable
 storage services, live connectors, external sends, real remediation, production
 operations, or customer-system mutation.
 
+## Reason-Code Registry Compatibility Policy Checkpoint
+
+This branch adds a canonical reason-code registry and compatibility policy docs,
+new reason-code registry/compatibility contracts and examples, schema-level
+reason-code policy fields and fail-closed conditionals across decision-relevant
+contracts, and mock-only runtime taxonomy compatibility tests. Validation
+remains repository health evidence only; it does not approve runtime
+authorization expansion, export/delete execution, databases, queues, durable
+storage services, live connectors, external sends, real remediation, production
+operations, or customer-system mutation.
+
 ## Strict Schema Validation
 
 Command:
@@ -153,13 +166,13 @@ Result:
 
 ```text
 LIMA Office contract validation
-- schemas parsed: 39
-- examples parsed: 100
-- mapped examples: 100
-- schemas with examples: 39
+- schemas parsed: 41
+- examples parsed: 107
+- mapped examples: 107
+- schemas with examples: 41
 - validation mode: full JSON Schema draft 2020-12 with format checks
 - jsonschema version: 4.26.0
-- unsafe-content scan: 100 example files, 97 markdown files
+- unsafe-content scan: 107 example files, 99 markdown files
 - warnings: 0
 - failures: 0
 Result: PASS
@@ -185,8 +198,8 @@ Result:
 
 ```text
 LIMA Office markdown link check
-- markdown files scanned: 105
-- local links checked: 768
+- markdown files scanned: 107
+- local links checked: 799
 - external/anchor links ignored: 0
 - failures: 0
 Result: PASS
@@ -203,7 +216,7 @@ python -B -m unittest discover -s tests -v
 Result:
 
 ```text
-Ran 198 tests
+Ran 208 tests
 
 OK
 ```
@@ -255,6 +268,10 @@ Coverage added by this checkpoint:
   evidence requirements, blocked-MVP completion denial, preservation-hold
   delete blocking, exported-manifest redaction requirements, failed-closed
   evidence requirements, and explicit no-real-action authorization.
+- Reason-code registry compatibility checks for active/deprecated/blocked
+  registry entry validation, unknown-code fail-closed handling, alias-to-
+  replacement normalization, breaking-change compatibility requirements, and
+  explicit no-real-action authorization.
 
 ## Pytest
 
@@ -267,7 +284,7 @@ python -m pytest -q
 Result:
 
 ```text
-198 passed, 1 warning, 136 subtests passed
+208 passed, 1 warning, 143 subtests passed
 ```
 
 Warning: pytest could not create/write `.pytest_cache` because access was
@@ -309,8 +326,9 @@ git status
 
 Checkpoint patch result before staging: modified runtime mock hardening, tests,
 schemas/examples, and documentation only, including governance export/delete
-taxonomy hardening for reason-code normalization, evidence taxonomy alignment,
-conflict review metadata, and fail-closed export/delete policy posture.
+taxonomy hardening plus canonical reason-code registry compatibility policy
+hardening for lifecycle/deprecation/alias metadata, schema conditionals, and
+mock fail-closed helper coverage.
 
 ## CI Expectations
 

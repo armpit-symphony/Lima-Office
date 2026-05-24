@@ -35,6 +35,8 @@ Version 1 schemas are in [v1](v1):
 - [governance.breakglass.schema.json](v1/governance.breakglass.schema.json)
 - [governance.audit_export.schema.json](v1/governance.audit_export.schema.json)
 - [governance.export_delete_review.schema.json](v1/governance.export_delete_review.schema.json)
+- [reason.code.registry.schema.json](v1/reason.code.registry.schema.json)
+- [reason.code.compatibility.schema.json](v1/reason.code.compatibility.schema.json)
 - [governance.connector_consent.schema.json](v1/governance.connector_consent.schema.json)
 - [governance.update_record.schema.json](v1/governance.update_record.schema.json)
 - [console.view.schema.json](v1/console.view.schema.json)
@@ -87,6 +89,13 @@ Sanitized example objects are in [examples](examples):
 - [governance.export_delete_review.export-approved-redacted.example.json](examples/governance.export_delete_review.export-approved-redacted.example.json)
 - [governance.export_delete_review.delete-conflict-denied.example.json](examples/governance.export_delete_review.delete-conflict-denied.example.json)
 - [governance.export_delete_review.blocked-mvp.example.json](examples/governance.export_delete_review.blocked-mvp.example.json)
+- [reason.code.registry.reconciliation-active.example.json](examples/reason.code.registry.reconciliation-active.example.json)
+- [reason.code.registry.evidence-blocked.example.json](examples/reason.code.registry.evidence-blocked.example.json)
+- [reason.code.registry.export-delete-deprecated.example.json](examples/reason.code.registry.export-delete-deprecated.example.json)
+- [reason.code.registry.blocked-mvp.example.json](examples/reason.code.registry.blocked-mvp.example.json)
+- [reason.code.compatibility.add-compatible.example.json](examples/reason.code.compatibility.add-compatible.example.json)
+- [reason.code.compatibility.deprecate-alias.example.json](examples/reason.code.compatibility.deprecate-alias.example.json)
+- [reason.code.compatibility.breaking-change-blocked.example.json](examples/reason.code.compatibility.breaking-change-blocked.example.json)
 - [governance.connector_consent.revoked.example.json](examples/governance.connector_consent.revoked.example.json)
 - [governance.update_record.rollback-required.example.json](examples/governance.update_record.rollback-required.example.json)
 - [console.view.operator-dashboard.example.json](examples/console.view.operator-dashboard.example.json)
@@ -292,6 +301,9 @@ The v1 schemas use JSON Schema draft 2020-12 conditionals to block unsafe state 
 - Governance/evidence contracts now include taxonomy-versioned reason-code fields
   so export/delete conflict, reconciliation drift, and denial evidence posture
   can fail closed with consistent vocabulary.
+- Reason-code registry and compatibility contracts define canonical code status,
+  severity, visibility, alias/deprecation posture, and breaking-change records
+  so cross-contract reason semantics do not drift silently.
 
 See [Schema Hardening Notes](../docs/SCHEMA_HARDENING_NOTES.md) for the reasoning and Phase 1A test expectations.
 

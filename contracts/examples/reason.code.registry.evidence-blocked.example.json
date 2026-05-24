@@ -1,0 +1,31 @@
+{
+  "contract_name": "reason.code.registry",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "dry_run",
+  "correlation_id": "corr-reason-registry-evidence-blocked-001",
+  "causation_id": "taxonomy-governance-review-002",
+  "idempotency_key": "idem-reason-registry-evidence-blocked-001",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-24T21:05:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "registry_id": "rc-registry-002",
+  "reason_code": "evidence_raw_content_blocked",
+  "category": "evidence",
+  "status": "blocked",
+  "severity": "critical",
+  "visibility": "auditor_visible",
+  "description": "Raw customer content surfaced in evidence metadata path.",
+  "evidence_required": true,
+  "fail_closed_required": true,
+  "introduced_in": "taxonomy-reason-v1",
+  "deprecated_in": null,
+  "replaced_by": null,
+  "aliases": [],
+  "created_at": "2026-05-24T21:05:00Z"
+}

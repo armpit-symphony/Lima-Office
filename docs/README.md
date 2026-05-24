@@ -18,6 +18,8 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Approval Guardian reconciliation drills](APPROVAL_GUARDIAN_RECONCILIATION_DRILLS.md)
 - [Reconciliation reason taxonomy](taxonomy/RECONCILIATION_REASON_TAXONOMY.md)
 - [Evidence reason taxonomy](taxonomy/EVIDENCE_REASON_TAXONOMY.md)
+- [Reason code registry](taxonomy/REASON_CODE_REGISTRY.md)
+- [Reason code compatibility policy](taxonomy/REASON_CODE_COMPATIBILITY_POLICY.md)
 - [Durable transaction/storage RFC](rfcs/RFC_DURABLE_TRANSACTION_STORAGE.md)
 - [Durable storage architecture](architecture/DURABLE_STORAGE_ARCHITECTURE.md)
 - [Durable transaction coordinator](architecture/DURABLE_TRANSACTION_COORDINATOR.md)

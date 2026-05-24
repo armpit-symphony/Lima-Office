@@ -86,6 +86,8 @@ retention/redaction placeholders, and customer-exit proof metadata.
 - Reasons must use canonical taxonomy codes from:
   - [Reconciliation Reason Taxonomy](../taxonomy/RECONCILIATION_REASON_TAXONOMY.md)
   - [Evidence Reason Taxonomy](../taxonomy/EVIDENCE_REASON_TAXONOMY.md)
+  - [Reason Code Registry](../taxonomy/REASON_CODE_REGISTRY.md)
+  - [Reason Code Compatibility Policy](../taxonomy/REASON_CODE_COMPATIBILITY_POLICY.md)
 
 ## Fail-Closed Behavior
 
@@ -106,4 +108,3 @@ retention/redaction placeholders, and customer-exit proof metadata.
 - No live delete implementation.
 - No legal retention determination.
 - No production storage or workflow service implementation.
-

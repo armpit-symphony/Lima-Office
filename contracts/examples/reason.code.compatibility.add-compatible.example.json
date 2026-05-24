@@ -1,0 +1,32 @@
+{
+  "contract_name": "reason.code.compatibility",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "dry_run",
+  "correlation_id": "corr-reason-compat-add-001",
+  "causation_id": "taxonomy-change-request-001",
+  "idempotency_key": "idem-reason-compat-add-001",
+  "producer": {
+    "component": "compliance_reviewer",
+    "produced_at": "2026-05-24T21:20:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "taxonomy_version": "taxonomy-reason-v2",
+  "compatibility_record_id": "rc-compat-001",
+  "reason_code": "health_guardian_replay_denied",
+  "previous_reason_code": null,
+  "compatibility_action": "add",
+  "compatibility_status": "compatible",
+  "migration_required": false,
+  "migration_notes": "Additive code for health reporting surfaces only.",
+  "affected_contracts": [
+    "supervisor.health",
+    "console.alert"
+  ],
+  "evidence_refs": [
+    "ev-reason-compat-add-001"
+  ],
+  "created_at": "2026-05-24T21:20:00Z"
+}
