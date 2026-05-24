@@ -120,6 +120,27 @@ class TaskQueueTests(unittest.TestCase):
         accepted = self.queue.enqueue(task, self.bound_decision(task), token, binding)
         self.assertEqual("task-email-draft-001", accepted["task_id"])
 
+    def test_expired_approval_binding_denied(self):
+        task = task_example()
+        task.update(
+            {
+                "approval_required": True,
+                "approval_request_id": "apr-email-draft-001",
+                "approval_token_id": "apt-email-draft-001",
+                "approval_result_id": "apres-email-draft-001",
+                "token_verification_id": "tv-email-valid-001",
+                "task_id": "task-email-draft-001",
+                "assigned_worker_id": None,
+            }
+        )
+        token = token_valid_example()
+        task["guardian_decision_id"] = token["guardian_decision_id"]
+        task["evidence_artifact_ids"] = ["ev-token-verify-valid-001"]
+        binding = copy.deepcopy(example("approval.binding.bound-valid.example.json"))
+        binding["expires_at"] = "2026-05-19T23:59:00Z"
+        with self.assertRaises(PolicyDenyError):
+            self.queue.enqueue(task, self.bound_decision(task), token, binding)
+
     def test_task_with_external_effect_denied(self):
         task = task_example()
         task["task_scope"]["external_effect"] = "approval_required"

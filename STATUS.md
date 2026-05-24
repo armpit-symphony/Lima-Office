@@ -80,7 +80,15 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
   consumption in memory for tests.
 - Mock-only Guardian decision replay verifier that validates decision-shaped
   payloads, compares them to requested action metadata, and tracks one-time
-  decision nonce consumption in memory for tests.
+  decision nonce consumption in memory for tests, with nonce consumption
+  occurring only after full validation succeeds.
+- Fail-closed Guardian replay invariants for required requested-action tenant,
+  customer context, decision ID, action type (when bound), decision scope hash
+  (when bound), approval binding (when bound), token verification (when bound),
+  required evidence refs, contradictory timestamp ordering, and bound-scope
+  matching.
+- Approval-binding freshness checks enforced at task enqueue and tool invocation
+  invariant paths using reference-time checks for expiry.
 - Metadata-only Supervisor health reporter for mock/lab status records.
 - Unit tests for contract loading, validation, fail-closed policy, worker state,
   heartbeat, task queue, evidence behavior, cross-contract invariants, and

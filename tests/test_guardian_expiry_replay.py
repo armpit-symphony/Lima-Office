@@ -62,6 +62,19 @@ class GuardianExpiryReplayTests(unittest.TestCase):
                 consume_nonce=True,
             )
 
+    def test_failed_validation_does_not_consume_nonce(self):
+        decision = self.decision()
+        consumed = set()
+        with self.assertRaises(PolicyDenyError):
+            assert_guardian_decision_replay_safe(
+                decision,
+                self.requested_action(task_id="task-other"),
+                reference_time=REFERENCE_TIME,
+                consumed_nonces=consumed,
+                consume_nonce=True,
+            )
+        self.assertNotIn(decision["decision_nonce"], consumed)
+
     def test_expired_guardian_decision_fails(self):
         decision = self.decision()
         decision["expires_at"] = "2026-05-18T21:43:30Z"
@@ -101,6 +114,12 @@ class GuardianExpiryReplayTests(unittest.TestCase):
         with self.assertRaises(PolicyDenyError):
             self.verifier.verify_once(self.decision(), self.requested_action(tenant_id="tenant-other"))
 
+    def test_tenant_mismatch_fails_even_when_bound_tenant_is_null(self):
+        decision = self.decision()
+        decision["bound_tenant_id"] = None
+        with self.assertRaises(PolicyDenyError):
+            self.verifier.verify_once(decision, self.requested_action(tenant_id="tenant-other"))
+
     def test_task_mismatch_fails(self):
         with self.assertRaises(PolicyDenyError):
             self.verifier.verify_once(self.decision(), self.requested_action(task_id="task-other"))
@@ -122,6 +141,51 @@ class GuardianExpiryReplayTests(unittest.TestCase):
     def test_decision_scope_hash_mismatch_fails(self):
         with self.assertRaises(PolicyDenyError):
             self.verifier.verify_once(self.decision(), self.requested_action(decision_scope_hash="hash-other"))
+
+    def test_missing_bound_binding_fields_fail_closed(self):
+        action = self.requested_action()
+        action.pop("approval_binding_id", None)
+        action.pop("binding_id", None)
+        with self.assertRaises(PolicyDenyError):
+            self.verifier.verify_once(self.decision(), action)
+
+    def test_missing_bound_token_verification_id_fails_closed(self):
+        action = self.requested_action()
+        action.pop("token_verification_id", None)
+        with self.assertRaises(PolicyDenyError):
+            self.verifier.verify_once(self.decision(), action)
+
+    def test_missing_evidence_refs_field_fails_closed(self):
+        action = self.requested_action()
+        action.pop("evidence_refs", None)
+        with self.assertRaises(EvidenceRequiredError):
+            self.verifier.verify_once(self.decision(), action)
+
+    def test_missing_required_requested_fields_fail_closed(self):
+        for field in ("tenant_id", "customer_context_id", "action_type", "guardian_decision_id"):
+            with self.subTest(field=field):
+                action = self.requested_action()
+                action.pop(field, None)
+                with self.assertRaises(PolicyDenyError):
+                    self.verifier.verify_once(self.decision(), action)
+
+    def test_contradictory_timestamp_order_fails_closed(self):
+        decision = self.decision()
+        decision["effective_at"] = "2026-05-18T21:43:00Z"
+        with self.assertRaises(PolicyDenyError):
+            self.verifier.verify_once(decision, self.requested_action())
+
+    def test_expiry_must_be_after_issued_at(self):
+        decision = self.decision()
+        decision["expires_at"] = decision["issued_at"]
+        with self.assertRaises(PolicyDenyError):
+            self.verifier.verify_once(decision, self.requested_action())
+
+    def test_bounded_window_replay_policy_is_not_authorizing(self):
+        decision = self.decision()
+        decision["replay_policy"] = "bounded_window"
+        with self.assertRaises((ContractValidationError, PolicyDenyError)):
+            self.verifier.verify_once(decision, self.requested_action())
 
     def test_blocked_mvp_decision_fails(self):
         decision = copy.deepcopy(example("guardian.decision.blocked-mvp.example.json"))
@@ -147,6 +211,12 @@ class GuardianExpiryReplayTests(unittest.TestCase):
         binding["guardian_decision_id"] = "gd-other"
         with self.assertRaises(PolicyDenyError):
             self.verifier.verify_once(self.decision(), self.requested_action(approval_binding=binding))
+
+    def test_guardian_decision_binding_ids_must_match(self):
+        decision = self.decision()
+        decision["binding_id"] = "bind-other"
+        with self.assertRaises(PolicyDenyError):
+            self.verifier.verify_once(decision, self.requested_action())
 
     def test_ambiguous_timestamp_fails_closed(self):
         decision = self.decision()

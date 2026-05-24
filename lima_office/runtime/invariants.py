@@ -119,8 +119,9 @@ def assert_guardian_decision_authorizes_task(
             "approval_result_id": task.get("approval_result_id"),
             "approval_token_id": task.get("approval_token_id"),
             "token_verification_id": task.get("token_verification_id"),
-            "action_type": task.get("bound_action_type"),
-            "tool_scope": task.get("bound_tool_scope"),
+            "action_type": task.get("bound_action_type") or guardian_decision.get("bound_action_type"),
+            "tool_scope": task.get("bound_tool_scope") or guardian_decision.get("bound_tool_scope"),
+            "decision_scope_hash": task.get("decision_scope_hash") or guardian_decision.get("decision_scope_hash"),
             "evidence_required": True,
             "evidence_refs": task.get("evidence_artifact_ids"),
         },
@@ -133,6 +134,8 @@ def assert_token_verification_authorizes_task(
     task: dict[str, Any],
     token_verification: dict[str, Any] | None,
     approval_binding: dict[str, Any] | None = None,
+    *,
+    reference_time: str | None = DEFAULT_REFERENCE_TIME,
 ) -> dict[str, Any] | None:
     """Require a valid token verification when the task asks for approval."""
 
@@ -171,7 +174,7 @@ def assert_token_verification_authorizes_task(
                 "evidence_required": True,
                 "evidence_refs": task.get("evidence_artifact_ids"),
             },
-            reference_time=None,
+            reference_time=reference_time,
             consume_nonce=False,
         )
     return token_verification
@@ -248,6 +251,10 @@ def assert_guardian_decision_replay_safe(
     decision_id = guardian_decision.get("decision_id")
     if guardian_decision.get("guardian_decision_id") != decision_id:
         raise PolicyDenyError("Guardian decision ID fields must match")
+    binding_id = guardian_decision.get("binding_id")
+    approval_binding_id = guardian_decision.get("approval_binding_id")
+    if binding_id is not None and approval_binding_id is not None and binding_id != approval_binding_id:
+        raise PolicyDenyError("Guardian decision binding IDs must match")
 
     decision = guardian_decision.get("decision")
     if decision not in {"allow", "allow_with_evidence"}:
@@ -267,11 +274,8 @@ def assert_guardian_decision_replay_safe(
     nonce = guardian_decision.get("decision_nonce")
     if not isinstance(nonce, str) or not nonce:
         raise PolicyDenyError("one-time Guardian decision requires decision nonce")
-    if consumed_nonces is not None:
-        if nonce in consumed_nonces:
-            raise PolicyDenyError("Guardian decision nonce has already been consumed")
-        if consume_nonce:
-            consumed_nonces.add(nonce)
+    if consumed_nonces is not None and nonce in consumed_nonces:
+        raise PolicyDenyError("Guardian decision nonce has already been consumed")
 
     action_class = guardian_decision.get("action_class")
     action_type = requested_action.get("action_type") or guardian_decision.get("bound_action_type")
@@ -295,6 +299,9 @@ def assert_guardian_decision_replay_safe(
     approval_binding = requested_action.get("approval_binding")
     if isinstance(approval_binding, dict):
         _assert_guardian_matches_approval_binding(guardian_decision, approval_binding)
+
+    if consumed_nonces is not None and consume_nonce:
+        consumed_nonces.add(nonce)
 
     return guardian_decision
 
@@ -326,6 +333,7 @@ def assert_tool_invocation_consistent(
     worker: Any | None = None,
     approval_result: dict[str, Any] | None = None,
     approval_binding: dict[str, Any] | None = None,
+    reference_time: str | None = DEFAULT_REFERENCE_TIME,
 ) -> None:
     """Validate a tool invocation record against task, worker, taint, and approval state."""
 
@@ -346,7 +354,7 @@ def assert_tool_invocation_consistent(
         assert_approval_binding_authorizes_action(
             approval_binding,
             _requested_action_from_tool(tool_invocation, task=task, worker=worker),
-            reference_time=None,
+            reference_time=reference_time,
             consume_nonce=False,
         )
     tainted = tool_invocation.get("input_taint_status") in TAINTED_STATUSES or bool(tool_invocation.get("taint_ref_ids"))
@@ -503,6 +511,10 @@ def _assert_guardian_decision_time_window(
     issued = _parse_datetime(issued_at)
     effective = _parse_datetime(effective_at)
     expires = _parse_datetime(expires_at)
+    if effective < issued:
+        raise PolicyDenyError("Guardian decision effective_at must be at or after issued_at")
+    if expires <= issued:
+        raise PolicyDenyError("Guardian decision expiry must be after issued_at")
     if expires <= effective:
         raise PolicyDenyError("Guardian decision expiry must be after effective_at")
     if issued > reference and (issued - reference).total_seconds() > skew:
@@ -523,51 +535,75 @@ def _assert_guardian_decision_matches_action(
     guardian_decision: dict[str, Any],
     requested_action: dict[str, Any],
 ) -> None:
-    fields = (
-        ("tenant_id", "bound_tenant_id", "Guardian decision tenant mismatch"),
-        ("customer_context_id", "customer_context_id", "Guardian decision customer context mismatch"),
-    )
-    for requested_field, decision_field, message in fields:
-        requested = requested_action.get(requested_field)
-        decided = guardian_decision.get(decision_field)
-        if requested is not None and decided is not None and requested != decided:
-            raise PolicyDenyError(message)
+    tenant_id = requested_action.get("tenant_id")
+    if not isinstance(tenant_id, str) or not tenant_id:
+        raise PolicyDenyError("requested action tenant_id is required")
+    if tenant_id != guardian_decision.get("tenant_id"):
+        raise PolicyDenyError("Guardian decision tenant mismatch")
+    bound_tenant_id = guardian_decision.get("bound_tenant_id")
+    if bound_tenant_id is not None and tenant_id != bound_tenant_id:
+        raise PolicyDenyError("Guardian decision tenant mismatch")
+
+    customer_context_id = requested_action.get("customer_context_id")
+    if not isinstance(customer_context_id, str) or not customer_context_id:
+        raise PolicyDenyError("requested action customer_context_id is required")
+    if customer_context_id != guardian_decision.get("customer_context_id"):
+        raise PolicyDenyError("Guardian decision customer context mismatch")
 
     requested_decision_id = requested_action.get("guardian_decision_id")
+    if not isinstance(requested_decision_id, str) or not requested_decision_id:
+        raise PolicyDenyError("requested action guardian_decision_id is required")
     decision_ids = {guardian_decision.get("decision_id"), guardian_decision.get("guardian_decision_id")}
-    if requested_decision_id is not None and requested_decision_id not in decision_ids:
+    if requested_decision_id not in decision_ids:
         raise PolicyDenyError("Guardian decision ID mismatch")
 
     task_id = requested_action.get("task_id")
     bound_task_id = guardian_decision.get("bound_task_id")
-    if task_id is not None and bound_task_id is not None and task_id != bound_task_id:
-        raise PolicyDenyError("Guardian decision task mismatch")
+    if bound_task_id is not None:
+        if not isinstance(task_id, str) or not task_id:
+            raise PolicyDenyError("requested action task_id is required for bound Guardian decision")
+        if task_id != bound_task_id:
+            raise PolicyDenyError("Guardian decision task mismatch")
 
     worker_id = requested_action.get("worker_id")
     bound_worker_id = guardian_decision.get("bound_worker_id")
-    if bound_worker_id is not None and worker_id != bound_worker_id:
-        raise PolicyDenyError("Guardian decision worker mismatch")
+    if bound_worker_id is not None:
+        if not isinstance(worker_id, str) or not worker_id:
+            raise PolicyDenyError("requested action worker_id is required for bound Guardian decision")
+        if worker_id != bound_worker_id:
+            raise PolicyDenyError("Guardian decision worker mismatch")
 
-    action_type = requested_action.get("action_type")
     bound_action_type = guardian_decision.get("bound_action_type")
-    if action_type is not None and bound_action_type is not None and action_type != bound_action_type:
-        raise PolicyDenyError("Guardian decision action_type mismatch")
+    action_type = requested_action.get("action_type")
+    if bound_action_type is not None:
+        if not isinstance(action_type, str) or not action_type:
+            raise PolicyDenyError("requested action action_type is required for bound Guardian decision")
+        if action_type != bound_action_type:
+            raise PolicyDenyError("Guardian decision action_type mismatch")
 
     decision_scope_hash = requested_action.get("decision_scope_hash") or requested_action.get("approved_scope_hash")
-    if decision_scope_hash is not None and guardian_decision.get("decision_scope_hash") != decision_scope_hash:
-        raise PolicyDenyError("Guardian decision scope hash mismatch")
+    required_scope_hash = guardian_decision.get("decision_scope_hash")
+    if required_scope_hash is not None:
+        if not isinstance(decision_scope_hash, str) or not decision_scope_hash:
+            raise PolicyDenyError("requested action decision_scope_hash is required for bound Guardian decision")
+        if required_scope_hash != decision_scope_hash:
+            raise PolicyDenyError("Guardian decision scope hash mismatch")
 
+    required_binding_id = guardian_decision.get("approval_binding_id")
     binding_id = requested_action.get("approval_binding_id") or requested_action.get("binding_id")
-    if binding_id is not None and guardian_decision.get("approval_binding_id") != binding_id:
-        raise PolicyDenyError("Guardian decision approval binding mismatch")
+    if required_binding_id is not None:
+        if not isinstance(binding_id, str) or not binding_id:
+            raise PolicyDenyError("requested action approval_binding_id is required for bound Guardian decision")
+        if required_binding_id != binding_id:
+            raise PolicyDenyError("Guardian decision approval binding mismatch")
 
+    required_token_verification_id = guardian_decision.get("token_verification_id")
     token_verification_id = requested_action.get("token_verification_id")
-    if (
-        token_verification_id is not None
-        and guardian_decision.get("token_verification_id") is not None
-        and guardian_decision.get("token_verification_id") != token_verification_id
-    ):
-        raise PolicyDenyError("Guardian decision token verification mismatch")
+    if required_token_verification_id is not None:
+        if not isinstance(token_verification_id, str) or not token_verification_id:
+            raise PolicyDenyError("requested action token_verification_id is required for bound Guardian decision")
+        if required_token_verification_id != token_verification_id:
+            raise PolicyDenyError("Guardian decision token verification mismatch")
 
 
 def _assert_guardian_decision_scope_allows_action(
@@ -575,11 +611,11 @@ def _assert_guardian_decision_scope_allows_action(
     requested_action: dict[str, Any],
 ) -> None:
     requested_scope = requested_action.get("tool_scope")
-    if requested_scope is None:
+    decision_scope = guardian_decision.get("bound_tool_scope")
+    if decision_scope is None and requested_scope is None:
         return
     if not isinstance(requested_scope, dict):
         raise PolicyDenyError("requested Guardian tool scope must be an object")
-    decision_scope = guardian_decision.get("bound_tool_scope")
     if not isinstance(decision_scope, dict):
         raise PolicyDenyError("Guardian decision has no bound tool scope")
     bound_resources = set(decision_scope.get("resource_refs", []))
@@ -604,10 +640,12 @@ def _assert_guardian_decision_evidence_present(
     if requested_action.get("evidence_required") is False:
         raise EvidenceRequiredError("Guardian-bound action must require evidence")
     requested_refs = requested_action.get("evidence_refs")
-    if requested_refs is not None and not requested_refs:
+    if requested_refs is None:
+        raise EvidenceRequiredError("Guardian-bound action requires evidence refs")
+    if not requested_refs:
         raise EvidenceRequiredError("Guardian-bound action requires evidence refs")
     decision_refs = set(guardian_decision.get("evidence_refs", []))
-    if requested_refs is not None and not set(requested_refs) <= decision_refs:
+    if not set(requested_refs) <= decision_refs:
         raise EvidenceRequiredError("requested evidence refs are not bound to Guardian decision")
 
 
@@ -718,10 +756,12 @@ def _assert_binding_evidence_present(approval_binding: dict[str, Any], requested
     if requested_action.get("evidence_required") is False:
         raise EvidenceRequiredError("approval-bound action must require evidence")
     requested_refs = requested_action.get("evidence_refs")
-    if requested_refs is not None and not requested_refs:
+    if requested_refs is None:
+        raise EvidenceRequiredError("approval-bound action requires evidence refs")
+    if not requested_refs:
         raise EvidenceRequiredError("approval-bound action requires evidence refs")
     binding_refs = set(approval_binding.get("evidence_refs", []))
-    if requested_refs is not None and not set(requested_refs) <= binding_refs:
+    if not set(requested_refs) <= binding_refs:
         raise EvidenceRequiredError("requested evidence refs are not bound to approval")
 
 

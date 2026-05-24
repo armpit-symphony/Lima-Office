@@ -640,10 +640,7 @@
             "minLength": 1
           },
           "replay_policy": {
-            "enum": [
-              "one_time",
-              "bounded_window"
-            ]
+            "const": "one_time"
           },
           "replay_status": {
             "const": "unused"
@@ -692,6 +689,45 @@
         "properties": {
           "decision": {
             "const": "allow"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "approval_required": {
+            "const": false
+          },
+          "approval_request_id": {
+            "const": null
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "denial_reason": {
+            "const": null
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "decision_nonce": {
+            "type": "string",
+            "minLength": 1
+          },
+          "replay_policy": {
+            "const": "one_time"
+          },
+          "replay_status": {
+            "const": "unused"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "allow_with_evidence"
           }
         }
       },
@@ -874,6 +910,30 @@
       "then": {
         "properties": {
           "approval_binding_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "binding_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "approval_binding_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "approval_binding_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "binding_id": {
             "type": "string",
             "minLength": 1
           }

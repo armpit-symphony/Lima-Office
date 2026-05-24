@@ -136,6 +136,12 @@ class ApprovalTokenBindingTests(unittest.TestCase):
         with self.assertRaises(EvidenceRequiredError):
             self.verifier.verify_once(self.binding(), self.requested_action(evidence_refs=[]))
 
+    def test_missing_evidence_refs_field_fails_when_evidence_required(self):
+        action = self.requested_action()
+        action.pop("evidence_refs", None)
+        with self.assertRaises(EvidenceRequiredError):
+            self.verifier.verify_once(self.binding(), action)
+
     def test_guardian_decision_mismatch_fails(self):
         with self.assertRaises(PolicyDenyError):
             self.verifier.verify_once(self.binding(), self.requested_action(guardian_decision_id="gd-other"))
@@ -197,6 +203,58 @@ class ApprovalTokenBindingTests(unittest.TestCase):
         assert_tool_invocation_consistent(tool, task=task, worker=worker, approval_binding=binding)
 
         tool["tool_scope"]["allowed_operations"] = ["send_external_message"]
+        with self.assertRaises(PolicyDenyError):
+            assert_tool_invocation_consistent(tool, task=task, worker=worker, approval_binding=binding)
+
+    def test_tool_invocation_with_expired_binding_fails(self):
+        binding = self.binding()
+        binding["expires_at"] = "2026-05-19T23:59:00Z"
+        tool = copy.deepcopy(example("tool.invocation.tainted-input-denied.example.json"))
+        tool.update(
+            {
+                "tenant_id": binding["tenant_id"],
+                "customer_context_id": binding["customer_context_id"],
+                "environment": "dry_run",
+                "correlation_id": binding["correlation_id"],
+                "causation_id": binding["guardian_decision_id"],
+                "idempotency_key": "idem-tool-email-draft-review-expired-binding-001",
+                "tool_invocation_id": binding["tool_invocation_id"],
+                "task_id": binding["task_id"],
+                "actor": {"actor_type": "worker", "actor_id": binding["worker_id"]},
+                "execution_mode": "mock_only",
+                "side_effect_class": "approval_required_write",
+                "sandbox_profile": "mock_connector",
+                "capability_lease_id": "cap-lease-admin-001",
+                "tool_scope": copy.deepcopy(binding["tool_scope"]),
+                "risk_tier": "high",
+                "policy_result": "allow_with_evidence",
+                "guardian_decision_id": binding["guardian_decision_id"],
+                "approval_required": True,
+                "approval_chain_id": binding["approval_chain_id"],
+                "binding_id": binding["binding_id"],
+                "approval_token_id": binding["approval_token_id"],
+                "approval_result_id": binding["approval_result_id"],
+                "token_verification_id": binding["token_verification_id"],
+                "bound_action_type": binding["action_type"],
+                "bound_worker_id": binding["worker_id"],
+                "evidence_artifact_ids": ["ev-token-verify-valid-001"],
+                "input_taint_status": "none",
+                "taint_ref_ids": [],
+                "status": "approved_to_run",
+                "denial_reason": None,
+                "denial_code": None,
+            }
+        )
+        task = task_example()
+        task.update(
+            {
+                "tenant_id": binding["tenant_id"],
+                "customer_context_id": binding["customer_context_id"],
+                "task_id": binding["task_id"],
+                "assigned_worker_id": binding["worker_id"],
+            }
+        )
+        worker = type("Worker", (), {"worker_id": binding["worker_id"], "tenant_id": binding["tenant_id"]})()
         with self.assertRaises(PolicyDenyError):
             assert_tool_invocation_consistent(tool, task=task, worker=worker, approval_binding=binding)
 

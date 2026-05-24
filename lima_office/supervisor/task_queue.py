@@ -156,5 +156,10 @@ class TaskQueue:
         if approval_binding is None:
             raise PolicyDenyError("approval-required task requires approval binding metadata")
         binding = self.validator.validate(approval_binding, "approval.binding")
-        assert_token_verification_authorizes_task(task, verified, binding)
+        assert_token_verification_authorizes_task(
+            task,
+            verified,
+            binding,
+            reference_time=self.reference_time,
+        )
         return verified

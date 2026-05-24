@@ -137,7 +137,7 @@ python -B -m unittest discover -s tests -v
 Result:
 
 ```text
-Ran 109 tests
+Ran 122 tests
 
 OK
 ```
@@ -162,7 +162,8 @@ Coverage added by this checkpoint:
   clock-skew allowance, tenant/task/worker/action/tool-scope mismatch, decision
   scope hash mismatch, approval-binding mismatch, blocked-MVP action, LIMA IT
   remediation block, external-send/live-connector block, ambiguous timestamp,
-  and missing evidence.
+  missing evidence, missing required requested-action fields, contradictory
+  timestamp ordering, and nonce non-consumption on failed validation.
 
 ## Pytest
 
@@ -175,7 +176,7 @@ python -m pytest -q
 Result:
 
 ```text
-109 passed, 1 warning, 89 subtests passed
+122 passed, 1 warning, 93 subtests passed
 ```
 
 Warning: pytest could not create/write `.pytest_cache` because access was
