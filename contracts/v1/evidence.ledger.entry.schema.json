@@ -25,6 +25,22 @@
     "previous_hash",
     "entry_hash",
     "chain_position",
+    "related_transaction_id",
+    "related_coordinator_event_ids",
+    "related_replay_record_ids",
+    "related_ledger_entry_ids",
+    "related_evidence_artifact_ids",
+    "related_export_manifest_ids",
+    "linkage_status",
+    "linkage_failure_reasons",
+    "canonical_tenant_id",
+    "canonical_correlation_id",
+    "canonical_idempotency_key",
+    "canonical_decision_nonce",
+    "canonical_action_type",
+    "canonical_tool_scope",
+    "canonical_worker_id",
+    "canonical_task_id",
     "redaction_profile_ref",
     "retention_policy_refs",
     "export_manifest_refs",
@@ -109,7 +125,7 @@
     },
     "evidence_id": {
       "type": "string",
-      "minLength": 1
+      "pattern": "^ev-[A-Za-z0-9._:-]+$"
     },
     "parent_entry_ids": {
       "type": "array",
@@ -155,6 +171,146 @@
     "chain_position": {
       "type": "integer",
       "minimum": 1
+    },
+    "related_transaction_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "related_coordinator_event_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "related_replay_record_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "related_ledger_entry_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "related_evidence_artifact_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "related_export_manifest_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "linkage_status": {
+      "type": "string",
+      "enum": [
+        "linked",
+        "missing_ref",
+        "mismatched_tenant",
+        "mismatched_scope",
+        "mismatched_nonce",
+        "drift_detected",
+        "blocked_mvp"
+      ]
+    },
+    "linkage_failure_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "canonical_tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_decision_nonce": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_action_type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_tool_scope": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "resource_refs",
+        "allowed_operations",
+        "prohibited_operations"
+      ],
+      "properties": {
+        "resource_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "allowed_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prohibited_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "canonical_worker_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_task_id": {
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "redaction_profile_ref": {
       "type": "string",
@@ -229,6 +385,9 @@
         "properties": {
           "export_manifest_refs": {
             "minItems": 1
+          },
+          "related_export_manifest_ids": {
+            "minItems": 1
           }
         }
       }
@@ -250,6 +409,114 @@
       "then": {
         "properties": {
           "parent_entry_ids": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "entry_type": {
+            "enum": [
+              "pre_action",
+              "post_action",
+              "export_manifest",
+              "delete_review",
+              "rollback"
+            ]
+          }
+        },
+        "required": [
+          "entry_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "related_evidence_artifact_ids": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "entry_type": {
+            "const": "replay_denial"
+          }
+        },
+        "required": [
+          "entry_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "related_replay_record_ids": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "linkage_status": {
+            "const": "linked"
+          }
+        },
+        "required": [
+          "linkage_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "linkage_failure_reasons": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "linkage_status": {
+            "enum": [
+              "missing_ref",
+              "mismatched_tenant",
+              "mismatched_scope",
+              "mismatched_nonce",
+              "drift_detected",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "linkage_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "linkage_failure_reasons": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "canonical_decision_nonce": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "canonical_decision_nonce"
+        ]
+      },
+      "then": {
+        "properties": {
+          "related_replay_record_ids": {
             "minItems": 1
           }
         }

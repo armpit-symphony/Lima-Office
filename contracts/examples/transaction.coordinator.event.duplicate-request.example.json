@@ -23,6 +23,26 @@
     "reconciliation_started"
   ],
   "transaction_status": "pending",
+  "related_transaction_id": "txn-coordinator-duplicate-002",
+  "related_coordinator_event_ids": [
+    "coord-ev-dup-001"
+  ],
+  "related_replay_record_ids": [],
+  "related_ledger_entry_ids": [],
+  "related_evidence_artifact_ids": [
+    "ev-duplicate-detected-001"
+  ],
+  "related_export_manifest_ids": [],
+  "linkage_status": "linked",
+  "linkage_failure_reasons": [],
+  "canonical_tenant_id": "tenant-lab-001",
+  "canonical_correlation_id": "corr-coordinator-duplicate-001",
+  "canonical_idempotency_key": "idem-coordinator-001",
+  "canonical_decision_nonce": null,
+  "canonical_action_type": null,
+  "canonical_tool_scope": null,
+  "canonical_worker_id": null,
+  "canonical_task_id": null,
   "evidence_refs": [
     "ev-duplicate-detected-001"
   ],

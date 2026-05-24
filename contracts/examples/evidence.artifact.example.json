@@ -29,6 +29,32 @@
   "approval_request_id": null,
   "approval_token_id": null,
   "replay_record_id": "rr-file-delete-deny-001",
+  "related_transaction_id": "txn-file-delete-deny-001",
+  "related_coordinator_event_ids": [
+    "coord-ev-file-delete-001"
+  ],
+  "related_replay_record_ids": [
+    "rr-file-delete-deny-001"
+  ],
+  "related_ledger_entry_ids": [
+    "ledger-entry-file-delete-denial-001"
+  ],
+  "related_evidence_artifact_ids": [
+    "ev-file-delete-deny-001"
+  ],
+  "related_export_manifest_ids": [],
+  "linkage_status": "blocked_mvp",
+  "linkage_failure_reasons": [
+    "blocked_action_class_file_delete"
+  ],
+  "canonical_tenant_id": "tenant-lab-001",
+  "canonical_correlation_id": "corr-file-delete-deny-001",
+  "canonical_idempotency_key": "idem-evidence-file-delete-001",
+  "canonical_decision_nonce": "decision-nonce-file-delete-001",
+  "canonical_action_type": "file_delete",
+  "canonical_tool_scope": null,
+  "canonical_worker_id": "arc-admin-01",
+  "canonical_task_id": "task-file-delete-001",
   "replay_artifact_id": "ev-file-delete-deny-001",
   "denial_evidence_ref": "ev-file-delete-deny-001",
   "pre_action_evidence_refs": [

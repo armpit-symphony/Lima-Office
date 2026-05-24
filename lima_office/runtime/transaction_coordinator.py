@@ -60,14 +60,14 @@ class InMemoryTransactionCoordinator:
         self.validator = validator
         self._events_by_transaction: dict[tuple[str, str], list[dict[str, Any]]] = {}
         self._event_ids: dict[str, dict[str, Any]] = {}
-        self._idempotency_index: dict[tuple[str, str, str], str] = {}
+        self._idempotency_index: dict[tuple[str, str, str, str], str] = {}
 
     @property
     def event_log(self) -> dict[tuple[str, str], list[dict[str, Any]]]:
         return copy.deepcopy(self._events_by_transaction)
 
     @property
-    def idempotency_index(self) -> dict[tuple[str, str, str], str]:
+    def idempotency_index(self) -> dict[tuple[str, str, str, str], str]:
         return copy.deepcopy(self._idempotency_index)
 
     def validate_event(self, event: dict[str, Any]) -> dict[str, Any]:
@@ -101,6 +101,7 @@ class InMemoryTransactionCoordinator:
     def _check_tenant_scoped_idempotency(self, event: dict[str, Any]) -> None:
         idempotency_key = (
             event["tenant_id"],
+            event["customer_context_id"],
             event["idempotency_scope"],
             event["idempotency_key"],
         )
@@ -123,6 +124,8 @@ class InMemoryTransactionCoordinator:
                 raise PolicyDenyError("first coordinator event cannot set previous_event_id")
             return
 
+        self._validate_transaction_identity_consistency(history[0], event)
+
         previous = history[-1]
         previous_type = previous["event_type"]
         allowed = ALLOWED_EVENT_TRANSITIONS.get(previous_type, set())
@@ -138,6 +141,21 @@ class InMemoryTransactionCoordinator:
         hinted = set(previous.get("next_expected_event_types", []))
         if hinted and event_type not in hinted:
             raise PolicyDenyError("event transition violates next_expected_event_types hint")
+
+    def _validate_transaction_identity_consistency(self, first_event: dict[str, Any], event: dict[str, Any]) -> None:
+        immutable_fields = (
+            "tenant_id",
+            "customer_context_id",
+            "transaction_id",
+            "idempotency_key",
+            "idempotency_scope",
+            "canonical_tenant_id",
+            "canonical_correlation_id",
+            "canonical_idempotency_key",
+        )
+        for field in immutable_fields:
+            if first_event.get(field) != event.get(field):
+                raise PolicyDenyError(f"coordinator transaction identity drift on {field}")
 
     def _validate_event_status_alignment(self, event: dict[str, Any]) -> None:
         event_type = event["event_type"]

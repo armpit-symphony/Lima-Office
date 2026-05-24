@@ -33,6 +33,33 @@
   "approval_token_id": null,
   "token_verification_id": "tv-email-valid-001",
   "replay_record_id": "rr-email-draft-replay-denied-001",
+  "related_transaction_id": "txn-failed-closed-001",
+  "related_coordinator_event_ids": [
+    "coord-ev-009",
+    "coord-ev-010"
+  ],
+  "related_replay_record_ids": [
+    "rr-email-draft-replay-denied-001"
+  ],
+  "related_ledger_entry_ids": [
+    "ledger-entry-replay-denial-001"
+  ],
+  "related_evidence_artifact_ids": [
+    "ev-denial-path-001"
+  ],
+  "related_export_manifest_ids": [],
+  "linkage_status": "mismatched_nonce",
+  "linkage_failure_reasons": [
+    "nonce_replay_denied"
+  ],
+  "canonical_tenant_id": "tenant-lab-001",
+  "canonical_correlation_id": "corr-guardian-replay-denial-artifact-001",
+  "canonical_idempotency_key": "idem-evidence-denial-path-001",
+  "canonical_decision_nonce": "decision-nonce-email-draft-001",
+  "canonical_action_type": "draft_external_message_review",
+  "canonical_tool_scope": null,
+  "canonical_worker_id": "arc-admin-01",
+  "canonical_task_id": "task-email-draft-001",
   "replay_artifact_id": "ev-guardian-replay-denied-001",
   "denial_evidence_ref": "ev-denial-path-001",
   "pre_action_evidence_refs": [

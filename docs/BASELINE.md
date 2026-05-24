@@ -76,6 +76,18 @@ operations, customer-system mutation, or compliance certification claims.
   validation only. No database, queue, migration, service, or production
   storage implementation is authorized.
 
+## Cross-Contract Linkage Hardening Checkpoint
+
+- Branch: `cross-contract-linkage-hardening`
+- Base: `durable-transaction-coordinator-design`
+- Purpose: enforce fail-closed cross-contract linkage rules so coordinator
+  events, transaction boundaries, replay records, evidence ledger entries,
+  evidence artifacts, and export manifests cannot drift while remaining
+  individually schema-valid.
+- Scope: docs, schemas, examples, tests, and mock/in-memory linkage validation
+  only. No database, queue, migration, service, or production storage
+  implementation is authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:

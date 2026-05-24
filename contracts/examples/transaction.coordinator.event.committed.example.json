@@ -23,6 +23,48 @@
     "reconciliation_started"
   ],
   "transaction_status": "committed",
+  "related_transaction_id": "txn-coordinator-001",
+  "related_coordinator_event_ids": [
+    "coord-ev-001",
+    "coord-ev-002",
+    "coord-ev-003",
+    "coord-ev-004",
+    "coord-ev-005",
+    "coord-ev-006",
+    "coord-ev-007"
+  ],
+  "related_replay_record_ids": [
+    "rr-replay-001"
+  ],
+  "related_ledger_entry_ids": [
+    "led-pre-action-001",
+    "led-post-action-001"
+  ],
+  "related_evidence_artifact_ids": [
+    "ev-pre-action-001",
+    "ev-post-action-001"
+  ],
+  "related_export_manifest_ids": [],
+  "linkage_status": "linked",
+  "linkage_failure_reasons": [],
+  "canonical_tenant_id": "tenant-lab-001",
+  "canonical_correlation_id": "corr-coordinator-001",
+  "canonical_idempotency_key": "idem-coordinator-001",
+  "canonical_decision_nonce": "decision-nonce-email-draft-001",
+  "canonical_action_type": "draft_external_message_review",
+  "canonical_tool_scope": {
+    "resource_refs": [
+      "draft-message-ref-customer-reply-001"
+    ],
+    "allowed_operations": [
+      "operator_review_draft"
+    ],
+    "prohibited_operations": [
+      "send_external_message"
+    ]
+  },
+  "canonical_worker_id": "arc-admin-01",
+  "canonical_task_id": "task-email-draft-001",
   "evidence_refs": [
     "ev-pre-action-001",
     "ev-post-action-001"

@@ -146,7 +146,27 @@ class DurableReplayEvidencePostureTests(unittest.TestCase):
                 "raw_content_included": False,
                 "secret_material_included": False,
             },
+            "ev-sensitive-payload-ref-001": {
+                "artifact_id": "ev-sensitive-payload-ref-001",
+                "tenant_id": manifest["tenant_id"],
+                "raw_content_included": False,
+                "secret_material_included": False,
+            },
         }
+        for evidence_ref in set(
+            manifest.get("included_evidence_refs", [])
+            + manifest.get("excluded_evidence_refs", [])
+            + manifest.get("evidence_refs", [])
+        ):
+            evidence_map.setdefault(
+                evidence_ref,
+                {
+                    "artifact_id": evidence_ref,
+                    "tenant_id": manifest["tenant_id"],
+                    "raw_content_included": False,
+                    "secret_material_included": False,
+                },
+            )
         checked = self.manifest_builder.validate_manifest(manifest, evidence_by_id=evidence_map)
         self.assertGreaterEqual(len(checked["included_evidence_refs"]), 1)
 

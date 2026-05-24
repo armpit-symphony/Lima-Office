@@ -813,9 +813,18 @@ def assert_replay_store_record_consistent(
         tenant_id = requested_action.get("tenant_id")
         if tenant_id is not None and replay_record.get("tenant_id") != tenant_id:
             raise PolicyDenyError("replay record tenant mismatch")
+        customer_context_id = requested_action.get("customer_context_id")
+        if customer_context_id is not None and replay_record.get("customer_context_id") != customer_context_id:
+            raise PolicyDenyError("replay record customer context mismatch")
         action_type = requested_action.get("action_type")
         if action_type is not None and replay_record.get("action_type") != action_type:
             raise PolicyDenyError("replay record action_type mismatch")
+        canonical_task_id = replay_record.get("canonical_task_id")
+        if canonical_task_id is not None and requested_action.get("task_id") not in {None, canonical_task_id}:
+            raise PolicyDenyError("replay record task mismatch")
+        canonical_worker_id = replay_record.get("canonical_worker_id")
+        if canonical_worker_id is not None and requested_action.get("worker_id") not in {None, canonical_worker_id}:
+            raise PolicyDenyError("replay record worker mismatch")
         _assert_scope_subset(
             requested_action.get("tool_scope"),
             replay_record.get("tool_scope"),
@@ -827,6 +836,8 @@ def assert_replay_store_record_consistent(
     if guardian_decision is not None:
         if replay_record.get("tenant_id") != guardian_decision.get("tenant_id"):
             raise PolicyDenyError("replay record tenant mismatch with Guardian decision")
+        if replay_record.get("customer_context_id") != guardian_decision.get("customer_context_id"):
+            raise PolicyDenyError("replay record customer context mismatch with Guardian decision")
         if replay_record.get("guardian_decision_id") not in {
             guardian_decision.get("decision_id"),
             guardian_decision.get("guardian_decision_id"),
@@ -850,6 +861,8 @@ def assert_replay_store_record_consistent(
     if approval_binding is not None:
         if replay_record.get("tenant_id") != approval_binding.get("tenant_id"):
             raise PolicyDenyError("replay record tenant mismatch with approval binding")
+        if replay_record.get("customer_context_id") != approval_binding.get("customer_context_id"):
+            raise PolicyDenyError("replay record customer context mismatch with approval binding")
         if replay_record.get("approval_binding_id") not in {None, approval_binding.get("binding_id")}:
             raise PolicyDenyError("replay record approval binding mismatch")
         if replay_record.get("token_verification_id") not in {None, approval_binding.get("token_verification_id")}:
@@ -927,6 +940,16 @@ def assert_evidence_export_manifest_consistent(
         refs = manifest.get(field_name, [])
         if any(not isinstance(ref, str) or not ref for ref in refs):
             raise PolicyDenyError("export manifest must contain evidence refs only")
+        if any(not ref.startswith("ev-") for ref in refs):
+            raise PolicyDenyError("export manifest must contain evidence refs only")
+
+    included_refs = set(manifest.get("included_evidence_refs", []))
+    excluded_refs = set(manifest.get("excluded_evidence_refs", []))
+    evidence_refs = set(manifest.get("evidence_refs", []))
+    if included_refs & excluded_refs:
+        raise PolicyDenyError("export manifest included and excluded refs overlap")
+    if included_refs and not included_refs <= evidence_refs:
+        raise PolicyDenyError("export manifest included refs must be evidence refs")
 
     status = manifest.get("export_status")
     if status in {"prepared", "exported"}:
@@ -941,12 +964,15 @@ def assert_evidence_export_manifest_consistent(
 
     if evidence_by_id:
         tenant_id = manifest.get("tenant_id")
-        for evidence_ref in manifest.get("included_evidence_refs", []):
-            evidence = evidence_by_id.get(evidence_ref)
-            if evidence is None:
-                raise PolicyDenyError("export manifest includes unknown evidence ref")
-            if evidence.get("tenant_id") != tenant_id:
-                raise CrossContractInvariantError("evidence chain tenant mismatch")
+        for field_name in ("included_evidence_refs", "excluded_evidence_refs", "evidence_refs"):
+            for evidence_ref in manifest.get(field_name, []):
+                evidence = evidence_by_id.get(evidence_ref)
+                if evidence is None:
+                    raise PolicyDenyError("export manifest includes unknown evidence ref")
+                if evidence.get("tenant_id") != tenant_id:
+                    raise CrossContractInvariantError("evidence chain tenant mismatch")
+                if evidence.get("customer_context_id") not in {None, manifest.get("customer_context_id")}:
+                    raise CrossContractInvariantError("evidence customer context mismatch")
 
     return manifest
 

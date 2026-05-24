@@ -14,6 +14,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Approval token runtime binding](APPROVAL_TOKEN_RUNTIME_BINDING.md)
 - [Guardian expiry and replay policy](GUARDIAN_EXPIRY_REPLAY_POLICY.md)
 - [Durable replay and evidence posture](DURABLE_REPLAY_EVIDENCE_POSTURE.md)
+- [Cross-contract linkage hardening](CROSS_CONTRACT_LINKAGE_HARDENING.md)
 - [Durable transaction/storage RFC](rfcs/RFC_DURABLE_TRANSACTION_STORAGE.md)
 - [Durable storage architecture](architecture/DURABLE_STORAGE_ARCHITECTURE.md)
 - [Durable transaction coordinator](architecture/DURABLE_TRANSACTION_COORDINATOR.md)

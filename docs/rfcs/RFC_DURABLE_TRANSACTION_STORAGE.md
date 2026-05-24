@@ -187,6 +187,8 @@ Final taxonomy and implementation remain open governance items.
   evidence.
 - Ledger entries must be tenant-consistent and hash-linked metadata.
 - Export-manifest operations must remain refs-only.
+- Cross-contract linkage statuses must detect and fail closed on missing refs,
+  tenant mismatch, nonce mismatch, scope mismatch, and reconciliation drift.
 
 ## MVP Blocked Items
 
@@ -226,3 +228,5 @@ Before any storage/runtime implementation lane begins:
 5. Docs and runbooks define coordinator recovery responsibilities, reconciliation
    steps, and blocked-MVP posture.
 6. Validation suite passes with no schema/link/test regressions.
+7. Linkage-hardening contracts/tests prove that individually valid records
+   cannot commit as a linked chain when references drift.

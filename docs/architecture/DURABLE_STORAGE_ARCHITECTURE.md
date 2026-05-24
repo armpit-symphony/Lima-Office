@@ -107,6 +107,8 @@ ambiguity.
 - No raw customer content in transaction/ledger/export contracts.
 - No secret material in contract metadata.
 - Durable records are append-oriented; mutation is represented via new entries.
+- Cross-contract linkage refs and `linkage_status` fields must remain coherent;
+  drift or missing refs are fail-closed outcomes.
 
 ## No Implementation Selection Yet
 

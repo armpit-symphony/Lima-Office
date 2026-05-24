@@ -41,6 +41,9 @@ documents the reachable v2 checkpoint that supersedes it.
 - Export-manifest interoperability: should `evidence.export_manifest` remain a
   single contract or be split into request/approval/package records in a future
   major version?
+- Delete/export conflict precedence: when export and delete requests conflict,
+  what deterministic precedence and proof model governs denied vs failed-closed
+  outcomes?
 - Customer exit/delete: what exact proof fields, preservation conflict rules,
   and device/memory/cache reset evidence are required before implementation?
 - Durable evidence/export posture: what storage, emergency spool, retry/backoff,
@@ -72,6 +75,13 @@ documents the reachable v2 checkpoint that supersedes it.
 - Transaction coordinator posture: what final transition matrix, immutability
   enforcement model, and duplicate-request resolution semantics should back
   `transaction.coordinator.event` before runtime expansion?
+- Cross-contract linkage posture: which linkage fields become mandatory for
+  implementation-time foreign-key guarantees across
+  `transaction.coordinator.event`, `transaction.boundary`,
+  `replay.store.record`, `evidence.ledger.entry`, `evidence.artifact`, and
+  `evidence.export_manifest`?
+- Linkage drift taxonomy: what final reason-code set should replace free-form
+  `linkage_failure_reasons` before durable implementation?
 - Reconciliation ownership: which role owns terminal-state selection for partial
   commit ambiguity during coordinator recovery, and what approval separation is
   required?

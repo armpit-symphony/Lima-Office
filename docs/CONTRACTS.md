@@ -45,6 +45,8 @@ Version 1 schemas now use JSON Schema draft 2020-12 conditionals for the highest
 - Replay-store and replay-artifact metadata must fail closed for replay denial,
   failed-closed atomicity, tenant/action/scope mismatch, or missing denial
   evidence refs where evidence is required.
+- Cross-contract linkage fields must fail closed on missing refs, tenant
+  mismatch, scope mismatch, nonce mismatch, or reconciliation drift.
 - Transaction boundaries must fail closed for ambiguous commit/rollback state,
   missing failure reason on failed-closed status, or missing evidence refs for
   failed-closed transitions.
@@ -649,8 +651,8 @@ monitoring.
 - Consumer: compliance/security review, customer exit planning, and invariant checks.
 - Required fields: common envelope; `export_manifest_id`, `export_request_id`,
   requester/approver refs, `export_status`, included/excluded evidence refs,
-  `raw_content_included: false`, `secret_material_included: false`,
-  `created_at`, and evidence refs.
+  linkage refs/status/canonical IDs, `raw_content_included: false`,
+  `secret_material_included: false`, `created_at`, and evidence refs.
 - Conditional requirements: prepared/exported manifests require
   `redaction_profile_ref` and `retention_policy_refs`; denied/blocked manifests
   require `delete_conflict_refs`.
@@ -674,8 +676,9 @@ monitoring.
 - Consumer: evidence integrity review, export/delete review, and future ledger
   runtime design.
 - Required fields: common envelope; `ledger_entry_id`, `evidence_id`,
-  parent-entry refs, hash metadata, chain position, retention refs, redaction
-  profile ref, export-manifest refs, and raw/secret exclusion flags.
+  parent-entry refs, hash metadata, chain position, linkage refs/status/
+  canonical IDs, retention refs, redaction profile ref, export-manifest refs,
+  and raw/secret exclusion flags.
 - Security requirements: `raw_content_included` and
   `secret_material_included` are always `false`; chain progression requires
   parent linkage for non-root entries.
@@ -695,6 +698,9 @@ monitoring.
 - Producer: Guardian, supervisor, worker, helper agent, operator console, or LIMA IT bridge through supervisor ledger.
 - Consumer: Audit/evidence ledger, operator dashboard, incident workflow, export/delete process.
 - Required fields: common envelope; `artifact_id`, `artifact_type`, `actor`, `subject`, `action_class`, `guardian_decision_id`, `approval_request_id`, `approval_token_id`, `policy_snapshot_hash`, `redaction_status`, `redaction_profile`, `redacted_fields`, `retention_class`, `retention_policy_ref`, `retention_expires_at`, `delete_eligible`, `storage_ref`, `payload_hash`, `integrity_ref`, `previous_artifact_id`, `access_control_ref`, `export_eligible`, `export_redaction_profile`, `summary`.
+- Required linkage hardening fields: related transaction/coordinator/replay/
+  ledger/artifact/export refs plus `linkage_status` and
+  `linkage_failure_reasons`.
 - Optional fields: nullable parent/approval refs where not applicable.
 - Allowed artifact types: Guardian decisions, approvals, worker lifecycle/heartbeat, task transitions, tools, model routes, memory access, connector trust, incidents, LIMA IT handoff, SLO measurement, denial, and quarantine.
 - Terminal states: not stateful; artifacts are immutable records with retention/delete posture.

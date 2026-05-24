@@ -47,6 +47,9 @@ The approval chain is:
    paths when the binding matches.
 13. `evidence.artifact`: records approval, denial, verification, consumption,
    replay denial, mismatch, and blocked-MVP evidence by reference only.
+14. Cross-contract linkage fields and `linkage_status` fail-closed semantics
+   bind coordinator/boundary/replay/ledger/artifact/manifest metadata to the
+   same canonical transaction context.
 
 `approval.chain` examples summarize safe and unsafe combinations for validation
 and review. They are example bundles, not runtime authorization records.

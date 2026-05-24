@@ -127,7 +127,10 @@ They do not implement durable storage, transaction services, or export
 services.
 
 Replay-denied, stale, expired, revoked, and blocked-MVP outcomes must carry
-denial evidence refs where applicable. `failed_closed` replay-store atomicity
+denial evidence refs where applicable. Cross-contract linkage fields and
+`linkage_status` now model whether Guardian replay metadata remains coherent
+with transaction/replay/ledger/artifact/export records; non-`linked` status is
+fail-closed. `failed_closed` replay-store atomicity
 states cannot authorize action.
 
 ## Blocked-MVP And Tainted Input

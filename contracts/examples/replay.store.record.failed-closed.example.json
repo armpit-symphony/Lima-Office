@@ -36,6 +36,42 @@
   },
   "nonce_status": "failed",
   "atomicity_status": "failed_closed",
+  "related_transaction_id": "txn-failed-closed-001",
+  "related_coordinator_event_ids": [
+    "coord-ev-009",
+    "coord-ev-010"
+  ],
+  "related_ledger_entry_ids": [
+    "ledger-entry-replay-denial-001"
+  ],
+  "related_evidence_artifact_ids": [
+    "ev-replay-store-unavailable-001"
+  ],
+  "related_export_manifest_ids": [],
+  "linkage_status": "drift_detected",
+  "linkage_failure_reasons": [
+    "replay_store_unavailable"
+  ],
+  "canonical_tenant_id": "tenant-lab-001",
+  "canonical_correlation_id": "corr-replay-store-failed-closed-001",
+  "canonical_idempotency_key": "idem-replay-store-failed-closed-001",
+  "canonical_decision_nonce": "decision-nonce-email-draft-001",
+  "canonical_action_type": "draft_external_message_review",
+  "canonical_tool_scope": {
+    "resource_refs": [
+      "draft-message-ref-customer-reply-001"
+    ],
+    "allowed_operations": [
+      "operator_review_draft"
+    ],
+    "prohibited_operations": [
+      "send_external_message",
+      "live_connector_write",
+      "reuse_token"
+    ]
+  },
+  "canonical_worker_id": "arc-admin-01",
+  "canonical_task_id": "task-email-draft-001",
   "consumed_at": null,
   "checked_at": "2026-05-18T21:44:10Z",
   "evidence_refs": [

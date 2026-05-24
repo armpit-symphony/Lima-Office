@@ -33,6 +33,43 @@
   "approval_token_id": "apt-email-draft-001",
   "token_verification_id": "tv-email-valid-001",
   "replay_record_id": "rr-email-draft-consumed-001",
+  "related_transaction_id": "txn-guardian-replay-consume-001",
+  "related_coordinator_event_ids": [
+    "coord-ev-005",
+    "coord-ev-007"
+  ],
+  "related_replay_record_ids": [
+    "rr-email-draft-consumed-001"
+  ],
+  "related_ledger_entry_ids": [
+    "ledger-entry-pre-action-001",
+    "ledger-entry-post-action-001"
+  ],
+  "related_evidence_artifact_ids": [
+    "ev-task-transition-pre-001",
+    "ev-task-transition-post-001"
+  ],
+  "related_export_manifest_ids": [],
+  "linkage_status": "linked",
+  "linkage_failure_reasons": [],
+  "canonical_tenant_id": "tenant-lab-001",
+  "canonical_correlation_id": "corr-evidence-chained-pre-post-001",
+  "canonical_idempotency_key": "idem-evidence-chained-pre-post-001",
+  "canonical_decision_nonce": "decision-nonce-email-draft-001",
+  "canonical_action_type": "draft_external_message_review",
+  "canonical_tool_scope": {
+    "resource_refs": [
+      "draft-message-ref-customer-reply-001"
+    ],
+    "allowed_operations": [
+      "operator_review_draft"
+    ],
+    "prohibited_operations": [
+      "send_external_message"
+    ]
+  },
+  "canonical_worker_id": "arc-admin-01",
+  "canonical_task_id": "task-email-draft-001",
   "replay_artifact_id": "ev-guardian-replay-valid-001",
   "denial_evidence_ref": null,
   "pre_action_evidence_refs": [

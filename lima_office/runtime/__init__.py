@@ -10,6 +10,7 @@ from .errors import (
     UnsafeRuntimeActionError,
     WorkerStateError,
 )
+from .linkage import CrossContractLinkageValidator
 
 __all__ = [
     "ContractLoadError",
@@ -20,4 +21,5 @@ __all__ = [
     "PolicyDenyError",
     "UnsafeRuntimeActionError",
     "WorkerStateError",
+    "CrossContractLinkageValidator",
 ]

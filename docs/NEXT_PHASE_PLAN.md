@@ -16,8 +16,8 @@ cross-contract invariant checkpoint. The reachable replacement is
 
 Recommended order:
 
-1. Coordinator/reconciliation invariant hardening and transition-gating details
-   (after Phase 1A RFC/contracts/tests hardening).
+1. Governance/export/delete conflict policy finalization and reconciliation
+   evidence taxonomy hardening (after cross-contract linkage hardening).
 2. Final RBAC/IdP/MFA/session/device trust matrix.
 3. Model-routing defaults and health taxonomy refinement.
 4. Phase 1B lab runtime expansion only after the gates above are approved.
@@ -58,6 +58,13 @@ with `transaction.coordinator.event` contracts/examples, a mock in-memory
 transition validator, and reconciliation/failure-drill runbooks. Durable
 coordinator runtime, storage integration, and production transaction execution
 remain blocked.
+
+Cross-contract linkage hardening posture is now represented in
+[CROSS_CONTRACT_LINKAGE_HARDENING](CROSS_CONTRACT_LINKAGE_HARDENING.md) with
+explicit linkage status/reason fields across coordinator/boundary/replay/
+ledger/artifact/manifest contracts, a mock in-memory linkage validator, and
+negative-path drift/tenant/nonce/export-conflict tests. Durable storage and
+runtime transaction execution remain blocked.
 
 ## Option A: Worker Deployment Blueprint
 
@@ -221,6 +228,9 @@ Prerequisites:
 - Durable coordinator event contracts and runbooks exist, but runtime service
   implementation, durable persistence, and operational automation are
   explicitly deferred.
+- Cross-contract linkage hardening contracts/tests exist, but durable
+  referential integrity enforcement, storage-layer transactions, and recovery
+  tooling implementation are explicitly deferred.
 - Health reason taxonomy is defined.
 - Durable evidence/export posture is defined.
 - Durable memory retention, delete/export, raw-content, and customer exit

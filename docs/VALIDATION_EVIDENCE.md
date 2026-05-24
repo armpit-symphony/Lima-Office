@@ -5,7 +5,7 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `durable-transaction-coordinator-design` on Windows with
+Latest captured run: `cross-contract-linkage-hardening` on Windows with
 Python 3.12.10.
 
 ## Canonical Integration Branch
@@ -18,6 +18,7 @@ Python 3.12.10.
 - Durable replay/evidence posture branch: `durable-replay-evidence-posture`
 - Durable transaction/storage RFC branch: `durable-transaction-storage-rfc`
 - Durable transaction coordinator branch: `durable-transaction-coordinator-design`
+- Cross-contract linkage hardening branch: `cross-contract-linkage-hardening`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -106,6 +107,15 @@ Validation remains repository health evidence only; it does not approve
 databases, queues, durable storage services, live connectors, external sends,
 real remediation, production operations, or customer-system mutation.
 
+## Cross-Contract Linkage Hardening Checkpoint
+
+This branch adds cross-contract linkage posture docs, linkage-status and
+canonical-linkage fields across transaction/replay/evidence contracts, a
+mock-only in-memory linkage validator, and negative-path linkage drift tests.
+Validation remains repository health evidence only; it does not approve
+databases, queues, durable storage services, live connectors, external sends,
+real remediation, production operations, or customer-system mutation.
+
 ## Strict Schema Validation
 
 Command:
@@ -124,7 +134,7 @@ LIMA Office contract validation
 - schemas with examples: 38
 - validation mode: full JSON Schema draft 2020-12 with format checks
 - jsonschema version: 4.26.0
-- unsafe-content scan: 91 example files, 90 markdown files
+- unsafe-content scan: 91 example files, 91 markdown files
 - warnings: 0
 - failures: 0
 Result: PASS
@@ -150,8 +160,8 @@ Result:
 
 ```text
 LIMA Office markdown link check
-- markdown files scanned: 98
-- local links checked: 714
+- markdown files scanned: 99
+- local links checked: 718
 - external/anchor links ignored: 0
 - failures: 0
 Result: PASS
@@ -168,7 +178,7 @@ python -B -m unittest discover -s tests -v
 Result:
 
 ```text
-Ran 155 tests
+Ran 172 tests
 
 OK
 ```
@@ -223,7 +233,7 @@ python -m pytest -q
 Result:
 
 ```text
-155 passed, 1 warning, 127 subtests passed
+172 passed, 1 warning, 127 subtests passed
 ```
 
 Warning: pytest could not create/write `.pytest_cache` because access was
@@ -264,8 +274,8 @@ git status
 ```
 
 Checkpoint patch result before staging: modified runtime mock hardening, tests,
-schemas/examples, and documentation only, including transaction-boundary and
-evidence-ledger RFC hardening and coordinator-event design hardening.
+schemas/examples, and documentation only, including cross-contract linkage
+hardening for coordinator/boundary/replay/ledger/artifact/manifest metadata.
 
 ## CI Expectations
 

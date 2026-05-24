@@ -34,6 +34,34 @@
     "authorization_blocked",
     "incident_triage_required"
   ],
+  "related_transaction_id": "txn-failed-closed-001",
+  "related_coordinator_event_ids": [
+    "coord-ev-008",
+    "coord-ev-010"
+  ],
+  "related_replay_record_ids": [
+    "rr-email-draft-failed-closed-001"
+  ],
+  "related_ledger_entry_ids": [
+    "ledger-entry-replay-denial-001"
+  ],
+  "related_evidence_artifact_ids": [
+    "ev-token-consume-failed-closed-001"
+  ],
+  "related_export_manifest_ids": [],
+  "linkage_status": "drift_detected",
+  "linkage_failure_reasons": [
+    "token_atomicity_ambiguous",
+    "failed_closed_terminal_state"
+  ],
+  "canonical_tenant_id": "tenant-lab-001",
+  "canonical_correlation_id": "corr-failed-closed-001",
+  "canonical_idempotency_key": "idem-failed-closed-001",
+  "canonical_decision_nonce": "decision-nonce-email-draft-001",
+  "canonical_action_type": "approval_token_consume",
+  "canonical_tool_scope": null,
+  "canonical_worker_id": "arc-admin-01",
+  "canonical_task_id": "task-email-draft-001",
   "evidence_refs": [
     "ev-token-consume-failed-closed-001"
   ],

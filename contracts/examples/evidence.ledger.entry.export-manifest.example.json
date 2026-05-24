@@ -24,6 +24,32 @@
   "previous_hash": "hash-entry-replay-denial-001",
   "entry_hash": "hash-entry-export-manifest-001",
   "chain_position": 3,
+  "related_transaction_id": "txn-export-manifest-prepare-001",
+  "related_coordinator_event_ids": [
+    "coord-ev-export-004",
+    "coord-ev-export-005"
+  ],
+  "related_replay_record_ids": [],
+  "related_ledger_entry_ids": [
+    "ledger-entry-export-manifest-001"
+  ],
+  "related_evidence_artifact_ids": [
+    "ev-export-review-001",
+    "ev-export-prepare-001"
+  ],
+  "related_export_manifest_ids": [
+    "manifest-prepared-redacted-001"
+  ],
+  "linkage_status": "linked",
+  "linkage_failure_reasons": [],
+  "canonical_tenant_id": "tenant-lab-001",
+  "canonical_correlation_id": "corr-ledger-export-manifest-001",
+  "canonical_idempotency_key": "idem-ledger-export-manifest-001",
+  "canonical_decision_nonce": null,
+  "canonical_action_type": "export_manifest_prepare",
+  "canonical_tool_scope": null,
+  "canonical_worker_id": null,
+  "canonical_task_id": "task-export-prepare-001",
   "redaction_profile_ref": "redaction-profile-export-redacted-v1",
   "retention_policy_refs": [
     "retention-export-default-placeholder"

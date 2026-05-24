@@ -252,6 +252,9 @@ The v1 schemas use JSON Schema draft 2020-12 conditionals to block unsafe state 
 - `transaction.coordinator.event` models append-only coordinator lifecycle
   events, transition ordering, tenant-scoped idempotency scope, duplicate
   detection, and fail-closed reconciliation metadata.
+- Cross-contract transaction/replay/evidence records include linkage refs plus
+  `linkage_status` and `linkage_failure_reasons` so individually valid records
+  cannot silently drift into an unsafe combined chain.
 - `task.execution`, `tool.invocation`, `memory.access`, and `model.route` bind policy result, approval state, taint refs, evidence failure, terminal states, and denial/failure reasons.
 - `worker.lifecycle`, `worker.heartbeat`, and `worker.deployment` bind identity failure, quarantine, revoke, evidence-writer failure, deployment refs, update/rollback posture, and healthy states.
 - `supervisor.health` summarizes mock/lab worker, task, Guardian, and evidence

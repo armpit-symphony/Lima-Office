@@ -31,6 +31,32 @@
     "conflict-retention-window-active-001"
   ],
   "hash_manifest_ref": null,
+  "related_transaction_id": "txn-export-manifest-delete-review-001",
+  "related_coordinator_event_ids": [
+    "coord-ev-export-conflict-001"
+  ],
+  "related_replay_record_ids": [],
+  "related_ledger_entry_ids": [
+    "ledger-entry-export-conflict-001"
+  ],
+  "related_evidence_artifact_ids": [
+    "ev-export-denied-delete-conflict-001"
+  ],
+  "related_export_manifest_ids": [
+    "exp-manifest-denied-001"
+  ],
+  "linkage_status": "blocked_mvp",
+  "linkage_failure_reasons": [
+    "delete_export_conflict_active"
+  ],
+  "canonical_tenant_id": "tenant-lab-001",
+  "canonical_correlation_id": "corr-evidence-export-denied-001",
+  "canonical_idempotency_key": "idem-evidence-export-denied-001",
+  "canonical_decision_nonce": null,
+  "canonical_action_type": "export_manifest_prepare",
+  "canonical_tool_scope": null,
+  "canonical_worker_id": null,
+  "canonical_task_id": "task-export-delete-review-001",
   "created_at": "2026-05-18T21:54:30Z",
   "prepared_at": null,
   "exported_at": null,

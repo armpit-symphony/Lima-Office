@@ -30,6 +30,8 @@ process restart and denial-path evidence can be incomplete.
 - Represent each decision nonce as a scoped replay record.
 - Record tenant, task/action scope, Guardian decision, approval binding/token
   verification linkage, and evidence refs.
+- Record cross-contract linkage fields and fail-closed linkage status so replay,
+  transaction, ledger, artifact, and export metadata cannot drift silently.
 - Track nonce states: `reserved`, `consumed`, `replay_denied`, `expired`,
   `revoked`, `failed`.
 - Track atomicity state: `pending`, `committed`, `rolled_back`,

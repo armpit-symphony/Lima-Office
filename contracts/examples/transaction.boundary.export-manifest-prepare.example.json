@@ -39,6 +39,31 @@
     "excluded_refs_recorded",
     "hash_manifest_ref_recorded"
   ],
+  "related_transaction_id": "txn-export-manifest-prepare-001",
+  "related_coordinator_event_ids": [
+    "coord-ev-export-001",
+    "coord-ev-export-005"
+  ],
+  "related_replay_record_ids": [],
+  "related_ledger_entry_ids": [
+    "ledger-entry-export-manifest-001"
+  ],
+  "related_evidence_artifact_ids": [
+    "ev-export-prepare-001"
+  ],
+  "related_export_manifest_ids": [
+    "exp-manifest-001"
+  ],
+  "linkage_status": "linked",
+  "linkage_failure_reasons": [],
+  "canonical_tenant_id": "tenant-lab-001",
+  "canonical_correlation_id": "corr-export-prepare-001",
+  "canonical_idempotency_key": "idem-export-prepare-001",
+  "canonical_decision_nonce": null,
+  "canonical_action_type": "export_manifest_prepare",
+  "canonical_tool_scope": null,
+  "canonical_worker_id": null,
+  "canonical_task_id": "task-export-prepare-001",
   "evidence_refs": [
     "ev-export-prepare-001"
   ],

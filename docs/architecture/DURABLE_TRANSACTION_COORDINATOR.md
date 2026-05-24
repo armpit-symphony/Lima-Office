@@ -172,6 +172,17 @@ No partial transaction may remain silently pending.
 - Event chain must remain tenant-consistent and append-only.
 - Raw customer content and secrets are excluded from coordinator events.
 
+## Cross-Contract Linkage Requirements
+
+- Coordinator and transaction/replay/ledger/artifact/manifest records include
+  explicit related-ID linkage fields.
+- `linkage_status: linked` requires complete references and empty
+  `linkage_failure_reasons`.
+- `missing_ref`, `mismatched_*`, and `drift_detected` remain fail-closed and
+  evidence-linked.
+- See [Cross-Contract Linkage Hardening](../CROSS_CONTRACT_LINKAGE_HARDENING.md)
+  for the canonical linkage graph.
+
 ## MVP Blocked Items
 
 - Real transaction coordinator service

@@ -24,6 +24,34 @@
   "previous_hash": "hash-entry-export-manifest-001",
   "entry_hash": "hash-entry-rollback-001",
   "chain_position": 4,
+  "related_transaction_id": "txn-failed-closed-001",
+  "related_coordinator_event_ids": [
+    "coord-ev-rec-001",
+    "coord-ev-rec-002"
+  ],
+  "related_replay_record_ids": [
+    "rr-email-draft-failed-closed-001"
+  ],
+  "related_ledger_entry_ids": [
+    "ledger-entry-export-manifest-001",
+    "ledger-entry-rollback-001"
+  ],
+  "related_evidence_artifact_ids": [
+    "ev-transaction-rollback-001"
+  ],
+  "related_export_manifest_ids": [],
+  "linkage_status": "drift_detected",
+  "linkage_failure_reasons": [
+    "rollback_after_partial_commit"
+  ],
+  "canonical_tenant_id": "tenant-lab-001",
+  "canonical_correlation_id": "corr-ledger-rollback-001",
+  "canonical_idempotency_key": "idem-ledger-rollback-001",
+  "canonical_decision_nonce": "decision-nonce-email-draft-001",
+  "canonical_action_type": "approval_token_consume",
+  "canonical_tool_scope": null,
+  "canonical_worker_id": "arc-admin-01",
+  "canonical_task_id": "task-email-draft-001",
   "redaction_profile_ref": "redaction-profile-metadata-only-v1",
   "retention_policy_refs": [
     "retention-evidence-default-placeholder"

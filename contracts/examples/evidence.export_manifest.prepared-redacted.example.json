@@ -33,10 +33,39 @@
   ],
   "delete_conflict_refs": [],
   "hash_manifest_ref": "hash-ref-export-manifest-001",
+  "related_transaction_id": "txn-export-manifest-prepare-001",
+  "related_coordinator_event_ids": [
+    "coord-ev-export-004",
+    "coord-ev-export-005"
+  ],
+  "related_replay_record_ids": [],
+  "related_ledger_entry_ids": [
+    "ledger-entry-export-manifest-001"
+  ],
+  "related_evidence_artifact_ids": [
+    "ev-export-review-001",
+    "ev-export-prepare-001"
+  ],
+  "related_export_manifest_ids": [
+    "exp-manifest-001"
+  ],
+  "linkage_status": "linked",
+  "linkage_failure_reasons": [],
+  "canonical_tenant_id": "tenant-lab-001",
+  "canonical_correlation_id": "corr-evidence-export-prepared-001",
+  "canonical_idempotency_key": "idem-evidence-export-prepared-001",
+  "canonical_decision_nonce": null,
+  "canonical_action_type": "export_manifest_prepare",
+  "canonical_tool_scope": null,
+  "canonical_worker_id": null,
+  "canonical_task_id": "task-export-prepare-001",
   "created_at": "2026-05-18T21:48:00Z",
   "prepared_at": "2026-05-18T21:50:00Z",
   "exported_at": null,
   "evidence_refs": [
+    "ev-guardian-email-draft-001",
+    "ev-guardian-replay-valid-001",
+    "ev-approval-result-email-001",
     "ev-export-review-001",
     "ev-export-prepare-001"
   ],

@@ -63,6 +63,8 @@ time-bounded, scope-bound, and replay-checked in memory for tests.
   secret-included evidence markers fail closed in MVP.
 - Export manifests must remain refs-only metadata with retention/redaction
   placeholders and explicit delete-conflict refs for denied/blocked states.
+- Coordinator/boundary/replay/ledger/artifact/manifest linkage fields must stay
+  coherent; non-`linked` linkage status is fail-closed and evidence-linked.
 - Transaction-boundary metadata and evidence-ledger-entry metadata remain
   schema/test posture in this phase; implementation-time atomicity and durable
   chain enforcement are deferred and fail closed when ambiguous.

@@ -22,6 +22,30 @@
   "previous_hash": null,
   "entry_hash": "hash-entry-pre-action-001",
   "chain_position": 1,
+  "related_transaction_id": "txn-guardian-replay-consume-001",
+  "related_coordinator_event_ids": [
+    "coord-ev-005"
+  ],
+  "related_replay_record_ids": [
+    "rr-email-draft-consumed-001"
+  ],
+  "related_ledger_entry_ids": [
+    "ledger-entry-pre-action-001"
+  ],
+  "related_evidence_artifact_ids": [
+    "ev-task-transition-pre-001"
+  ],
+  "related_export_manifest_ids": [],
+  "linkage_status": "linked",
+  "linkage_failure_reasons": [],
+  "canonical_tenant_id": "tenant-lab-001",
+  "canonical_correlation_id": "corr-ledger-pre-action-001",
+  "canonical_idempotency_key": "idem-ledger-pre-action-001",
+  "canonical_decision_nonce": "decision-nonce-email-draft-001",
+  "canonical_action_type": "draft_external_message_review",
+  "canonical_tool_scope": null,
+  "canonical_worker_id": "arc-admin-01",
+  "canonical_task_id": "task-email-draft-001",
   "redaction_profile_ref": "redaction-profile-metadata-only-v1",
   "retention_policy_refs": [
     "retention-evidence-default-placeholder"
