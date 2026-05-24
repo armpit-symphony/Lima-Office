@@ -1,26 +1,25 @@
 {
-  "contract_name": "guardian.replay",
+  "contract_name": "replay.store.record",
   "contract_version": "1.0.0",
   "schema_version": "1.0.0",
   "tenant_id": "tenant-lab-001",
   "customer_context_id": "customer-context-main",
   "environment": "dry_run",
-  "correlation_id": "corr-guardian-replay-denied-001",
+  "correlation_id": "corr-replay-store-replay-denied-001",
   "causation_id": "gd-email-send-requires-approval-001",
-  "idempotency_key": "idem-replay-email-draft-denied-001",
+  "idempotency_key": "idem-replay-store-replay-denied-001",
   "producer": {
     "component": "guardian",
     "produced_at": "2026-05-18T21:44:05Z"
   },
   "policy_version": "policy-phase0-v1",
-  "replay_check_id": "gr-email-draft-replay-denied-001",
   "replay_record_id": "rr-email-draft-replay-denied-001",
-  "guardian_decision_id": "gd-email-send-requires-approval-001",
+  "replay_artifact_id": "ev-guardian-replay-denied-001",
   "decision_nonce": "decision-nonce-email-draft-001",
+  "guardian_decision_id": "gd-email-send-requires-approval-001",
   "approval_binding_id": "bind-email-draft-001",
+  "approval_token_id": "apt-email-draft-001",
   "token_verification_id": "tv-email-valid-001",
-  "task_id": "task-email-draft-001",
-  "worker_id": "arc-admin-01",
   "action_type": "draft_external_message_review",
   "tool_scope": {
     "resource_refs": [
@@ -35,36 +34,23 @@
       "reuse_token"
     ]
   },
-  "decision_scope_hash": "hash-ref-approved-scope-email-001",
-  "policy_snapshot_hash": "policy-snapshot-hash-phase0-approval-001",
-  "expires_at": "2026-05-18T21:48:20Z",
-  "replay_check_result": "replay_denied",
+  "nonce_status": "replay_denied",
+  "atomicity_status": "committed",
+  "consumed_at": null,
   "checked_at": "2026-05-18T21:44:05Z",
   "evidence_refs": [
     "ev-guardian-replay-denied-001"
   ],
-  "mismatch_reasons": [
-    "nonce_replayed"
-  ],
   "denial_evidence_ref": "ev-guardian-replay-denied-001",
-  "pre_action_evidence_refs": [
-    "ev-guardian-replay-denied-001"
-  ],
-  "post_action_evidence_refs": [],
-  "replay_artifact_id": "ev-guardian-replay-denied-001",
-  "redaction_profile_ref": "metadata_only",
+  "failure_reason": null,
   "hash_algorithm": "sha256",
-  "content_hash": "hash-ref-guardian-replay-denied-001",
+  "content_hash": "hash-ref-replay-store-replay-denied-001",
   "parent_evidence_refs": [
-    "ev-guardian-email-draft-001"
+    "ev-guardian-replay-valid-001"
   ],
   "chain_position": 2,
   "export_manifest_refs": [],
+  "created_at": "2026-05-18T21:44:05Z",
   "raw_content_included": false,
-  "secret_material_included": false,
-  "data_classification": "customer_confidential",
-  "redaction_level": "metadata_only",
-  "retention_class": "evidence_retained_placeholder",
-  "export_eligible": true,
-  "delete_policy_ref": "policy.audit_export_customer_exit.placeholder"
+  "secret_material_included": false
 }

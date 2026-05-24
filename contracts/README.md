@@ -42,6 +42,7 @@ Version 1 schemas are in [v1](v1):
 - [task.execution.schema.json](v1/task.execution.schema.json)
 - [guardian.decision.schema.json](v1/guardian.decision.schema.json)
 - [guardian.replay.schema.json](v1/guardian.replay.schema.json)
+- [replay.store.record.schema.json](v1/replay.store.record.schema.json)
 - [approval.request.schema.json](v1/approval.request.schema.json)
 - [approval.result.schema.json](v1/approval.result.schema.json)
 - [approval.token.schema.json](v1/approval.token.schema.json)
@@ -56,6 +57,7 @@ Version 1 schemas are in [v1](v1):
 - [connector.trust.schema.json](v1/connector.trust.schema.json)
 - [evidence.artifact.schema.json](v1/evidence.artifact.schema.json)
 - [evidence.failure.schema.json](v1/evidence.failure.schema.json)
+- [evidence.export_manifest.schema.json](v1/evidence.export_manifest.schema.json)
 - [incident.ops.schema.json](v1/incident.ops.schema.json)
 - [sla.slo.schema.json](v1/sla.slo.schema.json)
 - [lima_it.handoff.schema.json](v1/lima_it.handoff.schema.json)
@@ -96,6 +98,9 @@ Sanitized example objects are in [examples](examples):
 - [guardian.replay.expired.example.json](examples/guardian.replay.expired.example.json)
 - [guardian.replay.scope-mismatch.example.json](examples/guardian.replay.scope-mismatch.example.json)
 - [guardian.replay.blocked-mvp.example.json](examples/guardian.replay.blocked-mvp.example.json)
+- [replay.store.record.consumed.example.json](examples/replay.store.record.consumed.example.json)
+- [replay.store.record.replay-denied.example.json](examples/replay.store.record.replay-denied.example.json)
+- [replay.store.record.failed-closed.example.json](examples/replay.store.record.failed-closed.example.json)
 - [approval.request.example.json](examples/approval.request.example.json)
 - [approval.result.approved.example.json](examples/approval.result.approved.example.json)
 - [approval.result.denied-blocked-mvp.example.json](examples/approval.result.denied-blocked-mvp.example.json)
@@ -127,8 +132,13 @@ Sanitized example objects are in [examples](examples):
 - [taint.ref.prompt-injection-email.example.json](examples/taint.ref.prompt-injection-email.example.json)
 - [connector.trust.example.json](examples/connector.trust.example.json)
 - [evidence.artifact.example.json](examples/evidence.artifact.example.json)
+- [evidence.artifact.denial-path.example.json](examples/evidence.artifact.denial-path.example.json)
+- [evidence.artifact.chained-pre-post.example.json](examples/evidence.artifact.chained-pre-post.example.json)
 - [evidence.failure.pre-action-blocked.example.json](examples/evidence.failure.pre-action-blocked.example.json)
 - [evidence.failure.post-action-degraded.example.json](examples/evidence.failure.post-action-degraded.example.json)
+- [evidence.failure.replay-store-unavailable.example.json](examples/evidence.failure.replay-store-unavailable.example.json)
+- [evidence.export_manifest.prepared-redacted.example.json](examples/evidence.export_manifest.prepared-redacted.example.json)
+- [evidence.export_manifest.denied-delete-conflict.example.json](examples/evidence.export_manifest.denied-delete-conflict.example.json)
 - [incident.ops.example.json](examples/incident.ops.example.json)
 - [sla.slo.example.json](examples/sla.slo.example.json)
 - [lima_it.handoff.example.json](examples/lima_it.handoff.example.json)
@@ -219,6 +229,8 @@ The v1 schemas use JSON Schema draft 2020-12 conditionals to block unsafe state 
   verification, taint, evidence refs, and denial/failure reasons.
 - `guardian.replay` records metadata-only replay-check outcomes for valid
   first use, replay denial, expiry, scope mismatch, and blocked-MVP checks.
+- `replay.store.record` models future durable nonce/replay state and
+  fail-closed atomicity metadata without implementing storage.
 - `task.execution`, `tool.invocation`, `memory.access`, and `model.route` bind policy result, approval state, taint refs, evidence failure, terminal states, and denial/failure reasons.
 - `worker.lifecycle`, `worker.heartbeat`, and `worker.deployment` bind identity failure, quarantine, revoke, evidence-writer failure, deployment refs, update/rollback posture, and healthy states.
 - `supervisor.health` summarizes mock/lab worker, task, Guardian, and evidence
@@ -235,6 +247,8 @@ The v1 schemas use JSON Schema draft 2020-12 conditionals to block unsafe state 
   console runtime behavior.
 - `lima_it.handoff` keeps diagnostics read-only and keeps remediation non-executing for Phase 0.
 - `evidence.artifact` and `evidence.failure` bind redaction, evidence-writer failure, emergency spool refs, reconciliation, incident, and quarantine fields.
+- `evidence.export_manifest` models export metadata using refs-only payloads
+  with redaction/retention/delete-conflict placeholders.
 
 See [Schema Hardening Notes](../docs/SCHEMA_HARDENING_NOTES.md) for the reasoning and Phase 1A test expectations.
 

@@ -59,6 +59,11 @@ Before export:
 - Record exclusions and preservation conflicts.
 - Capture evidence of review and approval.
 
+Phase 1A posture now models export metadata with
+`evidence.export_manifest`. The manifest remains refs-only metadata and must
+carry `raw_content_included: false` and `secret_material_included: false`.
+Prepared/exported status requires a redaction profile and retention refs.
+
 ## Customer Exit Process
 
 Customer exit requires:
@@ -92,6 +97,9 @@ audit trail needs, or future legal obligations. This repo does not decide final
 retention law or legal hold posture. Ambiguous conflict fails closed and blocks
 automatic delete.
 
+Denied or blocked export/delete outcomes must explicitly include
+`delete_conflict_refs` in export-manifest metadata.
+
 ## Operator Approval Requirements
 
 - Export requires operator approval.
@@ -114,6 +122,15 @@ Every export/delete request must create:
 - Status and reason.
 - Created/updated timestamps.
 
+When export-manifest records are produced, include:
+
+- manifest ID and request ID;
+- included/excluded evidence refs;
+- redaction profile ref;
+- retention policy refs;
+- delete conflict refs when denied/blocked;
+- hash manifest ref when prepared/exported.
+
 ## MVP Blocked Areas
 
 - No live export service.
@@ -125,6 +142,7 @@ Every export/delete request must create:
 ## Acceptance Gates
 
 - `governance.audit_export` can represent export/delete request posture.
+- `evidence.export_manifest` can represent refs-only prepared/denied outcomes.
 - Customer exit/delete runbook exists.
 - Export/delete records use refs, not raw payloads.
 - Evidence preservation conflicts remain explicit.

@@ -3,5 +3,6 @@
 from .approval_binding import ApprovalBindingVerifier
 from .policy import GuardianPolicy
 from .replay import GuardianDecisionReplayVerifier
+from .replay_store import InMemoryReplayStore
 
-__all__ = ["ApprovalBindingVerifier", "GuardianDecisionReplayVerifier", "GuardianPolicy"]
+__all__ = ["ApprovalBindingVerifier", "GuardianDecisionReplayVerifier", "GuardianPolicy", "InMemoryReplayStore"]

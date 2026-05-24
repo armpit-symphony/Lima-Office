@@ -42,7 +42,12 @@ Version 1 schemas now use JSON Schema draft 2020-12 conditionals for the highest
 - Token verification and approval binding must fail closed for missing,
   expired, revoked, used, replayed, mismatched, tainted, blocked-MVP,
   ambiguous, wrong-scope, or wider-than-approved tokens and actions.
+- Replay-store and replay-artifact metadata must fail closed for replay denial,
+  failed-closed atomicity, tenant/action/scope mismatch, or missing denial
+  evidence refs where evidence is required.
 - Evidence-required task/tool paths cannot be represented as completed when evidence failure blocks the action.
+- Evidence export manifests must remain refs-only, with redaction/retention
+  placeholders and explicit delete-conflict refs for denied/blocked states.
 - Tainted content must remain data-only unless a later policy review clears it; it cannot directly become tool args, durable memory, approval scope, external sends, or remediation.
 - LIMA IT remediation is non-executing in Phase 0; diagnostic handoff remains read-only.
 
@@ -312,10 +317,12 @@ monitoring.
   and runbook triage.
 - Required fields: common envelope; `replay_check_id`,
   `guardian_decision_id`, `decision_nonce`, approval binding/token verification
-  refs, task/worker/action/tool scope, `decision_scope_hash`,
-  `policy_snapshot_hash`, `expires_at`, `replay_check_result`, `checked_at`,
-  evidence refs, mismatch reasons, data classification, redaction level,
-  retention placeholder, export eligibility, and delete policy ref.
+  refs, `replay_record_id`, `replay_artifact_id`, task/worker/action/tool
+  scope, `decision_scope_hash`, `policy_snapshot_hash`, `expires_at`,
+  `replay_check_result`, `checked_at`, evidence refs, mismatch reasons,
+  data classification, redaction level, retention placeholder,
+  `raw_content_included: false`, `secret_material_included: false`, export
+  eligibility, and delete policy ref.
 - Allowed outcomes: `valid_first_use`, `replay_denied`, `expired`, `stale`,
   `revoked`, `scope_mismatch`, `tenant_mismatch`, `blocked_mvp`.
 - Security requirements: records use refs only, carry no secret material, and
@@ -328,6 +335,30 @@ monitoring.
 - MVP acceptance gates: valid first-use and denial examples validate without
   adding durable replay storage, live connectors, external sends, remediation,
   UI, or production monitoring.
+
+## Replay Store Record Contract v1
+
+- Schema: [replay.store.record.schema.json](../contracts/v1/replay.store.record.schema.json)
+- Example objects: [replay.store.record.consumed.example.json](../contracts/examples/replay.store.record.consumed.example.json), [replay.store.record.replay-denied.example.json](../contracts/examples/replay.store.record.replay-denied.example.json), [replay.store.record.failed-closed.example.json](../contracts/examples/replay.store.record.failed-closed.example.json)
+- Purpose: represents future durable nonce reservation/consumption posture as metadata-only records without implementing storage.
+- Version: `1.0.0`.
+- Producer: Guardian or Supervisor replay verifier.
+- Consumer: invariant checks, evidence review, incident triage, and future durable replay-store design review.
+- Required fields: common envelope; `replay_record_id`, `decision_nonce`,
+  `guardian_decision_id`, approval binding/token/verification refs,
+  `action_type`, `tool_scope`, `nonce_status`, `atomicity_status`,
+  `checked_at`, `created_at`, `raw_content_included: false`,
+  `secret_material_included: false`, and evidence refs where required.
+- Allowed `nonce_status` values: `reserved`, `consumed`, `replay_denied`, `expired`, `revoked`, `failed`.
+- Allowed `atomicity_status` values: `pending`, `committed`, `rolled_back`, `failed_closed`.
+- Security requirements: records are refs-only; they do not include raw payload
+  or secret material and do not authorize execution.
+- Evidence requirements: replay-denied and failed-closed records require
+  evidence refs; failed-closed records also require `failure_reason`.
+- Failure behavior: `failed_closed`, tenant mismatch, or action/scope mismatch
+  blocks authorization.
+- MVP acceptance gates: consumed/replay-denied/failed-closed examples validate
+  and remain metadata-only with no durable database, queue, or runtime service.
 
 ## Approval Request Contract v1
 
@@ -542,6 +573,30 @@ monitoring.
 - Failure behavior: scope mismatch, missing consent, or secret exposure blocks connector and creates incident evidence.
 - Backwards compatibility notes: live connector fields must be added in a later reviewed version; do not reinterpret mock states as live readiness.
 - MVP acceptance gates: mock email/file/ticket connectors can be represented without OAuth, tokens, webhooks, live reads, or writes.
+
+## Evidence Export Manifest Contract v1
+
+- Schema: [evidence.export_manifest.schema.json](../contracts/v1/evidence.export_manifest.schema.json)
+- Example objects: [evidence.export_manifest.prepared-redacted.example.json](../contracts/examples/evidence.export_manifest.prepared-redacted.example.json), [evidence.export_manifest.denied-delete-conflict.example.json](../contracts/examples/evidence.export_manifest.denied-delete-conflict.example.json)
+- Purpose: represents refs-only export metadata for evidence packages and
+  delete-conflict posture without implementing export/delete services.
+- Version: `1.0.0`.
+- Producer: governance export review metadata flow.
+- Consumer: compliance/security review, customer exit planning, and invariant checks.
+- Required fields: common envelope; `export_manifest_id`, `export_request_id`,
+  requester/approver refs, `export_status`, included/excluded evidence refs,
+  `raw_content_included: false`, `secret_material_included: false`,
+  `created_at`, and evidence refs.
+- Conditional requirements: prepared/exported manifests require
+  `redaction_profile_ref` and `retention_policy_refs`; denied/blocked manifests
+  require `delete_conflict_refs`.
+- Security requirements: manifests must contain references only and cannot
+  embed customer payloads or secret material.
+- Evidence requirements: export decisions and conflict outcomes are evidenced.
+- Failure behavior: missing redaction/retention placeholders, raw/secret flags,
+  or unresolved conflict posture fails closed.
+- MVP acceptance gates: manifest records validate for prepared-redacted and
+  denied-delete-conflict scenarios without export tooling or customer portals.
 
 ## Evidence Artifact Contract v1
 

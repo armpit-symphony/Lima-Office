@@ -17,6 +17,7 @@ Each request card must show:
 - Guardian decision ID.
 - Guardian issued/effective/expires timestamps, decision nonce status, and
   replay-check status.
+- Replay record ID and replay artifact ID when available.
 - Policy refs and policy version.
 - Evidence/pre-evidence refs.
 - Taint status.
@@ -54,6 +55,8 @@ The inbox must show:
 - Related incident ref if present.
 
 If pre-action evidence is required and missing, the request is blocked.
+If replay denial requires denial evidence and it is missing, the request is
+blocked.
 
 ## Taint Status
 
@@ -74,6 +77,9 @@ Approval tokens are metadata refs only. The card shows:
 - Token verification result where relevant.
 - Binding mismatch reasons, nonce/replay status, and evidence refs.
 - Guardian replay-check result and decision scope hash when available.
+- Replay-store nonce status and atomicity status when available.
+- Denial evidence refs for replay-denied, stale, expired, revoked, or
+  blocked-MVP outcomes.
 
 The inbox never displays bearer token material.
 
@@ -112,3 +118,7 @@ Approve and deny are spec-only controls. Future implementation must:
 Show blocked state and disable approval-capable controls when any required
 field is missing, stale, contradictory, expired, revoked, mismatched, tainted,
 replayed, future-effective beyond skew allowance, or outside role scope.
+
+The view must also fail closed when replay-store metadata is `failed_closed`,
+denial evidence is missing where required, or export/delete conflict posture is
+unresolved for evidence that must be reviewed before approval.

@@ -6,7 +6,7 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
-Current working branch: `guardian-expiry-replay-policy-design`
+Current working branch: `durable-replay-evidence-posture`
 
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
@@ -15,13 +15,13 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A Guardian expiry/replay hardening. Phase 1A mock runtime
-scaffolding is present, the v2 invariant checkpoint and approval-token binding
-checkpoint are reachable, and this branch adds first-class Guardian
-expiry/replay policy, `guardian.replay` metadata, mock/in-memory one-time
-Guardian decision nonce verification, and tests. Runtime expansion remains
-blocked until the remaining gates in this file, [Baseline](docs/BASELINE.md),
-and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md) are resolved.
+Current phase: Phase 1A durable replay/evidence posture hardening. Phase 1A
+mock runtime scaffolding is present, the v2 invariant checkpoint and
+approval-token/Guardian replay checkpoints are reachable, and this branch adds
+durable replay/evidence design docs, schemas, and mock-only tests for
+fail-closed replay/evidence metadata behavior. Runtime expansion remains blocked
+until the remaining gates in this file, [Baseline](docs/BASELINE.md), and
+[Next Phase Plan](docs/NEXT_PHASE_PLAN.md) are resolved.
 
 Superseded missing checkpoint: the previously reported
 `phase-1a-cross-contract-invariants` commit
@@ -66,6 +66,12 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
   verification, and evidence refs.
 - `guardian.replay` schema and examples for valid first use, replay denial,
   expiry, scope mismatch, and blocked-MVP outcomes.
+- `replay.store.record` schema and examples for consumed, replay-denied, and
+  failed-closed nonce/atomicity metadata.
+- `evidence.export_manifest` schema and examples for prepared-redacted and
+  denied-delete-conflict export metadata.
+- Durable replay/evidence posture design in
+  [docs/DURABLE_REPLAY_EVIDENCE_POSTURE.md](docs/DURABLE_REPLAY_EVIDENCE_POSTURE.md).
 - Strict contract validation through [scripts/validate-contracts.py](scripts/validate-contracts.py).
 - Local Markdown link validation through [scripts/check-doc-links.py](scripts/check-doc-links.py).
 - Phase 1A mock Python runtime scaffolding in [lima_office](lima_office).
@@ -82,11 +88,18 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
   payloads, compares them to requested action metadata, and tracks one-time
   decision nonce consumption in memory for tests, with nonce consumption
   occurring only after full validation succeeds.
+- Mock-only in-memory replay-store helper for reserve/consume/replay-deny/
+  fail-closed metadata simulation with no disk persistence.
+- Mock-only evidence export-manifest helper for refs-only export metadata
+  validation with no export service.
 - Fail-closed Guardian replay invariants for required requested-action tenant,
   customer context, decision ID, action type (when bound), decision scope hash
   (when bound), approval binding (when bound), token verification (when bound),
   required evidence refs, contradictory timestamp ordering, and bound-scope
   matching.
+- Fail-closed replay-store and evidence-export invariants for denial evidence,
+  tenant/action/scope consistency, refs-only export posture, tenant-consistent
+  evidence chaining, and raw/secret exclusion in MVP.
 - Approval-binding freshness checks enforced at task enqueue and tool invocation
   invariant paths using reference-time checks for expiry.
 - Metadata-only Supervisor health reporter for mock/lab status records.
@@ -135,11 +148,14 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
   paths. Future runtime still needs a durable Guardian replay store, durable
   atomic decision consumption, idempotency/concurrency handling, and exportable
   replay evidence before any side-effecting path can expand.
+- Durable replay/evidence posture design now exists as docs/contracts/tests,
+  but actual durable storage, transaction implementation, and export/delete
+  services are not implemented.
 - Promote the initial health reason taxonomy in
   [Health Reason Taxonomy](docs/ux/HEALTH_REASON_TAXONOMY.md) to final runtime
   thresholds and owner/escalation rules.
-- Define durable evidence storage, audit export, retention, redaction, and
-  customer exit/delete posture.
+- Define final retention periods, redaction taxonomy, export-manifest format,
+  and customer delete proof posture.
 - Select operator IdP/MFA, breakglass, access review cadence, and LIMA IT
   approver separation implementation. Governance scaffolding now defines
   fail-closed metadata, role separation, and blocked breakglass posture, but no
@@ -152,7 +168,8 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 
 ## Next Recommended Lane
 
-After this Guardian expiry/replay checkpoint is reviewed, the next safe lane is
-durable evidence/export posture design, including durable approval-token and
-Guardian replay evidence. Phase 1B lab runtime expansion remains blocked until
-those gates are approved. Mainline update should wait for explicit approval.
+After this durable replay/evidence posture checkpoint is reviewed, the next safe
+lane is durable implementation planning for atomic transactions, storage
+boundaries, and export/delete conflict handling without adding live services.
+Phase 1B lab runtime expansion remains blocked until those gates are approved.
+Mainline update should wait for explicit approval.

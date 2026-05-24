@@ -35,9 +35,13 @@ The approval chain is:
    expiry window, decision nonce, and replay policy.
 7. `guardian.replay`: records the metadata-only replay check outcome for the
    Guardian decision. It does not authorize execution by itself.
-8. `task.execution` and `tool.invocation`: may proceed only in mock/dry-run
+8. `replay.store.record`: records future durable nonce/atomicity posture as
+   metadata-only scaffolding for consume/replay decisions.
+9. `evidence.export_manifest`: records refs-only export posture and delete
+   conflict placeholders; it does not implement export/delete services.
+10. `task.execution` and `tool.invocation`: may proceed only in mock/dry-run
    paths when the binding matches.
-9. `evidence.artifact`: records approval, denial, verification, consumption,
+11. `evidence.artifact`: records approval, denial, verification, consumption,
    replay denial, mismatch, and blocked-MVP evidence by reference only.
 
 `approval.chain` examples summarize safe and unsafe combinations for validation

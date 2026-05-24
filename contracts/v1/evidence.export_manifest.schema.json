@@ -1,0 +1,408 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/evidence.export_manifest.schema.json",
+  "title": "Evidence Export Manifest Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "policy_version",
+    "export_manifest_id",
+    "export_request_id",
+    "requested_by_ref",
+    "approved_by_ref",
+    "export_status",
+    "included_evidence_refs",
+    "excluded_evidence_refs",
+    "redaction_profile_ref",
+    "retention_policy_refs",
+    "delete_conflict_refs",
+    "hash_manifest_ref",
+    "created_at",
+    "prepared_at",
+    "exported_at",
+    "evidence_refs",
+    "raw_content_included",
+    "secret_material_included"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "evidence.export_manifest"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "operator_console"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "export_manifest_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "export_request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requested_by_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approved_by_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "export_status": {
+      "type": "string",
+      "enum": [
+        "requested",
+        "approved",
+        "denied",
+        "prepared",
+        "exported",
+        "failed",
+        "blocked_mvp"
+      ]
+    },
+    "included_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "excluded_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "redaction_profile_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "retention_policy_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "delete_conflict_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "hash_manifest_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "prepared_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "exported_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "raw_content_included": {
+      "type": "boolean",
+      "const": false
+    },
+    "secret_material_included": {
+      "type": "boolean",
+      "const": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "export_status": {
+            "const": "requested"
+          }
+        },
+        "required": [
+          "export_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "approved_by_ref": {
+            "const": null
+          },
+          "redaction_profile_ref": {
+            "const": null
+          },
+          "prepared_at": {
+            "const": null
+          },
+          "exported_at": {
+            "const": null
+          },
+          "hash_manifest_ref": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "export_status": {
+            "const": "approved"
+          }
+        },
+        "required": [
+          "export_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "approved_by_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "redaction_profile_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "prepared_at": {
+            "const": null
+          },
+          "exported_at": {
+            "const": null
+          },
+          "hash_manifest_ref": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "export_status": {
+            "const": "prepared"
+          }
+        },
+        "required": [
+          "export_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "approved_by_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "redaction_profile_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "included_evidence_refs": {
+            "minItems": 1
+          },
+          "prepared_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hash_manifest_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "exported_at": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "export_status": {
+            "const": "exported"
+          }
+        },
+        "required": [
+          "export_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "approved_by_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "redaction_profile_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "included_evidence_refs": {
+            "minItems": 1
+          },
+          "prepared_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "exported_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hash_manifest_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "export_status": {
+            "enum": [
+              "denied",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "export_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "delete_conflict_refs": {
+            "minItems": 1
+          },
+          "prepared_at": {
+            "const": null
+          },
+          "exported_at": {
+            "const": null
+          },
+          "hash_manifest_ref": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "export_status": {
+            "const": "blocked_mvp"
+          }
+        },
+        "required": [
+          "export_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "environment": {
+            "const": "blocked_mvp"
+          }
+        }
+      }
+    }
+  ]
+}

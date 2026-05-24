@@ -204,8 +204,41 @@ Evidence records must use:
 - `previous_artifact_id` where chaining applies.
 - `redaction_status`.
 - `retention_policy_ref`.
+- `raw_content_included: false`.
+- `secret_material_included: false`.
+
+Replay denial and fail-closed records should also carry:
+
+- `replay_record_id`.
+- `replay_artifact_id`.
+- `denial_evidence_ref` where denial is authoritative.
+- `pre_action_evidence_refs` and `post_action_evidence_refs` where applicable.
 
 Raw payload storage location, hash method, and integrity chain implementation remain future decisions.
+
+## Replay Denial And Fail-Closed Evidence
+
+When replay checks deny, expire, stale, revoke, or fail closed:
+
+- Create denial-path evidence metadata.
+- Link `guardian.decision`, `guardian.replay`, and `replay.store.record` IDs.
+- Include mismatch/failure reason codes.
+- Include tenant/task/action/tool scope refs.
+- Include evidence refs required by schema conditionals.
+
+If replay-store state is unavailable or ambiguous, represent
+`atomicity_status: failed_closed` and block action.
+
+## Export Manifest Linkage
+
+Evidence records marked exportable must support refs-only export posture through
+`evidence.export_manifest` metadata:
+
+- include redaction profile refs;
+- include retention policy refs;
+- include delete conflict refs for denied/blocked export outcomes.
+
+No export manifest may contain raw customer payloads or secret material.
 
 ## MVP Acceptance Gates
 
@@ -214,4 +247,6 @@ Raw payload storage location, hash method, and integrity chain implementation re
 - Evidence failure can trigger worker quarantine.
 - Evidence retry is bounded and operator-visible.
 - Evidence records use refs and hashes, not raw secret or customer payloads.
+- Replay denial and failed-closed paths are evidenced as first-class outcomes.
+- Export posture remains refs-only with conflict placeholders.
 - Runbook exists for operator handling.

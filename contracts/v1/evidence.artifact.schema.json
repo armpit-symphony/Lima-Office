@@ -25,6 +25,19 @@
     "guardian_decision_id",
     "approval_request_id",
     "approval_token_id",
+    "replay_record_id",
+    "replay_artifact_id",
+    "denial_evidence_ref",
+    "pre_action_evidence_refs",
+    "post_action_evidence_refs",
+    "export_manifest_refs",
+    "redaction_profile_ref",
+    "hash_algorithm",
+    "content_hash",
+    "parent_evidence_refs",
+    "chain_position",
+    "raw_content_included",
+    "secret_material_included",
     "policy_version",
     "policy_snapshot_hash",
     "redaction_status",
@@ -276,6 +289,83 @@
         "null"
       ]
     },
+    "replay_record_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "replay_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "denial_evidence_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "pre_action_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "post_action_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_manifest_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "redaction_profile_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hash_algorithm": {
+      "type": "string",
+      "enum": [
+        "sha256",
+        "sha512"
+      ]
+    },
+    "content_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "parent_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "chain_position": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "raw_content_included": {
+      "type": "boolean",
+      "const": false
+    },
+    "secret_material_included": {
+      "type": "boolean",
+      "const": false
+    },
     "policy_version": {
       "type": "string",
       "minLength": 1
@@ -506,6 +596,76 @@
             ]
           },
           "export_eligible": {
+            "const": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "artifact_type": {
+            "const": "denial"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "denial_evidence_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pre_action_evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "chain_position": {
+            "minimum": 2
+          }
+        },
+        "required": [
+          "chain_position"
+        ]
+      },
+      "then": {
+        "properties": {
+          "parent_evidence_refs": {
+            "minItems": 1
+          },
+          "previous_artifact_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "export_eligible": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "redaction_profile_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "retention_policy_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "raw_content_included": {
+            "const": false
+          },
+          "secret_material_included": {
             "const": false
           }
         }

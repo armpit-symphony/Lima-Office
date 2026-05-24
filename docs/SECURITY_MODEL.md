@@ -165,6 +165,15 @@ non-revoked, non-tainted, and exact to the requested action. Durable replay
 storage, atomic distributed consumption, idempotency, and non-test operations
 thresholds remain open gates.
 
+Phase 1A now also defines metadata contracts for future durable replay posture:
+
+- [replay.store.record.schema.json](../contracts/v1/replay.store.record.schema.json)
+  models nonce reservation/consumption/replay-denial/fail-closed outcomes.
+- `failed_closed` atomicity, missing denial evidence, or tenant/action/scope
+  mismatch must block authorization.
+- [DURABLE_REPLAY_EVIDENCE_POSTURE.md](DURABLE_REPLAY_EVIDENCE_POSTURE.md)
+  defines gates before any side-effecting runtime can exist.
+
 ## Secure Update And Rollback
 
 Update and rollback posture must include:
@@ -217,6 +226,10 @@ and [Retention Redaction Policy](governance/RETENTION_REDACTION_POLICY.md).
 Final legal retention periods, storage design, and delete conflict rules remain
 open; ambiguous export/delete requests fail closed.
 
+`evidence.export_manifest` now represents refs-only export metadata and requires
+redaction/retention placeholders. Denied or blocked export/delete outcomes
+require explicit conflict refs.
+
 ## Production Action Rule
 
 No production actions are allowed without policy, Guardian decision, required approval, evidence capture, and explicit future authorization.
@@ -242,6 +255,10 @@ The Phase 0 field-level schemas in [contracts/v1](../contracts/v1) define the mi
 - Guardian replay: [guardian.replay.schema.json](../contracts/v1/guardian.replay.schema.json)
   records metadata-only valid first-use, replay denial, expiry, mismatch, and
   blocked-MVP check outcomes. It does not authorize execution.
+- Replay store record:
+  [replay.store.record.schema.json](../contracts/v1/replay.store.record.schema.json)
+  records nonce status and atomicity posture for future durable replay design.
+  It is metadata-only and fail-closed on inconsistency.
 - Approval result: [approval.result.schema.json](../contracts/v1/approval.result.schema.json) records approved, denied, expired, cancelled, superseded, partial, and blocked-MVP outcomes with evidence.
 - Token verification: [token.verification.schema.json](../contracts/v1/token.verification.schema.json) records valid and fail-closed results for expired, revoked, used, missing, mismatched, ambiguous, and wrong-scope tokens.
 - Helper scope: [helper.scope.schema.json](../contracts/v1/helper.scope.schema.json) keeps helper agents supervisor-side, leased, narrowly scoped, and unable to inherit worker trust.
@@ -253,6 +270,10 @@ The Phase 0 field-level schemas in [contracts/v1](../contracts/v1) define the mi
 - Connector trust: [connector.trust.schema.json](../contracts/v1/connector.trust.schema.json) is mock/readiness-only in Phase 0 with `mock_only: true`, `live_access_enabled: false`, `secret_material_present: false`, consent/scope review posture, and revocation state.
 - Evidence artifact: [evidence.artifact.schema.json](../contracts/v1/evidence.artifact.schema.json) defines redaction, retention, payload/integrity refs, export/delete posture, access-control refs, and evidence chain metadata.
 - Evidence failure: [evidence.failure.schema.json](../contracts/v1/evidence.failure.schema.json) records pre-action blocks, post-action degraded state, emergency spool refs, reconciliation, incidents, and quarantine/token-revoke posture.
+- Evidence export manifest:
+  [evidence.export_manifest.schema.json](../contracts/v1/evidence.export_manifest.schema.json)
+  records refs-only export metadata, included/excluded evidence refs, redaction
+  profile refs, retention refs, and delete-conflict refs.
 - LIMA IT handoff: [lima_it.handoff.schema.json](../contracts/v1/lima_it.handoff.schema.json) separates read-only diagnostics from approval-required remediation and blocks production touch in MVP.
 - LIMA IT remediation-denied example: [lima_it.handoff.remediation-denied-mvp.example.json](../contracts/examples/lima_it.handoff.remediation-denied-mvp.example.json) shows remediation request metadata denied for Phase 0 with no execution authorization.
 - Governance identity/access review/breakglass/audit export/connector consent/update records: [governance.identity.schema.json](../contracts/v1/governance.identity.schema.json), [governance.access_review.schema.json](../contracts/v1/governance.access_review.schema.json), [governance.breakglass.schema.json](../contracts/v1/governance.breakglass.schema.json), [governance.audit_export.schema.json](../contracts/v1/governance.audit_export.schema.json), [governance.connector_consent.schema.json](../contracts/v1/governance.connector_consent.schema.json), and [governance.update_record.schema.json](../contracts/v1/governance.update_record.schema.json) record governance posture without implementing live capabilities.

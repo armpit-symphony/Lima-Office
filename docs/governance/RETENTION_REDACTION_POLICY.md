@@ -19,7 +19,9 @@ redaction posture is missing or ambiguous.
 | Task metadata | `internal` to `customer_confidential` | Policy decision needed | Redact free-text summaries and resource refs by data class | Export task IDs, status, Guardian refs, approval refs, and redacted summaries | Delete/reset posture tied to customer exit policy | Operator, security reviewer, compliance reviewer | Evidence links must remain even when summaries are redacted | Required before runtime expansion |
 | Guardian decisions | `internal` to source data class | Evidence-retained placeholder | Redact reason text and resource summaries | Export decision metadata, policy refs, and redacted reasons | Delete eligibility unresolved when tied to security evidence | Security reviewer, compliance reviewer | Required for audit chain | Required before runtime expansion |
 | Approval requests/results/tokens/verifications | `internal` to `customer_confidential` | Evidence-retained placeholder | Redact reasons; never store token material | Export request/result/token metadata only | Expired/revoked metadata retention unresolved | Operator, approver, security reviewer | Required to prove human decision and token posture | Required before runtime expansion |
+| Replay store records | `internal` | Evidence-retained placeholder | No raw payload or secret material fields; refs only | Export nonce/action/scope/status metadata only | Delete eligibility unresolved when tied to incident evidence | Security reviewer, compliance reviewer | Replay denial and failed-closed records require evidence linkage | Required before side-effecting runtime |
 | Evidence artifacts | Mixed | Policy decision needed | Redact payload refs and summaries by profile | Export redacted package with integrity refs | Delete may conflict with evidence preservation | Security reviewer, compliance reviewer | Evidence chain may require preservation exceptions | Required before runtime expansion |
+| Evidence export manifests | `internal` to `customer_confidential` | Policy decision needed | Must keep `raw_content_included: false` and `secret_material_included: false` | Export metadata is refs-only with included/excluded evidence refs | Denied/blocked outcomes must carry delete-conflict refs | Compliance reviewer, security reviewer | Export/delete conflict posture must remain visible | Required before export implementation |
 | Worker heartbeat | `internal` | Short operational placeholder needed | Redact host details where needed | Export health metadata and anomaly summaries | Delete/reset posture tied to worker retirement | Operator, supervisor admin, field IT reviewer | Heartbeat anomaly evidence must survive incident review | Draft scaffold |
 | Model route records | Matches task/source data class | Policy decision needed | Raw prompts/responses prohibited in records; export refs only | Export route metadata, provider class, local/cloud posture, redacted summary | Delete follows source task/evidence policy | Security reviewer, compliance reviewer | Model route evidence must show no external call when blocked | Required before model runtime |
 | Tool invocation records | Matches task/source data class | Policy decision needed | Raw args/output prohibited; artifact refs only | Export tool metadata, decision, scope, and redacted result | Delete follows task/evidence policy | Operator, security reviewer | Evidence required for allow, deny, block, fail | Required before tool runtime |
@@ -47,6 +49,9 @@ Initial profile placeholders:
   redaction profile, integrity refs, and exclusions.
 - Export packages must not include secret material, raw connector payloads, raw
   prompts, raw model responses, or bearer token material.
+- `evidence.export_manifest` records must keep refs-only posture and cannot
+  embed raw payload text.
+- Prepared/exported manifest status requires redaction and retention refs.
 
 ## Delete Requirements
 
@@ -72,3 +77,7 @@ Initial profile placeholders:
 This policy resolves record coverage and default fail-closed posture, but does
 not set final legal retention periods. Open retention durations remain visible
 in [Open Questions](../OPEN_QUESTIONS.md).
+
+Phase 1A adds schema-level placeholders for `replay.store.record` and
+`evidence.export_manifest`. These are metadata controls only and do not add
+storage/export services.

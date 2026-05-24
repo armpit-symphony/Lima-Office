@@ -38,6 +38,20 @@
     "quarantine_required",
     "approval_tokens_revoked",
     "guardian_decision_id",
+    "replay_record_id",
+    "replay_artifact_id",
+    "denial_evidence_ref",
+    "pre_action_evidence_refs",
+    "post_action_evidence_refs",
+    "export_manifest_refs",
+    "redaction_profile_ref",
+    "hash_algorithm",
+    "content_hash",
+    "parent_evidence_refs",
+    "chain_position",
+    "raw_content_included",
+    "secret_material_included",
+    "failure_reason",
     "policy_version",
     "detected_at"
   ],
@@ -244,6 +258,89 @@
       "type": "string",
       "minLength": 1
     },
+    "replay_record_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "replay_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "denial_evidence_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "pre_action_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "post_action_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_manifest_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "redaction_profile_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hash_algorithm": {
+      "type": "string",
+      "enum": [
+        "sha256",
+        "sha512"
+      ]
+    },
+    "content_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "parent_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "chain_position": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "raw_content_included": {
+      "type": "boolean",
+      "const": false
+    },
+    "secret_material_included": {
+      "type": "boolean",
+      "const": false
+    },
+    "failure_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "policy_version": {
       "type": "string",
       "minLength": 1
@@ -280,6 +377,13 @@
               "exhausted",
               "not_allowed"
             ]
+          },
+          "denial_evidence_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pre_action_evidence_refs": {
+            "minItems": 1
           }
         }
       }
@@ -311,6 +415,9 @@
           "spool_hash_ref": {
             "type": "string",
             "minLength": 1
+          },
+          "post_action_evidence_refs": {
+            "minItems": 1
           }
         }
       }
@@ -337,6 +444,55 @@
           },
           "quarantine_required": {
             "const": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "failure_code": {
+            "const": "ledger_unavailable"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "failure_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_record_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "replay_record_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "replay_artifact_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "hash_algorithm": {
+            "type": "string",
+            "minLength": 1
+          },
+          "content_hash": {
+            "type": "string",
+            "minLength": 1
+          },
+          "chain_position": {
+            "type": "integer",
+            "minimum": 1
           }
         }
       }

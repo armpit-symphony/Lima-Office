@@ -37,6 +37,8 @@ time-bounded, scope-bound, and replay-checked in memory for tests.
   cannot authorize mock task assignment, tool invocation, or completion.
 - One-time Guardian decision nonce consumption is tracked in memory by the mock
   verifier for tests only; durable replay storage remains future work.
+- Replay-store metadata must fail closed when atomicity is `failed_closed` or
+  when replay denial lacks denial evidence refs where evidence is required.
 - Guardian decisions must match bound tenant, customer context, task, worker
   where present, action type, tool scope, decision scope hash, approval binding,
   token verification, and evidence refs.
@@ -57,6 +59,10 @@ time-bounded, scope-bound, and replay-checked in memory for tests.
   mock evidence writer is attached, evidence refs must exist in that writer.
 - Pre-action evidence failure blocks action; post-action evidence failure
   produces degraded state instead of silent success.
+- Evidence chain parent refs must be tenant-consistent; raw-content or
+  secret-included evidence markers fail closed in MVP.
+- Export manifests must remain refs-only metadata with retention/redaction
+  placeholders and explicit delete-conflict refs for denied/blocked states.
 - Quarantined, revoked, offline, unknown, or wrong-tenant workers cannot receive
   tasks.
 - Required task tool packs must be a subset of the assigned worker's registered

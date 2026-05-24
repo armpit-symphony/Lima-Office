@@ -5,7 +5,7 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `guardian-expiry-replay-policy-design` on Windows with
+Latest captured run: `durable-replay-evidence-posture` on Windows with
 Python 3.12.10.
 
 ## Canonical Integration Branch
@@ -15,6 +15,7 @@ Python 3.12.10.
 - Invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 - Approval binding branch: `approval-token-runtime-binding-design`
 - Guardian expiry/replay branch: `guardian-expiry-replay-policy-design`
+- Durable replay/evidence posture branch: `durable-replay-evidence-posture`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -75,6 +76,16 @@ evidence only; it does not approve live connectors, external sends, real
 remediation, durable services, production operations, or customer-system
 mutation.
 
+## Durable Replay Evidence Posture Checkpoint
+
+This branch adds durable replay/evidence posture design docs, new
+`replay.store.record` and `evidence.export_manifest` contracts with examples,
+mock/in-memory replay-store/export-manifest helpers, cross-contract invariant
+hardening, and fail-closed tests. Validation remains repository health evidence
+only; it does not approve databases, queues, durable storage services, live
+connectors, external sends, real remediation, production operations, or
+customer-system mutation.
+
 ## Strict Schema Validation
 
 Command:
@@ -87,13 +98,13 @@ Result:
 
 ```text
 LIMA Office contract validation
-- schemas parsed: 33
-- examples parsed: 70
-- mapped examples: 70
-- schemas with examples: 33
+- schemas parsed: 35
+- examples parsed: 78
+- mapped examples: 78
+- schemas with examples: 35
 - validation mode: full JSON Schema draft 2020-12 with format checks
 - jsonschema version: 4.26.0
-- unsafe-content scan: 70 example files, 84 markdown files
+- unsafe-content scan: 78 example files, 85 markdown files
 - warnings: 0
 - failures: 0
 Result: PASS
@@ -119,8 +130,8 @@ Result:
 
 ```text
 LIMA Office markdown link check
-- markdown files scanned: 92
-- local links checked: 641
+- markdown files scanned: 93
+- local links checked: 664
 - external/anchor links ignored: 0
 - failures: 0
 Result: PASS
@@ -137,7 +148,7 @@ python -B -m unittest discover -s tests -v
 Result:
 
 ```text
-Ran 122 tests
+Ran 135 tests
 
 OK
 ```
@@ -164,6 +175,12 @@ Coverage added by this checkpoint:
   remediation block, external-send/live-connector block, ambiguous timestamp,
   missing evidence, missing required requested-action fields, contradictory
   timestamp ordering, and nonce non-consumption on failed validation.
+- Durable replay/evidence posture checks for consumed and replay-denied replay
+  store records, failed-closed atomicity blocks, nonce double-consume denial,
+  tenant/action/scope mismatch, denial-path evidence artifact validation,
+  tenant-consistent evidence chains, refs-only export manifests, raw/secret
+  export deny, delete/export conflict deny posture, and replay-store
+  unavailable fail-closed behavior.
 
 ## Pytest
 
@@ -176,7 +193,7 @@ python -m pytest -q
 Result:
 
 ```text
-122 passed, 1 warning, 93 subtests passed
+135 passed, 1 warning, 101 subtests passed
 ```
 
 Warning: pytest could not create/write `.pytest_cache` because access was
@@ -216,7 +233,7 @@ Command:
 git status
 ```
 
-Checkpoint patch result before staging: modified runtime hardening, tests,
+Checkpoint patch result before staging: modified runtime mock hardening, tests,
 schemas/examples, and documentation only.
 
 ## CI Expectations

@@ -35,6 +35,24 @@
   "quarantine_required": true,
   "approval_tokens_revoked": true,
   "guardian_decision_id": "gd-evidence-post-degraded-001",
+  "replay_record_id": null,
+  "replay_artifact_id": null,
+  "denial_evidence_ref": "ev-evidence-post-degraded-001",
+  "pre_action_evidence_refs": [],
+  "post_action_evidence_refs": [
+    "ev-evidence-post-degraded-001"
+  ],
+  "export_manifest_refs": [],
+  "redaction_profile_ref": "metadata_only",
+  "hash_algorithm": "sha256",
+  "content_hash": "hash-ref-evidence-failure-post-action-001",
+  "parent_evidence_refs": [
+    "ev-task-it-health-001"
+  ],
+  "chain_position": 2,
+  "raw_content_included": false,
+  "secret_material_included": false,
+  "failure_reason": null,
   "policy_version": "policy-phase0-v1",
   "detected_at": "2026-05-18T21:37:00Z"
 }

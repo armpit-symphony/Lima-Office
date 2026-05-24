@@ -5,40 +5,44 @@
   "tenant_id": "tenant-lab-001",
   "customer_context_id": "customer-context-main",
   "environment": "blocked_mvp",
-  "correlation_id": "corr-file-delete-deny-001",
-  "causation_id": "gd-file-delete-deny-001",
-  "idempotency_key": "idem-evidence-file-delete-001",
-  "artifact_id": "ev-file-delete-deny-001",
+  "correlation_id": "corr-guardian-replay-denial-artifact-001",
+  "causation_id": "rr-email-draft-replay-denied-001",
+  "idempotency_key": "idem-evidence-denial-path-001",
+  "artifact_id": "ev-denial-path-001",
   "artifact_type": "denial",
   "producer": {
     "component": "guardian",
-    "produced_at": "2026-05-18T21:25:01Z"
+    "produced_at": "2026-05-18T21:44:05Z"
   },
   "actor": {
     "actor_type": "guardian",
     "actor_id": "guardian-phase0"
   },
   "subject": {
-    "subject_type": "tool_invocation",
-    "subject_id": "tool-file-delete-001"
+    "subject_type": "task",
+    "subject_id": "task-email-draft-001"
   },
-  "action_class": "file_delete",
+  "action_class": "tool_invocation",
   "risk_tier": "blocked",
   "data_classification": "customer_confidential",
-  "guardian_decision_id": "gd-file-delete-deny-001",
+  "guardian_decision_id": "gd-email-draft-replay-denied-001",
   "approval_request_id": null,
+  "approval_chain_id": "chain-email-draft-001",
+  "binding_id": "bind-email-draft-001",
+  "approval_result_id": null,
   "approval_token_id": null,
-  "replay_record_id": "rr-file-delete-deny-001",
-  "replay_artifact_id": "ev-file-delete-deny-001",
-  "denial_evidence_ref": "ev-file-delete-deny-001",
+  "token_verification_id": "tv-email-valid-001",
+  "replay_record_id": "rr-email-draft-replay-denied-001",
+  "replay_artifact_id": "ev-guardian-replay-denied-001",
+  "denial_evidence_ref": "ev-denial-path-001",
   "pre_action_evidence_refs": [
-    "ev-file-delete-deny-001"
+    "ev-denial-path-001"
   ],
   "post_action_evidence_refs": [],
   "export_manifest_refs": [],
   "redaction_profile_ref": "metadata_only",
   "hash_algorithm": "sha256",
-  "content_hash": "hash-ref-evidence-content-001",
+  "content_hash": "hash-ref-evidence-denial-path-001",
   "parent_evidence_refs": [],
   "chain_position": 1,
   "raw_content_included": false,
@@ -50,23 +54,23 @@
   "redacted_fields": [
     "raw_tool_input",
     "file_name",
-    "file_content"
+    "customer_message"
   ],
   "retention_class": "evidence_retained",
   "retention_policy_ref": "retention-rule-phase0-evidence",
   "retention_expires_at": null,
   "delete_eligible": false,
   "storage_ref": {
-    "location_ref": "evidence-store-ref-file-delete-deny-001",
+    "location_ref": "evidence-store-ref-denial-path-001",
     "contains_sensitive_payload": false,
     "secret_material_present": false
   },
-  "payload_hash": "hash-ref-evidence-payload-001",
-  "integrity_ref": "integrity-ref-evidence-chain-001",
+  "payload_hash": "hash-ref-evidence-payload-denial-path-001",
+  "integrity_ref": "integrity-ref-evidence-chain-denial-path-001",
   "previous_artifact_id": null,
   "access_control_ref": "access-control-ref-operator-security-review",
   "export_eligible": true,
   "export_redaction_profile": "customer_safe_summary",
-  "summary": "Guardian denied an unapproved file deletion request and recorded metadata-only evidence.",
-  "created_at": "2026-05-18T21:25:01Z"
+  "summary": "Replay-denied path recorded as metadata-only denial evidence.",
+  "created_at": "2026-05-18T21:44:05Z"
 }

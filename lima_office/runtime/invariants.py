@@ -78,6 +78,14 @@ NON_AUTHORIZING_REPLAY_STATUSES = {
     "revoked",
     "stale",
 }
+NON_AUTHORIZING_REPLAY_RECORD_STATUSES = {
+    "consumed",
+    "replay_denied",
+    "expired",
+    "revoked",
+    "failed",
+}
+NON_AUTHORIZING_REPLAY_ATOMICITY = {"failed_closed", "rolled_back"}
 
 
 def assert_guardian_decision_authorizes_task(
@@ -262,6 +270,10 @@ def assert_guardian_decision_replay_safe(
 
     if guardian_decision.get("replay_policy") != "one_time":
         raise PolicyDenyError("MVP Guardian decisions must be one-time for authorization")
+    replay_status = guardian_decision.get("replay_status")
+    if replay_status in {"replay_denied", "expired", "revoked", "stale", "blocked_mvp"}:
+        if guardian_decision.get("evidence_required") and not guardian_decision.get("denial_evidence_ref"):
+            raise EvidenceRequiredError("replay-denied or stale Guardian decision requires denial evidence ref")
     if guardian_decision.get("replay_status") in NON_AUTHORIZING_REPLAY_STATUSES:
         raise PolicyDenyError("Guardian decision replay status cannot authorize action")
     if guardian_decision.get("replay_status") != "unused":
@@ -763,6 +775,201 @@ def _assert_binding_evidence_present(approval_binding: dict[str, Any], requested
     binding_refs = set(approval_binding.get("evidence_refs", []))
     if not set(requested_refs) <= binding_refs:
         raise EvidenceRequiredError("requested evidence refs are not bound to approval")
+
+
+def assert_replay_store_record_consistent(
+    replay_record: dict[str, Any],
+    *,
+    requested_action: dict[str, Any] | None = None,
+    guardian_decision: dict[str, Any] | None = None,
+    approval_binding: dict[str, Any] | None = None,
+    for_authorization: bool = False,
+) -> dict[str, Any]:
+    """Validate replay-store metadata and fail closed on unusable states."""
+
+    if replay_record.get("contract_name") != "replay.store.record":
+        raise PolicyDenyError("replay store record is required")
+    if replay_record.get("raw_content_included") is not False:
+        raise PolicyDenyError("replay store record cannot include raw content in MVP")
+    if replay_record.get("secret_material_included") is not False:
+        raise PolicyDenyError("replay store record cannot include secret material in MVP")
+
+    nonce_status = replay_record.get("nonce_status")
+    atomicity_status = replay_record.get("atomicity_status")
+    if nonce_status == "consumed" and not replay_record.get("consumed_at"):
+        raise PolicyDenyError("consumed replay record requires consumed_at")
+    if nonce_status == "replay_denied":
+        if not replay_record.get("denial_evidence_ref"):
+            raise EvidenceRequiredError("replay-denied record requires denial evidence ref")
+        if not replay_record.get("evidence_refs"):
+            raise EvidenceRequiredError("replay-denied record requires evidence refs")
+    if atomicity_status == "failed_closed":
+        if not replay_record.get("failure_reason"):
+            raise PolicyDenyError("failed-closed replay record requires failure_reason")
+        if not replay_record.get("evidence_refs"):
+            raise EvidenceRequiredError("failed-closed replay record requires evidence refs")
+
+    if requested_action is not None:
+        tenant_id = requested_action.get("tenant_id")
+        if tenant_id is not None and replay_record.get("tenant_id") != tenant_id:
+            raise PolicyDenyError("replay record tenant mismatch")
+        action_type = requested_action.get("action_type")
+        if action_type is not None and replay_record.get("action_type") != action_type:
+            raise PolicyDenyError("replay record action_type mismatch")
+        _assert_scope_subset(
+            requested_action.get("tool_scope"),
+            replay_record.get("tool_scope"),
+            "replay record tool scope mismatch",
+        )
+    else:
+        action_type = replay_record.get("action_type")
+
+    if guardian_decision is not None:
+        if replay_record.get("tenant_id") != guardian_decision.get("tenant_id"):
+            raise PolicyDenyError("replay record tenant mismatch with Guardian decision")
+        if replay_record.get("guardian_decision_id") not in {
+            guardian_decision.get("decision_id"),
+            guardian_decision.get("guardian_decision_id"),
+        }:
+            raise PolicyDenyError("replay record Guardian decision mismatch")
+        bound_action_type = guardian_decision.get("bound_action_type")
+        if bound_action_type is not None and replay_record.get("action_type") != bound_action_type:
+            raise PolicyDenyError("replay record action_type mismatch with Guardian decision")
+        _assert_scope_subset(
+            replay_record.get("tool_scope"),
+            guardian_decision.get("bound_tool_scope"),
+            "replay record tool scope mismatch with Guardian decision",
+        )
+        if guardian_decision.get("approval_binding_id") is not None:
+            if replay_record.get("approval_binding_id") != guardian_decision.get("approval_binding_id"):
+                raise PolicyDenyError("replay record approval binding mismatch")
+        if guardian_decision.get("token_verification_id") is not None:
+            if replay_record.get("token_verification_id") != guardian_decision.get("token_verification_id"):
+                raise PolicyDenyError("replay record token verification mismatch")
+
+    if approval_binding is not None:
+        if replay_record.get("tenant_id") != approval_binding.get("tenant_id"):
+            raise PolicyDenyError("replay record tenant mismatch with approval binding")
+        if replay_record.get("approval_binding_id") not in {None, approval_binding.get("binding_id")}:
+            raise PolicyDenyError("replay record approval binding mismatch")
+        if replay_record.get("token_verification_id") not in {None, approval_binding.get("token_verification_id")}:
+            raise PolicyDenyError("replay record token verification mismatch")
+        _assert_scope_subset(
+            replay_record.get("tool_scope"),
+            approval_binding.get("tool_scope"),
+            "replay record tool scope mismatch with approval binding",
+        )
+
+    if for_authorization:
+        if action_type in BLOCKED_MVP_APPROVAL_ACTIONS:
+            raise PolicyDenyError("blocked-MVP action cannot be authorized by replay metadata")
+        if nonce_status in NON_AUTHORIZING_REPLAY_RECORD_STATUSES:
+            raise PolicyDenyError("replay record nonce status cannot authorize action")
+        if atomicity_status in NON_AUTHORIZING_REPLAY_ATOMICITY:
+            raise PolicyDenyError("failed-closed replay store state must block action")
+        if nonce_status == "reserved" and atomicity_status != "pending":
+            raise PolicyDenyError("reserved replay record must stay pending before authorization")
+
+    return replay_record
+
+
+def assert_evidence_artifact_chain_consistent(
+    artifact: dict[str, Any],
+    *,
+    expected_tenant_id: str | None = None,
+    evidence_by_id: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Validate tenant-consistent evidence chains with metadata-only posture."""
+
+    if artifact.get("contract_name") != "evidence.artifact":
+        raise CrossContractInvariantError("evidence artifact record is required")
+    if artifact.get("raw_content_included") is not False:
+        raise PolicyDenyError("evidence artifact with raw content included is blocked in MVP")
+    if artifact.get("secret_material_included") is not False:
+        raise PolicyDenyError("evidence artifact with secret material included is blocked in MVP")
+    if expected_tenant_id is not None and artifact.get("tenant_id") != expected_tenant_id:
+        raise CrossContractInvariantError("evidence artifact tenant mismatch")
+
+    chain_position = artifact.get("chain_position")
+    parent_refs = artifact.get("parent_evidence_refs") or []
+    if isinstance(chain_position, int) and chain_position > 1:
+        if not parent_refs:
+            raise CrossContractInvariantError("evidence chain position requires parent evidence refs")
+        if not artifact.get("previous_artifact_id"):
+            raise CrossContractInvariantError("evidence chain position requires previous_artifact_id")
+
+    if evidence_by_id:
+        for parent_id in parent_refs:
+            parent = evidence_by_id.get(parent_id)
+            if parent is None:
+                raise CrossContractInvariantError("evidence chain parent reference is unknown")
+            if parent.get("tenant_id") != artifact.get("tenant_id"):
+                raise CrossContractInvariantError("evidence chain tenant mismatch")
+
+    return artifact
+
+
+def assert_evidence_export_manifest_consistent(
+    manifest: dict[str, Any],
+    *,
+    evidence_by_id: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Validate export manifests stay refs-only with fail-closed placeholders."""
+
+    if manifest.get("contract_name") != "evidence.export_manifest":
+        raise PolicyDenyError("evidence export manifest record is required")
+    if manifest.get("raw_content_included") is not False:
+        raise PolicyDenyError("export manifest cannot include raw content")
+    if manifest.get("secret_material_included") is not False:
+        raise PolicyDenyError("export manifest cannot include secret material")
+
+    for field_name in ("included_evidence_refs", "excluded_evidence_refs", "evidence_refs"):
+        refs = manifest.get(field_name, [])
+        if any(not isinstance(ref, str) or not ref for ref in refs):
+            raise PolicyDenyError("export manifest must contain evidence refs only")
+
+    status = manifest.get("export_status")
+    if status in {"prepared", "exported"}:
+        if not manifest.get("redaction_profile_ref"):
+            raise PolicyDenyError("export manifest requires redaction profile for prepared/exported status")
+        if not manifest.get("retention_policy_refs"):
+            raise PolicyDenyError("export manifest requires retention placeholders")
+        if not manifest.get("hash_manifest_ref"):
+            raise PolicyDenyError("prepared/exported export manifest requires hash manifest ref")
+    if status in {"denied", "blocked_mvp"} and not manifest.get("delete_conflict_refs"):
+        raise PolicyDenyError("denied/blocked export manifest requires delete conflict refs")
+
+    if evidence_by_id:
+        tenant_id = manifest.get("tenant_id")
+        for evidence_ref in manifest.get("included_evidence_refs", []):
+            evidence = evidence_by_id.get(evidence_ref)
+            if evidence is None:
+                raise PolicyDenyError("export manifest includes unknown evidence ref")
+            if evidence.get("tenant_id") != tenant_id:
+                raise CrossContractInvariantError("evidence chain tenant mismatch")
+
+    return manifest
+
+
+def _assert_scope_subset(
+    requested_scope: Any,
+    allowed_scope: Any,
+    mismatch_message: str,
+) -> None:
+    if requested_scope is None or allowed_scope is None:
+        if requested_scope is None:
+            return
+        raise PolicyDenyError(mismatch_message)
+    if not isinstance(requested_scope, dict) or not isinstance(allowed_scope, dict):
+        raise PolicyDenyError(mismatch_message)
+    requested_resources = set(requested_scope.get("resource_refs", []))
+    allowed_resources = set(allowed_scope.get("resource_refs", []))
+    if requested_resources and not requested_resources <= allowed_resources:
+        raise PolicyDenyError(mismatch_message)
+    requested_ops = set(requested_scope.get("allowed_operations", []))
+    allowed_ops = set(allowed_scope.get("allowed_operations", []))
+    if requested_ops and not requested_ops <= allowed_ops:
+        raise PolicyDenyError(mismatch_message)
 
 
 def _requested_action_from_tool(

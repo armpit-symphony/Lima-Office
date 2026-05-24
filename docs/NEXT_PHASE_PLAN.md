@@ -16,7 +16,8 @@ cross-contract invariant checkpoint. The reachable replacement is
 
 Recommended order:
 
-1. Durable evidence/export posture design, including durable replay evidence.
+1. Durable replay/evidence posture implementation planning (after Phase 1A
+   design/contracts/tests hardening).
 2. Final RBAC/IdP/MFA/session/device trust matrix.
 3. Model-routing defaults and health taxonomy refinement.
 4. Phase 1B lab runtime expansion only after the gates above are approved.
@@ -37,6 +38,12 @@ Guardian expiry/replay policy is now represented in
 mock/in-memory tests. Future side-effecting runtime still needs durable atomic
 decision consumption, replay storage, idempotency/concurrency rules, and
 exportable replay evidence before expansion.
+
+Durable replay/evidence posture design is now represented in
+[Durable Replay And Evidence Posture](DURABLE_REPLAY_EVIDENCE_POSTURE.md) with
+`replay.store.record` and `evidence.export_manifest` contracts plus mock-only
+tests. Actual durable storage, transactionality, and export/delete services
+remain blocked.
 
 ## Option A: Worker Deployment Blueprint
 
@@ -190,6 +197,9 @@ Prerequisites:
   explicitly deferred.
 - Guardian expiry/replay policy is defined and tested for mock/in-memory
   Phase 1A flows; durable replay storage and atomic decision consumption are
+  explicitly deferred.
+- Durable replay/evidence posture schemas and tests exist, but durable storage,
+  atomic transaction implementation, and export/delete implementation are
   explicitly deferred.
 - Health reason taxonomy is defined.
 - Durable evidence/export posture is defined.

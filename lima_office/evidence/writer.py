@@ -61,6 +61,9 @@ class EvidenceWriter:
 
         self._counter += 1
         artifact_id = f"ev-phase1a-{self._counter:04d}"
+        previous_artifact_id = self._previous_artifact_id()
+        parent_evidence_refs = [previous_artifact_id] if previous_artifact_id else []
+        chain_position = len(self._artifacts) + 1
         payload_hash = self._hash(
             {
                 "artifact_id": artifact_id,
@@ -91,6 +94,19 @@ class EvidenceWriter:
             "guardian_decision_id": guardian_decision_id,
             "approval_request_id": None,
             "approval_token_id": None,
+            "replay_record_id": None,
+            "replay_artifact_id": None,
+            "denial_evidence_ref": artifact_id if artifact_type == "denial" else None,
+            "pre_action_evidence_refs": [artifact_id] if artifact_type == "denial" else [],
+            "post_action_evidence_refs": [],
+            "export_manifest_refs": [],
+            "redaction_profile_ref": "metadata_only",
+            "hash_algorithm": "sha256",
+            "content_hash": payload_hash,
+            "parent_evidence_refs": parent_evidence_refs,
+            "chain_position": chain_position,
+            "raw_content_included": False,
+            "secret_material_included": False,
             "policy_version": "policy-phase1a-mock-v1",
             "policy_snapshot_hash": "hash-ref-phase1a-policy",
             "redaction_status": "metadata_only",
@@ -107,7 +123,7 @@ class EvidenceWriter:
             },
             "payload_hash": payload_hash,
             "integrity_ref": f"integrity-ref-{payload_hash}",
-            "previous_artifact_id": self._previous_artifact_id(),
+            "previous_artifact_id": previous_artifact_id,
             "access_control_ref": "access-control-ref-phase1a-operator-review",
             "export_eligible": False,
             "export_redaction_profile": "customer_safe_summary",
@@ -157,6 +173,7 @@ class EvidenceWriter:
         failure_id = f"ef-phase1a-{len(self._failures) + 1:04d}"
         failure_hash = self._hash({"failure_id": failure_id, "affected_contract": affected_contract, "action": action})
         pre_action = failure_stage == "pre_action"
+        previous_artifact_id = self._previous_artifact_id()
         failure = {
             "contract_name": "evidence.failure",
             "contract_version": "1.0.0",
@@ -191,6 +208,20 @@ class EvidenceWriter:
             "quarantine_required": failure_code in {"integrity_check_failed", "queue_exhausted"},
             "approval_tokens_revoked": failure_code in {"integrity_check_failed", "queue_exhausted"},
             "guardian_decision_id": guardian_decision_id,
+            "replay_record_id": None,
+            "replay_artifact_id": None,
+            "denial_evidence_ref": f"ev-denial-{failure_id}",
+            "pre_action_evidence_refs": [f"ev-pre-action-{failure_id}"] if pre_action else [],
+            "post_action_evidence_refs": [] if pre_action else [f"ev-post-action-{failure_id}"],
+            "export_manifest_refs": [],
+            "redaction_profile_ref": "metadata_only",
+            "hash_algorithm": "sha256",
+            "content_hash": failure_hash,
+            "parent_evidence_refs": [previous_artifact_id] if previous_artifact_id else [],
+            "chain_position": len(self._failures) + 1,
+            "raw_content_included": False,
+            "secret_material_included": False,
+            "failure_reason": "mock evidence writer unavailable" if failure_code == "ledger_unavailable" else None,
             "policy_version": "policy-phase1a-mock-v1",
             "detected_at": FIXED_CREATED_AT,
         }

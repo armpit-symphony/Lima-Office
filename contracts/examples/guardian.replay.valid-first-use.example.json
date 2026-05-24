@@ -14,6 +14,7 @@
   },
   "policy_version": "policy-phase0-v1",
   "replay_check_id": "gr-email-draft-valid-001",
+  "replay_record_id": "rr-email-draft-valid-001",
   "guardian_decision_id": "gd-email-send-requires-approval-001",
   "decision_nonce": "decision-nonce-email-draft-001",
   "approval_binding_id": "bind-email-draft-001",
@@ -45,6 +46,20 @@
     "ev-token-verify-valid-001"
   ],
   "mismatch_reasons": [],
+  "denial_evidence_ref": null,
+  "pre_action_evidence_refs": [],
+  "post_action_evidence_refs": [
+    "ev-guardian-email-draft-001"
+  ],
+  "replay_artifact_id": "ev-guardian-replay-valid-001",
+  "redaction_profile_ref": "metadata_only",
+  "hash_algorithm": "sha256",
+  "content_hash": "hash-ref-guardian-replay-valid-001",
+  "parent_evidence_refs": [],
+  "chain_position": 1,
+  "export_manifest_refs": [],
+  "raw_content_included": false,
+  "secret_material_included": false,
   "data_classification": "customer_confidential",
   "redaction_level": "metadata_only",
   "retention_class": "evidence_retained_placeholder",

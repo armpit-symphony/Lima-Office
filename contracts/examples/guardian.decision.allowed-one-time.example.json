@@ -79,6 +79,21 @@
     ]
   },
   "approval_binding_id": "bind-email-draft-001",
+  "replay_record_id": null,
+  "replay_artifact_id": null,
+  "denial_evidence_ref": null,
+  "pre_action_evidence_refs": [],
+  "post_action_evidence_refs": [
+    "ev-guardian-email-draft-001"
+  ],
+  "export_manifest_refs": [],
+  "redaction_profile_ref": "metadata_only",
+  "hash_algorithm": null,
+  "content_hash": null,
+  "parent_evidence_refs": [],
+  "chain_position": null,
+  "raw_content_included": false,
+  "secret_material_included": false,
   "evidence_refs": [
     "ev-guardian-email-draft-001",
     "ev-token-verify-valid-001"

@@ -75,6 +75,21 @@
   },
   "approval_binding_id": null,
   "token_verification_id": null,
+  "replay_record_id": "rr-file-delete-deny-001",
+  "replay_artifact_id": "ev-file-delete-deny-001",
+  "denial_evidence_ref": "ev-file-delete-deny-001",
+  "pre_action_evidence_refs": [
+    "ev-file-delete-deny-001"
+  ],
+  "post_action_evidence_refs": [],
+  "export_manifest_refs": [],
+  "redaction_profile_ref": "metadata_only",
+  "hash_algorithm": "sha256",
+  "content_hash": "hash-ref-file-delete-deny-001",
+  "parent_evidence_refs": [],
+  "chain_position": 1,
+  "raw_content_included": false,
+  "secret_material_included": false,
   "evidence_refs": [
     "ev-file-delete-deny-001"
   ],

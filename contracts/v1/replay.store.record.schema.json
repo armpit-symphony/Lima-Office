@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.lima-office.local/contracts/v1/guardian.replay.schema.json",
-  "title": "Guardian Replay Check Contract v1",
+  "$id": "https://schemas.lima-office.local/contracts/v1/replay.store.record.schema.json",
+  "title": "Replay Store Record Contract v1",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -16,45 +16,28 @@
     "idempotency_key",
     "producer",
     "policy_version",
-    "replay_check_id",
     "replay_record_id",
-    "guardian_decision_id",
     "decision_nonce",
+    "guardian_decision_id",
     "approval_binding_id",
+    "approval_token_id",
     "token_verification_id",
-    "task_id",
-    "worker_id",
     "action_type",
     "tool_scope",
-    "decision_scope_hash",
-    "policy_snapshot_hash",
-    "expires_at",
-    "replay_check_result",
+    "nonce_status",
+    "atomicity_status",
+    "consumed_at",
     "checked_at",
     "evidence_refs",
-    "mismatch_reasons",
-    "denial_evidence_ref",
-    "pre_action_evidence_refs",
-    "post_action_evidence_refs",
-    "replay_artifact_id",
-    "redaction_profile_ref",
-    "hash_algorithm",
-    "content_hash",
-    "parent_evidence_refs",
-    "chain_position",
-    "export_manifest_refs",
+    "failure_reason",
+    "created_at",
     "raw_content_included",
-    "secret_material_included",
-    "data_classification",
-    "redaction_level",
-    "retention_class",
-    "export_eligible",
-    "delete_policy_ref"
+    "secret_material_included"
   ],
   "properties": {
     "contract_name": {
       "type": "string",
-      "const": "guardian.replay"
+      "const": "replay.store.record"
     },
     "contract_version": {
       "type": "string",
@@ -120,25 +103,23 @@
       "type": "string",
       "minLength": 1
     },
-    "replay_check_id": {
+    "replay_record_id": {
       "type": "string",
       "minLength": 1
     },
-    "replay_record_id": {
+    "replay_artifact_id": {
       "type": [
         "string",
         "null"
       ]
+    },
+    "decision_nonce": {
+      "type": "string",
+      "minLength": 1
     },
     "guardian_decision_id": {
       "type": "string",
       "minLength": 1
-    },
-    "decision_nonce": {
-      "type": [
-        "string",
-        "null"
-      ]
     },
     "approval_binding_id": {
       "type": [
@@ -146,19 +127,13 @@
         "null"
       ]
     },
+    "approval_token_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "token_verification_id": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "task_id": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "worker_id": {
       "type": [
         "string",
         "null"
@@ -206,37 +181,32 @@
         }
       }
     },
-    "decision_scope_hash": {
-      "type": [
-        "string",
-        "null"
+    "nonce_status": {
+      "type": "string",
+      "enum": [
+        "reserved",
+        "consumed",
+        "replay_denied",
+        "expired",
+        "revoked",
+        "failed"
       ]
     },
-    "policy_snapshot_hash": {
-      "type": [
-        "string",
-        "null"
+    "atomicity_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "committed",
+        "rolled_back",
+        "failed_closed"
       ]
     },
-    "expires_at": {
+    "consumed_at": {
       "type": [
         "string",
         "null"
       ],
       "format": "date-time"
-    },
-    "replay_check_result": {
-      "type": "string",
-      "enum": [
-        "valid_first_use",
-        "replay_denied",
-        "expired",
-        "stale",
-        "revoked",
-        "scope_mismatch",
-        "tenant_mismatch",
-        "blocked_mvp"
-      ]
     },
     "checked_at": {
       "type": "string",
@@ -244,36 +214,9 @@
     },
     "evidence_refs": {
       "type": "array",
-      "minItems": 1,
       "items": {
         "type": "string",
         "minLength": 1
-      },
-      "uniqueItems": true
-    },
-    "mismatch_reasons": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "enum": [
-          "tenant_mismatch",
-          "customer_context_mismatch",
-          "task_mismatch",
-          "worker_mismatch",
-          "action_type_mismatch",
-          "tool_scope_mismatch",
-          "decision_scope_hash_mismatch",
-          "approval_binding_mismatch",
-          "token_verification_mismatch",
-          "nonce_replayed",
-          "decision_expired",
-          "decision_stale",
-          "decision_revoked",
-          "blocked_mvp",
-          "tainted_input",
-          "missing_expiry",
-          "ambiguous_timestamp"
-        ]
       },
       "uniqueItems": true
     },
@@ -283,29 +226,7 @@
         "null"
       ]
     },
-    "pre_action_evidence_refs": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "uniqueItems": true
-    },
-    "post_action_evidence_refs": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "uniqueItems": true
-    },
-    "replay_artifact_id": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "redaction_profile_ref": {
+    "failure_reason": {
       "type": [
         "string",
         "null"
@@ -326,7 +247,8 @@
       "type": [
         "string",
         "null"
-      ]
+      ],
+      "minLength": 1
     },
     "parent_evidence_refs": {
       "type": "array",
@@ -351,6 +273,10 @@
       },
       "uniqueItems": true
     },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
     "raw_content_included": {
       "type": "boolean",
       "const": false
@@ -358,73 +284,53 @@
     "secret_material_included": {
       "type": "boolean",
       "const": false
-    },
-    "data_classification": {
-      "type": "string",
-      "enum": [
-        "public",
-        "internal",
-        "customer_confidential",
-        "sensitive_hr",
-        "sensitive_finance",
-        "sensitive_legal",
-        "sensitive_medical",
-        "secret"
-      ]
-    },
-    "redaction_level": {
-      "type": "string",
-      "enum": [
-        "none",
-        "metadata_only",
-        "payload_redacted",
-        "secret_redacted"
-      ]
-    },
-    "retention_class": {
-      "type": "string",
-      "minLength": 1
-    },
-    "export_eligible": {
-      "type": "boolean"
-    },
-    "delete_policy_ref": {
-      "type": "string",
-      "minLength": 1
     }
   },
   "allOf": [
     {
       "if": {
         "properties": {
-          "replay_check_result": {
-            "const": "valid_first_use"
+          "nonce_status": {
+            "const": "consumed"
           }
         },
         "required": [
-          "replay_check_result"
+          "nonce_status"
         ]
       },
       "then": {
         "properties": {
-          "environment": {
-            "enum": [
-              "mock",
-              "dry_run"
-            ]
-          },
-          "decision_nonce": {
+          "consumed_at": {
             "type": "string",
-            "minLength": 1
+            "format": "date-time"
           },
-          "denial_evidence_ref": {
+          "atomicity_status": {
+            "const": "committed"
+          },
+          "failure_reason": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "nonce_status": {
+            "const": "reserved"
+          }
+        },
+        "required": [
+          "nonce_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "consumed_at": {
             "const": null
           },
-          "pre_action_evidence_refs": {
-            "maxItems": 0
-          },
-          "mismatch_reasons": {
-            "maxItems": 0
+          "failure_reason": {
+            "const": null
           }
         }
       }
@@ -432,20 +338,12 @@
     {
       "if": {
         "properties": {
-          "replay_check_result": {
-            "enum": [
-              "replay_denied",
-              "expired",
-              "stale",
-              "revoked",
-              "scope_mismatch",
-              "tenant_mismatch",
-              "blocked_mvp"
-            ]
+          "nonce_status": {
+            "const": "replay_denied"
           }
         },
         "required": [
-          "replay_check_result"
+          "nonce_status"
         ]
       },
       "then": {
@@ -454,11 +352,17 @@
             "type": "string",
             "minLength": 1
           },
-          "pre_action_evidence_refs": {
+          "evidence_refs": {
             "minItems": 1
           },
-          "mismatch_reasons": {
-            "minItems": 1
+          "consumed_at": {
+            "const": null
+          },
+          "atomicity_status": {
+            "enum": [
+              "committed",
+              "failed_closed"
+            ]
           }
         }
       }
@@ -466,43 +370,26 @@
     {
       "if": {
         "properties": {
-          "replay_check_result": {
-            "const": "blocked_mvp"
+          "nonce_status": {
+            "enum": [
+              "expired",
+              "revoked",
+              "failed"
+            ]
           }
         },
         "required": [
-          "replay_check_result"
+          "nonce_status"
         ]
       },
       "then": {
         "properties": {
-          "environment": {
-            "const": "blocked_mvp"
-          },
-          "mismatch_reasons": {
-            "contains": {
-              "const": "blocked_mvp"
-            }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "token_verification_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "token_verification_id"
-        ]
-      },
-      "then": {
-        "properties": {
-          "approval_binding_id": {
+          "failure_reason": {
             "type": "string",
             "minLength": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
           }
         }
       }
@@ -510,20 +397,62 @@
     {
       "if": {
         "properties": {
-          "replay_record_id": {
-            "type": "string"
+          "atomicity_status": {
+            "const": "failed_closed"
           }
         },
         "required": [
-          "replay_record_id"
+          "atomicity_status"
         ]
       },
       "then": {
+        "properties": {
+          "failure_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "atomicity_status": {
+            "const": "rolled_back"
+          }
+        },
+        "required": [
+          "atomicity_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "failure_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "consumed_at": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
         "properties": {
           "replay_artifact_id": {
-            "type": "string",
-            "minLength": 1
-          },
+            "type": "string"
+          }
+        },
+        "required": [
+          "replay_artifact_id"
+        ]
+      },
+      "then": {
+        "properties": {
           "hash_algorithm": {
             "type": "string",
             "minLength": 1

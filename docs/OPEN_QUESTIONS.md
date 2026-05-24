@@ -38,6 +38,9 @@ documents the reachable v2 checkpoint that supersedes it.
 - Audit export: what final export manifest format, integrity metadata, package
   retention, and access-control refs are required beyond
   [Audit Export And Customer Exit Policy](governance/AUDIT_EXPORT_AND_CUSTOMER_EXIT_POLICY.md)?
+- Export-manifest interoperability: should `evidence.export_manifest` remain a
+  single contract or be split into request/approval/package records in a future
+  major version?
 - Customer exit/delete: what exact proof fields, preservation conflict rules,
   and device/memory/cache reset evidence are required before implementation?
 - Durable evidence/export posture: what storage, emergency spool, retry/backoff,
@@ -58,6 +61,9 @@ documents the reachable v2 checkpoint that supersedes it.
   what durable replay store, atomic decision consumption, concurrency rule,
   idempotency behavior, exportable replay evidence, and incident path should be
   approved before any side-effecting path exists?
+- Replay-store record posture: what transactional boundaries, conflict retries,
+  and durability class should back `replay.store.record` before runtime
+  expansion?
 - Health reason taxonomy: which reason code set should become normative for
   Supervisor health, Guardian decisions, worker state, queue depth, evidence
   status, connector readiness, LIMA IT handoff, and degraded/offline/quarantine
