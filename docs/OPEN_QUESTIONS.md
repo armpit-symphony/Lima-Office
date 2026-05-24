@@ -46,6 +46,8 @@ documents the reachable v2 checkpoint that supersedes it.
 - Durable evidence/export posture: what storage, emergency spool, retry/backoff,
   disk-full threshold, reconciliation, and export posture must exist before
   runtime expansion?
+- Evidence ledger format: what canonical hash material, parent/previous linkage
+  rules, and verification cadence should back `evidence.ledger.entry`?
 - First compliance target: what governance or compliance mapping matters first,
   without claiming certification?
 
@@ -63,6 +65,9 @@ documents the reachable v2 checkpoint that supersedes it.
   approved before any side-effecting path exists?
 - Replay-store record posture: what transactional boundaries, conflict retries,
   and durability class should back `replay.store.record` before runtime
+  expansion?
+- Transaction-boundary posture: what final participant model, isolation level,
+  and idempotency guarantees should back `transaction.boundary` before runtime
   expansion?
 - Health reason taxonomy: which reason code set should become normative for
   Supervisor health, Guardian decisions, worker state, queue depth, evidence

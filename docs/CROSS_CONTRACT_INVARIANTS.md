@@ -63,6 +63,9 @@ time-bounded, scope-bound, and replay-checked in memory for tests.
   secret-included evidence markers fail closed in MVP.
 - Export manifests must remain refs-only metadata with retention/redaction
   placeholders and explicit delete-conflict refs for denied/blocked states.
+- Transaction-boundary metadata and evidence-ledger-entry metadata remain
+  schema/test posture in this phase; implementation-time atomicity and durable
+  chain enforcement are deferred and fail closed when ambiguous.
 - Quarantined, revoked, offline, unknown, or wrong-tenant workers cannot receive
   tasks.
 - Required task tool packs must be a subset of the assigned worker's registered
@@ -141,6 +144,8 @@ runtime policy. The remaining blockers stay open:
   verifier;
 - durable evidence storage, integrity chain, audit export, retention,
   redaction, and customer exit/delete posture;
+- durable transaction coordinator implementation and storage-engine selection
+  for replay/token/evidence operations;
 - final RBAC, IdP, MFA, session, and device trust decisions;
 - model-routing defaults by data classification and provider class;
 - worker attestation trust root and channel/device identity proof;

@@ -35,6 +35,8 @@ process restart and denial-path evidence can be incomplete.
 - Track atomicity state: `pending`, `committed`, `rolled_back`,
   `failed_closed`.
 - Fail closed when replay-store state is missing, ambiguous, or inconsistent.
+- Model cross-record atomicity through `transaction.boundary` metadata before
+  any durable implementation is approved.
 
 ## Atomic Nonce Consumption Requirements
 
@@ -49,6 +51,8 @@ process restart and denial-path evidence can be incomplete.
   one-time, scoped, tenant-bound, task/action/tool-bound, and fail closed.
 - Approval binding/token verification and replay record linkage must be exact.
 - Any mismatch must deny and create denial-path evidence metadata.
+- Approval-token consume transitions should be represented by
+  `transaction.boundary` status and linked ledger entries.
 
 ## Guardian Replay Artifact Requirements
 
@@ -71,6 +75,8 @@ process restart and denial-path evidence can be incomplete.
 - Parent-child refs are explicit (`parent_evidence_refs`,
   `previous_artifact_id`, `chain_position`).
 - Chain tenant mismatch fails closed in invariants/tests.
+- Future append-only chain posture is modeled by `evidence.ledger.entry`
+  metadata and hash-link fields.
 
 ## Evidence Hash Strategy
 
@@ -163,7 +169,11 @@ Runtime expansion remains blocked until all of the following are approved:
 
 - Durable replay store implementation.
 - Durable atomic nonce and token consumption mechanism.
+- Durable transaction coordinator/commit mechanism aligned to
+  [RFC_DURABLE_TRANSACTION_STORAGE](rfcs/RFC_DURABLE_TRANSACTION_STORAGE.md).
 - Durable evidence storage and export path.
+- Durable storage architecture decision from
+  [DURABLE_STORAGE_ARCHITECTURE](architecture/DURABLE_STORAGE_ARCHITECTURE.md).
 - Final retention periods and redaction taxonomy.
 - Final export manifest format and customer delete proof posture.
 - Final RBAC/IdP/MFA/session/device trust matrix.

@@ -6,7 +6,7 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
-Current working branch: `durable-replay-evidence-posture`
+Current working branch: `durable-transaction-storage-rfc`
 
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
@@ -15,13 +15,13 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A durable replay/evidence posture hardening. Phase 1A
-mock runtime scaffolding is present, the v2 invariant checkpoint and
-approval-token/Guardian replay checkpoints are reachable, and this branch adds
-durable replay/evidence design docs, schemas, and mock-only tests for
-fail-closed replay/evidence metadata behavior. Runtime expansion remains blocked
-until the remaining gates in this file, [Baseline](docs/BASELINE.md), and
-[Next Phase Plan](docs/NEXT_PHASE_PLAN.md) are resolved.
+Current phase: Phase 1A durable transaction/storage RFC hardening. Phase 1A
+mock runtime scaffolding is present, the v2 invariant checkpoint and durable
+replay/evidence checkpoint are reachable, and this branch adds durable
+transaction/storage RFC and architecture docs, transaction-boundary/ledger
+contracts, examples, and mock-only validation tests. Runtime expansion remains
+blocked until the remaining gates in this file, [Baseline](docs/BASELINE.md),
+and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md) are resolved.
 
 Superseded missing checkpoint: the previously reported
 `phase-1a-cross-contract-invariants` commit
@@ -68,10 +68,17 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
   expiry, scope mismatch, and blocked-MVP outcomes.
 - `replay.store.record` schema and examples for consumed, replay-denied, and
   failed-closed nonce/atomicity metadata.
+- `transaction.boundary` schema and examples for committed, failed-closed, and
+  export-manifest-prepare transaction metadata.
 - `evidence.export_manifest` schema and examples for prepared-redacted and
   denied-delete-conflict export metadata.
+- `evidence.ledger.entry` schema and examples for pre-action, replay-denial,
+  export-manifest, and rollback append-only metadata.
 - Durable replay/evidence posture design in
   [docs/DURABLE_REPLAY_EVIDENCE_POSTURE.md](docs/DURABLE_REPLAY_EVIDENCE_POSTURE.md).
+- Durable transaction/storage design in
+  [docs/rfcs/RFC_DURABLE_TRANSACTION_STORAGE.md](docs/rfcs/RFC_DURABLE_TRANSACTION_STORAGE.md)
+  and [docs/architecture/DURABLE_STORAGE_ARCHITECTURE.md](docs/architecture/DURABLE_STORAGE_ARCHITECTURE.md).
 - Strict contract validation through [scripts/validate-contracts.py](scripts/validate-contracts.py).
 - Local Markdown link validation through [scripts/check-doc-links.py](scripts/check-doc-links.py).
 - Phase 1A mock Python runtime scaffolding in [lima_office](lima_office).
@@ -151,11 +158,14 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 - Durable replay/evidence posture design now exists as docs/contracts/tests,
   but actual durable storage, transaction implementation, and export/delete
   services are not implemented.
+- Durable transaction/storage RFC and architecture docs now exist as
+  docs/contracts/tests, but actual durable storage implementation, migration
+  strategy, and transaction runtime execution are not implemented.
 - Promote the initial health reason taxonomy in
   [Health Reason Taxonomy](docs/ux/HEALTH_REASON_TAXONOMY.md) to final runtime
   thresholds and owner/escalation rules.
-- Define final retention periods, redaction taxonomy, export-manifest format,
-  and customer delete proof posture.
+- Define final storage engine choice, migration posture, retention periods,
+  redaction taxonomy, export package format, and customer delete proof posture.
 - Select operator IdP/MFA, breakglass, access review cadence, and LIMA IT
   approver separation implementation. Governance scaffolding now defines
   fail-closed metadata, role separation, and blocked breakglass posture, but no
@@ -168,8 +178,8 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 
 ## Next Recommended Lane
 
-After this durable replay/evidence posture checkpoint is reviewed, the next safe
-lane is durable implementation planning for atomic transactions, storage
-boundaries, and export/delete conflict handling without adding live services.
-Phase 1B lab runtime expansion remains blocked until those gates are approved.
-Mainline update should wait for explicit approval.
+After this durable transaction/storage RFC checkpoint is reviewed, the next
+safe lane is implementation planning detail for migration/backup-recovery
+runbooks and transaction-mechanism selection criteria, still without adding
+live services. Phase 1B lab runtime expansion remains blocked until those gates
+are approved. Mainline update should wait for explicit approval.

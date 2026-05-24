@@ -45,6 +45,11 @@ Version 1 schemas now use JSON Schema draft 2020-12 conditionals for the highest
 - Replay-store and replay-artifact metadata must fail closed for replay denial,
   failed-closed atomicity, tenant/action/scope mismatch, or missing denial
   evidence refs where evidence is required.
+- Transaction boundaries must fail closed for ambiguous commit/rollback state,
+  missing failure reason on failed-closed status, or missing evidence refs for
+  failed-closed transitions.
+- Evidence ledger entries must remain append-only metadata with chain linkage,
+  hash fields, and explicit raw/secret exclusion.
 - Evidence-required task/tool paths cannot be represented as completed when evidence failure blocks the action.
 - Evidence export manifests must remain refs-only, with redaction/retention
   placeholders and explicit delete-conflict refs for denied/blocked states.
@@ -360,6 +365,32 @@ monitoring.
 - MVP acceptance gates: consumed/replay-denied/failed-closed examples validate
   and remain metadata-only with no durable database, queue, or runtime service.
 
+## Transaction Boundary Contract v1
+
+- Schema: [transaction.boundary.schema.json](../contracts/v1/transaction.boundary.schema.json)
+- Example objects: [transaction.boundary.guardian-replay-consume.example.json](../contracts/examples/transaction.boundary.guardian-replay-consume.example.json), [transaction.boundary.failed-closed.example.json](../contracts/examples/transaction.boundary.failed-closed.example.json), [transaction.boundary.export-manifest-prepare.example.json](../contracts/examples/transaction.boundary.export-manifest-prepare.example.json)
+- Purpose: models future atomic transaction boundaries for replay/token
+  consumption, evidence append, export-manifest prepare, and delete-review
+  posture without implementing transaction engines.
+- Version: `1.0.0`.
+- Producer: supervisor, Guardian, or operator-console metadata flow.
+- Consumer: future transaction orchestration design, invariant checks, and
+  audit/evidence review.
+- Required fields: common envelope; `transaction_id`, `transaction_type`,
+  participant set, required operations, idempotency key, preconditions,
+  postconditions, status, evidence refs, failure reason, and lifecycle
+  timestamps.
+- Allowed statuses: `planned`, `pending`, `committed`, `rolled_back`,
+  `failed_closed`, `blocked_mvp`.
+- Security requirements: transaction metadata is fail-closed; ambiguous or
+  partial outcomes cannot imply authorization.
+- Evidence requirements: failed-closed transitions require evidence refs and
+  explicit failure reason.
+- Failure behavior: failed-closed blocks action authorization; blocked-MVP
+  status requires blocked environment posture.
+- MVP acceptance gates: examples validate as metadata-only records with no real
+  database/queue/service/transaction coordinator.
+
 ## Approval Request Contract v1
 
 - Schema: [approval.request.schema.json](../contracts/v1/approval.request.schema.json)
@@ -597,6 +628,30 @@ monitoring.
   or unresolved conflict posture fails closed.
 - MVP acceptance gates: manifest records validate for prepared-redacted and
   denied-delete-conflict scenarios without export tooling or customer portals.
+
+## Evidence Ledger Entry Contract v1
+
+- Schema: [evidence.ledger.entry.schema.json](../contracts/v1/evidence.ledger.entry.schema.json)
+- Example objects: [evidence.ledger.entry.pre-action.example.json](../contracts/examples/evidence.ledger.entry.pre-action.example.json), [evidence.ledger.entry.replay-denial.example.json](../contracts/examples/evidence.ledger.entry.replay-denial.example.json), [evidence.ledger.entry.export-manifest.example.json](../contracts/examples/evidence.ledger.entry.export-manifest.example.json), [evidence.ledger.entry.rollback.example.json](../contracts/examples/evidence.ledger.entry.rollback.example.json)
+- Purpose: models append-only evidence-ledger metadata for pre-action,
+  post-action, denial, replay-denial, export, delete-review, and rollback
+  entries without storing raw content.
+- Version: `1.0.0`.
+- Producer: supervisor, Guardian, operator-console, or worker metadata flow.
+- Consumer: evidence integrity review, export/delete review, and future ledger
+  runtime design.
+- Required fields: common envelope; `ledger_entry_id`, `evidence_id`,
+  parent-entry refs, hash metadata, chain position, retention refs, redaction
+  profile ref, export-manifest refs, and raw/secret exclusion flags.
+- Security requirements: `raw_content_included` and
+  `secret_material_included` are always `false`; chain progression requires
+  parent linkage for non-root entries.
+- Evidence requirements: replay-denial, export-manifest, and rollback entries
+  must be represented as first-class ledger metadata.
+- Failure behavior: broken chain metadata, missing required hash linkage, or
+  raw/secret inclusion fails validation.
+- MVP acceptance gates: ledger entries validate as metadata-only records with
+  no evidence blob-store implementation.
 
 ## Evidence Artifact Contract v1
 

@@ -120,9 +120,11 @@ scope-mismatch, blocked-MVP, and taint outcomes. Guardian replay records are
 metadata-only and must not contain raw customer content or secret material.
 
 Phase 1A now also models a future durable replay-store posture through
-`replay.store.record` and export posture through `evidence.export_manifest`.
-These records remain metadata-only and mock-only. They do not implement durable
-storage or export services.
+`replay.store.record`, transaction boundaries through `transaction.boundary`,
+ledger continuity through `evidence.ledger.entry`, and export posture through
+`evidence.export_manifest`. These records remain metadata-only and mock-only.
+They do not implement durable storage, transaction services, or export
+services.
 
 Replay-denied, stale, expired, revoked, and blocked-MVP outcomes must carry
 denial evidence refs where applicable. `failed_closed` replay-store atomicity
@@ -169,6 +171,7 @@ Guardian decision validation fails closed when:
 ## Non-Goals
 
 - No durable replay store.
+- No durable transaction coordinator.
 - No distributed clock service.
 - No durable atomic token or decision consumption.
 - No live connector enforcement.

@@ -1,0 +1,322 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/transaction.boundary.schema.json",
+  "title": "Transaction Boundary Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "policy_version",
+    "transaction_id",
+    "transaction_type",
+    "participants",
+    "required_operations",
+    "transaction_status",
+    "preconditions",
+    "postconditions",
+    "evidence_refs",
+    "failure_reason",
+    "created_at",
+    "committed_at",
+    "rolled_back_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "transaction.boundary"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "guardian",
+            "operator_console"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "transaction_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "transaction_type": {
+      "type": "string",
+      "enum": [
+        "guardian_replay_consume",
+        "approval_token_consume",
+        "evidence_append",
+        "export_manifest_prepare",
+        "delete_request_review"
+      ]
+    },
+    "participants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "required_operations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "transaction_status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "pending",
+        "committed",
+        "rolled_back",
+        "failed_closed",
+        "blocked_mvp"
+      ]
+    },
+    "preconditions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "postconditions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "failure_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "committed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "rolled_back_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "transaction_status": {
+            "const": "committed"
+          }
+        },
+        "required": [
+          "transaction_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "committed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rolled_back_at": {
+            "const": null
+          },
+          "failure_reason": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "transaction_status": {
+            "const": "rolled_back"
+          }
+        },
+        "required": [
+          "transaction_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "rolled_back_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "committed_at": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "transaction_status": {
+            "const": "failed_closed"
+          }
+        },
+        "required": [
+          "transaction_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "failure_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          },
+          "committed_at": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "transaction_status": {
+            "const": "blocked_mvp"
+          }
+        },
+        "required": [
+          "transaction_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "environment": {
+            "const": "blocked_mvp"
+          },
+          "failure_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "committed_at": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "transaction_status": {
+            "enum": [
+              "planned",
+              "pending"
+            ]
+          }
+        },
+        "required": [
+          "transaction_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "committed_at": {
+            "const": null
+          },
+          "rolled_back_at": {
+            "const": null
+          }
+        }
+      }
+    }
+  ]
+}

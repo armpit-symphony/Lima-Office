@@ -1,0 +1,44 @@
+{
+  "contract_name": "transaction.boundary",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "mock",
+  "correlation_id": "corr-failed-closed-001",
+  "causation_id": "cause-replay-check-001",
+  "idempotency_key": "idem-failed-closed-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-24T14:06:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "transaction_id": "txn-failed-closed-001",
+  "transaction_type": "approval_token_consume",
+  "participants": [
+    "supervisor",
+    "token_consumption_store",
+    "evidence_ledger"
+  ],
+  "required_operations": [
+    "validate_token_binding",
+    "consume_token_nonce_once",
+    "append_denial_evidence"
+  ],
+  "transaction_status": "failed_closed",
+  "preconditions": [
+    "token_verification_valid",
+    "binding_nonce_unused"
+  ],
+  "postconditions": [
+    "authorization_blocked",
+    "incident_triage_required"
+  ],
+  "evidence_refs": [
+    "ev-token-consume-failed-closed-001"
+  ],
+  "failure_reason": "Token consume atomicity ambiguous; action failed closed.",
+  "created_at": "2026-05-24T14:06:00Z",
+  "committed_at": null,
+  "rolled_back_at": null
+}

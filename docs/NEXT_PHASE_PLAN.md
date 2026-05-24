@@ -16,8 +16,8 @@ cross-contract invariant checkpoint. The reachable replacement is
 
 Recommended order:
 
-1. Durable replay/evidence posture implementation planning (after Phase 1A
-   design/contracts/tests hardening).
+1. Durable transaction/storage implementation planning details (after Phase 1A
+   RFC/contracts/tests hardening).
 2. Final RBAC/IdP/MFA/session/device trust matrix.
 3. Model-routing defaults and health taxonomy refinement.
 4. Phase 1B lab runtime expansion only after the gates above are approved.
@@ -44,6 +44,13 @@ Durable replay/evidence posture design is now represented in
 `replay.store.record` and `evidence.export_manifest` contracts plus mock-only
 tests. Actual durable storage, transactionality, and export/delete services
 remain blocked.
+
+Durable transaction/storage RFC posture is now represented in
+[RFC_DURABLE_TRANSACTION_STORAGE](rfcs/RFC_DURABLE_TRANSACTION_STORAGE.md) and
+[DURABLE_STORAGE_ARCHITECTURE](architecture/DURABLE_STORAGE_ARCHITECTURE.md)
+with `transaction.boundary` and `evidence.ledger.entry` contracts plus
+mock-only tests. Storage engine choice, migrations, and transaction runtime
+implementation remain blocked.
 
 ## Option A: Worker Deployment Blueprint
 
@@ -201,6 +208,9 @@ Prerequisites:
 - Durable replay/evidence posture schemas and tests exist, but durable storage,
   atomic transaction implementation, and export/delete implementation are
   explicitly deferred.
+- Durable transaction-boundary and evidence-ledger contracts exist, but
+  implementation-time coordinator logic, migration strategy, and storage-engine
+  selection are explicitly deferred.
 - Health reason taxonomy is defined.
 - Durable evidence/export posture is defined.
 - Durable memory retention, delete/export, raw-content, and customer exit

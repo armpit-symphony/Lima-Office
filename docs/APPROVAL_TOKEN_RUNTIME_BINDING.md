@@ -37,11 +37,15 @@ The approval chain is:
    Guardian decision. It does not authorize execution by itself.
 8. `replay.store.record`: records future durable nonce/atomicity posture as
    metadata-only scaffolding for consume/replay decisions.
-9. `evidence.export_manifest`: records refs-only export posture and delete
+9. `transaction.boundary`: records future atomic consume/append/export boundary
+   metadata for commit/rollback/fail-closed outcomes.
+10. `evidence.ledger.entry`: records append-only metadata chain entries for
+   consume, denial, rollback, and export events.
+11. `evidence.export_manifest`: records refs-only export posture and delete
    conflict placeholders; it does not implement export/delete services.
-10. `task.execution` and `tool.invocation`: may proceed only in mock/dry-run
+12. `task.execution` and `tool.invocation`: may proceed only in mock/dry-run
    paths when the binding matches.
-11. `evidence.artifact`: records approval, denial, verification, consumption,
+13. `evidence.artifact`: records approval, denial, verification, consumption,
    replay denial, mismatch, and blocked-MVP evidence by reference only.
 
 `approval.chain` examples summarize safe and unsafe combinations for validation
@@ -199,6 +203,7 @@ Task enqueueing for approval-required mock tasks now requires both a valid
 - No live approval service.
 - No durable token store.
 - No durable nonce/replay table.
+- No durable transaction coordinator.
 - No OAuth or provider integration.
 - No live connector access.
 - No external sends.

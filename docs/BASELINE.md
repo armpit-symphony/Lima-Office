@@ -45,6 +45,26 @@ operations, customer-system mutation, or compliance certification claims.
   verifier only. No live connector, external send, real remediation, durable
   service, UI, or production operation is authorized.
 
+## Durable Replay Evidence Posture Checkpoint
+
+- Branch: `durable-replay-evidence-posture`
+- Base: `guardian-expiry-replay-policy-design`
+- Purpose: define durable replay/evidence posture contracts and fail-closed
+  mock metadata checks for replay records, evidence integrity fields, and export
+  manifest posture.
+- Scope: docs, schemas, examples, tests, and mock/in-memory metadata helpers
+  only. No durable storage engine, queue, service, live connector, external
+  send, remediation, UI, or production operation is authorized.
+
+## Durable Transaction Storage RFC Checkpoint
+
+- Branch: `durable-transaction-storage-rfc`
+- Base: `durable-replay-evidence-posture`
+- Purpose: define draft transaction-boundary and evidence-ledger architecture
+  posture for future atomic replay/token consumption and recovery behavior.
+- Scope: docs, schemas, examples, and tests only. No database, queue, migration,
+  service, or production storage implementation is authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:
@@ -61,6 +81,7 @@ The following reachable branches are ancestors of the integration branch:
 | `worker-deployment-blueprint` | `c15b7aea1a331040924b9b3534a03c6b1def4f38` | Worker deployment blueprint docs, runbooks, and worker deployment contract. |
 | `governance-policy-details` | `944088eac5d41d2547ae0343500d3ab591a1256e` | Governance policy docs, runbooks, and governance metadata contracts. |
 | `operator-console-ux-spec` | `bac6f80cc63dd15ec7cd3d669193160c3766a8e1` | Operator console UX specification docs and console metadata contracts. |
+| `durable-replay-evidence-posture` | `7123163482860a93992b4597d49b5231cd5cb34b` | Durable replay/evidence posture docs, schemas, examples, and mock tests. |
 
 ## Excluded Or Missing Branches
 
@@ -143,8 +164,8 @@ closes the relevant gates:
 
 Recommended order after stabilization:
 
-1. Durable evidence/export posture design, including durable approval-token and
-   Guardian decision consumption and replay evidence.
+1. Durable transaction/storage implementation planning details, including
+   migration posture, recovery gates, and transaction mechanism criteria.
 2. Final RBAC/IdP/MFA/session/device trust matrix.
 3. Model-routing defaults and health taxonomy refinement.
 4. Phase 1B lab runtime expansion only after the gates above are approved.
