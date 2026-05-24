@@ -129,6 +129,13 @@ Phase 1A now includes:
 These contracts are governance metadata only and do not authorize runtime
 actions.
 
+Reason-code usage conformance is CI-gated by
+[scripts/check-reason-codes.py](../scripts/check-reason-codes.py). The gate
+scans `contracts/v1` and `contracts/examples` and fails closed on unknown
+reason codes, deprecated-code compatibility gaps, blocked-codes in success
+contexts, breaking-change coverage gaps, and missing schema-required
+`taxonomy_version`.
+
 ## Common Field Groups
 
 - Envelope: `contract_name`, `contract_version`, `schema_version`, `tenant_id`, `customer_context_id`, `environment`, `correlation_id`, `causation_id`, `idempotency_key`, `producer`, `created_at` or event timestamp.

@@ -190,6 +190,7 @@ Run locally:
 
 ```powershell
 python scripts/validate-contracts.py
+python scripts/check-reason-codes.py
 python scripts/check-doc-links.py
 ```
 
@@ -203,7 +204,17 @@ CI runs strict validation with:
 
 ```bash
 python scripts/validate-contracts.py --require-jsonschema --check-formats --warnings-as-errors
+python scripts/check-reason-codes.py
 ```
+
+Reason-code conformance blocks:
+
+- unknown reason codes in schemas/examples
+- deprecated reason codes without compatibility records
+- blocked reason codes in successful/completed/exported contexts
+- breaking-change compatibility records without `affected_contracts` and
+  `evidence_refs`
+- missing `taxonomy_version` where mapped schemas require it
 
 Examples map to schemas by explicit override table, declared `$schema_ref`,
 `schema_ref`, `contract_name`, `contract_type`, or `type`, then by filename

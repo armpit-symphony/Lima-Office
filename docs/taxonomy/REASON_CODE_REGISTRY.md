@@ -19,6 +19,14 @@ This registry governs reason-code meaning and compatibility for:
 
 It does not authorize live runtime actions.
 
+## Conformance Gate
+
+Reason-code usage is enforced by
+[scripts/check-reason-codes.py](../../scripts/check-reason-codes.py). The gate
+scans schemas and examples, rejects unknown codes, enforces deprecated-code
+compatibility coverage, blocks blocked-codes in success contexts, and validates
+`taxonomy_version` presence where schema-required.
+
 ## Naming Rules
 
 - Use lowercase snake_case.
@@ -110,6 +118,7 @@ Rules:
   policy allows.
 - Contracts must include `taxonomy_version` when reason codes are decision
   relevant.
+- New or changed code semantics must include a matching compatibility record.
 
 ## Blocked and Removal Rules
 

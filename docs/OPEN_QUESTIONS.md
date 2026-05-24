@@ -45,6 +45,9 @@ documents the reachable v2 checkpoint that supersedes it.
   [Reason Code Compatibility Policy](taxonomy/REASON_CODE_COMPATIBILITY_POLICY.md),
   what mandatory migration window and evidence burden should be required before
   any major taxonomy removal is allowed?
+- Reason-code conformance warnings: should all reason-bearing schemas be
+  upgraded to require `taxonomy_version`, or should some legacy governance/
+  worker/lifecycle fields remain exempt until a major-version migration lane?
 - Audit export: what final export manifest format, integrity metadata, package
   retention, and access-control refs are required beyond
   [Audit Export And Customer Exit Policy](governance/AUDIT_EXPORT_AND_CUSTOMER_EXIT_POLICY.md)?

@@ -22,13 +22,17 @@ Recommended order:
 2. Reason-code registry compatibility policy and canonical lifecycle hardening
    (checkpoint completed as docs/contracts/tests hardening on
    `reason-code-registry-compatibility-policy`).
-3. Final RBAC/IdP/MFA/session/device trust matrix.
-4. Model-routing defaults and health taxonomy refinement.
-5. Phase 1B lab runtime expansion only after the gates above are approved.
+3. Reason-code conformance CI gate and fail-closed taxonomy drift checks
+   (checkpoint completed as validation/tooling/tests hardening on
+   `reason-code-conformance-ci-gate`).
+4. Final RBAC/IdP/MFA/session/device trust matrix.
+5. Model-routing defaults and health taxonomy refinement.
+6. Phase 1B lab runtime expansion only after the gates above are approved.
 
 Next recommended lane after this checkpoint: finalize RBAC/IdP/MFA/session/
-device trust matrix and keep reason-code removal/deprecation windows as
-explicit open governance blockers, still without adding live services.
+device trust matrix while keeping reason-code removal/deprecation windows and
+taxonomy-version enforcement follow-ups as explicit governance blockers, still
+without adding live services.
 
 Alternative non-runtime lanes can proceed when they do not obscure the blockers:
 model-routing defaults, final IdP/MFA/RBAC matrix, health taxonomy refinement,

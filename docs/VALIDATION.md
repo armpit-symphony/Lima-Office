@@ -30,6 +30,12 @@ Strict mode, matching CI:
 python scripts/validate-contracts.py --require-jsonschema --check-formats --warnings-as-errors
 ```
 
+Run reason-code conformance gate:
+
+```powershell
+python scripts/check-reason-codes.py
+```
+
 ## Contract Validator
 
 [validate-contracts.py](../scripts/validate-contracts.py) checks:
@@ -50,6 +56,31 @@ python scripts/validate-contracts.py --require-jsonschema --check-formats --warn
 The validator returns non-zero on parse errors, missing schema directories,
 missing examples, unmapped examples, schema structure failures, failed full
 schema validation, broken example coverage, or unsafe positive content.
+
+## Reason-Code Conformance Gate
+
+[check-reason-codes.py](../scripts/check-reason-codes.py) checks:
+
+- Reason-code usage across all `contracts/v1/*.schema.json` and
+  `contracts/examples/*.json`.
+- Reason fields:
+  `reason_code`, `reason_codes`, `reconciliation_reason_codes`,
+  `evidence_reason_codes`, `export_delete_conflict_codes`, `conflict_codes`,
+  `linkage_failure_reasons`, `reconciliation_failure_reasons`,
+  `mismatch_reasons`, and enum-like `failure_reason`.
+- Canonical reason-code catalog from
+  [lima_office/runtime/taxonomy.py](../lima_office/runtime/taxonomy.py) plus
+  `reason.code.registry` examples.
+- Unknown reason-code detection (fail closed).
+- Deprecated-code usage enforcement requiring `reason.code.compatibility`
+  coverage.
+- Breaking-change compatibility record requirements (`affected_contracts` and
+  `evidence_refs`).
+- Blocked reason codes in success contexts (`approved`, `committed`,
+  `completed`, `prepared`, `exported`, and related success statuses).
+- `taxonomy_version` presence where mapped schemas require it.
+
+The gate exits non-zero on violations.
 
 ## Example Mapping
 
@@ -107,6 +138,7 @@ installs [requirements-dev.txt](../requirements-dev.txt), then runs:
 
 ```bash
 python scripts/validate-contracts.py --require-jsonschema --check-formats --warnings-as-errors
+python scripts/check-reason-codes.py
 python scripts/check-doc-links.py
 git diff --check
 ```
@@ -138,3 +170,23 @@ through Guardian classification, approval policy, evidence capture, and
 fail-closed handling before model calls, tool calls, file mutations, network
 actions, connector access, outbound messages, scheduled work, secrets, or
 privileged operations.
+
+## Safe Registry Changes
+
+To add a new reason code safely:
+
+1. Add/update runtime registry entry in
+   [lima_office/runtime/taxonomy.py](../lima_office/runtime/taxonomy.py).
+2. Add `reason.code.registry` example row.
+3. Add or update `reason.code.compatibility` example row.
+4. Update contract examples that consume the code.
+5. Add/adjust tests.
+6. Run strict validation commands.
+
+To deprecate/alias safely:
+
+1. Mark status `deprecated` in registry metadata.
+2. Add compatibility record (`deprecate`, `alias`, or `remove_planned`) with
+   migration notes and affected contracts.
+3. Keep deprecated meaning stable through migration window.
+4. Ensure deprecated usage remains metadata-only where policy allows.

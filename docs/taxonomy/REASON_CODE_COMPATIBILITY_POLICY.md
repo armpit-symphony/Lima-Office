@@ -66,6 +66,8 @@ Allowed only when all are true:
   delete classifications.
 - Helper output may include unknown-code diagnostics but `can_authorize` must
   remain `false`.
+- CI reason-code conformance gate must fail on unknown codes found in schemas
+  or examples.
 
 ## Export/Audit Preservation Of Old Codes
 
@@ -87,6 +89,7 @@ Allowed only when all are true:
 - Deprecated codes cannot authorize privileged outcomes unless policy explicitly
   allows warning-only metadata use.
 - Breaking changes require review/evidence before any decision path uses them.
+- Blocked codes cannot appear in success/authorization-complete metadata states.
 
 ## Migration Checklist
 
@@ -105,3 +108,5 @@ Allowed only when all are true:
 - Breaking-change records include affected contracts and evidence refs.
 - Contracts/examples/runtime helper remain mock-only with no live service
   expansion.
+- CI executes `python scripts/check-reason-codes.py` and fails non-zero on
+  conformance violations.

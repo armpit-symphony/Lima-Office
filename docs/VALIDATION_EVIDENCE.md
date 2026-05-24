@@ -5,7 +5,7 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `reason-code-registry-compatibility-policy` on Windows with
+Latest captured run: `reason-code-conformance-ci-gate` on Windows with
 Python 3.12.10.
 
 ## Canonical Integration Branch
@@ -25,6 +25,8 @@ Python 3.12.10.
   `governance-export-delete-taxonomy-finalization`
 - Reason-code registry compatibility policy branch:
   `reason-code-registry-compatibility-policy`
+- Reason-code conformance CI gate branch:
+  `reason-code-conformance-ci-gate`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -154,6 +156,17 @@ authorization expansion, export/delete execution, databases, queues, durable
 storage services, live connectors, external sends, real remediation, production
 operations, or customer-system mutation.
 
+## Reason-Code Conformance CI Gate Checkpoint
+
+This branch adds a fail-closed reason-code conformance gate in
+`scripts/check-reason-codes.py`, a CI workflow step, expanded taxonomy runtime
+catalog entries for existing contract/example reason codes, and dedicated tests
+in `tests/test_reason_code_conformance_ci.py`.
+Validation remains repository health evidence only; it does not approve runtime
+authorization expansion, export/delete execution, durable storage services, live
+connectors, external sends, real remediation, production operations, or
+customer-system mutation.
+
 ## Strict Schema Validation
 
 Command:
@@ -186,6 +199,37 @@ Expected coverage:
 - Example coverage for every schema.
 - Unsafe-content scan across examples and Markdown docs.
 
+## Reason-Code Conformance Check
+
+Command:
+
+```powershell
+python scripts/check-reason-codes.py
+```
+
+Result:
+
+```text
+LIMA Office reason-code conformance
+- schemas scanned: 41
+- examples scanned: 107
+- known canonical/alias codes: 63
+- reason-code values scanned in schemas: 63
+- reason-code values scanned in examples: 64
+- blocked-in-success violations: 0
+- warnings: 17
+- failures: 0
+Result: PASS
+```
+
+Notes:
+
+- The gate fails closed on unknown codes, deprecated-code compatibility gaps,
+  blocked-codes in success contexts, breaking-change coverage gaps, and missing
+  schema-required taxonomy versions.
+- Current warnings reflect legacy schemas that use reason-bearing fields but do
+  not yet require `taxonomy_version`. This remains an open governance question.
+
 ## Doc Link Check
 
 Command:
@@ -199,7 +243,7 @@ Result:
 ```text
 LIMA Office markdown link check
 - markdown files scanned: 107
-- local links checked: 799
+- local links checked: 806
 - external/anchor links ignored: 0
 - failures: 0
 Result: PASS
@@ -216,7 +260,7 @@ python -B -m unittest discover -s tests -v
 Result:
 
 ```text
-Ran 208 tests
+Ran 218 tests
 
 OK
 ```
@@ -284,7 +328,7 @@ python -m pytest -q
 Result:
 
 ```text
-208 passed, 1 warning, 143 subtests passed
+218 passed, 1 warning, 143 subtests passed
 ```
 
 Warning: pytest could not create/write `.pytest_cache` because access was
@@ -338,6 +382,7 @@ Expected CI commands:
 
 ```bash
 python scripts/validate-contracts.py --require-jsonschema --check-formats --warnings-as-errors
+python scripts/check-reason-codes.py
 python scripts/check-doc-links.py
 python -m unittest discover -s tests -v
 python -m compileall lima_office scripts tests

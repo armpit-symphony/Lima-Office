@@ -122,3 +122,6 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 ## Phase Rule
 
 These docs define boundaries, contracts, and mock scaffolding. They do not approve live connectors, external sends, customer-system mutation, hidden background work, remediation execution, or production operation.
+
+Validation now includes a fail-closed reason-code conformance gate via
+`python scripts/check-reason-codes.py`; see [Validation](VALIDATION.md).

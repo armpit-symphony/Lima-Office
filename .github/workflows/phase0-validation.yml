@@ -28,6 +28,9 @@ jobs:
       - name: Validate contract schemas and examples
         run: python scripts/validate-contracts.py --require-jsonschema --check-formats --warnings-as-errors
 
+      - name: Check reason-code conformance
+        run: python scripts/check-reason-codes.py
+
       - name: Check local Markdown links
         run: python scripts/check-doc-links.py
 
