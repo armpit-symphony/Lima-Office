@@ -1,0 +1,518 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/governance.export_delete_review.schema.json",
+  "title": "Governance Export Delete Review Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "policy_version",
+    "taxonomy_version",
+    "review_id",
+    "request_type",
+    "requester_ref",
+    "reviewer_ref",
+    "target_refs",
+    "data_classes",
+    "retention_policy_refs",
+    "redaction_profile_ref",
+    "preservation_hold_status",
+    "export_review_status",
+    "delete_review_status",
+    "conflict_codes",
+    "decision",
+    "reason_codes",
+    "evidence_refs",
+    "conflict_evidence_refs",
+    "delete_proof_refs",
+    "export_manifest_refs",
+    "created_at",
+    "reviewed_at",
+    "raw_content_included",
+    "secret_material_included"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "governance.export_delete_review"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "operator_console",
+            "supervisor",
+            "security_reviewer",
+            "compliance_reviewer"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "review_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "request_type": {
+      "type": "string",
+      "enum": [
+        "export",
+        "delete",
+        "export_and_delete"
+      ]
+    },
+    "requester_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reviewer_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "target_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "data_classes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "retention_policy_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "redaction_profile_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "preservation_hold_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "required",
+        "active",
+        "conflict_with_delete",
+        "released",
+        "blocked_mvp"
+      ]
+    },
+    "export_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "prepared",
+        "exported",
+        "failed_closed",
+        "blocked_mvp"
+      ]
+    },
+    "delete_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "conflict_detected",
+        "blocked_mvp"
+      ]
+    },
+    "conflict_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "export_delete_conflict_active",
+          "export_delete_preservation_hold_active",
+          "export_delete_retention_window_active",
+          "export_delete_review_required",
+          "export_delete_blocked_mvp"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "approved",
+        "denied",
+        "review_required",
+        "blocked_mvp",
+        "failed_closed"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "recon_missing_guardian_decision",
+          "recon_stale_guardian_decision",
+          "recon_mismatched_approval_binding",
+          "recon_mismatched_token_verification",
+          "recon_replay_record_missing",
+          "recon_replay_record_mismatch",
+          "recon_evidence_ref_missing",
+          "recon_coordinator_event_mismatch",
+          "recon_cross_tenant_linkage",
+          "blocked_mvp_authorization_attempt",
+          "export_delete_conflict_active",
+          "export_delete_preservation_hold_active",
+          "export_delete_retention_window_active",
+          "export_delete_review_required",
+          "export_delete_blocked_mvp",
+          "evidence_failed_closed_required",
+          "evidence_ref_missing"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "conflict_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "delete_proof_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_manifest_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reviewed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "raw_content_included": {
+      "type": "boolean",
+      "const": false
+    },
+    "secret_material_included": {
+      "type": "boolean",
+      "const": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "request_type": {
+            "const": "export"
+          }
+        },
+        "required": [
+          "request_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "delete_review_status": {
+            "const": "not_requested"
+          },
+          "delete_proof_refs": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "request_type": {
+            "const": "delete"
+          }
+        },
+        "required": [
+          "request_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "export_review_status": {
+            "const": "not_requested"
+          },
+          "export_manifest_refs": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "delete_review_status": {
+            "const": "conflict_detected"
+          }
+        },
+        "required": [
+          "delete_review_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "conflict_codes": {
+            "minItems": 1
+          },
+          "reason_codes": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          },
+          "conflict_evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "delete_review_status": {
+            "const": "approved"
+          }
+        },
+        "required": [
+          "delete_review_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "delete_proof_refs": {
+            "minItems": 1
+          },
+          "preservation_hold_status": {
+            "enum": [
+              "none",
+              "released"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "export_review_status": {
+            "const": "exported"
+          }
+        },
+        "required": [
+          "export_review_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "redaction_profile_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "export_manifest_refs": {
+            "minItems": 1
+          },
+          "decision": {
+            "const": "approved"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "preservation_hold_status": {
+            "enum": [
+              "active",
+              "conflict_with_delete"
+            ]
+          }
+        },
+        "required": [
+          "preservation_hold_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "delete_review_status": {
+            "enum": [
+              "review_required",
+              "denied",
+              "conflict_detected",
+              "blocked_mvp"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "failed_closed"
+          }
+        },
+        "required": [
+          "decision"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence_refs": {
+            "minItems": 1
+          },
+          "reason_codes": {
+            "contains": {
+              "const": "evidence_failed_closed_required"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "blocked_mvp"
+          }
+        },
+        "required": [
+          "decision"
+        ]
+      },
+      "then": {
+        "properties": {
+          "environment": {
+            "const": "blocked_mvp"
+          },
+          "export_review_status": {
+            "not": {
+              "const": "exported"
+            }
+          },
+          "delete_review_status": {
+            "not": {
+              "const": "approved"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

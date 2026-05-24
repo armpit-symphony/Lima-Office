@@ -61,6 +61,11 @@ class GuardianDecisionReplayVerifier:
         result: str,
         mismatch_reasons: list[str],
     ) -> dict[str, Any]:
+        decision_id = decision["decision_id"]
+        replay_record_id = f"rr-{decision_id}"
+        replay_artifact_id = f"ev-guardian-replay-{decision_id}"
+        content_hash = f"sha256:mock-{decision_id}"
+
         return {
             "contract_name": "guardian.replay",
             "contract_version": "1.0.0",
@@ -69,16 +74,16 @@ class GuardianDecisionReplayVerifier:
             "customer_context_id": decision["customer_context_id"],
             "environment": "dry_run",
             "correlation_id": decision["correlation_id"],
-            "causation_id": decision["decision_id"],
-            "idempotency_key": f"idem-replay-{decision['decision_id']}",
+            "causation_id": decision_id,
+            "idempotency_key": f"idem-replay-{decision_id}",
             "producer": {
                 "component": "guardian",
                 "produced_at": self.reference_time or decision["issued_at"],
             },
             "policy_version": decision["policy_version"],
-            "replay_check_id": f"gr-{decision['decision_id']}",
-            "replay_record_id": None,
-            "guardian_decision_id": decision["decision_id"],
+            "replay_check_id": f"gr-{decision_id}",
+            "replay_record_id": replay_record_id,
+            "guardian_decision_id": decision_id,
             "decision_nonce": decision["decision_nonce"],
             "approval_binding_id": decision.get("approval_binding_id"),
             "token_verification_id": decision.get("token_verification_id"),
@@ -96,12 +101,12 @@ class GuardianDecisionReplayVerifier:
             "denial_evidence_ref": None if result == "valid_first_use" else "ev-guardian-replay-denied-placeholder",
             "pre_action_evidence_refs": [] if result == "valid_first_use" else ["ev-guardian-replay-denied-placeholder"],
             "post_action_evidence_refs": decision.get("evidence_refs", decision.get("evidence_artifact_ids", [])),
-            "replay_artifact_id": None,
+            "replay_artifact_id": replay_artifact_id,
             "redaction_profile_ref": "metadata_only",
-            "hash_algorithm": None,
-            "content_hash": None,
+            "hash_algorithm": "sha256",
+            "content_hash": content_hash,
             "parent_evidence_refs": [],
-            "chain_position": None,
+            "chain_position": 1,
             "export_manifest_refs": [],
             "raw_content_included": False,
             "secret_material_included": False,

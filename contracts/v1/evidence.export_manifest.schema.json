@@ -16,11 +16,16 @@
     "idempotency_key",
     "producer",
     "policy_version",
+    "taxonomy_version",
     "export_manifest_id",
     "export_request_id",
     "requested_by_ref",
     "approved_by_ref",
     "export_status",
+    "export_review_status",
+    "delete_review_status",
+    "redaction_status",
+    "preservation_hold_status",
     "included_evidence_refs",
     "excluded_evidence_refs",
     "redaction_profile_ref",
@@ -43,6 +48,13 @@
     "canonical_tool_scope",
     "canonical_worker_id",
     "canonical_task_id",
+    "reason_codes",
+    "reconciliation_reason_codes",
+    "evidence_reason_codes",
+    "export_delete_conflict_codes",
+    "delete_proof_refs",
+    "export_package_refs",
+    "conflict_evidence_refs",
     "created_at",
     "prepared_at",
     "exported_at",
@@ -119,6 +131,10 @@
       "type": "string",
       "minLength": 1
     },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
     "export_manifest_id": {
       "type": "string",
       "minLength": 1
@@ -146,6 +162,54 @@
         "prepared",
         "exported",
         "failed",
+        "blocked_mvp"
+      ]
+    },
+    "export_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "prepared",
+        "exported",
+        "failed_closed",
+        "blocked_mvp"
+      ]
+    },
+    "delete_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "conflict_detected",
+        "blocked_mvp"
+      ]
+    },
+    "redaction_status": {
+      "type": "string",
+      "enum": [
+        "not_required",
+        "required",
+        "pending",
+        "applied",
+        "failed",
+        "blocked_mvp"
+      ]
+    },
+    "preservation_hold_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "required",
+        "active",
+        "conflict_with_delete",
+        "released",
         "blocked_mvp"
       ]
     },
@@ -333,6 +397,62 @@
         "null"
       ]
     },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reconciliation_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evidence_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_delete_conflict_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "delete_proof_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_package_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "conflict_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
     "created_at": {
       "type": "string",
       "format": "date-time"
@@ -382,6 +502,12 @@
       },
       "then": {
         "properties": {
+          "export_review_status": {
+            "const": "requested"
+          },
+          "delete_review_status": {
+            "const": "not_requested"
+          },
           "approved_by_ref": {
             "const": null
           },
@@ -413,6 +539,9 @@
       },
       "then": {
         "properties": {
+          "export_review_status": {
+            "const": "approved"
+          },
           "approved_by_ref": {
             "type": "string",
             "minLength": 1
@@ -446,6 +575,9 @@
       },
       "then": {
         "properties": {
+          "export_review_status": {
+            "const": "prepared"
+          },
           "approved_by_ref": {
             "type": "string",
             "minLength": 1
@@ -491,6 +623,18 @@
       },
       "then": {
         "properties": {
+          "export_review_status": {
+            "const": "exported"
+          },
+          "redaction_status": {
+            "enum": [
+              "applied",
+              "not_required"
+            ]
+          },
+          "export_package_refs": {
+            "minItems": 1
+          },
           "approved_by_ref": {
             "type": "string",
             "minLength": 1
@@ -543,7 +687,30 @@
       },
       "then": {
         "properties": {
+          "export_review_status": {
+            "enum": [
+              "denied",
+              "blocked_mvp"
+            ]
+          },
           "delete_conflict_refs": {
+            "minItems": 1
+          },
+          "delete_review_status": {
+            "enum": [
+              "denied",
+              "conflict_detected",
+              "blocked_mvp",
+              "review_required"
+            ]
+          },
+          "conflict_evidence_refs": {
+            "minItems": 1
+          },
+          "reason_codes": {
+            "minItems": 1
+          },
+          "export_delete_conflict_codes": {
             "minItems": 1
           },
           "prepared_at": {
@@ -571,11 +738,127 @@
       },
       "then": {
         "properties": {
+          "export_review_status": {
+            "const": "blocked_mvp"
+          },
           "environment": {
             "const": "blocked_mvp"
           },
+          "delete_review_status": {
+            "not": {
+              "const": "approved"
+            }
+          },
           "linkage_status": {
             "const": "blocked_mvp"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "export_status": {
+            "const": "failed"
+          }
+        },
+        "required": [
+          "export_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "export_review_status": {
+            "const": "failed_closed"
+          },
+          "evidence_refs": {
+            "minItems": 1
+          },
+          "reason_codes": {
+            "minItems": 1
+          },
+          "prepared_at": {
+            "const": null
+          },
+          "exported_at": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "delete_review_status": {
+            "const": "approved"
+          }
+        },
+        "required": [
+          "delete_review_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "delete_proof_refs": {
+            "minItems": 1
+          },
+          "preservation_hold_status": {
+            "enum": [
+              "none",
+              "released"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "preservation_hold_status": {
+            "enum": [
+              "active",
+              "conflict_with_delete"
+            ]
+          }
+        },
+        "required": [
+          "preservation_hold_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "delete_review_status": {
+            "enum": [
+              "review_required",
+              "denied",
+              "conflict_detected",
+              "blocked_mvp"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "delete_review_status": {
+            "const": "conflict_detected"
+          }
+        },
+        "required": [
+          "delete_review_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "conflict_evidence_refs": {
+            "minItems": 1
+          },
+          "reason_codes": {
+            "minItems": 1
+          },
+          "export_delete_conflict_codes": {
+            "minItems": 1
           }
         }
       }

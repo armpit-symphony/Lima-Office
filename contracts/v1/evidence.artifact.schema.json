@@ -510,6 +510,103 @@
       "type": "string",
       "minLength": 1
     },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evidence_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reconciliation_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_delete_conflict_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "prepared",
+        "exported",
+        "failed_closed",
+        "blocked_mvp"
+      ]
+    },
+    "delete_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "conflict_detected",
+        "blocked_mvp"
+      ]
+    },
+    "preservation_hold_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "required",
+        "active",
+        "conflict_with_delete",
+        "released",
+        "blocked_mvp"
+      ]
+    },
+    "conflict_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "delete_proof_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_package_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
     "policy_snapshot_hash": {
       "type": "string",
       "minLength": 1
@@ -753,9 +850,15 @@
         "properties": {
           "denial_evidence_ref": {
             "type": "string",
-            "minLength": 1
+            "pattern": "^ev-[A-Za-z0-9._:-]+$"
           },
           "pre_action_evidence_refs": {
+            "minItems": 1
+          },
+          "reason_codes": {
+            "minItems": 1
+          },
+          "evidence_reason_codes": {
             "minItems": 1
           }
         }
@@ -807,6 +910,89 @@
           },
           "secret_material_included": {
             "const": false
+          },
+          "export_review_status": {
+            "not": {
+              "const": "blocked_mvp"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "export_review_status": {
+            "const": "exported"
+          }
+        },
+        "required": [
+          "export_review_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "export_package_refs": {
+            "minItems": 1
+          },
+          "redaction_profile_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "delete_review_status": {
+            "const": "approved"
+          }
+        },
+        "required": [
+          "delete_review_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "delete_proof_refs": {
+            "minItems": 1
+          },
+          "preservation_hold_status": {
+            "enum": [
+              "none",
+              "released"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "preservation_hold_status": {
+            "enum": [
+              "active",
+              "conflict_with_delete"
+            ]
+          }
+        },
+        "required": [
+          "preservation_hold_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "delete_review_status": {
+            "enum": [
+              "review_required",
+              "denied",
+              "conflict_detected",
+              "blocked_mvp"
+            ]
+          },
+          "conflict_evidence_refs": {
+            "minItems": 1
           }
         }
       }

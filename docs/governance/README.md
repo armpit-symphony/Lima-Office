@@ -27,6 +27,7 @@ production compliance.
 - [Breakglass Policy](BREAKGLASS_POLICY.md)
 - [Retention Redaction Policy](RETENTION_REDACTION_POLICY.md)
 - [Audit Export And Customer Exit Policy](AUDIT_EXPORT_AND_CUSTOMER_EXIT_POLICY.md)
+- [Export Delete Conflict Policy](EXPORT_DELETE_CONFLICT_POLICY.md)
 - [Connector Consent Scope Revocation Policy](CONNECTOR_CONSENT_SCOPE_REVOCATION_POLICY.md)
 - [Worker Attestation Policy](WORKER_ATTESTATION_POLICY.md)
 - [Signed Update Rollback Policy](SIGNED_UPDATE_ROLLBACK_POLICY.md)
@@ -46,6 +47,7 @@ production compliance.
 - [governance.access_review](../../contracts/v1/governance.access_review.schema.json)
 - [governance.breakglass](../../contracts/v1/governance.breakglass.schema.json)
 - [governance.audit_export](../../contracts/v1/governance.audit_export.schema.json)
+- [governance.export_delete_review](../../contracts/v1/governance.export_delete_review.schema.json)
 - [governance.connector_consent](../../contracts/v1/governance.connector_consent.schema.json)
 - [governance.update_record](../../contracts/v1/governance.update_record.schema.json)
 

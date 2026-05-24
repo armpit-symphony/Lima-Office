@@ -35,6 +35,11 @@ documents the reachable v2 checkpoint that supersedes it.
 - Redaction taxonomy: are the initial profiles in
   [Retention Redaction Policy](governance/RETENTION_REDACTION_POLICY.md)
   sufficient, and what redaction rule applies to each free-text field?
+- Export/delete taxonomy governance: Phase 1A now defines canonical reason-code
+  docs in [Reconciliation Reason Taxonomy](taxonomy/RECONCILIATION_REASON_TAXONOMY.md)
+  and [Evidence Reason Taxonomy](taxonomy/EVIDENCE_REASON_TAXONOMY.md); what
+  final legal/compliance review and versioning governance is required before
+  durable implementation?
 - Audit export: what final export manifest format, integrity metadata, package
   retention, and access-control refs are required beyond
   [Audit Export And Customer Exit Policy](governance/AUDIT_EXPORT_AND_CUSTOMER_EXIT_POLICY.md)?
@@ -80,17 +85,15 @@ documents the reachable v2 checkpoint that supersedes it.
   `transaction.coordinator.event`, `transaction.boundary`,
   `replay.store.record`, `evidence.ledger.entry`, `evidence.artifact`, and
   `evidence.export_manifest`?
-- Linkage drift taxonomy: what final reason-code set should replace free-form
-  `linkage_failure_reasons` before durable implementation?
+- Linkage drift taxonomy enforcement: reason-code registries now exist, but how
+  should runtime emitters and storage pipelines enforce registry-only values in
+  durable mode?
 - Reconciliation ownership: which role owns terminal-state selection for partial
   commit ambiguity during coordinator recovery, and what approval separation is
   required?
-- Approval/Guardian reconciliation status taxonomy: should
-  `reconciliation_failure_reasons` converge to a fixed reason-code registry
-  across `approval.binding`, `approval.chain`, `token.verification`,
-  `guardian.decision`, `guardian.replay`, `replay.store.record`,
-  `transaction.coordinator.event`, `transaction.boundary`, and
-  `evidence.ledger.entry` before durable implementation?
+- Approval/Guardian reconciliation taxonomy rollout: schemas now carry taxonomy
+  placeholders, but what final migration path applies to legacy free-form
+  reason strings when durable services are introduced?
 - Reconciliation evidence minimum set: what exact mandatory evidence references
   are required per drift class (`missing_ref`, `mismatched_binding`,
   `stale_decision`, `replay_mismatch`, `coordinator_mismatch`,

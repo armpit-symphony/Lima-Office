@@ -122,6 +122,10 @@
       "type": "string",
       "minLength": 1
     },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
     "approval_chain_id": {
       "type": "string",
       "minLength": 1
@@ -372,6 +376,83 @@
           "tainted_input",
           "missing_evidence"
         ]
+      },
+      "uniqueItems": true
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reconciliation_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evidence_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_delete_conflict_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "prepared",
+        "exported",
+        "failed_closed",
+        "blocked_mvp"
+      ]
+    },
+    "delete_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "conflict_detected",
+        "blocked_mvp"
+      ]
+    },
+    "preservation_hold_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "required",
+        "active",
+        "conflict_with_delete",
+        "released",
+        "blocked_mvp"
+      ]
+    },
+    "conflict_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
       },
       "uniqueItems": true
     },
@@ -809,6 +890,22 @@
           "consumed_at"
         ],
         "properties": {
+          "approval_result_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approval_token_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "token_verification_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "nonce_ref": {
+            "type": "string",
+            "minLength": 1
+          },
           "token_use_policy": {
             "const": "one_time"
           },
@@ -824,6 +921,9 @@
           },
           "blocked_mvp_action": {
             "const": false
+          },
+          "mismatch_reasons": {
+            "maxItems": 0
           }
         }
       }
@@ -930,6 +1030,11 @@
       },
       "then": {
         "properties": {
+          "verification_result": {
+            "not": {
+              "const": "valid"
+            }
+          },
           "approval_token_id": {
             "const": null
           },
@@ -938,6 +1043,28 @@
           },
           "consumed_at": {
             "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "delete_review_status": {
+            "const": "conflict_detected"
+          }
+        },
+        "required": [
+          "delete_review_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "conflict_evidence_refs": {
+            "minItems": 1
+          },
+          "reason_codes": {
+            "minItems": 1
           }
         }
       }

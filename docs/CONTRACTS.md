@@ -62,6 +62,9 @@ Version 1 schemas now use JSON Schema draft 2020-12 conditionals for the highest
 - Evidence-required task/tool paths cannot be represented as completed when evidence failure blocks the action.
 - Evidence export manifests must remain refs-only, with redaction/retention
   placeholders and explicit delete-conflict refs for denied/blocked states.
+- Governance/export/delete contracts now include taxonomy version and reason-code
+  arrays so reconciliation/evidence/conflict semantics are normalized and
+  unknown reason codes can fail validation in strict mock tests.
 - Tainted content must remain data-only unless a later policy review clears it; it cannot directly become tool args, durable memory, approval scope, external sends, or remediation.
 - LIMA IT remediation is non-executing in Phase 0; diagnostic handoff remains read-only.
 
@@ -97,6 +100,19 @@ monitoring.
 
 Approval/Guardian reconciliation drill requirements are defined in
 [Approval Guardian Reconciliation Drills](APPROVAL_GUARDIAN_RECONCILIATION_DRILLS.md).
+
+## Governance Export/Delete Taxonomy Hardening
+
+Phase 1A now includes:
+
+- `governance.export_delete_review` metadata contract for export/delete review
+  outcomes without implementing export/delete services.
+- Extended `governance.audit_export`, `evidence.export_manifest`,
+  `evidence.ledger.entry`, and `evidence.artifact` fields for taxonomy version,
+  reason-code arrays, review status placeholders, and fail-closed conflict
+  evidence requirements.
+- Refs-only export/delete examples with blocked/denied/fail-closed metadata
+  posture and no raw customer content or secret material fields.
 
 ## Common Field Groups
 
@@ -220,10 +236,22 @@ Approval/Guardian reconciliation drill requirements are defined in
 ## Governance Audit Export Contract v1
 
 - Schema: [governance.audit_export.schema.json](../contracts/v1/governance.audit_export.schema.json)
-- Example object: [governance.audit_export.requested-placeholder.example.json](../contracts/examples/governance.audit_export.requested-placeholder.example.json)
-- Purpose: records audit export, customer exit, delete request, redaction profile, non-exportable classes, integrity refs, and evidence preservation conflict posture.
+- Example objects: [governance.audit_export.requested-placeholder.example.json](../contracts/examples/governance.audit_export.requested-placeholder.example.json), [governance.audit_export.delete-conflict.example.json](../contracts/examples/governance.audit_export.delete-conflict.example.json), [governance.audit_export.export-denied.example.json](../contracts/examples/governance.audit_export.export-denied.example.json)
+- Purpose: records audit-export/delete review metadata posture with taxonomy
+  version, reason-code arrays, review statuses, retention/redaction
+  placeholders, conflict evidence refs, and fail-closed blocked/denied/failure
+  outcomes.
 - Privacy requirements: export records use metadata refs and exclude credentials, raw prompts, raw connector payloads, raw tool output, raw customer files, and out-of-scope tenant data.
 - MVP acceptance gates: export/delete posture can be represented without adding an export service, delete service, durable database, or customer portal.
+
+## Governance Export/Delete Review Contract v1
+
+- Schema: [governance.export_delete_review.schema.json](../contracts/v1/governance.export_delete_review.schema.json)
+- Example objects: [governance.export_delete_review.export-approved-redacted.example.json](../contracts/examples/governance.export_delete_review.export-approved-redacted.example.json), [governance.export_delete_review.delete-conflict-denied.example.json](../contracts/examples/governance.export_delete_review.delete-conflict-denied.example.json), [governance.export_delete_review.blocked-mvp.example.json](../contracts/examples/governance.export_delete_review.blocked-mvp.example.json)
+- Purpose: represents metadata-only export/delete review decisions and
+  conflict posture without implementing export/delete services.
+- Security requirements: blocked-MVP and preservation-hold conflict states
+  cannot be represented as completed export/delete outcomes.
 
 ## Governance Connector Consent Contract v1
 
@@ -650,7 +678,7 @@ Approval/Guardian reconciliation drill requirements are defined in
 ## Evidence Export Manifest Contract v1
 
 - Schema: [evidence.export_manifest.schema.json](../contracts/v1/evidence.export_manifest.schema.json)
-- Example objects: [evidence.export_manifest.prepared-redacted.example.json](../contracts/examples/evidence.export_manifest.prepared-redacted.example.json), [evidence.export_manifest.denied-delete-conflict.example.json](../contracts/examples/evidence.export_manifest.denied-delete-conflict.example.json)
+- Example objects: [evidence.export_manifest.prepared-redacted.example.json](../contracts/examples/evidence.export_manifest.prepared-redacted.example.json), [evidence.export_manifest.denied-delete-conflict.example.json](../contracts/examples/evidence.export_manifest.denied-delete-conflict.example.json), [evidence.export_manifest.blocked-delete-conflict.example.json](../contracts/examples/evidence.export_manifest.blocked-delete-conflict.example.json), [evidence.export_manifest.exported-redacted-metadata-only.example.json](../contracts/examples/evidence.export_manifest.exported-redacted-metadata-only.example.json)
 - Purpose: represents refs-only export metadata for evidence packages and
   delete-conflict posture without implementing export/delete services.
 - Version: `1.0.0`.
@@ -658,8 +686,9 @@ Approval/Guardian reconciliation drill requirements are defined in
 - Consumer: compliance/security review, customer exit planning, and invariant checks.
 - Required fields: common envelope; `export_manifest_id`, `export_request_id`,
   requester/approver refs, `export_status`, included/excluded evidence refs,
-  linkage refs/status/canonical IDs, `raw_content_included: false`,
-  `secret_material_included: false`, `created_at`, and evidence refs.
+  review/status placeholders, reason-code arrays, linkage refs/status/canonical
+  IDs, `raw_content_included: false`, `secret_material_included: false`,
+  `created_at`, and evidence refs.
 - Conditional requirements: prepared/exported manifests require
   `redaction_profile_ref` and `retention_policy_refs`; denied/blocked manifests
   require `delete_conflict_refs`.
@@ -674,7 +703,7 @@ Approval/Guardian reconciliation drill requirements are defined in
 ## Evidence Ledger Entry Contract v1
 
 - Schema: [evidence.ledger.entry.schema.json](../contracts/v1/evidence.ledger.entry.schema.json)
-- Example objects: [evidence.ledger.entry.pre-action.example.json](../contracts/examples/evidence.ledger.entry.pre-action.example.json), [evidence.ledger.entry.replay-denial.example.json](../contracts/examples/evidence.ledger.entry.replay-denial.example.json), [evidence.ledger.entry.export-manifest.example.json](../contracts/examples/evidence.ledger.entry.export-manifest.example.json), [evidence.ledger.entry.rollback.example.json](../contracts/examples/evidence.ledger.entry.rollback.example.json)
+- Example objects: [evidence.ledger.entry.pre-action.example.json](../contracts/examples/evidence.ledger.entry.pre-action.example.json), [evidence.ledger.entry.replay-denial.example.json](../contracts/examples/evidence.ledger.entry.replay-denial.example.json), [evidence.ledger.entry.export-manifest.example.json](../contracts/examples/evidence.ledger.entry.export-manifest.example.json), [evidence.ledger.entry.rollback.example.json](../contracts/examples/evidence.ledger.entry.rollback.example.json), [evidence.ledger.entry.delete-review.example.json](../contracts/examples/evidence.ledger.entry.delete-review.example.json), [evidence.ledger.entry.failed-closed-export.example.json](../contracts/examples/evidence.ledger.entry.failed-closed-export.example.json)
 - Purpose: models append-only evidence-ledger metadata for pre-action,
   post-action, denial, replay-denial, export, delete-review, and rollback
   entries without storing raw content.

@@ -120,6 +120,10 @@
       "type": "string",
       "minLength": 1
     },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
     "replay_check_id": {
       "type": "string",
       "minLength": 1
@@ -237,6 +241,99 @@
         "tenant_mismatch",
         "blocked_mvp"
       ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reconciliation_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evidence_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_delete_conflict_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "prepared",
+        "exported",
+        "failed_closed",
+        "blocked_mvp"
+      ]
+    },
+    "delete_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "conflict_detected",
+        "blocked_mvp"
+      ]
+    },
+    "preservation_hold_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "required",
+        "active",
+        "conflict_with_delete",
+        "released",
+        "blocked_mvp"
+      ]
+    },
+    "conflict_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "delete_proof_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_package_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
     },
     "checked_at": {
       "type": "string",
@@ -484,9 +581,33 @@
               "dry_run"
             ]
           },
+          "replay_record_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "replay_artifact_id": {
+            "type": "string",
+            "minLength": 1
+          },
           "decision_nonce": {
             "type": "string",
             "minLength": 1
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hash_algorithm": {
+            "type": "string",
+            "minLength": 1
+          },
+          "content_hash": {
+            "type": "string",
+            "minLength": 1
+          },
+          "chain_position": {
+            "type": "integer",
+            "minimum": 1
           },
           "denial_evidence_ref": {
             "const": null
@@ -530,6 +651,75 @@
           },
           "mismatch_reasons": {
             "minItems": 1
+          },
+          "reason_codes": {
+            "minItems": 1
+          },
+          "evidence_reason_codes": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_check_result": {
+            "const": "expired"
+          }
+        },
+        "required": [
+          "replay_check_result"
+        ]
+      },
+      "then": {
+        "properties": {
+          "mismatch_reasons": {
+            "contains": {
+              "const": "decision_expired"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_check_result": {
+            "const": "stale"
+          }
+        },
+        "required": [
+          "replay_check_result"
+        ]
+      },
+      "then": {
+        "properties": {
+          "mismatch_reasons": {
+            "contains": {
+              "const": "decision_stale"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_check_result": {
+            "const": "replay_denied"
+          }
+        },
+        "required": [
+          "replay_check_result"
+        ]
+      },
+      "then": {
+        "properties": {
+          "mismatch_reasons": {
+            "contains": {
+              "const": "nonce_replayed"
+            }
           }
         }
       }

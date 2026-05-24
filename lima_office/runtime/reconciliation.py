@@ -12,6 +12,7 @@ from lima_office.runtime.invariants import (
     DEFAULT_REFERENCE_TIME,
     assert_guardian_decision_replay_safe,
 )
+from lima_office.runtime.taxonomy import validate_reason_codes
 
 
 RECONCILIATION_ORDER = (
@@ -25,6 +26,21 @@ RECONCILIATION_ORDER = (
     "missing_ref",
     "reconciled",
 )
+
+RECONCILIATION_REASON_CODE_MAP = {
+    "missing_guardian_decision": "recon_missing_guardian_decision",
+    "stale_guardian_decision": "recon_stale_guardian_decision",
+    "mismatched_approval_binding": "recon_mismatched_approval_binding",
+    "mismatched_token_verification": "recon_mismatched_token_verification",
+    "replay_record_missing": "recon_replay_record_missing",
+    "replay_record_mismatch": "recon_replay_record_mismatch",
+    "evidence_ref_missing": "recon_evidence_ref_missing",
+    "evidence_ledger_mismatch": "recon_evidence_ref_missing",
+    "coordinator_event_mismatch": "recon_coordinator_event_mismatch",
+    "transaction_boundary_mismatch": "recon_coordinator_event_mismatch",
+    "cross_tenant_linkage": "recon_cross_tenant_linkage",
+    "blocked_mvp_authorization_attempt": "blocked_mvp_authorization_attempt",
+}
 
 
 class ApprovalGuardianReconciler:
@@ -269,9 +285,16 @@ class ApprovalGuardianReconciler:
 
         status = self._classify_status(reasons)
         deduped_reasons = sorted(set(reasons))
+        mapped_reason_codes = [
+            RECONCILIATION_REASON_CODE_MAP[reason]
+            for reason in deduped_reasons
+            if reason in RECONCILIATION_REASON_CODE_MAP
+        ]
+        reason_codes = validate_reason_codes(mapped_reason_codes)
         return {
             "reconciliation_status": status,
             "reconciliation_failure_reasons": deduped_reasons,
+            "reason_codes": reason_codes,
             "reconciliation_evidence_refs": sorted(evidence_refs),
             "canonical_approval_chain_id": canonical_approval_chain_id,
             "canonical_approval_binding_id": canonical_approval_binding_id,

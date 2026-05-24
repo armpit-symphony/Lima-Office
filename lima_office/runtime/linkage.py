@@ -236,11 +236,12 @@ class CrossContractLinkageValidator:
             if replay_record.get("tool_scope") and binding_tool_scope is not None and binding_tool_scope != replay_record.get("tool_scope"):
                 linkage_failure_reasons.append("binding_tool_scope_mismatch")
 
-        status = self._classify_linkage_status(linkage_failure_reasons, forced_status=forced_status)
+        deduped_reasons = sorted(set(linkage_failure_reasons))
+        status = self._classify_linkage_status(deduped_reasons, forced_status=forced_status)
         return {
             "linkage_status": status,
-            "failure_reasons": linkage_failure_reasons,
-            "linkage_failure_reasons": linkage_failure_reasons,
+            "failure_reasons": deduped_reasons,
+            "linkage_failure_reasons": deduped_reasons,
             "can_authorize": False,
         }
 

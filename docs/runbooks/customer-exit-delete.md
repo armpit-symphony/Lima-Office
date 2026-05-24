@@ -40,6 +40,8 @@ requests, worker cache purge planning, and evidence preservation conflicts.
 - Sensitive export requires security or compliance review.
 - Delete requires compliance review.
 - Device retirement or cache purge requires field IT review.
+- Self-approval for conflict closure is blocked; unresolved reviewer separation
+  keeps the request blocked.
 
 ## Evidence To Capture
 
@@ -56,6 +58,8 @@ requests, worker cache purge planning, and evidence preservation conflicts.
 
 - If scope is ambiguous, block export/delete.
 - If preservation conflict exists, block automatic delete.
+- If preservation conflict is unresolved, keep delete denied/blocked and record
+  conflict evidence refs.
 - If connector status is unknown, revoke or disable future live review posture.
 - If worker cache purge proof is missing, keep device retired or quarantined.
 

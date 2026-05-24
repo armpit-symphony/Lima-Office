@@ -952,6 +952,15 @@ def assert_evidence_export_manifest_consistent(
         raise PolicyDenyError("export manifest included refs must be evidence refs")
 
     status = manifest.get("export_status")
+    export_review_status = manifest.get("export_review_status")
+    delete_review_status = manifest.get("delete_review_status")
+    redaction_status = manifest.get("redaction_status")
+    preservation_hold_status = manifest.get("preservation_hold_status")
+    reason_codes = manifest.get("reason_codes") or []
+    export_delete_conflict_codes = manifest.get("export_delete_conflict_codes") or []
+    conflict_evidence_refs = manifest.get("conflict_evidence_refs") or []
+    delete_proof_refs = manifest.get("delete_proof_refs") or []
+    export_package_refs = manifest.get("export_package_refs") or []
     if status in {"prepared", "exported"}:
         if not manifest.get("redaction_profile_ref"):
             raise PolicyDenyError("export manifest requires redaction profile for prepared/exported status")
@@ -959,8 +968,32 @@ def assert_evidence_export_manifest_consistent(
             raise PolicyDenyError("export manifest requires retention placeholders")
         if not manifest.get("hash_manifest_ref"):
             raise PolicyDenyError("prepared/exported export manifest requires hash manifest ref")
+        if status == "exported" and redaction_status not in {"applied", "not_required"}:
+            raise PolicyDenyError("exported manifest requires applied/not_required redaction status")
+        if status == "exported" and export_review_status not in {"exported"}:
+            raise PolicyDenyError("exported manifest requires exported review status")
+        if status == "exported" and not export_package_refs:
+            raise PolicyDenyError("exported manifest requires export package refs")
     if status in {"denied", "blocked_mvp"} and not manifest.get("delete_conflict_refs"):
         raise PolicyDenyError("denied/blocked export manifest requires delete conflict refs")
+    if delete_review_status == "conflict_detected":
+        if not conflict_evidence_refs:
+            raise PolicyDenyError("conflict-detected delete review requires conflict evidence refs")
+        if not reason_codes:
+            raise PolicyDenyError("conflict-detected delete review requires reason codes")
+        if not export_delete_conflict_codes:
+            raise PolicyDenyError("conflict-detected delete review requires export/delete conflict codes")
+    if delete_review_status == "approved" and not delete_proof_refs:
+        raise PolicyDenyError("approved delete review requires delete proof refs")
+    if preservation_hold_status in {"active", "conflict_with_delete", "blocked_mvp"} and delete_review_status == "approved":
+        raise PolicyDenyError("preservation hold conflict blocks delete approval")
+    if status == "failed":
+        if export_review_status != "failed_closed":
+            raise PolicyDenyError("failed export status requires failed_closed review status")
+        if not reason_codes:
+            raise PolicyDenyError("failed export status requires reason codes")
+        if not manifest.get("evidence_refs"):
+            raise PolicyDenyError("failed export status requires evidence refs")
 
     if evidence_by_id:
         tenant_id = manifest.get("tenant_id")

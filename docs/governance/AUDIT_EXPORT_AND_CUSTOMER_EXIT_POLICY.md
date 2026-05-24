@@ -10,6 +10,9 @@ Policy ref: `policy.audit_export_customer_exit.phase0`
 Status: draft scaffold. No export service, delete service, durable store, or
 customer portal is implemented.
 
+See [Export Delete Conflict Policy](EXPORT_DELETE_CONFLICT_POLICY.md) for the
+canonical conflict reason taxonomy and fail-closed review posture.
+
 ## Audit Export Purpose
 
 Audit export exists to produce a redacted, scoped package of governance,
@@ -87,7 +90,8 @@ Delete request steps:
 3. Identify evidence, incident, retention, and legal/policy conflict
    placeholders.
 4. Require approval and evidence.
-5. Execute only after a future approved implementation exists.
+5. Execution is prohibited in Phase 0 and Phase 1A. Only metadata review
+   records may be produced.
 6. Record proof refs, exclusions, and unresolved conflicts.
 
 ## Evidence Preservation Conflict Placeholder
@@ -98,7 +102,8 @@ retention law or legal hold posture. Ambiguous conflict fails closed and blocks
 automatic delete.
 
 Denied or blocked export/delete outcomes must explicitly include
-`delete_conflict_refs` in export-manifest metadata.
+`delete_conflict_refs`, conflict reason codes, and conflict evidence refs in
+export-manifest and governance review metadata.
 
 ## Operator Approval Requirements
 

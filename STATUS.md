@@ -6,7 +6,7 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
-Current working branch: `approval-guardian-linkage-reconciliation-drills`
+Current working branch: `governance-export-delete-taxonomy-finalization`
 
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
@@ -15,13 +15,12 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A approval Guardian linkage reconciliation drills.
+Current phase: Phase 1A governance export/delete taxonomy finalization.
 Phase 1A mock runtime scaffolding is present, the v2 invariant checkpoint and
-durable replay/evidence, transaction/storage, and coordinator checkpoints are
-reachable, and this branch adds approval/Guardian reconciliation guardrails for
-approval chain, approval binding, token verification, Guardian
-decision/replay, replay record, coordinator/transaction, and ledger metadata
-coherence.
+durable replay/evidence, transaction/storage, coordinator, linkage, and
+approval/Guardian reconciliation checkpoints are reachable, and this branch adds
+canonical reconciliation/evidence reason taxonomy docs plus governance export/
+delete conflict contract hardening.
 Runtime expansion remains blocked until the remaining gates in this file,
 [Baseline](docs/BASELINE.md), and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md)
 are resolved.
@@ -96,6 +95,14 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
 - Approval/Guardian reconciliation drill design in
   [docs/APPROVAL_GUARDIAN_RECONCILIATION_DRILLS.md](docs/APPROVAL_GUARDIAN_RECONCILIATION_DRILLS.md)
   with deterministic reconciliation statuses and fail-closed drift classes.
+- Reconciliation and evidence reason taxonomies in
+  [docs/taxonomy/RECONCILIATION_REASON_TAXONOMY.md](docs/taxonomy/RECONCILIATION_REASON_TAXONOMY.md)
+  and [docs/taxonomy/EVIDENCE_REASON_TAXONOMY.md](docs/taxonomy/EVIDENCE_REASON_TAXONOMY.md).
+- Export/delete conflict policy and runbook in
+  [docs/governance/EXPORT_DELETE_CONFLICT_POLICY.md](docs/governance/EXPORT_DELETE_CONFLICT_POLICY.md)
+  and [docs/runbooks/export-delete-conflict-review.md](docs/runbooks/export-delete-conflict-review.md).
+- `governance.export_delete_review` schema and examples for metadata-only
+  export/delete review posture.
 - Strict contract validation through [scripts/validate-contracts.py](scripts/validate-contracts.py).
 - Local Markdown link validation through [scripts/check-doc-links.py](scripts/check-doc-links.py).
 - Phase 1A mock Python runtime scaffolding in [lima_office](lima_office).
@@ -201,6 +208,8 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
   thresholds and owner/escalation rules.
 - Define final storage engine choice, migration posture, retention periods,
   redaction taxonomy, export package format, and customer delete proof posture.
+- Define final legal retention periods and external legal review for
+  taxonomy/retention semantics before any live export/delete implementation.
 - Select operator IdP/MFA, breakglass, access review cadence, and LIMA IT
   approver separation implementation. Governance scaffolding now defines
   fail-closed metadata, role separation, and blocked breakglass posture, but no
@@ -213,8 +222,8 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 
 ## Next Recommended Lane
 
-After this approval/Guardian reconciliation-drills checkpoint is reviewed, the
-next safe lane is governance/export/delete conflict policy finalization and
-reconciliation reason/evidence taxonomy normalization, still without adding
-live services. Phase 1B lab runtime expansion remains blocked until those gates
-are approved. Mainline update should wait for explicit approval.
+After governance export/delete taxonomy hardening is reviewed, the next safe
+lane is fail-closed reason-code registry enforcement across all runtime helpers
+and schemas, still without adding live services. Phase 1B lab runtime expansion
+remains blocked until those gates are approved. Mainline update should wait for
+explicit approval.

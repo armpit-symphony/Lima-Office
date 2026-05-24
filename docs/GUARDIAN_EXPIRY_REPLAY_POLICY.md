@@ -118,6 +118,9 @@ not override an expired, stale, replayed, or mismatched Guardian decision.
 `evidence.artifact` refs are required for allow, denial, replay, expiry,
 scope-mismatch, blocked-MVP, and taint outcomes. Guardian replay records are
 metadata-only and must not contain raw customer content or secret material.
+Reason codes for denial and reconciliation should use the canonical taxonomy
+registries to avoid free-form drift across Guardian replay, approval binding,
+and governance conflict records.
 
 Phase 1A now also models a future durable replay-store posture through
 `replay.store.record`, transaction boundaries through `transaction.boundary`,

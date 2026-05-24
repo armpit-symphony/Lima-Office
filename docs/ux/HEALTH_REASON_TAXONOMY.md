@@ -36,3 +36,6 @@ implementation. Phase 1A v2 uses these codes in metadata-only
   console.
 - Every reason code must map to a runbook and evidence or evidence-failure ref.
 - Future runtime must treat unknown reason codes as review-required or blocked.
+- Governance/export/delete reason-code alignment is defined in
+  [Reconciliation Reason Taxonomy](../taxonomy/RECONCILIATION_REASON_TAXONOMY.md)
+  and [Evidence Reason Taxonomy](../taxonomy/EVIDENCE_REASON_TAXONOMY.md).

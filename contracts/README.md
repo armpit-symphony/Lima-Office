@@ -34,6 +34,7 @@ Version 1 schemas are in [v1](v1):
 - [governance.access_review.schema.json](v1/governance.access_review.schema.json)
 - [governance.breakglass.schema.json](v1/governance.breakglass.schema.json)
 - [governance.audit_export.schema.json](v1/governance.audit_export.schema.json)
+- [governance.export_delete_review.schema.json](v1/governance.export_delete_review.schema.json)
 - [governance.connector_consent.schema.json](v1/governance.connector_consent.schema.json)
 - [governance.update_record.schema.json](v1/governance.update_record.schema.json)
 - [console.view.schema.json](v1/console.view.schema.json)
@@ -81,6 +82,11 @@ Sanitized example objects are in [examples](examples):
 - [governance.access_review.quarterly-placeholder.example.json](examples/governance.access_review.quarterly-placeholder.example.json)
 - [governance.breakglass.blocked-mvp.example.json](examples/governance.breakglass.blocked-mvp.example.json)
 - [governance.audit_export.requested-placeholder.example.json](examples/governance.audit_export.requested-placeholder.example.json)
+- [governance.audit_export.delete-conflict.example.json](examples/governance.audit_export.delete-conflict.example.json)
+- [governance.audit_export.export-denied.example.json](examples/governance.audit_export.export-denied.example.json)
+- [governance.export_delete_review.export-approved-redacted.example.json](examples/governance.export_delete_review.export-approved-redacted.example.json)
+- [governance.export_delete_review.delete-conflict-denied.example.json](examples/governance.export_delete_review.delete-conflict-denied.example.json)
+- [governance.export_delete_review.blocked-mvp.example.json](examples/governance.export_delete_review.blocked-mvp.example.json)
 - [governance.connector_consent.revoked.example.json](examples/governance.connector_consent.revoked.example.json)
 - [governance.update_record.rollback-required.example.json](examples/governance.update_record.rollback-required.example.json)
 - [console.view.operator-dashboard.example.json](examples/console.view.operator-dashboard.example.json)
@@ -150,11 +156,15 @@ Sanitized example objects are in [examples](examples):
 - [evidence.ledger.entry.replay-denial.example.json](examples/evidence.ledger.entry.replay-denial.example.json)
 - [evidence.ledger.entry.export-manifest.example.json](examples/evidence.ledger.entry.export-manifest.example.json)
 - [evidence.ledger.entry.rollback.example.json](examples/evidence.ledger.entry.rollback.example.json)
+- [evidence.ledger.entry.delete-review.example.json](examples/evidence.ledger.entry.delete-review.example.json)
+- [evidence.ledger.entry.failed-closed-export.example.json](examples/evidence.ledger.entry.failed-closed-export.example.json)
 - [evidence.failure.pre-action-blocked.example.json](examples/evidence.failure.pre-action-blocked.example.json)
 - [evidence.failure.post-action-degraded.example.json](examples/evidence.failure.post-action-degraded.example.json)
 - [evidence.failure.replay-store-unavailable.example.json](examples/evidence.failure.replay-store-unavailable.example.json)
 - [evidence.export_manifest.prepared-redacted.example.json](examples/evidence.export_manifest.prepared-redacted.example.json)
 - [evidence.export_manifest.denied-delete-conflict.example.json](examples/evidence.export_manifest.denied-delete-conflict.example.json)
+- [evidence.export_manifest.blocked-delete-conflict.example.json](examples/evidence.export_manifest.blocked-delete-conflict.example.json)
+- [evidence.export_manifest.exported-redacted-metadata-only.example.json](examples/evidence.export_manifest.exported-redacted-metadata-only.example.json)
 - [incident.ops.example.json](examples/incident.ops.example.json)
 - [sla.slo.example.json](examples/sla.slo.example.json)
 - [lima_it.handoff.example.json](examples/lima_it.handoff.example.json)
@@ -279,6 +289,9 @@ The v1 schemas use JSON Schema draft 2020-12 conditionals to block unsafe state 
   linkage and raw/secret exclusion.
 - `evidence.export_manifest` models export metadata using refs-only payloads
   with redaction/retention/delete-conflict placeholders.
+- Governance/evidence contracts now include taxonomy-versioned reason-code fields
+  so export/delete conflict, reconciliation drift, and denial evidence posture
+  can fail closed with consistent vocabulary.
 
 See [Schema Hardening Notes](../docs/SCHEMA_HARDENING_NOTES.md) for the reasoning and Phase 1A test expectations.
 

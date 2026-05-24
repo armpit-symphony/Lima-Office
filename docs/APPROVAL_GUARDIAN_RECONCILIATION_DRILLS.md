@@ -67,6 +67,9 @@ The reconciliation taxonomy uses these classes:
 - `cross_tenant_linkage`
 - `blocked_mvp_authorization_attempt`
 
+Canonical reason-code mappings are defined in
+[Reconciliation Reason Taxonomy](taxonomy/RECONCILIATION_REASON_TAXONOMY.md).
+
 ## Reconciliation Rules
 
 - Reconciliation status is deterministic and fail-closed.

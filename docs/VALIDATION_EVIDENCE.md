@@ -5,7 +5,7 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `approval-guardian-linkage-reconciliation-drills` on Windows with
+Latest captured run: `governance-export-delete-taxonomy-finalization` on Windows with
 Python 3.12.10.
 
 ## Canonical Integration Branch
@@ -21,6 +21,8 @@ Python 3.12.10.
 - Cross-contract linkage hardening branch: `cross-contract-linkage-hardening`
 - Approval Guardian reconciliation drills branch:
   `approval-guardian-linkage-reconciliation-drills`
+- Governance export/delete taxonomy finalization branch:
+  `governance-export-delete-taxonomy-finalization`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -128,6 +130,17 @@ only; it does not approve databases, queues, durable storage services, live
 connectors, external sends, real remediation, production operations, or
 customer-system mutation.
 
+## Governance Export Delete Taxonomy Finalization Checkpoint
+
+This branch adds reconciliation and evidence reason taxonomy docs,
+export/delete conflict governance policy and runbook docs, taxonomy-aware
+governance review contracts and examples, mock-only taxonomy conflict
+classification helper logic, and fail-closed tests for blocked/conflict/
+redaction/hold conditions. Validation remains repository health evidence only;
+it does not approve export or delete implementation, databases, queues, durable
+storage services, live connectors, external sends, real remediation, production
+operations, or customer-system mutation.
+
 ## Strict Schema Validation
 
 Command:
@@ -140,13 +153,13 @@ Result:
 
 ```text
 LIMA Office contract validation
-- schemas parsed: 38
-- examples parsed: 91
-- mapped examples: 91
-- schemas with examples: 38
+- schemas parsed: 39
+- examples parsed: 100
+- mapped examples: 100
+- schemas with examples: 39
 - validation mode: full JSON Schema draft 2020-12 with format checks
 - jsonschema version: 4.26.0
-- unsafe-content scan: 91 example files, 93 markdown files
+- unsafe-content scan: 100 example files, 97 markdown files
 - warnings: 0
 - failures: 0
 Result: PASS
@@ -172,8 +185,8 @@ Result:
 
 ```text
 LIMA Office markdown link check
-- markdown files scanned: 101
-- local links checked: 726
+- markdown files scanned: 105
+- local links checked: 768
 - external/anchor links ignored: 0
 - failures: 0
 Result: PASS
@@ -190,7 +203,7 @@ python -B -m unittest discover -s tests -v
 Result:
 
 ```text
-Ran 186 tests
+Ran 198 tests
 
 OK
 ```
@@ -237,6 +250,11 @@ Coverage added by this checkpoint:
   stale/missing/mismatched linkage failures, replay/coordinator/transaction/
   ledger mismatch handling, cross-tenant isolation, blocked-MVP action classes,
   denial-path evidence enforcement, and explicit no-real-action authorization.
+- Governance export/delete taxonomy checks for recognized reason-code
+  enforcement, unknown-code fail-closed behavior, review-schema conflict
+  evidence requirements, blocked-MVP completion denial, preservation-hold
+  delete blocking, exported-manifest redaction requirements, failed-closed
+  evidence requirements, and explicit no-real-action authorization.
 
 ## Pytest
 
@@ -249,7 +267,7 @@ python -m pytest -q
 Result:
 
 ```text
-186 passed, 1 warning, 127 subtests passed
+198 passed, 1 warning, 136 subtests passed
 ```
 
 Warning: pytest could not create/write `.pytest_cache` because access was
@@ -290,10 +308,9 @@ git status
 ```
 
 Checkpoint patch result before staging: modified runtime mock hardening, tests,
-schemas/examples, and documentation only, including approval/Guardian
-reconciliation hardening for approval chain/binding/token verification/Guardian
-decision/replay, replay-store records, transaction metadata, and evidence
-ledger linkage.
+schemas/examples, and documentation only, including governance export/delete
+taxonomy hardening for reason-code normalization, evidence taxonomy alignment,
+conflict review metadata, and fail-closed export/delete policy posture.
 
 ## CI Expectations
 

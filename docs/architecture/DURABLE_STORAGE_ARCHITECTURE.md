@@ -24,6 +24,8 @@ MVP-boundary constraints.
 - Export Manifest Builder
 - Redaction Processor placeholder
 - Audit Index
+- Taxonomy Registry placeholder (reason-code sets for reconciliation/evidence/
+  export-delete conflict metadata)
 
 ## Component Responsibilities
 
@@ -37,6 +39,8 @@ MVP-boundary constraints.
 - Export Manifest Builder: refs-only manifest generation.
 - Redaction Processor placeholder: applies policy-driven exclusions/redactions.
 - Audit Index: query support for operator/security/compliance review.
+- Taxonomy Registry placeholder: versioned reason-code dictionaries used by
+  coordinator/replay/evidence/governance records.
 
 ## Data Flow: Consume Path
 

@@ -14,6 +14,9 @@
     "correlation_id",
     "causation_id",
     "idempotency_key",
+    "producer",
+    "policy_version",
+    "taxonomy_version",
     "export_request_id",
     "request_type",
     "requester_identity_ref",
@@ -24,16 +27,29 @@
     "non_exportable_classes",
     "delete_request",
     "evidence_preservation_conflict",
-    "export_manifest_ref",
-    "integrity_ref",
-    "policy_refs",
     "status",
-    "producer",
-    "policy_version",
+    "export_review_status",
+    "delete_review_status",
+    "redaction_status",
+    "preservation_hold_status",
+    "reason_codes",
+    "reconciliation_reason_codes",
+    "evidence_reason_codes",
+    "export_delete_conflict_codes",
+    "retention_policy_refs",
+    "redaction_profile_ref",
+    "policy_refs",
+    "conflict_evidence_refs",
+    "delete_proof_refs",
+    "export_manifest_refs",
+    "export_package_refs",
     "guardian_decision_id",
     "evidence_refs",
+    "blocked_reason",
     "created_at",
-    "updated_at"
+    "updated_at",
+    "raw_content_included",
+    "secret_material_included"
   ],
   "properties": {
     "contract_name": {
@@ -79,6 +95,37 @@
       "type": "string",
       "minLength": 1
     },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "operator_console",
+            "supervisor",
+            "security_reviewer",
+            "compliance_reviewer"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
     "export_request_id": {
       "type": "string",
       "minLength": 1
@@ -113,7 +160,8 @@
       ],
       "properties": {
         "tenant_scope_confirmed": {
-          "type": "boolean"
+          "type": "boolean",
+          "const": true
         },
         "starts_at": {
           "type": [
@@ -227,13 +275,108 @@
         "blocks_delete"
       ]
     },
-    "export_manifest_ref": {
-      "type": [
-        "string",
-        "null"
+    "status": {
+      "type": "string",
+      "enum": [
+        "requested",
+        "review_required",
+        "approved_placeholder",
+        "denied",
+        "blocked",
+        "completed_mock",
+        "failed_closed",
+        "blocked_mvp"
       ]
     },
-    "integrity_ref": {
+    "export_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "prepared",
+        "exported",
+        "failed_closed",
+        "blocked_mvp"
+      ]
+    },
+    "delete_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "conflict_detected",
+        "blocked_mvp"
+      ]
+    },
+    "redaction_status": {
+      "type": "string",
+      "enum": [
+        "not_required",
+        "required",
+        "pending",
+        "applied",
+        "failed",
+        "blocked_mvp"
+      ]
+    },
+    "preservation_hold_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "required",
+        "active",
+        "conflict_with_delete",
+        "released",
+        "blocked_mvp"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reconciliation_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evidence_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_delete_conflict_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "retention_policy_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "redaction_profile_ref": {
       "type": [
         "string",
         "null"
@@ -248,43 +391,37 @@
       },
       "uniqueItems": true
     },
-    "status": {
-      "type": "string",
-      "enum": [
-        "requested",
-        "review_required",
-        "approved_placeholder",
-        "denied",
-        "blocked",
-        "completed_mock"
-      ]
+    "conflict_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
     },
-    "producer": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "component",
-        "produced_at"
-      ],
-      "properties": {
-        "component": {
-          "type": "string",
-          "enum": [
-            "operator_console",
-            "supervisor",
-            "security_reviewer",
-            "compliance_reviewer"
-          ]
-        },
-        "produced_at": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
+    "delete_proof_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
     },
-    "policy_version": {
-      "type": "string",
-      "minLength": 1
+    "export_manifest_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_package_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
     },
     "guardian_decision_id": {
       "type": "string",
@@ -295,7 +432,7 @@
       "minItems": 1,
       "items": {
         "type": "string",
-        "minLength": 1
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
       },
       "uniqueItems": true
     },
@@ -312,15 +449,125 @@
     "updated_at": {
       "type": "string",
       "format": "date-time"
+    },
+    "raw_content_included": {
+      "type": "boolean",
+      "const": false
+    },
+    "secret_material_included": {
+      "type": "boolean",
+      "const": false
     }
   },
   "allOf": [
     {
-      "properties": {
-        "scope": {
-          "properties": {
-            "tenant_scope_confirmed": {
-              "const": true
+      "if": {
+        "properties": {
+          "delete_review_status": {
+            "const": "conflict_detected"
+          }
+        },
+        "required": [
+          "delete_review_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "conflict_evidence_refs": {
+            "minItems": 1
+          },
+          "reason_codes": {
+            "minItems": 1
+          },
+          "export_delete_conflict_codes": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "export_review_status": {
+            "const": "exported"
+          }
+        },
+        "required": [
+          "export_review_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "redaction_status": {
+            "enum": [
+              "applied",
+              "not_required"
+            ]
+          },
+          "export_manifest_refs": {
+            "minItems": 1
+          },
+          "export_package_refs": {
+            "minItems": 1
+          },
+          "status": {
+            "const": "completed_mock"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "delete_review_status": {
+            "const": "approved"
+          }
+        },
+        "required": [
+          "delete_review_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "delete_proof_refs": {
+            "minItems": 1
+          },
+          "preservation_hold_status": {
+            "enum": [
+              "none",
+              "released"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "preservation_hold_status": {
+            "enum": [
+              "active",
+              "conflict_with_delete"
+            ]
+          }
+        },
+        "required": [
+          "preservation_hold_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "delete_review_status": {
+            "enum": [
+              "review_required",
+              "denied",
+              "conflict_detected",
+              "blocked_mvp"
+            ]
+          },
+          "status": {
+            "not": {
+              "const": "completed_mock"
             }
           }
         }
@@ -330,18 +577,105 @@
       "if": {
         "properties": {
           "status": {
-            "const": "blocked"
+            "enum": [
+              "denied",
+              "blocked"
+            ]
           }
-        }
+        },
+        "required": [
+          "status"
+        ]
       },
       "then": {
-        "required": [
-          "blocked_reason"
-        ],
         "properties": {
           "blocked_reason": {
             "type": "string",
             "minLength": 1
+          },
+          "reason_codes": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "failed_closed"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason_codes": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "blocked_mvp"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "environment": {
+            "const": "blocked_mvp"
+          },
+          "export_review_status": {
+            "not": {
+              "const": "exported"
+            }
+          },
+          "delete_review_status": {
+            "not": {
+              "const": "approved"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "request_type": {
+            "enum": [
+              "delete_request",
+              "export_and_delete_review",
+              "customer_exit"
+            ]
+          }
+        },
+        "required": [
+          "request_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence_preservation_conflict": {
+            "enum": [
+              "none_identified",
+              "conflict_placeholder",
+              "blocks_delete"
+            ]
           }
         }
       }

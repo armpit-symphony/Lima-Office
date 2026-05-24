@@ -17,10 +17,15 @@ cross-contract invariant checkpoint. The reachable replacement is
 Recommended order:
 
 1. Governance/export/delete conflict policy finalization and reconciliation
-   evidence taxonomy hardening (after approval/Guardian reconciliation drills).
+   evidence taxonomy hardening (checkpoint completed as docs/contracts/tests
+   hardening on `governance-export-delete-taxonomy-finalization`).
 2. Final RBAC/IdP/MFA/session/device trust matrix.
 3. Model-routing defaults and health taxonomy refinement.
 4. Phase 1B lab runtime expansion only after the gates above are approved.
+
+Next recommended lane after this checkpoint: enforce canonical reason-code
+registries across all reconciliation/linkage/governance helpers and schemas
+with negative-path drift tests, still without adding live services.
 
 Alternative non-runtime lanes can proceed when they do not obscure the blockers:
 model-routing defaults, final IdP/MFA/RBAC matrix, health taxonomy refinement,

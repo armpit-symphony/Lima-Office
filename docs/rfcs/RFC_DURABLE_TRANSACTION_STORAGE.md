@@ -189,6 +189,8 @@ Final taxonomy and implementation remain open governance items.
 - Export-manifest operations must remain refs-only.
 - Cross-contract linkage statuses must detect and fail closed on missing refs,
   tenant mismatch, nonce mismatch, scope mismatch, and reconciliation drift.
+- Reason-code fields should use taxonomy-versioned canonical registries before
+  durable runtime implementation begins.
 
 ## MVP Blocked Items
 

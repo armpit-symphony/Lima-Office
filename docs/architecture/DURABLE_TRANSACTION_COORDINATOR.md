@@ -171,6 +171,8 @@ No partial transaction may remain silently pending.
 - Denial, rollback, and failed-closed outcomes require explicit evidence.
 - Event chain must remain tenant-consistent and append-only.
 - Raw customer content and secrets are excluded from coordinator events.
+- Reconciliation/evidence/export-delete reason fields should use canonical
+  taxonomy codes with explicit version metadata.
 
 ## Cross-Contract Linkage Requirements
 

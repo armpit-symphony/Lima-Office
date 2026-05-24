@@ -47,6 +47,8 @@ The approval chain is:
    paths when the binding matches.
 13. `evidence.artifact`: records approval, denial, verification, consumption,
    replay denial, mismatch, and blocked-MVP evidence by reference only.
+    Reason codes should use canonical taxonomy registries to avoid drift across
+    approval, Guardian replay, and governance conflict records.
 14. Cross-contract linkage fields and `linkage_status` fail-closed semantics
    bind coordinator/boundary/replay/ledger/artifact/manifest metadata to the
    same canonical transaction context.

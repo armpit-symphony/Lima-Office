@@ -115,6 +115,10 @@
       "type": "string",
       "minLength": 1
     },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
     "transaction_id": {
       "type": "string",
       "minLength": 1
@@ -312,6 +316,75 @@
         "null"
       ]
     },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reconciliation_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evidence_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_delete_conflict_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "prepared",
+        "exported",
+        "failed_closed",
+        "blocked_mvp"
+      ]
+    },
+    "delete_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "conflict_detected",
+        "blocked_mvp"
+      ]
+    },
+    "preservation_hold_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "required",
+        "active",
+        "conflict_with_delete",
+        "released",
+        "blocked_mvp"
+      ]
+    },
     "approval_chain_id": {
       "type": [
         "string",
@@ -463,6 +536,9 @@
           "failure_reason": {
             "const": null
           },
+          "reason_codes": {
+            "maxItems": 0
+          },
           "related_coordinator_event_ids": {
             "minItems": 1
           },
@@ -498,6 +574,13 @@
           "committed_at": {
             "const": null
           },
+          "failure_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason_codes": {
+            "minItems": 1
+          },
           "evidence_refs": {
             "minItems": 1
           }
@@ -521,10 +604,16 @@
             "type": "string",
             "minLength": 1
           },
+          "reason_codes": {
+            "minItems": 1
+          },
           "evidence_refs": {
             "minItems": 1
           },
           "committed_at": {
+            "const": null
+          },
+          "rolled_back_at": {
             "const": null
           }
         }
@@ -549,6 +638,9 @@
           "failure_reason": {
             "type": "string",
             "minLength": 1
+          },
+          "reason_codes": {
+            "minItems": 1
           },
           "committed_at": {
             "const": null
@@ -579,6 +671,9 @@
             "const": null
           },
           "rolled_back_at": {
+            "const": null
+          },
+          "failure_reason": {
             "const": null
           }
         }
@@ -618,6 +713,61 @@
         "properties": {
           "related_export_manifest_ids": {
             "minItems": 1
+          },
+          "export_review_status": {
+            "enum": [
+              "prepared",
+              "exported",
+              "denied",
+              "blocked_mvp",
+              "failed_closed"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "delete_review_status": {
+            "const": "approved"
+          }
+        },
+        "required": [
+          "delete_review_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "preservation_hold_status": {
+            "enum": [
+              "none",
+              "released"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "preservation_hold_status": {
+            "enum": [
+              "active",
+              "conflict_with_delete"
+            ]
+          }
+        },
+        "required": [
+          "preservation_hold_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "delete_review_status": {
+            "not": {
+              "const": "approved"
+            }
           }
         }
       }

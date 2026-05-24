@@ -73,6 +73,9 @@ process restart and denial-path evidence can be incomplete.
 - Replay-denied outcomes must include mismatch reasons and denial evidence refs.
 - Future runtime must make denial artifact creation part of the same guarded
   transition as deny/block decisions.
+- Reason codes should use the canonical registries in
+  [Reconciliation Reason Taxonomy](taxonomy/RECONCILIATION_REASON_TAXONOMY.md)
+  and [Evidence Reason Taxonomy](taxonomy/EVIDENCE_REASON_TAXONOMY.md).
 
 ## Evidence Artifact Integrity
 
@@ -119,6 +122,8 @@ process restart and denial-path evidence can be incomplete.
   prepared/exported states.
 - Delete/export conflicts are represented explicitly and fail closed when
   unresolved.
+- Governance review metadata for export/delete conflicts is represented by
+  `governance.audit_export` and `governance.export_delete_review` only.
 
 ## Customer Exit/Delete Conflict Placeholders
 

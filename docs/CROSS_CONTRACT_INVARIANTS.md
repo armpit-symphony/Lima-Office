@@ -63,6 +63,8 @@ time-bounded, scope-bound, and replay-checked in memory for tests.
   secret-included evidence markers fail closed in MVP.
 - Export manifests must remain refs-only metadata with retention/redaction
   placeholders and explicit delete-conflict refs for denied/blocked states.
+- Export/delete review records must include canonical reason-code/evidence-code
+  posture when conflicts are detected, failed-closed, denied, or blocked.
 - Coordinator/boundary/replay/ledger/artifact/manifest linkage fields must stay
   coherent; non-`linked` linkage status is fail-closed and evidence-linked.
 - Approval-chain/binding/token-verification/Guardian-decision/Guardian-replay

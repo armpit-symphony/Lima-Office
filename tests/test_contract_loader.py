@@ -9,7 +9,7 @@ from lima_office.runtime.errors import ContractLoadError
 class ContractLoaderTests(unittest.TestCase):
     def test_loads_all_v1_schemas(self):
         loader = ContractLoader().load()
-        self.assertEqual(38, len(loader.schema_keys))
+        self.assertEqual(39, len(loader.schema_keys))
         self.assertIn("approval.binding", loader.contract_names)
         self.assertIn("approval.chain", loader.contract_names)
         self.assertIn("transaction.boundary", loader.contract_names)
@@ -22,6 +22,7 @@ class ContractLoaderTests(unittest.TestCase):
         self.assertIn("worker.deployment", loader.contract_names)
         self.assertIn("governance.identity", loader.contract_names)
         self.assertIn("governance.update_record", loader.contract_names)
+        self.assertIn("governance.export_delete_review", loader.contract_names)
         self.assertIn("console.view", loader.contract_names)
         self.assertIn("console.alert", loader.contract_names)
         self.assertIn("console.action", loader.contract_names)

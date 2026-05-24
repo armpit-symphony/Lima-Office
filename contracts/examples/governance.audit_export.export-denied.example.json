@@ -4,45 +4,34 @@
   "schema_version": "1.0.0",
   "tenant_id": "tenant-lab-001",
   "customer_context_id": "customer-context-main",
-  "environment": "phase0_lab",
-  "correlation_id": "corr-audit-export-001",
-  "causation_id": null,
-  "idempotency_key": "idem-audit-export-001",
+  "environment": "dry_run",
+  "correlation_id": "corr-audit-export-denied-001",
+  "causation_id": "req-audit-export-004",
+  "idempotency_key": "idem-audit-export-denied-001",
   "producer": {
     "component": "compliance_reviewer",
-    "produced_at": "2026-05-22T21:15:00Z"
+    "produced_at": "2026-05-24T19:18:00Z"
   },
   "policy_version": "policy-phase0-v1",
   "taxonomy_version": "taxonomy-recon-v1",
-  "export_request_id": "audit-export-placeholder-001",
+  "export_request_id": "audit-export-denied-001",
   "request_type": "audit_export",
   "requester_identity_ref": "operator-ref-001",
-  "approver_identity_ref": null,
+  "approver_identity_ref": "compliance-reviewer-ref-001",
   "scope": {
     "tenant_scope_confirmed": true,
-    "starts_at": "2026-05-01T00:00:00Z",
-    "ends_at": "2026-05-22T21:15:00Z",
+    "starts_at": "2026-05-10T00:00:00Z",
+    "ends_at": "2026-05-24T19:18:00Z",
     "resource_scope_refs": [
-      "resource-scope-worker-records",
-      "resource-scope-guardian-decisions"
+      "resource-scope-evidence-artifacts"
     ]
   },
   "record_classes": [
-    "guardian_decisions",
-    "approvals",
-    "evidence_artifacts",
-    "worker_records",
-    "governance_records"
+    "evidence_artifacts"
   ],
   "redaction_profile": "export_redacted",
   "non_exportable_classes": [
-    "credentials",
-    "raw_prompts",
-    "raw_model_responses",
-    "raw_connector_payloads",
-    "raw_tool_output",
-    "raw_customer_files",
-    "out_of_scope_tenant_data"
+    "raw_customer_files"
   ],
   "delete_request": {
     "delete_requested": false,
@@ -50,17 +39,19 @@
     "delete_approved": false,
     "delete_proof_ref": null
   },
-  "evidence_preservation_conflict": "not_evaluated",
-  "status": "review_required",
-  "export_review_status": "review_required",
+  "evidence_preservation_conflict": "none_identified",
+  "status": "denied",
+  "export_review_status": "denied",
   "delete_review_status": "not_requested",
   "redaction_status": "required",
   "preservation_hold_status": "none",
   "reason_codes": [
-    "export_delete_review_required"
+    "export_manifest_redaction_required"
   ],
   "reconciliation_reason_codes": [],
-  "evidence_reason_codes": [],
+  "evidence_reason_codes": [
+    "evidence_ref_missing"
+  ],
   "export_delete_conflict_codes": [],
   "retention_policy_refs": [
     "retention-rule-phase0-evidence"
@@ -73,16 +64,16 @@
   "conflict_evidence_refs": [],
   "delete_proof_refs": [],
   "export_manifest_refs": [
-    "export-manifest-ref-placeholder-001"
+    "exp-manifest-denied-002"
   ],
   "export_package_refs": [],
-  "guardian_decision_id": "gd-audit-export-001",
+  "guardian_decision_id": "gd-audit-export-denied-001",
   "evidence_refs": [
-    "ev-audit-export-requested-001"
+    "ev-audit-export-denied-001"
   ],
-  "blocked_reason": null,
-  "created_at": "2026-05-22T21:15:00Z",
-  "updated_at": "2026-05-22T21:15:00Z",
+  "blocked_reason": "Export denied until redaction profile review is complete.",
+  "created_at": "2026-05-24T19:16:00Z",
+  "updated_at": "2026-05-24T19:18:00Z",
   "raw_content_included": false,
   "secret_material_included": false
 }

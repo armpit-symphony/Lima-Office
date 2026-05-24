@@ -100,6 +100,17 @@ operations, customer-system mutation, or compliance certification claims.
   only. No database, queue, migration, service, or production storage
   implementation is authorized.
 
+## Governance Export/Delete Taxonomy Finalization Checkpoint
+
+- Branch: `governance-export-delete-taxonomy-finalization`
+- Base: `approval-guardian-linkage-reconciliation-drills`
+- Purpose: finalize governance export/delete conflict posture and normalize
+  reconciliation/evidence reason vocabulary across schemas, examples, and
+  mock-only validation helpers.
+- Scope: docs, schemas, examples, tests, and mock/in-memory taxonomy
+  validation only. No export/delete implementation, database, queue, migration,
+  service, or durable production storage is authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:

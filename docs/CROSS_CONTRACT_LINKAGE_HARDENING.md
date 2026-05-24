@@ -86,6 +86,8 @@ Canonical IDs are immutable once emitted. Rewrites are treated as drift.
 - Included refs must stay tenant-consistent with the manifest.
 - Delete/export conflict states require explicit conflict refs and blocked or
   denied linkage status.
+- Conflict and denial reasons should use canonical taxonomy codes so
+  reconciliation and governance records do not drift by free-form text.
 
 ## Reconciliation Drift Detection
 Drift is detected when terminal states disagree across linked contracts, such as:
