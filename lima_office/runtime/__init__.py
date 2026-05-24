@@ -11,6 +11,7 @@ from .errors import (
     WorkerStateError,
 )
 from .linkage import CrossContractLinkageValidator
+from .reconciliation import ApprovalGuardianReconciler
 
 __all__ = [
     "ContractLoadError",
@@ -22,4 +23,5 @@ __all__ = [
     "UnsafeRuntimeActionError",
     "WorkerStateError",
     "CrossContractLinkageValidator",
+    "ApprovalGuardianReconciler",
 ]

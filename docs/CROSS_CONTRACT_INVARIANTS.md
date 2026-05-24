@@ -65,6 +65,11 @@ time-bounded, scope-bound, and replay-checked in memory for tests.
   placeholders and explicit delete-conflict refs for denied/blocked states.
 - Coordinator/boundary/replay/ledger/artifact/manifest linkage fields must stay
   coherent; non-`linked` linkage status is fail-closed and evidence-linked.
+- Approval-chain/binding/token-verification/Guardian-decision/Guardian-replay
+  linkage must reconcile to canonical IDs and fail closed on
+  `missing_ref`, `mismatched_binding`, `stale_decision`, `replay_mismatch`,
+  `evidence_missing`, `coordinator_mismatch`, `cross_tenant_blocked`, or
+  `blocked_mvp` status.
 - Transaction-boundary metadata and evidence-ledger-entry metadata remain
   schema/test posture in this phase; implementation-time atomicity and durable
   chain enforcement are deferred and fail closed when ambiguous.
@@ -133,6 +138,10 @@ The new tests show that these combinations fail closed:
 - blocked-MVP approval result used to run a tool;
 - health payloads that would include raw customer content or secret-like
   material.
+- approval/Guardian reconciliation bundles with missing Guardian decision,
+  stale decision, approval/token mismatch, replay-record mismatch,
+  coordinator/transaction mismatch, evidence-ledger mismatch, cross-tenant
+  linkage, or blocked-MVP action type.
 
 ## Remaining Work
 

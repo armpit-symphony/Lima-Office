@@ -176,12 +176,17 @@ No partial transaction may remain silently pending.
 
 - Coordinator and transaction/replay/ledger/artifact/manifest records include
   explicit related-ID linkage fields.
+- Approval-chain/binding/token-verification/Guardian-decision/Guardian-replay
+  records must resolve to the same canonical IDs for any transaction path that
+  claims replay/token consumption.
 - `linkage_status: linked` requires complete references and empty
   `linkage_failure_reasons`.
 - `missing_ref`, `mismatched_*`, and `drift_detected` remain fail-closed and
   evidence-linked.
 - See [Cross-Contract Linkage Hardening](../CROSS_CONTRACT_LINKAGE_HARDENING.md)
   for the canonical linkage graph.
+- See [Approval Guardian Reconciliation Drills](../APPROVAL_GUARDIAN_RECONCILIATION_DRILLS.md)
+  for deterministic drift classification scenarios.
 
 ## MVP Blocked Items
 

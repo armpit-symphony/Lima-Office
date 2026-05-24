@@ -6,7 +6,7 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
-Current working branch: `cross-contract-linkage-hardening`
+Current working branch: `approval-guardian-linkage-reconciliation-drills`
 
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
@@ -15,11 +15,13 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A cross-contract linkage hardening.
+Current phase: Phase 1A approval Guardian linkage reconciliation drills.
 Phase 1A mock runtime scaffolding is present, the v2 invariant checkpoint and
 durable replay/evidence, transaction/storage, and coordinator checkpoints are
-reachable, and this branch adds cross-contract linkage guardrails for
-coordinator/boundary/replay/ledger/artifact/manifest metadata coherence.
+reachable, and this branch adds approval/Guardian reconciliation guardrails for
+approval chain, approval binding, token verification, Guardian
+decision/replay, replay record, coordinator/transaction, and ledger metadata
+coherence.
 Runtime expansion remains blocked until the remaining gates in this file,
 [Baseline](docs/BASELINE.md), and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md)
 are resolved.
@@ -91,6 +93,9 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
 - Cross-contract linkage hardening design in
   [docs/CROSS_CONTRACT_LINKAGE_HARDENING.md](docs/CROSS_CONTRACT_LINKAGE_HARDENING.md)
   with schema-level linkage status fields and fail-closed mismatch modeling.
+- Approval/Guardian reconciliation drill design in
+  [docs/APPROVAL_GUARDIAN_RECONCILIATION_DRILLS.md](docs/APPROVAL_GUARDIAN_RECONCILIATION_DRILLS.md)
+  with deterministic reconciliation statuses and fail-closed drift classes.
 - Strict contract validation through [scripts/validate-contracts.py](scripts/validate-contracts.py).
 - Local Markdown link validation through [scripts/check-doc-links.py](scripts/check-doc-links.py).
 - Phase 1A mock Python runtime scaffolding in [lima_office](lima_office).
@@ -115,6 +120,9 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
   tenant-scoped idempotency uniqueness checks, and duplicate detection.
 - Mock-only in-memory cross-contract linkage validator for metadata-only
   coordinator/boundary/replay/ledger/artifact/manifest chain checks.
+- Mock-only in-memory approval/Guardian reconciler for metadata-only linkage
+  classification across approval chain, Guardian replay, replay records,
+  coordinator events, transaction boundaries, and evidence ledger refs.
 - Fail-closed Guardian replay invariants for required requested-action tenant,
   customer context, decision ID, action type (when bound), decision scope hash
   (when bound), approval binding (when bound), token verification (when bound),
@@ -126,6 +134,10 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
 - Fail-closed cross-contract linkage tests for transaction/replay/evidence drift,
   nonce mismatch, tenant mismatch, export/delete conflict posture, and duplicate
   idempotency-key collision handling.
+- Fail-closed approval/Guardian reconciliation-drill tests for missing/stale
+  Guardian decisions, approval/token/replay mismatches, coordinator/
+  transaction/ledger drift, cross-tenant linkage, blocked-MVP classes, and
+  denial-path evidence requirements.
 - Approval-binding freshness checks enforced at task enqueue and tool invocation
   invariant paths using reference-time checks for expiry.
 - Metadata-only Supervisor health reporter for mock/lab status records.
@@ -180,9 +192,10 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 - Durable transaction/storage RFC and architecture docs now exist as
   docs/contracts/tests, and coordinator design docs/runbooks now exist as
   docs/contracts/tests/mock-hardening. Cross-contract linkage hardening now
-  exists as docs/contracts/tests/mock-hardening, but actual durable coordinator runtime,
-  durable storage implementation, migration strategy, and transaction runtime
-  execution are not implemented.
+  exists as docs/contracts/tests/mock-hardening. Approval/Guardian
+  reconciliation drills now exist as docs/contracts/tests/mock-hardening, but
+  actual durable coordinator runtime, durable storage implementation, migration
+  strategy, and transaction runtime execution are not implemented.
 - Promote the initial health reason taxonomy in
   [Health Reason Taxonomy](docs/ux/HEALTH_REASON_TAXONOMY.md) to final runtime
   thresholds and owner/escalation rules.
@@ -200,8 +213,8 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 
 ## Next Recommended Lane
 
-After this cross-contract linkage hardening checkpoint is reviewed, the next
-safe lane is governance/export/delete conflict policy finalization and
-reconciliation evidence taxonomy hardening, still without adding live services.
-Phase 1B lab runtime expansion remains blocked until those gates are approved.
-Mainline update should wait for explicit approval.
+After this approval/Guardian reconciliation-drills checkpoint is reviewed, the
+next safe lane is governance/export/delete conflict policy finalization and
+reconciliation reason/evidence taxonomy normalization, still without adding
+live services. Phase 1B lab runtime expansion remains blocked until those gates
+are approved. Mainline update should wait for explicit approval.

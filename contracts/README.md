@@ -255,6 +255,10 @@ The v1 schemas use JSON Schema draft 2020-12 conditionals to block unsafe state 
 - Cross-contract transaction/replay/evidence records include linkage refs plus
   `linkage_status` and `linkage_failure_reasons` so individually valid records
   cannot silently drift into an unsafe combined chain.
+- Approval/Guardian contracts include reconciliation drill metadata
+  (`reconciliation_status`, failure reasons, canonical IDs, and reconciliation
+  evidence refs) to model fail-closed linkage classification across approval
+  chain, Guardian replay, replay-store records, and transaction boundaries.
 - `task.execution`, `tool.invocation`, `memory.access`, and `model.route` bind policy result, approval state, taint refs, evidence failure, terminal states, and denial/failure reasons.
 - `worker.lifecycle`, `worker.heartbeat`, and `worker.deployment` bind identity failure, quarantine, revoke, evidence-writer failure, deployment refs, update/rollback posture, and healthy states.
 - `supervisor.health` summarizes mock/lab worker, task, Guardian, and evidence

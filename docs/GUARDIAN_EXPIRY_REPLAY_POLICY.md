@@ -132,6 +132,9 @@ denial evidence refs where applicable. Cross-contract linkage fields and
 with transaction/replay/ledger/artifact/export records; non-`linked` status is
 fail-closed. `failed_closed` replay-store atomicity
 states cannot authorize action.
+Approval/Guardian reconciliation drill fields (`reconciliation_status`,
+canonical IDs, and reconciliation evidence refs) add an explicit fail-closed
+classification layer for stale/mismatched/missing linkage outcomes.
 
 ## Blocked-MVP And Tainted Input
 

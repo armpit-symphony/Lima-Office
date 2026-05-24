@@ -88,6 +88,18 @@ operations, customer-system mutation, or compliance certification claims.
   only. No database, queue, migration, service, or production storage
   implementation is authorized.
 
+## Approval Guardian Reconciliation Drills Checkpoint
+
+- Branch: `approval-guardian-linkage-reconciliation-drills`
+- Base: `cross-contract-linkage-hardening`
+- Purpose: harden approval/Guardian reconciliation conditionals and drill
+  scenarios so approval bindings, approval chains, token verification, Guardian
+  decisions/replay, replay records, coordinator events, transaction boundaries,
+  and evidence ledger records fail closed on linkage drift.
+- Scope: docs, schemas, tests, and mock/in-memory reconciliation classification
+  only. No database, queue, migration, service, or production storage
+  implementation is authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:

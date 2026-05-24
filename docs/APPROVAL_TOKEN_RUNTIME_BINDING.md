@@ -50,6 +50,8 @@ The approval chain is:
 14. Cross-contract linkage fields and `linkage_status` fail-closed semantics
    bind coordinator/boundary/replay/ledger/artifact/manifest metadata to the
    same canonical transaction context.
+15. Reconciliation status fields and canonical approval/Guardian IDs provide a
+    second fail-closed layer for approval/Guardian drift drills.
 
 `approval.chain` examples summarize safe and unsafe combinations for validation
 and review. They are example bundles, not runtime authorization records.
@@ -82,6 +84,11 @@ The mock verifier refuses to authorize when any requested tenant, customer
 context, task, worker, action, tool scope, Guardian decision, token
 verification, policy snapshot, approval chain, binding, or evidence ref does
 not match.
+
+The mock reconciliation helper classifies linkage as `reconciled`,
+`missing_ref`, `mismatched_binding`, `stale_decision`, `replay_mismatch`,
+`evidence_missing`, `coordinator_mismatch`, `cross_tenant_blocked`, or
+`blocked_mvp`. All non-`reconciled` outcomes remain fail-closed.
 
 Guardian decisions have their own expiry/replay gate in
 [Guardian Expiry And Replay Policy](GUARDIAN_EXPIRY_REPLAY_POLICY.md). A valid

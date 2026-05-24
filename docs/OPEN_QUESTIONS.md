@@ -85,6 +85,16 @@ documents the reachable v2 checkpoint that supersedes it.
 - Reconciliation ownership: which role owns terminal-state selection for partial
   commit ambiguity during coordinator recovery, and what approval separation is
   required?
+- Approval/Guardian reconciliation status taxonomy: should
+  `reconciliation_failure_reasons` converge to a fixed reason-code registry
+  across `approval.binding`, `approval.chain`, `token.verification`,
+  `guardian.decision`, `guardian.replay`, `replay.store.record`,
+  `transaction.coordinator.event`, `transaction.boundary`, and
+  `evidence.ledger.entry` before durable implementation?
+- Reconciliation evidence minimum set: what exact mandatory evidence references
+  are required per drift class (`missing_ref`, `mismatched_binding`,
+  `stale_decision`, `replay_mismatch`, `coordinator_mismatch`,
+  `cross_tenant_blocked`, `blocked_mvp`)?
 - Health reason taxonomy: which reason code set should become normative for
   Supervisor health, Guardian decisions, worker state, queue depth, evidence
   status, connector readiness, LIMA IT handoff, and degraded/offline/quarantine
@@ -202,6 +212,16 @@ and `guardian.decision` / `guardian.replay`:
   examples, and mock tests.
 - Phase 1A mock runtime rejects replayed, stale, expired, future-effective,
   ambiguous, mismatched, tainted, and blocked-MVP Guardian decisions.
+
+Resolved as mock-hardening drills in
+[APPROVAL_GUARDIAN_RECONCILIATION_DRILLS](APPROVAL_GUARDIAN_RECONCILIATION_DRILLS.md):
+
+- Approval/Guardian linkage drift classes are explicitly modeled and tested
+  against fail-closed outcomes.
+- Reconciliation status and canonical-ID fields are represented across
+  approval/Guardian/replay/transaction/ledger contracts.
+- A mock-only reconciliation helper classifies linkage status deterministically
+  and never authorizes real action.
 
 Resolved in [Phase 0 Validation](VALIDATION.md) and [Phase 0 validation workflow](../.github/workflows/phase0-validation.yml):
 

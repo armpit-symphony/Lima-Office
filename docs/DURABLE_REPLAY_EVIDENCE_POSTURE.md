@@ -159,6 +159,8 @@ process restart and denial-path evidence can be incomplete.
 - Scope, tenant, task, worker, action, binding, or verification mismatch denies.
 - Raw-content/secret-included markers deny in MVP.
 - Blocked-MVP action types remain denied/blocked.
+- Approval/Guardian reconciliation status must be non-authorizing unless
+  explicitly `reconciled` with canonical IDs and reconciliation evidence refs.
 
 ## MVP Non-Goals
 

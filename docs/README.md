@@ -15,6 +15,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Guardian expiry and replay policy](GUARDIAN_EXPIRY_REPLAY_POLICY.md)
 - [Durable replay and evidence posture](DURABLE_REPLAY_EVIDENCE_POSTURE.md)
 - [Cross-contract linkage hardening](CROSS_CONTRACT_LINKAGE_HARDENING.md)
+- [Approval Guardian reconciliation drills](APPROVAL_GUARDIAN_RECONCILIATION_DRILLS.md)
 - [Durable transaction/storage RFC](rfcs/RFC_DURABLE_TRANSACTION_STORAGE.md)
 - [Durable storage architecture](architecture/DURABLE_STORAGE_ARCHITECTURE.md)
 - [Durable transaction coordinator](architecture/DURABLE_TRANSACTION_COORDINATOR.md)
@@ -89,6 +90,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Evidence writer failure](runbooks/evidence-writer-failure.md)
 - [Transaction recovery and reconciliation](runbooks/transaction-recovery-reconciliation.md)
 - [Transaction failure drills](runbooks/transaction-failure-drills.md)
+- [Approval Guardian reconciliation drill](runbooks/approval-guardian-reconciliation-drill.md)
 - [Prompt injection response](runbooks/prompt-injection-response.md)
 - [LIMA IT handoff](runbooks/lima-it-handoff.md)
 

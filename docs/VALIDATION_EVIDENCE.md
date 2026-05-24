@@ -5,7 +5,7 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `cross-contract-linkage-hardening` on Windows with
+Latest captured run: `approval-guardian-linkage-reconciliation-drills` on Windows with
 Python 3.12.10.
 
 ## Canonical Integration Branch
@@ -19,6 +19,8 @@ Python 3.12.10.
 - Durable transaction/storage RFC branch: `durable-transaction-storage-rfc`
 - Durable transaction coordinator branch: `durable-transaction-coordinator-design`
 - Cross-contract linkage hardening branch: `cross-contract-linkage-hardening`
+- Approval Guardian reconciliation drills branch:
+  `approval-guardian-linkage-reconciliation-drills`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -116,6 +118,16 @@ Validation remains repository health evidence only; it does not approve
 databases, queues, durable storage services, live connectors, external sends,
 real remediation, production operations, or customer-system mutation.
 
+## Approval Guardian Reconciliation Drills Checkpoint
+
+This branch adds approval/Guardian reconciliation drill docs and runbook,
+reconciliation conditionals across approval/Guardian/replay/transaction/ledger
+contracts, a mock-only in-memory reconciler, and fail-closed
+approval/Guardian drift tests. Validation remains repository health evidence
+only; it does not approve databases, queues, durable storage services, live
+connectors, external sends, real remediation, production operations, or
+customer-system mutation.
+
 ## Strict Schema Validation
 
 Command:
@@ -134,7 +146,7 @@ LIMA Office contract validation
 - schemas with examples: 38
 - validation mode: full JSON Schema draft 2020-12 with format checks
 - jsonschema version: 4.26.0
-- unsafe-content scan: 91 example files, 91 markdown files
+- unsafe-content scan: 91 example files, 93 markdown files
 - warnings: 0
 - failures: 0
 Result: PASS
@@ -160,8 +172,8 @@ Result:
 
 ```text
 LIMA Office markdown link check
-- markdown files scanned: 99
-- local links checked: 718
+- markdown files scanned: 101
+- local links checked: 726
 - external/anchor links ignored: 0
 - failures: 0
 Result: PASS
@@ -178,7 +190,7 @@ python -B -m unittest discover -s tests -v
 Result:
 
 ```text
-Ran 172 tests
+Ran 186 tests
 
 OK
 ```
@@ -221,6 +233,10 @@ Coverage added by this checkpoint:
   handling, failed-closed/rolled-back evidence requirements, replay/token/
   evidence reference requirements, reconciliation evidence requirements, and
   explicit no-real-action authorization.
+- Approval/Guardian reconciliation drill checks for valid chain reconciliation,
+  stale/missing/mismatched linkage failures, replay/coordinator/transaction/
+  ledger mismatch handling, cross-tenant isolation, blocked-MVP action classes,
+  denial-path evidence enforcement, and explicit no-real-action authorization.
 
 ## Pytest
 
@@ -233,7 +249,7 @@ python -m pytest -q
 Result:
 
 ```text
-172 passed, 1 warning, 127 subtests passed
+186 passed, 1 warning, 127 subtests passed
 ```
 
 Warning: pytest could not create/write `.pytest_cache` because access was
@@ -274,8 +290,10 @@ git status
 ```
 
 Checkpoint patch result before staging: modified runtime mock hardening, tests,
-schemas/examples, and documentation only, including cross-contract linkage
-hardening for coordinator/boundary/replay/ledger/artifact/manifest metadata.
+schemas/examples, and documentation only, including approval/Guardian
+reconciliation hardening for approval chain/binding/token verification/Guardian
+decision/replay, replay-store records, transaction metadata, and evidence
+ledger linkage.
 
 ## CI Expectations
 

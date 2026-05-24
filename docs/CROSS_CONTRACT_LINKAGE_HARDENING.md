@@ -28,8 +28,11 @@ incorrect nonces, or incomplete evidence chains.
 - `evidence.ledger.entry`
 - `evidence.artifact`
 - `evidence.export_manifest`
+- `approval.chain`
 - `approval.binding`
+- `token.verification`
 - `guardian.decision`
+- `guardian.replay`
 
 Every stage must be traceable with explicit relationship fields and fail-closed
 linkage status.
@@ -42,7 +45,10 @@ linkage status.
 - `artifact_id`
 - `export_manifest_id`
 - `binding_id`
+- `approval_chain_id`
+- `token_verification_id`
 - `decision_id` / `guardian_decision_id`
+- `replay_check_id` / `guardian_replay_id`
 
 Canonical IDs are immutable once emitted. Rewrites are treated as drift.
 
@@ -66,6 +72,8 @@ Canonical IDs are immutable once emitted. Rewrites are treated as drift.
 - `canonical_decision_nonce` must equal replay/decision nonce references.
 - Consumed replay records require linked transaction and coordinator refs.
 - Nonce mismatch is always fail-closed (`linkage_status: mismatched_nonce`).
+- Approval chain, binding, token verification, Guardian decision, Guardian
+  replay, and replay-store IDs must resolve to one canonical chain.
 
 ## Evidence Chain Consistency Rules
 - Ledger entries and artifacts must share tenant and canonical linkage values.
@@ -100,6 +108,8 @@ Drift is detected when terminal states disagree across linked contracts, such as
   `linkage_failure_reasons`.
 - Committed paths require full linkage refs between coordinator, boundary,
   replay, and evidence chain components.
+- Reconciliation drill states (`reconciliation_status`) must also fail closed
+  unless `reconciled` with canonical IDs and evidence refs.
 
 ## MVP Non-Goals
 - No durable storage engine implementation.

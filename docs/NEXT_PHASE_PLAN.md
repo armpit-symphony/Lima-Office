@@ -17,7 +17,7 @@ cross-contract invariant checkpoint. The reachable replacement is
 Recommended order:
 
 1. Governance/export/delete conflict policy finalization and reconciliation
-   evidence taxonomy hardening (after cross-contract linkage hardening).
+   evidence taxonomy hardening (after approval/Guardian reconciliation drills).
 2. Final RBAC/IdP/MFA/session/device trust matrix.
 3. Model-routing defaults and health taxonomy refinement.
 4. Phase 1B lab runtime expansion only after the gates above are approved.
@@ -65,6 +65,13 @@ explicit linkage status/reason fields across coordinator/boundary/replay/
 ledger/artifact/manifest contracts, a mock in-memory linkage validator, and
 negative-path drift/tenant/nonce/export-conflict tests. Durable storage and
 runtime transaction execution remain blocked.
+
+Approval/Guardian reconciliation drills are now represented in
+[APPROVAL_GUARDIAN_RECONCILIATION_DRILLS](APPROVAL_GUARDIAN_RECONCILIATION_DRILLS.md)
+with stricter reconciliation conditionals across approval/Guardian/replay/
+transaction/ledger contracts, a mock in-memory reconciler, and fail-closed
+negative-path drill tests. Durable transaction/runtime implementation remains
+blocked.
 
 ## Option A: Worker Deployment Blueprint
 
@@ -231,6 +238,9 @@ Prerequisites:
 - Cross-contract linkage hardening contracts/tests exist, but durable
   referential integrity enforcement, storage-layer transactions, and recovery
   tooling implementation are explicitly deferred.
+- Approval/Guardian reconciliation drill contracts/tests exist, but durable
+  reconciliation services, durable replay/transaction storage, and operator
+  automation remain explicitly deferred.
 - Health reason taxonomy is defined.
 - Durable evidence/export posture is defined.
 - Durable memory retention, delete/export, raw-content, and customer exit

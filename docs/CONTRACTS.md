@@ -47,6 +47,10 @@ Version 1 schemas now use JSON Schema draft 2020-12 conditionals for the highest
   evidence refs where evidence is required.
 - Cross-contract linkage fields must fail closed on missing refs, tenant
   mismatch, scope mismatch, nonce mismatch, or reconciliation drift.
+- Approval/Guardian reconciliation fields (`reconciliation_status`,
+  `reconciliation_failure_reasons`, canonical approval/Guardian IDs, and
+  reconciliation evidence refs) must fail closed on missing/mismatched/stale/
+  replay/coordinator/evidence/cross-tenant/blocked-MVP outcomes.
 - Transaction boundaries must fail closed for ambiguous commit/rollback state,
   missing failure reason on failed-closed status, or missing evidence refs for
   failed-closed transitions.
@@ -90,6 +94,9 @@ The runtime invariant checks cover:
 These checks remain Phase 1A hardening. They do not add live connectors,
 external sends, model calls, remediation, durable persistence, UI, or production
 monitoring.
+
+Approval/Guardian reconciliation drill requirements are defined in
+[Approval Guardian Reconciliation Drills](APPROVAL_GUARDIAN_RECONCILIATION_DRILLS.md).
 
 ## Common Field Groups
 
