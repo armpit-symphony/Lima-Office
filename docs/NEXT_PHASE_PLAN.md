@@ -16,8 +16,8 @@ cross-contract invariant checkpoint. The reachable replacement is
 
 Recommended order:
 
-1. Durable transaction/storage implementation planning details (after Phase 1A
-   RFC/contracts/tests hardening).
+1. Coordinator/reconciliation invariant hardening and transition-gating details
+   (after Phase 1A RFC/contracts/tests hardening).
 2. Final RBAC/IdP/MFA/session/device trust matrix.
 3. Model-routing defaults and health taxonomy refinement.
 4. Phase 1B lab runtime expansion only after the gates above are approved.
@@ -51,6 +51,13 @@ Durable transaction/storage RFC posture is now represented in
 with `transaction.boundary` and `evidence.ledger.entry` contracts plus
 mock-only tests. Storage engine choice, migrations, and transaction runtime
 implementation remain blocked.
+
+Durable transaction coordinator posture is now represented in
+[DURABLE_TRANSACTION_COORDINATOR](architecture/DURABLE_TRANSACTION_COORDINATOR.md)
+with `transaction.coordinator.event` contracts/examples, a mock in-memory
+transition validator, and reconciliation/failure-drill runbooks. Durable
+coordinator runtime, storage integration, and production transaction execution
+remain blocked.
 
 ## Option A: Worker Deployment Blueprint
 
@@ -211,6 +218,9 @@ Prerequisites:
 - Durable transaction-boundary and evidence-ledger contracts exist, but
   implementation-time coordinator logic, migration strategy, and storage-engine
   selection are explicitly deferred.
+- Durable coordinator event contracts and runbooks exist, but runtime service
+  implementation, durable persistence, and operational automation are
+  explicitly deferred.
 - Health reason taxonomy is defined.
 - Durable evidence/export posture is defined.
 - Durable memory retention, delete/export, raw-content, and customer exit

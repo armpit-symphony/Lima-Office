@@ -104,6 +104,11 @@ Each transaction declares:
 Fail-closed requirement: if any required operation result is ambiguous, the
 transaction must resolve to `failed_closed` with `failure_reason` and evidence.
 
+Coordinator lifecycle sequencing is represented by
+`transaction.coordinator.event` metadata, with append-only transition events for
+start, replay reserve, token verify, evidence append, commit/rollback/fail,
+duplicate-detection, and reconciliation outcomes.
+
 ## Idempotency Model
 
 - Every transaction has a deterministic `idempotency_key`.
@@ -198,6 +203,7 @@ Final taxonomy and implementation remain open governance items.
 - Approved durable storage design and threat model.
 - Approved atomic transaction mechanism.
 - Approved replay/token consume concurrency rules.
+- Approved coordinator event transition/immutability model.
 - Approved evidence blob and ledger integrity mechanism.
 - Final retention periods and redaction taxonomy.
 - Final export package format and delete proof posture.
@@ -211,9 +217,12 @@ Before any storage/runtime implementation lane begins:
 
 1. `transaction.boundary` and `evidence.ledger.entry` contracts validate with
    sanitized examples.
-2. Cross-contract invariants explicitly fail closed on ambiguous transaction,
+2. `transaction.coordinator.event` validates transition-stage examples including
+   duplicate-request and reconciliation paths.
+3. Cross-contract invariants explicitly fail closed on ambiguous transaction,
    replay, token, ledger, or export states.
-3. Tests cover committed/rolled_back/failed_closed requirements and metadata-only
+4. Tests cover committed/rolled_back/failed_closed requirements and metadata-only
    constraints.
-4. Docs and runbooks define recovery responsibilities and blocked-MVP posture.
-5. Validation suite passes with no schema/link/test regressions.
+5. Docs and runbooks define coordinator recovery responsibilities, reconciliation
+   steps, and blocked-MVP posture.
+6. Validation suite passes with no schema/link/test regressions.

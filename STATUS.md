@@ -6,7 +6,7 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
-Current working branch: `durable-transaction-storage-rfc`
+Current working branch: `durable-transaction-coordinator-design`
 
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
@@ -15,13 +15,14 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A durable transaction/storage RFC hardening. Phase 1A
-mock runtime scaffolding is present, the v2 invariant checkpoint and durable
-replay/evidence checkpoint are reachable, and this branch adds durable
-transaction/storage RFC and architecture docs, transaction-boundary/ledger
-contracts, examples, and mock-only validation tests. Runtime expansion remains
-blocked until the remaining gates in this file, [Baseline](docs/BASELINE.md),
-and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md) are resolved.
+Current phase: Phase 1A durable transaction coordinator design hardening.
+Phase 1A mock runtime scaffolding is present, the v2 invariant checkpoint and
+durable replay/evidence and transaction/storage checkpoints are reachable, and
+this branch adds coordinator architecture/runbooks, coordinator lifecycle
+event contract/examples, and mock-only transition validation tests. Runtime
+expansion remains blocked until the remaining gates in this file,
+[Baseline](docs/BASELINE.md), and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md)
+are resolved.
 
 Superseded missing checkpoint: the previously reported
 `phase-1a-cross-contract-invariants` commit
@@ -70,6 +71,9 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
   failed-closed nonce/atomicity metadata.
 - `transaction.boundary` schema and examples for committed, failed-closed, and
   export-manifest-prepare transaction metadata.
+- `transaction.coordinator.event` schema and examples for transaction start,
+  replay-nonce-reserved, commit, failed-closed, duplicate-request, and
+  reconciliation-completed metadata.
 - `evidence.export_manifest` schema and examples for prepared-redacted and
   denied-delete-conflict export metadata.
 - `evidence.ledger.entry` schema and examples for pre-action, replay-denial,
@@ -79,6 +83,11 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
 - Durable transaction/storage design in
   [docs/rfcs/RFC_DURABLE_TRANSACTION_STORAGE.md](docs/rfcs/RFC_DURABLE_TRANSACTION_STORAGE.md)
   and [docs/architecture/DURABLE_STORAGE_ARCHITECTURE.md](docs/architecture/DURABLE_STORAGE_ARCHITECTURE.md).
+- Durable transaction coordinator design in
+  [docs/architecture/DURABLE_TRANSACTION_COORDINATOR.md](docs/architecture/DURABLE_TRANSACTION_COORDINATOR.md)
+  with reconciliation and failure-drill runbooks in
+  [docs/runbooks/transaction-recovery-reconciliation.md](docs/runbooks/transaction-recovery-reconciliation.md)
+  and [docs/runbooks/transaction-failure-drills.md](docs/runbooks/transaction-failure-drills.md).
 - Strict contract validation through [scripts/validate-contracts.py](scripts/validate-contracts.py).
 - Local Markdown link validation through [scripts/check-doc-links.py](scripts/check-doc-links.py).
 - Phase 1A mock Python runtime scaffolding in [lima_office](lima_office).
@@ -99,6 +108,8 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
   fail-closed metadata simulation with no disk persistence.
 - Mock-only evidence export-manifest helper for refs-only export metadata
   validation with no export service.
+- Mock-only in-memory transaction coordinator helper for transition ordering,
+  tenant-scoped idempotency uniqueness checks, and duplicate detection.
 - Fail-closed Guardian replay invariants for required requested-action tenant,
   customer context, decision ID, action type (when bound), decision scope hash
   (when bound), approval binding (when bound), token verification (when bound),
@@ -159,8 +170,10 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
   but actual durable storage, transaction implementation, and export/delete
   services are not implemented.
 - Durable transaction/storage RFC and architecture docs now exist as
-  docs/contracts/tests, but actual durable storage implementation, migration
-  strategy, and transaction runtime execution are not implemented.
+  docs/contracts/tests, and coordinator design docs/runbooks now exist as
+  docs/contracts/tests/mock-hardening, but actual durable coordinator runtime,
+  durable storage implementation, migration strategy, and transaction runtime
+  execution are not implemented.
 - Promote the initial health reason taxonomy in
   [Health Reason Taxonomy](docs/ux/HEALTH_REASON_TAXONOMY.md) to final runtime
   thresholds and owner/escalation rules.
@@ -178,8 +191,9 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 
 ## Next Recommended Lane
 
-After this durable transaction/storage RFC checkpoint is reviewed, the next
-safe lane is implementation planning detail for migration/backup-recovery
-runbooks and transaction-mechanism selection criteria, still without adding
-live services. Phase 1B lab runtime expansion remains blocked until those gates
-are approved. Mainline update should wait for explicit approval.
+After this durable transaction coordinator design checkpoint is reviewed, the
+next safe lane is transaction-state invariant hardening across replay/token/
+evidence/governance export contracts and mock reconciliation edge-case tests,
+still without adding live services. Phase 1B lab runtime expansion remains
+blocked until those gates are approved. Mainline update should wait for
+explicit approval.

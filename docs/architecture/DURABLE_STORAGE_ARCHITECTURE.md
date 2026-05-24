@@ -5,6 +5,8 @@ Status: draft conceptual architecture. Not implemented.
 This document defines a future storage architecture for durable replay/token
 consumption and evidence export posture. It does not select a concrete storage
 engine and does not implement databases, queues, services, or migrations.
+Coordinator transition design is defined in
+[DURABLE_TRANSACTION_COORDINATOR](DURABLE_TRANSACTION_COORDINATOR.md).
 
 ## Purpose
 
@@ -14,6 +16,7 @@ MVP-boundary constraints.
 
 ## Conceptual Components
 
+- Transaction Coordinator
 - Replay Store
 - Token Consumption Store
 - Evidence Ledger
@@ -24,6 +27,8 @@ MVP-boundary constraints.
 
 ## Component Responsibilities
 
+- Transaction Coordinator: enforces transition ordering, tenant-scoped
+  idempotency, and terminal fail-closed status for replay/token/evidence flows.
 - Replay Store: durable nonce reserve/consume/deny/fail-closed metadata.
 - Token Consumption Store: durable one-time approval-token consume metadata.
 - Evidence Ledger: append-only, hash-linked metadata entries.
@@ -38,16 +43,34 @@ MVP-boundary constraints.
 ```mermaid
 flowchart TD
   A[Action Request] --> B[Guardian Decision Check]
-  B --> C[Transaction Boundary Planned]
-  C --> D[Replay Store Reserve/Consume]
-  C --> E[Token Consumption Reserve/Consume]
-  D --> F[Evidence Ledger Append Pre-Action]
-  E --> F
-  F --> G{All Preconditions Satisfied}
-  G -- Yes --> H[Transaction Commit]
-  G -- No/Ambiguous --> I[Transaction Failed Closed]
-  H --> J[Post-Action Evidence Append]
-  I --> K[Denial/Failure Evidence Append]
+  B --> C[Coordinator Start]
+  C --> D[Transaction Boundary Planned]
+  D --> E[Replay Store Reserve/Consume]
+  D --> F[Token Consumption Reserve/Consume]
+  E --> G[Evidence Ledger Append Pre-Action]
+  F --> G
+  G --> H{All Preconditions Satisfied}
+  H -- Yes --> I[Coordinator Commit Event]
+  I --> J[Transaction Commit]
+  J --> K[Post-Action Evidence Append]
+  H -- No/Ambiguous --> L[Coordinator Failed-Closed Event]
+  L --> M[Transaction Failed Closed]
+  M --> N[Denial/Failure Evidence Append]
+```
+
+## Data Flow: Recovery/Reconciliation
+
+```mermaid
+flowchart TD
+  A[Crash or Partial Failure Detected] --> B[Reconciliation Started Event]
+  B --> C[Load Transaction Boundary + Coordinator Events]
+  C --> D[Load Replay/Token/Ledger Refs]
+  D --> E{State Coherent?}
+  E -- Yes --> F[Mark Committed Or Rolled Back]
+  E -- No/Ambiguous --> G[Mark Failed Closed]
+  F --> H[Reconciliation Completed Event]
+  G --> H
+  H --> I[Evidence Ledger Append reconciliation]
 ```
 
 ## Data Flow: Export/Delete Review Path
@@ -121,6 +144,31 @@ testing plan.
 - Final trust-root, RBAC/IdP/MFA, retention, and redaction rules are unresolved.
 - Safe engine selection depends on final transaction and recovery requirements.
 - Introducing real storage now would violate MVP scope and runtime boundaries.
+
+## MVP Non-Goals
+
+- No real transaction coordinator runtime.
+- No storage-engine implementation.
+- No migration files or migration runner.
+- No queue/scheduler/service process.
+- No export/delete execution pipeline.
+- No live connector/external-send/remediation action path.
+
+## MVP Blocked Items
+
+- actual transaction coordinator implementation
+- durable storage engine choice
+- migrations
+- real atomic commit mechanism
+- evidence blob storage
+- final retention periods
+- redaction taxonomy
+- final export package format
+- customer delete proof
+- RBAC/IdP/MFA/session/device trust
+- attestation trust root
+- signed update/rollback details
+- live connector criteria
 
 ## Deferred Implementation Gates
 

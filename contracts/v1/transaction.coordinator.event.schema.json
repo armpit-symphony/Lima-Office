@@ -1,0 +1,433 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/transaction.coordinator.event.schema.json",
+  "title": "Transaction Coordinator Event Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "policy_version",
+    "transaction_id",
+    "coordinator_event_id",
+    "idempotency_scope",
+    "event_type",
+    "event_status",
+    "previous_event_id",
+    "next_expected_event_types",
+    "transaction_status",
+    "evidence_refs",
+    "replay_record_refs",
+    "ledger_entry_refs",
+    "failure_reason",
+    "created_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "transaction.coordinator.event"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "guardian",
+            "operator_console"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "transaction_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "coordinator_event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "idempotency_scope": {
+      "type": "string",
+      "enum": [
+        "guardian_replay_consume",
+        "approval_token_consume",
+        "evidence_append",
+        "export_manifest_prepare",
+        "delete_request_review",
+        "reconciliation"
+      ]
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "transaction_started",
+        "preconditions_checked",
+        "replay_nonce_reserved",
+        "token_binding_verified",
+        "pre_action_evidence_appended",
+        "decision_consumed",
+        "post_action_evidence_appended",
+        "transaction_committed",
+        "transaction_rolled_back",
+        "transaction_failed_closed",
+        "duplicate_request_detected",
+        "reconciliation_started",
+        "reconciliation_completed"
+      ]
+    },
+    "event_status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "pending",
+        "succeeded",
+        "failed",
+        "blocked_mvp"
+      ]
+    },
+    "previous_event_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "next_expected_event_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "transaction_started",
+          "preconditions_checked",
+          "replay_nonce_reserved",
+          "token_binding_verified",
+          "pre_action_evidence_appended",
+          "decision_consumed",
+          "post_action_evidence_appended",
+          "transaction_committed",
+          "transaction_rolled_back",
+          "transaction_failed_closed",
+          "duplicate_request_detected",
+          "reconciliation_started",
+          "reconciliation_completed"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "transaction_status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "pending",
+        "committed",
+        "rolled_back",
+        "failed_closed",
+        "blocked_mvp"
+      ]
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "replay_record_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "ledger_entry_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "failure_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "transaction_failed_closed"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "transaction_status": {
+            "const": "failed_closed"
+          },
+          "failure_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "transaction_committed"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "transaction_status": {
+            "const": "committed"
+          },
+          "event_status": {
+            "const": "succeeded"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "transaction_rolled_back"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "transaction_status": {
+            "const": "rolled_back"
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "duplicate_request_detected"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "idempotency_key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "idempotency_scope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_status": {
+            "const": "succeeded"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "enum": [
+              "replay_nonce_reserved",
+              "decision_consumed"
+            ]
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "replay_record_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "token_binding_verified"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "enum": [
+              "pre_action_evidence_appended",
+              "post_action_evidence_appended",
+              "reconciliation_completed"
+            ]
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence_refs": {
+            "minItems": 1
+          },
+          "ledger_entry_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_status": {
+            "const": "failed"
+          }
+        },
+        "required": [
+          "event_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "failure_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_status": {
+            "const": "blocked_mvp"
+          }
+        },
+        "required": [
+          "event_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "transaction_status": {
+            "const": "blocked_mvp"
+          },
+          "failure_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
+}

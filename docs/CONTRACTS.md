@@ -48,6 +48,9 @@ Version 1 schemas now use JSON Schema draft 2020-12 conditionals for the highest
 - Transaction boundaries must fail closed for ambiguous commit/rollback state,
   missing failure reason on failed-closed status, or missing evidence refs for
   failed-closed transitions.
+- Transaction coordinator events must fail closed for invalid transition order,
+  duplicate tenant-scoped idempotency keys, missing replay/evidence refs on
+  replay/evidence/reconciliation stages, or terminal-state mismatch.
 - Evidence ledger entries must remain append-only metadata with chain linkage,
   hash fields, and explicit raw/secret exclusion.
 - Evidence-required task/tool paths cannot be represented as completed when evidence failure blocks the action.
@@ -390,6 +393,36 @@ monitoring.
   status requires blocked environment posture.
 - MVP acceptance gates: examples validate as metadata-only records with no real
   database/queue/service/transaction coordinator.
+
+## Transaction Coordinator Event Contract v1
+
+- Schema: [transaction.coordinator.event.schema.json](../contracts/v1/transaction.coordinator.event.schema.json)
+- Example objects: [transaction.coordinator.event.started.example.json](../contracts/examples/transaction.coordinator.event.started.example.json), [transaction.coordinator.event.nonce-reserved.example.json](../contracts/examples/transaction.coordinator.event.nonce-reserved.example.json), [transaction.coordinator.event.committed.example.json](../contracts/examples/transaction.coordinator.event.committed.example.json), [transaction.coordinator.event.failed-closed.example.json](../contracts/examples/transaction.coordinator.event.failed-closed.example.json), [transaction.coordinator.event.duplicate-request.example.json](../contracts/examples/transaction.coordinator.event.duplicate-request.example.json), [transaction.coordinator.event.reconciliation-completed.example.json](../contracts/examples/transaction.coordinator.event.reconciliation-completed.example.json)
+- Purpose: models append-only coordinator lifecycle events for future atomic
+  replay/token/evidence transactions and reconciliation posture without
+  implementing a coordinator service.
+- Version: `1.0.0`.
+- Producer: supervisor/Guardian/operator metadata flow for future coordinator
+  design.
+- Consumer: transaction coordinator design review, invariant tests, audit
+  sequence review, and runbook reconciliation planning.
+- Required fields: common envelope; `transaction_id`, `coordinator_event_id`,
+  `idempotency_scope`, `event_type`, `event_status`, `previous_event_id`,
+  `next_expected_event_types`, `transaction_status`, replay/ledger/evidence
+  refs, `failure_reason`, and `created_at`.
+- Allowed event types: start, precondition check, replay reserve, token verify,
+  pre-action evidence append, decision consume, post-action evidence append,
+  committed, rolled back, failed closed, duplicate request detected,
+  reconciliation start/completion.
+- Security requirements: transition ordering is explicit and fail-closed;
+  duplicate idempotency metadata is tenant-scoped; records are metadata-only
+  and immutable by event ID.
+- Evidence requirements: failed-closed, rolled-back, and evidence-appended
+  paths require evidence refs; replay-touching events require replay record refs.
+- Failure behavior: invalid transition ordering, duplicate tenant-scoped
+  idempotency conflicts, or missing required refs fail closed.
+- MVP acceptance gates: examples validate as metadata-only records with no
+  database/queue/service implementation and no authorization for real actions.
 
 ## Approval Request Contract v1
 

@@ -69,6 +69,12 @@ documents the reachable v2 checkpoint that supersedes it.
 - Transaction-boundary posture: what final participant model, isolation level,
   and idempotency guarantees should back `transaction.boundary` before runtime
   expansion?
+- Transaction coordinator posture: what final transition matrix, immutability
+  enforcement model, and duplicate-request resolution semantics should back
+  `transaction.coordinator.event` before runtime expansion?
+- Reconciliation ownership: which role owns terminal-state selection for partial
+  commit ambiguity during coordinator recovery, and what approval separation is
+  required?
 - Health reason taxonomy: which reason code set should become normative for
   Supervisor health, Guardian decisions, worker state, queue depth, evidence
   status, connector readiness, LIMA IT handoff, and degraded/offline/quarantine

@@ -65,6 +65,17 @@ operations, customer-system mutation, or compliance certification claims.
 - Scope: docs, schemas, examples, and tests only. No database, queue, migration,
   service, or production storage implementation is authorized.
 
+## Durable Transaction Coordinator Design Checkpoint
+
+- Branch: `durable-transaction-coordinator-design`
+- Base: `durable-transaction-storage-rfc`
+- Purpose: define coordinator event sequencing, transition/immutability rules,
+  tenant-scoped idempotency behavior, and recovery/reconciliation runbook
+  posture for future atomic replay/token/evidence operations.
+- Scope: docs, schemas, examples, tests, and mock/in-memory transition
+  validation only. No database, queue, migration, service, or production
+  storage implementation is authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:
@@ -164,8 +175,8 @@ closes the relevant gates:
 
 Recommended order after stabilization:
 
-1. Durable transaction/storage implementation planning details, including
-   migration posture, recovery gates, and transaction mechanism criteria.
+1. Coordinator/reconciliation invariant hardening and cross-contract
+   transition-gating details for replay/token/evidence/export metadata.
 2. Final RBAC/IdP/MFA/session/device trust matrix.
 3. Model-routing defaults and health taxonomy refinement.
 4. Phase 1B lab runtime expansion only after the gates above are approved.

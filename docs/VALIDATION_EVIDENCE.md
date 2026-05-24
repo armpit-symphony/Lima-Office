@@ -5,7 +5,7 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `durable-transaction-storage-rfc` on Windows with
+Latest captured run: `durable-transaction-coordinator-design` on Windows with
 Python 3.12.10.
 
 ## Canonical Integration Branch
@@ -17,6 +17,7 @@ Python 3.12.10.
 - Guardian expiry/replay branch: `guardian-expiry-replay-policy-design`
 - Durable replay/evidence posture branch: `durable-replay-evidence-posture`
 - Durable transaction/storage RFC branch: `durable-transaction-storage-rfc`
+- Durable transaction coordinator branch: `durable-transaction-coordinator-design`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -96,6 +97,15 @@ Validation remains repository health evidence only; it does not approve
 databases, queues, durable storage services, live connectors, external sends,
 real remediation, production operations, or customer-system mutation.
 
+## Durable Transaction Coordinator Design Checkpoint
+
+This branch adds coordinator architecture and recovery/failure-drill runbooks,
+new `transaction.coordinator.event` contracts with sanitized examples, and a
+mock-only in-memory transition/idempotency validator with fail-closed tests.
+Validation remains repository health evidence only; it does not approve
+databases, queues, durable storage services, live connectors, external sends,
+real remediation, production operations, or customer-system mutation.
+
 ## Strict Schema Validation
 
 Command:
@@ -108,13 +118,13 @@ Result:
 
 ```text
 LIMA Office contract validation
-- schemas parsed: 37
-- examples parsed: 85
-- mapped examples: 85
-- schemas with examples: 37
+- schemas parsed: 38
+- examples parsed: 91
+- mapped examples: 91
+- schemas with examples: 38
 - validation mode: full JSON Schema draft 2020-12 with format checks
 - jsonschema version: 4.26.0
-- unsafe-content scan: 85 example files, 87 markdown files
+- unsafe-content scan: 91 example files, 90 markdown files
 - warnings: 0
 - failures: 0
 Result: PASS
@@ -140,8 +150,8 @@ Result:
 
 ```text
 LIMA Office markdown link check
-- markdown files scanned: 95
-- local links checked: 691
+- markdown files scanned: 98
+- local links checked: 714
 - external/anchor links ignored: 0
 - failures: 0
 Result: PASS
@@ -158,7 +168,7 @@ python -B -m unittest discover -s tests -v
 Result:
 
 ```text
-Ran 145 tests
+Ran 155 tests
 
 OK
 ```
@@ -196,6 +206,11 @@ Coverage added by this checkpoint:
   requirements, committed/rolled-back timestamp requirements, raw/secret
   metadata exclusion, metadata-only hash fields, refs-only export-manifest
   transaction posture, and explicit no-real-storage authorization.
+- Durable transaction coordinator design checks for coordinator event schema
+  examples, transition-order enforcement, tenant-scoped idempotency collision
+  handling, failed-closed/rolled-back evidence requirements, replay/token/
+  evidence reference requirements, reconciliation evidence requirements, and
+  explicit no-real-action authorization.
 
 ## Pytest
 
@@ -208,7 +223,7 @@ python -m pytest -q
 Result:
 
 ```text
-145 passed, 1 warning, 115 subtests passed
+155 passed, 1 warning, 127 subtests passed
 ```
 
 Warning: pytest could not create/write `.pytest_cache` because access was
@@ -250,7 +265,7 @@ git status
 
 Checkpoint patch result before staging: modified runtime mock hardening, tests,
 schemas/examples, and documentation only, including transaction-boundary and
-evidence-ledger RFC hardening.
+evidence-ledger RFC hardening and coordinator-event design hardening.
 
 ## CI Expectations
 

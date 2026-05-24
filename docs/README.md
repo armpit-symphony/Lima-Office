@@ -16,6 +16,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Durable replay and evidence posture](DURABLE_REPLAY_EVIDENCE_POSTURE.md)
 - [Durable transaction/storage RFC](rfcs/RFC_DURABLE_TRANSACTION_STORAGE.md)
 - [Durable storage architecture](architecture/DURABLE_STORAGE_ARCHITECTURE.md)
+- [Durable transaction coordinator](architecture/DURABLE_TRANSACTION_COORDINATOR.md)
 - [Security model](SECURITY_MODEL.md)
 - [Threat model](THREAT_MODEL.md)
 - [Worker node spec](WORKER_NODE_SPEC.md)
@@ -85,6 +86,8 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Security incident](runbooks/security-incident.md)
 - [Health checks](runbooks/health-checks.md)
 - [Evidence writer failure](runbooks/evidence-writer-failure.md)
+- [Transaction recovery and reconciliation](runbooks/transaction-recovery-reconciliation.md)
+- [Transaction failure drills](runbooks/transaction-failure-drills.md)
 - [Prompt injection response](runbooks/prompt-injection-response.md)
 - [LIMA IT handoff](runbooks/lima-it-handoff.md)
 

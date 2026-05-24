@@ -37,6 +37,9 @@ process restart and denial-path evidence can be incomplete.
 - Fail closed when replay-store state is missing, ambiguous, or inconsistent.
 - Model cross-record atomicity through `transaction.boundary` metadata before
   any durable implementation is approved.
+- Model coordinator sequencing and reconciliation through
+  `transaction.coordinator.event` metadata before any durable implementation is
+  approved.
 
 ## Atomic Nonce Consumption Requirements
 
@@ -171,6 +174,8 @@ Runtime expansion remains blocked until all of the following are approved:
 - Durable atomic nonce and token consumption mechanism.
 - Durable transaction coordinator/commit mechanism aligned to
   [RFC_DURABLE_TRANSACTION_STORAGE](rfcs/RFC_DURABLE_TRANSACTION_STORAGE.md).
+- Durable coordinator transition/immutability model aligned to
+  [DURABLE_TRANSACTION_COORDINATOR](architecture/DURABLE_TRANSACTION_COORDINATOR.md).
 - Durable evidence storage and export path.
 - Durable storage architecture decision from
   [DURABLE_STORAGE_ARCHITECTURE](architecture/DURABLE_STORAGE_ARCHITECTURE.md).

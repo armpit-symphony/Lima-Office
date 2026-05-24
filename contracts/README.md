@@ -44,6 +44,7 @@ Version 1 schemas are in [v1](v1):
 - [guardian.replay.schema.json](v1/guardian.replay.schema.json)
 - [replay.store.record.schema.json](v1/replay.store.record.schema.json)
 - [transaction.boundary.schema.json](v1/transaction.boundary.schema.json)
+- [transaction.coordinator.event.schema.json](v1/transaction.coordinator.event.schema.json)
 - [approval.request.schema.json](v1/approval.request.schema.json)
 - [approval.result.schema.json](v1/approval.result.schema.json)
 - [approval.token.schema.json](v1/approval.token.schema.json)
@@ -106,6 +107,12 @@ Sanitized example objects are in [examples](examples):
 - [transaction.boundary.guardian-replay-consume.example.json](examples/transaction.boundary.guardian-replay-consume.example.json)
 - [transaction.boundary.failed-closed.example.json](examples/transaction.boundary.failed-closed.example.json)
 - [transaction.boundary.export-manifest-prepare.example.json](examples/transaction.boundary.export-manifest-prepare.example.json)
+- [transaction.coordinator.event.started.example.json](examples/transaction.coordinator.event.started.example.json)
+- [transaction.coordinator.event.nonce-reserved.example.json](examples/transaction.coordinator.event.nonce-reserved.example.json)
+- [transaction.coordinator.event.committed.example.json](examples/transaction.coordinator.event.committed.example.json)
+- [transaction.coordinator.event.failed-closed.example.json](examples/transaction.coordinator.event.failed-closed.example.json)
+- [transaction.coordinator.event.duplicate-request.example.json](examples/transaction.coordinator.event.duplicate-request.example.json)
+- [transaction.coordinator.event.reconciliation-completed.example.json](examples/transaction.coordinator.event.reconciliation-completed.example.json)
 - [approval.request.example.json](examples/approval.request.example.json)
 - [approval.result.approved.example.json](examples/approval.result.approved.example.json)
 - [approval.result.denied-blocked-mvp.example.json](examples/approval.result.denied-blocked-mvp.example.json)
@@ -242,6 +249,9 @@ The v1 schemas use JSON Schema draft 2020-12 conditionals to block unsafe state 
   fail-closed atomicity metadata without implementing storage.
 - `transaction.boundary` models future atomic transaction boundaries and
   status transitions as metadata-only records.
+- `transaction.coordinator.event` models append-only coordinator lifecycle
+  events, transition ordering, tenant-scoped idempotency scope, duplicate
+  detection, and fail-closed reconciliation metadata.
 - `task.execution`, `tool.invocation`, `memory.access`, and `model.route` bind policy result, approval state, taint refs, evidence failure, terminal states, and denial/failure reasons.
 - `worker.lifecycle`, `worker.heartbeat`, and `worker.deployment` bind identity failure, quarantine, revoke, evidence-writer failure, deployment refs, update/rollback posture, and healthy states.
 - `supervisor.health` summarizes mock/lab worker, task, Guardian, and evidence
