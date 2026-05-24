@@ -21,6 +21,7 @@ This directory contains Phase 0 contract schemas and sanitized example objects f
 - Guardian, approval, evidence, tenant isolation, and failure behavior are compatibility-sensitive. They cannot be weakened in a minor version.
 - Consumers must fail closed on unknown contract versions, missing Guardian decisions, missing approval tokens, missing evidence, tenant mismatches, expired approvals, or evidence writer failure.
 - Approval token records are metadata only. They must never contain bearer token material, OAuth codes, API keys, signatures, passwords, PINs, cookies, or plaintext secrets.
+- Reason-bearing contracts/examples must include `taxonomy_version`.
 
 ## Schema Location
 
@@ -214,7 +215,8 @@ Reason-code conformance blocks:
 - blocked reason codes in successful/completed/exported contexts
 - breaking-change compatibility records without `affected_contracts` and
   `evidence_refs`
-- missing `taxonomy_version` where mapped schemas require it
+- missing `taxonomy_version` in any reason-bearing schema/example
+- unsupported `taxonomy_version` values in reason-bearing examples
 
 Examples map to schemas by explicit override table, declared `$schema_ref`,
 `schema_ref`, `contract_name`, `contract_type`, or `type`, then by filename

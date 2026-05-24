@@ -62,9 +62,9 @@ Version 1 schemas now use JSON Schema draft 2020-12 conditionals for the highest
 - Evidence-required task/tool paths cannot be represented as completed when evidence failure blocks the action.
 - Evidence export manifests must remain refs-only, with redaction/retention
   placeholders and explicit delete-conflict refs for denied/blocked states.
-- Governance/export/delete contracts now include taxonomy version and reason-code
-  arrays so reconciliation/evidence/conflict semantics are normalized and
-  unknown reason codes can fail validation in strict mock tests.
+- Reason-bearing contracts now require `taxonomy_version` so reconciliation/
+  evidence/conflict semantics remain versioned and fail closed for unknown or
+  unsupported taxonomy versions.
 - Tainted content must remain data-only unless a later policy review clears it; it cannot directly become tool args, durable memory, approval scope, external sends, or remediation.
 - LIMA IT remediation is non-executing in Phase 0; diagnostic handoff remains read-only.
 
@@ -133,8 +133,8 @@ Reason-code usage conformance is CI-gated by
 [scripts/check-reason-codes.py](../scripts/check-reason-codes.py). The gate
 scans `contracts/v1` and `contracts/examples` and fails closed on unknown
 reason codes, deprecated-code compatibility gaps, blocked-codes in success
-contexts, breaking-change coverage gaps, and missing schema-required
-`taxonomy_version`.
+contexts, breaking-change coverage gaps, and missing/unsupported
+`taxonomy_version` in reason-bearing schemas/examples.
 
 ## Common Field Groups
 

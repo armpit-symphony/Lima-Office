@@ -42,18 +42,24 @@ class ReasonCodeConformanceCITests(unittest.TestCase):
     def setUpClass(cls):
         cls.checker = _load_checker_module()
 
-    def _run_checker(self, repo_root: Path) -> int:
+    def _run_checker_with_output(self, repo_root: Path) -> tuple[int, str]:
         buffer = io.StringIO()
         with redirect_stdout(buffer), redirect_stderr(buffer):
-            return int(self.checker.run_check(repo_root))
+            rc = int(self.checker.run_check(repo_root))
+        return rc, buffer.getvalue()
+
+    def _run_checker(self, repo_root: Path) -> int:
+        rc, _ = self._run_checker_with_output(repo_root)
+        return rc
 
     def test_checker_passes_current_contracts_examples(self):
         repo_root = _repo_fixture_copy()
         try:
-            rc = self._run_checker(repo_root)
+            rc, output = self._run_checker_with_output(repo_root)
         finally:
             shutil.rmtree(repo_root)
         self.assertEqual(0, rc)
+        self.assertIn("warnings: 0", output)
 
     def test_unknown_reason_code_fails(self):
         repo_root = _repo_fixture_copy()
@@ -132,6 +138,104 @@ class ReasonCodeConformanceCITests(unittest.TestCase):
         try:
             path = repo_root / "contracts" / "examples" / "reason.code.registry.reconciliation-active.example.json"
             payload = _read_json(path)
+            payload.pop("taxonomy_version", None)
+            _write_json(path, payload)
+            rc = self._run_checker(repo_root)
+        finally:
+            shutil.rmtree(repo_root)
+        self.assertNotEqual(0, rc)
+
+    def test_reason_bearing_schema_missing_taxonomy_requirement_fails(self):
+        repo_root = _repo_fixture_copy()
+        try:
+            path = repo_root / "contracts" / "v1" / "approval.binding.schema.json"
+            payload = _read_json(path)
+            payload["required"] = [field for field in payload.get("required", []) if field != "taxonomy_version"]
+            _write_json(path, payload)
+            rc = self._run_checker(repo_root)
+        finally:
+            shutil.rmtree(repo_root)
+        self.assertNotEqual(0, rc)
+
+    def test_unsupported_taxonomy_version_fails(self):
+        repo_root = _repo_fixture_copy()
+        try:
+            path = repo_root / "contracts" / "examples" / "governance.audit_export.requested-placeholder.example.json"
+            payload = _read_json(path)
+            payload["taxonomy_version"] = "taxonomy-recon-v999"
+            _write_json(path, payload)
+            rc = self._run_checker(repo_root)
+        finally:
+            shutil.rmtree(repo_root)
+        self.assertNotEqual(0, rc)
+
+    def test_supported_taxonomy_version_passes(self):
+        repo_root = _repo_fixture_copy()
+        try:
+            path = repo_root / "contracts" / "examples" / "governance.audit_export.requested-placeholder.example.json"
+            payload = _read_json(path)
+            payload["taxonomy_version"] = "taxonomy-recon-v1"
+            _write_json(path, payload)
+            rc = self._run_checker(repo_root)
+        finally:
+            shutil.rmtree(repo_root)
+        self.assertEqual(0, rc)
+
+    def test_non_reason_bearing_example_does_not_require_taxonomy_version(self):
+        repo_root = _repo_fixture_copy()
+        try:
+            path = repo_root / "contracts" / "examples" / "connector.trust.example.json"
+            payload = _read_json(path)
+            payload.pop("taxonomy_version", None)
+            _write_json(path, payload)
+            rc = self._run_checker(repo_root)
+        finally:
+            shutil.rmtree(repo_root)
+        self.assertEqual(0, rc)
+
+    def test_unknown_result_reason_code_fails(self):
+        repo_root = _repo_fixture_copy()
+        try:
+            path = repo_root / "contracts" / "examples" / "approval.result.approved.example.json"
+            payload = _read_json(path)
+            payload["result_reason_code"] = "unknown_result_reason_code_ci_test"
+            _write_json(path, payload)
+            rc = self._run_checker(repo_root)
+        finally:
+            shutil.rmtree(repo_root)
+        self.assertNotEqual(0, rc)
+
+    def test_denial_code_context_still_requires_taxonomy_version(self):
+        repo_root = _repo_fixture_copy()
+        try:
+            path = repo_root / "contracts" / "examples" / "tool.invocation.example.json"
+            payload = _read_json(path)
+            payload.pop("taxonomy_version", None)
+            _write_json(path, payload)
+            rc = self._run_checker(repo_root)
+        finally:
+            shutil.rmtree(repo_root)
+        self.assertNotEqual(0, rc)
+
+    def test_deprecated_code_with_compatibility_still_requires_taxonomy_version(self):
+        repo_root = _repo_fixture_copy()
+        try:
+            path = repo_root / "contracts" / "examples" / "governance.audit_export.export-denied.example.json"
+            payload = _read_json(path)
+            payload["reason_codes"] = ["export_delete_review_required_legacy"]
+            payload.pop("taxonomy_version", None)
+            _write_json(path, payload)
+            rc = self._run_checker(repo_root)
+        finally:
+            shutil.rmtree(repo_root)
+        self.assertNotEqual(0, rc)
+
+    def test_blocked_code_in_denied_context_still_requires_taxonomy_version(self):
+        repo_root = _repo_fixture_copy()
+        try:
+            path = repo_root / "contracts" / "examples" / "governance.audit_export.export-denied.example.json"
+            payload = _read_json(path)
+            payload["reason_codes"] = ["blocked_mvp_export_delete_execution"]
             payload.pop("taxonomy_version", None)
             _write_json(path, payload)
             rc = self._run_checker(repo_root)

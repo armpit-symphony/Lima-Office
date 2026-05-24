@@ -18,12 +18,24 @@ EXAMPLE_DIR = ROOT / "contracts" / "examples"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from lima_office.runtime.taxonomy import ALIAS_TO_CANONICAL, REASON_CODE_REGISTRY
+from lima_office.runtime.errors import PolicyDenyError
+from lima_office.runtime.taxonomy import (
+    ALIAS_TO_CANONICAL,
+    REASON_CODE_REGISTRY,
+    validate_taxonomy_version,
+)
 
 REASON_VALUE_FIELDS = frozenset(
     {
         "reason_code",
         "reason_codes",
+        "result_reason_code",
+        "blocked_reason_code",
+        "quarantine_reason_code",
+        "denial_code",
+        "previous_reason_code",
+        "reasons",
+        "visible_reason_codes",
         "reconciliation_reason_codes",
         "evidence_reason_codes",
         "export_delete_conflict_codes",
@@ -33,11 +45,17 @@ REASON_VALUE_FIELDS = frozenset(
         "mismatch_reasons",
     }
 )
-REASON_CODE_STATUS_FIELDS = frozenset(
-    {"reason_code_status", "unknown_reason_code_policy", "deprecated_reason_code_policy"}
+REASON_CODE_POLICY_FIELDS = frozenset(
+    {
+        "reason_code_registry_refs",
+        "reason_code_status",
+        "unknown_reason_code_policy",
+        "deprecated_reason_code_policy",
+    }
 )
 REASON_VALUE_PATTERN = re.compile(r"^[a-z][a-z0-9_]*$")
 PLACEHOLDER_PATTERN = re.compile(r".*_placeholder$")
+SCHEMA_TAXONOMY_ALLOWLIST = frozenset()
 
 SUCCESS_STATUS_BY_FIELD = {
     "status": frozenset(
@@ -120,7 +138,8 @@ def schema_key_from_filename(path: Path, schema_keys: set[str]) -> str | None:
         base = base[:-5]
     if base.endswith(".example"):
         base = base[:-8]
-    for key in sorted(schema_keys, key=len, reverse=True):
+    # Deterministic tie-break avoids non-reproducible mapping when names share a prefix length.
+    for key in sorted(schema_keys, key=lambda item: (-len(item), item)):
         if base == key or base.startswith(f"{key}."):
             return key
     return None
@@ -212,12 +231,19 @@ def gather_reason_codes_from_example(example: LoadedJson) -> list[LocatedCode]:
 
 
 def schema_uses_reason_model(schema_data: Any) -> bool:
-    if not isinstance(schema_data, dict):
+    fields = REASON_VALUE_FIELDS | REASON_CODE_POLICY_FIELDS | {"failure_reason"}
+
+    def _walk(node: Any) -> bool:
+        if isinstance(node, dict):
+            properties = node.get("properties")
+            if isinstance(properties, dict) and set(properties).intersection(fields):
+                return True
+            return any(_walk(child) for child in node.values())
+        if isinstance(node, list):
+            return any(_walk(child) for child in node)
         return False
-    properties = schema_data.get("properties")
-    if not isinstance(properties, dict):
-        return False
-    return bool(set(properties).intersection(REASON_VALUE_FIELDS | REASON_CODE_STATUS_FIELDS | {"failure_reason"}))
+
+    return _walk(schema_data)
 
 
 def schema_requires_taxonomy_version(schema_data: Any) -> bool:
@@ -227,6 +253,31 @@ def schema_requires_taxonomy_version(schema_data: Any) -> bool:
     if not isinstance(required, list):
         return False
     return "taxonomy_version" in required
+
+
+def schema_has_taxonomy_version_property(schema_data: Any) -> bool:
+    if not isinstance(schema_data, dict):
+        return False
+    properties = schema_data.get("properties")
+    if not isinstance(properties, dict):
+        return False
+    return "taxonomy_version" in properties
+
+
+def validate_supported_taxonomy_version(
+    source_path: Path, payload: Any, result: CheckResult
+) -> None:
+    if not isinstance(payload, dict):
+        result.fail(f"{rel(source_path)}: expected object payload for taxonomy_version validation")
+        return
+    version = payload.get("taxonomy_version")
+    if not isinstance(version, str) or not version:
+        result.fail(f"{rel(source_path)}: missing taxonomy_version for reason-bearing payload")
+        return
+    try:
+        validate_taxonomy_version(version)
+    except PolicyDenyError as exc:
+        result.fail(f"{rel(source_path)}: {exc}")
 
 
 def looks_successful(payload: Any) -> bool:
@@ -256,7 +307,7 @@ def is_placeholder_code(code: str) -> bool:
 
 def load_registry_examples(result: CheckResult, example_dir: Path) -> dict[str, dict[str, Any]]:
     registry_entries: dict[str, dict[str, Any]] = {}
-    for path in sorted(example_dir.glob("reason.code.registry.*.json")):
+    for path in sorted(example_dir.rglob("reason.code.registry.*.json")):
         loaded = load_json(path, result)
         if loaded is None or not isinstance(loaded.data, dict):
             continue
@@ -284,7 +335,7 @@ def load_compatibility_examples(
 ) -> tuple[set[str], list[LoadedJson]]:
     covered_deprecated_codes: set[str] = set()
     loaded_examples: list[LoadedJson] = []
-    for path in sorted(example_dir.glob("reason.code.compatibility.*.json")):
+    for path in sorted(example_dir.rglob("reason.code.compatibility.*.json")):
         loaded = load_json(path, result)
         if loaded is None or not isinstance(loaded.data, dict):
             continue
@@ -375,12 +426,12 @@ def run_check(root: Path = ROOT) -> int:
     known_codes, alias_to_canonical, code_status = build_known_reason_catalog(registry_examples)
 
     schemas: list[LoadedJson] = []
-    for path in sorted(schema_dir.glob("*.schema.json")):
+    for path in sorted(schema_dir.rglob("*.schema.json")):
         loaded = load_json(path, result)
         if loaded is not None:
             schemas.append(loaded)
     examples: list[LoadedJson] = []
-    for path in sorted(example_dir.glob("*.json")):
+    for path in sorted(example_dir.rglob("*.json")):
         loaded = load_json(path, result)
         if loaded is not None:
             examples.append(loaded)
@@ -394,8 +445,16 @@ def run_check(root: Path = ROOT) -> int:
         schema_by_key[key] = schema
         schema_uses_reason[key] = schema_uses_reason_model(schema.data)
         schema_requires_taxonomy[key] = schema_requires_taxonomy_version(schema.data)
+        if schema_uses_reason[key] and not schema_has_taxonomy_version_property(schema.data):
+            result.fail(f"{rel(schema.path)}: reason-bearing schema is missing taxonomy_version property")
         if schema_uses_reason[key] and not schema_requires_taxonomy[key]:
-            result.warn(f"{rel(schema.path)}: reason-bearing schema does not require taxonomy_version")
+            if key in SCHEMA_TAXONOMY_ALLOWLIST:
+                result.warn(
+                    f"{rel(schema.path)}: reason-bearing schema is allowlisted from "
+                    "taxonomy_version required enforcement"
+                )
+            else:
+                result.fail(f"{rel(schema.path)}: reason-bearing schema must require taxonomy_version")
 
         for code in gather_reason_codes_from_schema(schema):
             schema_code_count += 1
@@ -416,11 +475,8 @@ def run_check(root: Path = ROOT) -> int:
         if key is None:
             result.fail(f"{rel(example.path)}: cannot map example to schema")
             continue
-        requires_taxonomy = schema_requires_taxonomy.get(key, False)
-        if requires_taxonomy and (not isinstance(example.data, dict) or "taxonomy_version" not in example.data):
-            result.fail(
-                f"{rel(example.path)}: missing taxonomy_version while mapped schema requires it ({key})"
-            )
+        if schema_uses_reason.get(key, False):
+            validate_supported_taxonomy_version(example.path, example.data, result)
 
         canonical_codes_in_example: list[str] = []
         for code in gather_reason_codes_from_example(example):

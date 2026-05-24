@@ -5,7 +5,7 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `reason-code-conformance-ci-gate` on Windows with
+Latest captured run: `taxonomy-version-enforcement-hardening` on Windows with
 Python 3.12.10.
 
 ## Canonical Integration Branch
@@ -27,6 +27,8 @@ Python 3.12.10.
   `reason-code-registry-compatibility-policy`
 - Reason-code conformance CI gate branch:
   `reason-code-conformance-ci-gate`
+- Taxonomy-version enforcement hardening branch:
+  `taxonomy-version-enforcement-hardening`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -167,6 +169,17 @@ authorization expansion, export/delete execution, durable storage services, live
 connectors, external sends, real remediation, production operations, or
 customer-system mutation.
 
+## Taxonomy-Version Enforcement Hardening Checkpoint
+
+This branch hardens reason-code governance by requiring `taxonomy_version` for
+all reason-bearing contracts/examples covered by the CI gate, expanding scanned
+reason-bearing fields to include health/status reason arrays and policy
+metadata, and failing closed on unsupported taxonomy versions.
+Validation remains repository health evidence only; it does not approve runtime
+authorization expansion, export/delete execution, durable storage services, live
+connectors, external sends, real remediation, production operations, or
+customer-system mutation.
+
 ## Strict Schema Validation
 
 Command:
@@ -213,11 +226,11 @@ Result:
 LIMA Office reason-code conformance
 - schemas scanned: 41
 - examples scanned: 107
-- known canonical/alias codes: 63
-- reason-code values scanned in schemas: 63
-- reason-code values scanned in examples: 64
+- known canonical/alias codes: 99
+- reason-code values scanned in schemas: 125
+- reason-code values scanned in examples: 81
 - blocked-in-success violations: 0
-- warnings: 17
+- warnings: 0
 - failures: 0
 Result: PASS
 ```
@@ -225,10 +238,11 @@ Result: PASS
 Notes:
 
 - The gate fails closed on unknown codes, deprecated-code compatibility gaps,
-  blocked-codes in success contexts, breaking-change coverage gaps, and missing
-  schema-required taxonomy versions.
-- Current warnings reflect legacy schemas that use reason-bearing fields but do
-  not yet require `taxonomy_version`. This remains an open governance question.
+  blocked-codes in success contexts, breaking-change coverage gaps, missing
+  `taxonomy_version` in reason-bearing schemas/examples, and unsupported
+  `taxonomy_version` values.
+- Reason-bearing schema/example payloads are now required to carry
+  `taxonomy_version`; warning-only exceptions were removed.
 
 ## Doc Link Check
 

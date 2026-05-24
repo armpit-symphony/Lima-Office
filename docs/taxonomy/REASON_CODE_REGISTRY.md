@@ -25,7 +25,7 @@ Reason-code usage is enforced by
 [scripts/check-reason-codes.py](../../scripts/check-reason-codes.py). The gate
 scans schemas and examples, rejects unknown codes, enforces deprecated-code
 compatibility coverage, blocks blocked-codes in success contexts, and validates
-`taxonomy_version` presence where schema-required.
+mandatory `taxonomy_version` for reason-bearing contracts/examples.
 
 ## Naming Rules
 
@@ -40,6 +40,9 @@ compatibility coverage, blocks blocked-codes in success contexts, and validates
 ## Taxonomy Version Rules
 
 - Registry uses `taxonomy_version` (for example `taxonomy-reason-v1`).
+- Supported values are governed in
+  [lima_office/runtime/taxonomy.py](../../lima_office/runtime/taxonomy.py).
+- Unknown or unsupported `taxonomy_version` values fail closed.
 - Additive code addition: minor bump.
 - Meaning change or category change: major bump.
 - Removal is major-only and must be pre-announced as deprecated first.
@@ -116,8 +119,8 @@ Rules:
   export/delete decision paths.
 - Deprecated codes may be accepted with warning for metadata-only records where
   policy allows.
-- Contracts must include `taxonomy_version` when reason codes are decision
-  relevant.
+- Contracts/examples that carry reason-bearing fields must include
+  `taxonomy_version`.
 - New or changed code semantics must include a matching compatibility record.
 
 ## Blocked and Removal Rules

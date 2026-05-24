@@ -6,7 +6,7 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
-Current working branch: `reason-code-conformance-ci-gate`
+Current working branch: `taxonomy-version-enforcement-hardening`
 
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
@@ -15,13 +15,14 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A reason-code conformance CI-gate hardening.
+Current phase: Phase 1A taxonomy-version enforcement hardening.
 Phase 1A mock runtime scaffolding is present, the v2 invariant checkpoint and
 durable replay/evidence, transaction/storage, coordinator, linkage,
 approval/Guardian reconciliation, governance export/delete taxonomy, and
 reason-code registry/compatibility checkpoints are reachable. This branch adds
-fail-closed CI validation for unknown/deprecated/blocked reason-code misuse and
-taxonomy-version conformance checks.
+fail-closed CI validation for unknown/deprecated/blocked reason-code misuse,
+mandatory taxonomy-version enforcement for reason-bearing schemas/examples, and
+unsupported-taxonomy fail-closed checks.
 Runtime expansion remains blocked until the remaining gates in this file,
 [Baseline](docs/BASELINE.md), and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md)
 are resolved.
@@ -112,7 +113,9 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
   export/delete review posture.
 - Strict contract validation through [scripts/validate-contracts.py](scripts/validate-contracts.py).
 - Strict reason-code conformance validation through
-  [scripts/check-reason-codes.py](scripts/check-reason-codes.py).
+  [scripts/check-reason-codes.py](scripts/check-reason-codes.py), including
+  mandatory `taxonomy_version` checks for reason-bearing schema/example
+  payloads.
 - Local Markdown link validation through [scripts/check-doc-links.py](scripts/check-doc-links.py).
 - Phase 1A mock Python runtime scaffolding in [lima_office](lima_office).
 - In-memory worker registry, heartbeat validation, task queue, Guardian policy
@@ -220,9 +223,6 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
   redaction taxonomy, export package format, and customer delete proof posture.
 - Finalize reason-code registry migration window and removal governance for
   post-Phase-0 taxonomy major-version transitions.
-- Decide whether all reason-bearing schemas should require `taxonomy_version` in
-  v1, or keep explicit legacy exemptions until a future major-version migration
-  lane.
 - Define final legal retention periods and external legal review for
   taxonomy/retention semantics before any live export/delete implementation.
 - Select operator IdP/MFA, breakglass, access review cadence, and LIMA IT
@@ -237,7 +237,7 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 
 ## Next Recommended Lane
 
-After reason-code conformance CI-gate hardening is reviewed, the next safe lane
-is final RBAC/IdP/MFA/session/device trust matrix closure, still without adding
+After taxonomy-version enforcement hardening is reviewed, the next safe lane is
+final RBAC/IdP/MFA/session/device trust matrix closure, still without adding
 live services. Phase 1B lab runtime expansion remains blocked until remaining
 gates are approved. Mainline update should wait for explicit approval.

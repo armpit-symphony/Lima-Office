@@ -93,3 +93,6 @@ Canonical lifecycle and compatibility posture are governed by:
 
 - [Reason Code Registry](REASON_CODE_REGISTRY.md)
 - [Reason Code Compatibility Policy](REASON_CODE_COMPATIBILITY_POLICY.md)
+
+Reason-bearing evidence/governance contracts/examples must include
+`taxonomy_version`. Missing or unsupported taxonomy versions fail closed in CI.

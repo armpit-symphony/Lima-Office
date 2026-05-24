@@ -110,6 +110,7 @@ class SupervisorHealthReporter:
             "contract_name": "supervisor.health",
             "contract_version": "1.0.0",
             "schema_version": "1.0.0",
+            "taxonomy_version": "taxonomy-recon-v1",
             "tenant_id": self.tenant_id,
             "customer_context_id": self.customer_context_id,
             "environment": "phase0_lab",

@@ -64,10 +64,16 @@ schema validation, broken example coverage, or unsafe positive content.
 - Reason-code usage across all `contracts/v1/*.schema.json` and
   `contracts/examples/*.json`.
 - Reason fields:
-  `reason_code`, `reason_codes`, `reconciliation_reason_codes`,
-  `evidence_reason_codes`, `export_delete_conflict_codes`, `conflict_codes`,
+  `reason_code`, `reason_codes`, `result_reason_code`,
+  `blocked_reason_code`, `quarantine_reason_code`, `denial_code`,
+  `previous_reason_code`, `reasons`, `visible_reason_codes`,
+  `reconciliation_reason_codes`, `evidence_reason_codes`,
+  `export_delete_conflict_codes`, `conflict_codes`,
   `linkage_failure_reasons`, `reconciliation_failure_reasons`,
   `mismatch_reasons`, and enum-like `failure_reason`.
+- Reason-code policy metadata fields:
+  `reason_code_registry_refs`, `unknown_reason_code_policy`,
+  `deprecated_reason_code_policy`, and `reason_code_status`.
 - Canonical reason-code catalog from
   [lima_office/runtime/taxonomy.py](../lima_office/runtime/taxonomy.py) plus
   `reason.code.registry` examples.
@@ -78,7 +84,9 @@ schema validation, broken example coverage, or unsafe positive content.
   `evidence_refs`).
 - Blocked reason codes in success contexts (`approved`, `committed`,
   `completed`, `prepared`, `exported`, and related success statuses).
-- `taxonomy_version` presence where mapped schemas require it.
+- `taxonomy_version` is mandatory for all reason-bearing schemas/examples.
+- Unsupported `taxonomy_version` values fail closed.
+- Versionless reason-code payloads fail closed.
 
 The gate exits non-zero on violations.
 
@@ -182,6 +190,23 @@ To add a new reason code safely:
 4. Update contract examples that consume the code.
 5. Add/adjust tests.
 6. Run strict validation commands.
+
+To add a reason-bearing field safely:
+
+1. Add the field to the relevant contract with explicit reason-code semantics.
+2. Require `taxonomy_version` in that contract.
+3. Add/update examples with explicit `taxonomy_version`.
+4. Add/update tests for unknown/deprecated/blocked/version behavior.
+5. Run `python scripts/check-reason-codes.py` and confirm zero warnings/failures.
+
+To add a new taxonomy version safely:
+
+1. Update supported versions in
+   [lima_office/runtime/taxonomy.py](../lima_office/runtime/taxonomy.py).
+2. Add/adjust `reason.code.registry` and `reason.code.compatibility` examples.
+3. Update reason-bearing contract examples to the intended version.
+4. Add tests for supported and unsupported versions.
+5. Run strict validation commands.
 
 To deprecate/alias safely:
 

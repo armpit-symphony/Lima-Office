@@ -8,6 +8,7 @@
     "contract_name",
     "contract_version",
     "schema_version",
+    "taxonomy_version",
     "tenant_id",
     "customer_context_id",
     "environment",
@@ -342,6 +343,10 @@
       ]
     },
     "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taxonomy_version": {
       "type": "string",
       "minLength": 1
     },

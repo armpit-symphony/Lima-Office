@@ -80,6 +80,7 @@ def build_guardian_decision(
         "contract_name": "guardian.decision",
         "contract_version": "1.0.0",
         "schema_version": "1.0.0",
+        "taxonomy_version": "taxonomy-recon-v1",
         "tenant_id": tenant_id,
         "customer_context_id": customer_context_id,
         "environment": "blocked_mvp" if denied else "phase0_lab",

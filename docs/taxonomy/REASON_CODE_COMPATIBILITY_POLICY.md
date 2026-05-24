@@ -10,6 +10,7 @@ silent semantic drift across contracts, examples, and mock helpers.
 ## Compatibility Contract
 
 - `taxonomy_version` identifies the compatible reason-code set.
+- Unknown or unsupported `taxonomy_version` values fail closed.
 - Every reason-code change must be represented by:
   - registry record (`reason.code.registry`)
   - compatibility record (`reason.code.compatibility`)
@@ -55,6 +56,8 @@ Allowed only when all are true:
 ## Schema Example Requirements For `taxonomy_version`
 
 - Decision-relevant schemas/examples must include `taxonomy_version`.
+- All reason-bearing schemas/examples must include `taxonomy_version`.
+- Versionless reason-code payloads are invalid.
 - Examples should use canonical active codes unless testing deprecation/alias
   handling.
 - Deprecated or alias examples must carry explicit compatibility evidence.
@@ -64,6 +67,7 @@ Allowed only when all are true:
 - Unknown codes are rejected by default.
 - Unknown code outcome is fail-closed for authorization/reconciliation/export/
   delete classifications.
+- Unknown or unsupported `taxonomy_version` is also fail-closed.
 - Helper output may include unknown-code diagnostics but `can_authorize` must
   remain `false`.
 - CI reason-code conformance gate must fail on unknown codes found in schemas
@@ -88,6 +92,8 @@ Allowed only when all are true:
 - Unknown, blocked, or breaking-change compatibility statuses fail closed.
 - Deprecated codes cannot authorize privileged outcomes unless policy explicitly
   allows warning-only metadata use.
+- Deprecated/alias handling remains metadata-only in Phase 1A unless a future
+  approved policy lane changes this.
 - Breaking changes require review/evidence before any decision path uses them.
 - Blocked codes cannot appear in success/authorization-complete metadata states.
 

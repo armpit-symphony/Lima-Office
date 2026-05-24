@@ -70,6 +70,7 @@ class GuardianDecisionReplayVerifier:
             "contract_name": "guardian.replay",
             "contract_version": "1.0.0",
             "schema_version": "1.0.0",
+            "taxonomy_version": "taxonomy-recon-v1",
             "tenant_id": decision["tenant_id"],
             "customer_context_id": decision["customer_context_id"],
             "environment": "dry_run",

@@ -124,4 +124,6 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 These docs define boundaries, contracts, and mock scaffolding. They do not approve live connectors, external sends, customer-system mutation, hidden background work, remediation execution, or production operation.
 
 Validation now includes a fail-closed reason-code conformance gate via
-`python scripts/check-reason-codes.py`; see [Validation](VALIDATION.md).
+`python scripts/check-reason-codes.py`; reason-bearing schemas/examples must
+carry a supported `taxonomy_version` or the gate fails closed. See
+[Validation](VALIDATION.md).

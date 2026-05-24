@@ -161,6 +161,8 @@ Mapping:
 - Deprecated codes stay accepted for one major cycle and map to canonical
   replacements in compatibility notes.
 - Unknown codes fail validation in strict mock tests.
+- Reason-bearing contracts/examples must include `taxonomy_version`.
+- Missing or unsupported `taxonomy_version` fails closed in CI.
 
 ## MVP Non-Goals
 
