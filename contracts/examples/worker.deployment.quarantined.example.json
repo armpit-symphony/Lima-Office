@@ -90,6 +90,8 @@
   "security_reviewer_ref": "security-reviewer-001",
   "blocked_reason": "Attestation failed during field preflight; worker remains quarantined.",
   "worker_attestation_ref": "wa-failed-001",
+  "attestation_result_ref": "attres-worker-002",
+  "appraisal_policy_ref": "apol-worker-default-v1",
   "update_rollback_refs": [
     "ur-runtime-rollback-001"
   ],

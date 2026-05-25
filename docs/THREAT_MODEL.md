@@ -102,7 +102,7 @@ The Phase 0 schemas do not implement controls, but they define the required reco
 | Breakglass misuse | `governance.breakglass`, `guardian.decision`, `incident.ops`, `evidence.artifact` | Breakglass is denied or blocked metadata in MVP. It cannot bypass Guardian, evidence, incident review, or blocked-MVP actions. |
 | Unsafe audit export or customer exit delete | `governance.audit_export`, `evidence.artifact`, `memory.access`, `incident.ops` | Export/delete records require tenant scope, redaction profile, non-exportable classes, evidence preservation conflict posture, Guardian decision, and evidence refs. |
 | Connector consent or scope drift | `governance.connector_consent`, `connector.trust`, `taint.ref`, `evidence.artifact` | Consent and scope records keep live access false, secret material absent, blocked scopes explicit, revocation evidenced, and prompt-injection review required before live review. |
-| Update supply-chain or rollback failure | `governance.update_record`, `update.rollback`, `worker.attestation`, `worker.deployment`, `worker.lifecycle`, `worker.heartbeat`, `incident.ops` | Update records require source/version/hash refs, signature verification placeholder, staged rollout posture, automatic update false, known-good rollback, attestation posture, and evidence refs. |
+| Update supply-chain or rollback failure | `governance.update_record`, `update.rollback`, `worker.attestation`, `attestation.reference_value`, `attestation.endorsement`, `attestation.appraisal_policy`, `attestation.result`, `worker.deployment`, `worker.lifecycle`, `worker.heartbeat`, `incident.ops` | Update/attestation records require source/version/hash refs, signature verification placeholder, staged rollout posture, automatic update false, known-good rollback, appraisal policy/reference/endorsement posture, attestation result linkage, and evidence refs. |
 | Unsafe approval UX | `console.action`, `approval.request`, `approval.result`, `approval.token`, `token.verification`, `guardian.decision`, `evidence.artifact` | Console action records have `runtime_effect: false`; approval UX must show scope hash, risk, data class, expiry, taint, evidence, and deny/block states before metadata decisions. |
 | Mock state presented as live | `console.view`, `console.alert`, `guardian.decision`, `connector.trust`, `lima_it.handoff` | Console views label mock, dry-run, and blocked-MVP states and cannot imply live connector readiness, external sends, remediation, or production operation. |
 | Evidence omission in command view | `console.alert`, `console.view`, `evidence.artifact`, `evidence.failure`, `incident.ops` | Missing evidence creates blocked alert/review state; evidence viewer shows redaction, retention, integrity refs, and runbook links. |
@@ -129,6 +129,8 @@ The Phase 0 schemas do not implement controls, but they define the required reco
   `governance.device_trust`?
 - What signing root, attestation method, and rollback trigger matrix should
   replace the current placeholders?
+- Who owns verifier appraisal-policy approval and reference-value authority, and
+  what SoD boundary is required for revocation?
 - What durable Guardian replay store, atomic decision-consumption rule, and
   replay-denial incident threshold should replace the current mock-only
   verifier?

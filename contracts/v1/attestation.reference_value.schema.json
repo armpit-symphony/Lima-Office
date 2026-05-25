@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.lima-office.local/contracts/v1/worker.attestation.schema.json",
-  "title": "Worker Attestation Contract v1",
+  "$id": "https://schemas.lima-office.local/contracts/v1/attestation.reference_value.schema.json",
+  "title": "Attestation Reference Value Contract v1",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -16,23 +16,16 @@
     "causation_id",
     "idempotency_key",
     "producer",
-    "attestation_id",
-    "worker_id",
-    "deployment_id",
-    "supervisor_id",
-    "attestation_status",
-    "trust_root_status",
-    "evidence_type",
-    "os_image_hash",
-    "runtime_hash",
-    "policy_bundle_hash",
-    "model_bundle_hash",
-    "config_hash",
-    "reference_value_refs",
-    "endorsement_refs",
-    "appraisal_policy_refs",
-    "attestation_result_ref",
-    "device_trust_ref",
+    "reference_value_id",
+    "reference_value_type",
+    "reference_status",
+    "value_hash",
+    "hash_algorithm",
+    "applies_to_worker_roles",
+    "applies_to_worker_ids",
+    "applies_to_deployment_ids",
+    "approved_by_ref",
+    "policy_refs",
     "evidence_refs",
     "reason_codes",
     "policy_version",
@@ -41,7 +34,7 @@
   "properties": {
     "contract_name": {
       "type": "string",
-      "const": "worker.attestation"
+      "const": "attestation.reference_value"
     },
     "contract_version": {
       "type": "string",
@@ -98,8 +91,6 @@
           "type": "string",
           "enum": [
             "supervisor",
-            "worker",
-            "guardian",
             "operator_console",
             "field_it_reviewer",
             "security_reviewer"
@@ -111,78 +102,46 @@
         }
       }
     },
-    "attestation_id": {
+    "reference_value_id": {
       "type": "string",
       "minLength": 1
     },
-    "worker_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "deployment_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "supervisor_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "attestation_status": {
+    "reference_value_type": {
       "type": "string",
       "enum": [
-        "not_required",
-        "required",
-        "pending",
-        "attested",
-        "failed",
-        "expired",
+        "os_image_hash",
+        "arc_runtime_hash",
+        "policy_bundle_hash",
+        "model_bundle_hash",
+        "config_hash",
+        "update_artifact_hash",
+        "rollback_target_hash"
+      ]
+    },
+    "reference_status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "approved",
+        "active",
+        "deprecated",
         "revoked",
         "blocked_mvp"
       ]
     },
-    "trust_root_status": {
+    "value_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hash_algorithm": {
       "type": "string",
       "enum": [
-        "unknown",
-        "hardware_root_placeholder",
-        "software_only_placeholder",
-        "verified_placeholder",
-        "failed",
-        "blocked_mvp"
+        "sha256",
+        "sha384",
+        "sha512"
       ]
     },
-    "evidence_type": {
-      "type": "string",
-      "enum": [
-        "metadata_only",
-        "tpm_quote_placeholder",
-        "secure_boot_placeholder",
-        "runtime_hash_manifest",
-        "policy_hash_manifest",
-        "model_hash_manifest"
-      ]
-    },
-    "os_image_hash": {
-      "type": "string",
-      "minLength": 1
-    },
-    "runtime_hash": {
-      "type": "string",
-      "minLength": 1
-    },
-    "policy_bundle_hash": {
-      "type": "string",
-      "minLength": 1
-    },
-    "model_bundle_hash": {
-      "type": "string",
-      "minLength": 1
-    },
-    "config_hash": {
-      "type": "string",
-      "minLength": 1
-    },
-    "reference_value_refs": {
+    "applies_to_worker_roles": {
       "type": "array",
       "items": {
         "type": "string",
@@ -190,7 +149,7 @@
       },
       "uniqueItems": true
     },
-    "endorsement_refs": {
+    "applies_to_worker_ids": {
       "type": "array",
       "items": {
         "type": "string",
@@ -198,7 +157,7 @@
       },
       "uniqueItems": true
     },
-    "appraisal_policy_refs": {
+    "applies_to_deployment_ids": {
       "type": "array",
       "items": {
         "type": "string",
@@ -206,17 +165,27 @@
       },
       "uniqueItems": true
     },
-    "attestation_result_ref": {
+    "approved_by_ref": {
       "type": [
         "string",
         "null"
       ]
     },
-    "device_trust_ref": {
-      "type": [
-        "string",
-        "null"
-      ]
+    "policy_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
     },
     "reason_codes": {
       "type": "array",
@@ -230,19 +199,25 @@
       "type": "string",
       "minLength": 1
     },
-    "evidence_refs": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "uniqueItems": true
-    },
     "created_at": {
       "type": "string",
       "format": "date-time"
     },
+    "approved_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
     "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "revoked_at": {
       "type": [
         "string",
         "null"
@@ -254,76 +229,58 @@
     {
       "if": {
         "properties": {
-          "attestation_status": {
-            "const": "attested"
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "evidence_refs": {
-            "minItems": 1
-          },
-          "attestation_result_ref": {
-            "type": "string",
-            "minLength": 1
-          },
-          "appraisal_policy_refs": {
-            "minItems": 1
-          },
-          "trust_root_status": {
-            "not": {
-              "enum": [
-                "failed",
-                "blocked_mvp"
-              ]
-            }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "attestation_status": {
-            "const": "failed"
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "reason_codes": {
-            "minItems": 1,
-            "contains": {
-              "const": "attestation_failed"
-            }
-          },
-          "evidence_refs": {
-            "minItems": 1
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "attestation_status": {
-            "const": "expired"
+          "reference_status": {
+            "const": "active"
           }
         }
       },
       "then": {
         "required": [
-          "expires_at"
+          "approved_by_ref",
+          "approved_at",
+          "policy_refs",
+          "evidence_refs"
         ],
         "properties": {
-          "expires_at": {
+          "approved_by_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approved_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "policy_refs": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reference_status": {
+            "const": "revoked"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "revoked_at",
+          "reason_codes"
+        ],
+        "properties": {
+          "revoked_at": {
             "type": "string",
             "format": "date-time"
           },
           "reason_codes": {
+            "minItems": 1,
             "contains": {
-              "const": "attestation_expired"
+              "const": "reference_value_revoked"
             }
           }
         }
@@ -332,65 +289,34 @@
     {
       "if": {
         "properties": {
-          "attestation_status": {
+          "reference_status": {
+            "const": "deprecated"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "reason_codes": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reference_status": {
             "const": "blocked_mvp"
           }
         }
       },
       "then": {
         "properties": {
-          "trust_root_status": {
-            "enum": [
-              "unknown",
-              "blocked_mvp"
-            ]
+          "approved_at": {
+            "type": "null"
           },
-          "reason_codes": {
-            "contains": {
-              "const": "update_blocked_mvp"
-            }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "trust_root_status": {
-            "const": "failed"
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "reason_codes": {
-            "minItems": 1,
-            "contains": {
-              "const": "trust_root_failed"
-            }
-          },
-          "attestation_status": {
-            "enum": [
-              "failed",
-              "revoked",
-              "blocked_mvp"
-            ]
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "evidence_type": {
-            "const": "metadata_only"
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "endorsement_refs": {
-            "maxItems": 0
+          "approved_by_ref": {
+            "type": "null"
           }
         }
       }

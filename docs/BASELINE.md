@@ -157,6 +157,18 @@ operations, customer-system mutation, or compliance certification claims.
   automation, model provider integration, or remediation execution is
   authorized.
 
+## Attestation Verifier Policy and Reference Values Design Checkpoint
+
+- Branch: `attestation-verifier-policy-reference-values-design`
+- Base: `worker-attestation-trust-root-signed-update-rollback-hardening`
+- Purpose: define metadata-only verifier appraisal policy, reference-value
+  governance, endorsement lifecycle posture, and attestation-result semantics
+  with fail-closed linkage to worker/device/model-route metadata.
+- Scope: docs, schemas, examples, tests, and mock-only attestation verifier
+  helper. No TPM runtime, verifier service, certificate/signature validation
+  service, update runtime, rollback automation, model provider integration, or
+  remediation execution is authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:
@@ -261,6 +273,11 @@ Recommended order after stabilization:
 2. Final RBAC/IdP/MFA/session/device trust matrix.
 3. Model-routing defaults and health taxonomy refinement.
 4. Phase 1B lab runtime expansion only after the gates above are approved.
+
+Alternative non-runtime lanes:
+
+- Durable attestation-result storage and verifier-owner governance planning.
+- Endorsement-source validation and reference-value authority governance.
 
 Alternative non-runtime lanes:
 

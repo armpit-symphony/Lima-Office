@@ -25,6 +25,7 @@
     "trust_status",
     "posture_requirements",
     "attestation_refs",
+    "attestation_result_ref",
     "allowed_permissions",
     "blocked_permissions",
     "evidence_refs",
@@ -175,6 +176,12 @@
       },
       "uniqueItems": true
     },
+    "attestation_result_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "allowed_permissions": {
       "type": "array",
       "items": {
@@ -288,6 +295,10 @@
           "attestation_refs": {
             "minItems": 1
           },
+          "attestation_result_ref": {
+            "type": "string",
+            "minLength": 1
+          },
           "reason_codes": {
             "contains": {
               "const": "attestation_required"
@@ -310,6 +321,10 @@
             "contains": {
               "const": "receive_privileged_task_metadata"
             }
+          },
+          "attestation_result_ref": {
+            "type": "string",
+            "minLength": 1
           },
           "reason_codes": {
             "contains": {

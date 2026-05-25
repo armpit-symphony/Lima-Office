@@ -1,6 +1,6 @@
 {
   "taxonomy_version": "taxonomy-reason-v1",
-  "catalog_version": "phase1a-model-route-health-v1",
+  "catalog_version": "phase1a-attestation-verifier-v1",
   "entries": [
     {
       "reason_code": "model_route_unavailable",
@@ -125,6 +125,71 @@
     {
       "reason_code": "runtime_bundle_untrusted",
       "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "reference_value_missing",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "reference_value_stale",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "reference_value_revoked",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "endorsement_missing",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "endorsement_revoked",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "endorsement_expired",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "appraisal_policy_missing",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "appraisal_policy_revoked",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "appraisal_failed",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "appraisal_inconclusive",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_result_expired",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_quarantine_required",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_reference_mismatch",
+      "category": "linkage",
       "status": "active"
     }
   ],

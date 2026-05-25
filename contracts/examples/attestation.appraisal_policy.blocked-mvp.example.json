@@ -1,0 +1,49 @@
+{
+  "contract_name": "attestation.appraisal_policy",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant_acme",
+  "customer_context_id": "cust_acme_primary",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-appraisal-policy-blocked-001",
+  "causation_id": "evt-appraisal-policy-blocked-001",
+  "idempotency_key": "idem-appraisal-policy-blocked-001",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-24T18:41:00Z"
+  },
+  "appraisal_policy_id": "apol-worker-default-v2",
+  "policy_status": "blocked_mvp",
+  "required_reference_value_types": [
+    "os_image_hash"
+  ],
+  "required_endorsement_types": [
+    "sparkpit_operator_placeholder"
+  ],
+  "required_evidence_types": [
+    "metadata_only"
+  ],
+  "freshness_seconds": 3600,
+  "clock_skew_allowance_seconds": 60,
+  "fail_closed_on_missing_reference": true,
+  "fail_closed_on_missing_endorsement": true,
+  "fail_closed_on_stale_evidence": true,
+  "applies_to_worker_roles": [
+    "general_office_arc_worker"
+  ],
+  "applies_to_action_types": [
+    "model_route_select"
+  ],
+  "approved_by_ref": null,
+  "evidence_refs": [
+    "evidence:artifact:attestation-appraisal-policy-blocked-001"
+  ],
+  "reason_codes": [
+    "blocked_mvp"
+  ],
+  "policy_version": "policy.attestation.appraisal.phase1a.v1",
+  "created_at": "2026-05-24T18:41:00Z",
+  "approved_at": null,
+  "revoked_at": null
+}

@@ -5,7 +5,7 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `worker-attestation-trust-root-signed-update-rollback-hardening` on Windows with
+Latest captured run: `attestation-verifier-policy-reference-values-design` on Windows with
 Python 3.12.10.
 
 ## Canonical Integration Branch
@@ -35,6 +35,8 @@ Python 3.12.10.
   `model-routing-defaults-health-taxonomy-refinement`
 - Worker attestation/signed update rollback branch:
   `worker-attestation-trust-root-signed-update-rollback-hardening`
+- Attestation verifier/reference-value governance branch:
+  `attestation-verifier-policy-reference-values-design`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -145,6 +147,18 @@ integration, signing services, update runtime, rollback automation, model
 provider integration, live connectors, remediation execution, or production
 operations.
 
+## Attestation Verifier Policy / Reference-Value Governance Checkpoint
+
+This branch adds verifier-governance docs and runbook, new
+`attestation.reference_value`, `attestation.endorsement`,
+`attestation.appraisal_policy`, and `attestation.result` schemas/examples,
+trust-aware linkage hardening in worker/device/model-route contracts, and a
+mock-only attestation metadata verifier helper with fail-closed tests.
+Validation remains repository health evidence only; it does not approve TPM
+integration, verifier services, certificate/signature verification services,
+update runtime, rollback automation, model provider integration, live
+connectors, remediation execution, or production operations.
+
 ## Cross-Contract Linkage Hardening Checkpoint
 
 This branch adds cross-contract linkage posture docs, linkage-status and
@@ -232,13 +246,13 @@ Result:
 
 ```text
 LIMA Office contract validation
-- schemas parsed: 46
-- examples parsed: 130
-- mapped examples: 130
-- schemas with examples: 46
+- schemas parsed: 50
+- examples parsed: 141
+- mapped examples: 141
+- schemas with examples: 50
 - validation mode: full JSON Schema draft 2020-12 with format checks
 - jsonschema version: 4.26.0
-- unsafe-content scan: 130 example files, 117 markdown files
+- unsafe-content scan: 141 example files, 112 markdown files
 - warnings: 0
 - failures: 0
 Result: PASS
@@ -264,11 +278,11 @@ Result:
 
 ```text
 LIMA Office reason-code conformance
-- schemas scanned: 46
-- examples scanned: 130
-- known canonical/alias codes: 129
-- reason-code values scanned in schemas: 275
-- reason-code values scanned in examples: 140
+- schemas scanned: 50
+- examples scanned: 141
+- known canonical/alias codes: 142
+- reason-code values scanned in schemas: 327
+- reason-code values scanned in examples: 165
 - blocked-in-success violations: 0
 - warnings: 0
 - failures: 0
@@ -296,8 +310,8 @@ Result:
 
 ```text
 LIMA Office markdown link check
-- markdown files scanned: 109
-- local links checked: 844
+- markdown files scanned: 120
+- local links checked: 967
 - external/anchor links ignored: 0
 - failures: 0
 Result: PASS
@@ -314,7 +328,7 @@ python -B -m unittest discover -s tests -v
 Result:
 
 ```text
-Ran 267 tests
+Ran 283 tests
 
 OK
 ```
@@ -382,7 +396,7 @@ python -m pytest -q
 Result:
 
 ```text
-267 passed, 1 warning, 166 subtests passed
+283 passed, 1 warning, 177 subtests passed
 ```
 
 Warning: pytest could not create/write `.pytest_cache` because access was

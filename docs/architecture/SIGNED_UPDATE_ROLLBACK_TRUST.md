@@ -17,6 +17,9 @@ worker/runtime/policy/model/config artifacts.
 This document is conceptual mapping only and does not claim implementation or
 certification.
 
+Attestation appraisal/reference-value linkage details are defined in
+[ATTESTATION_VERIFIER_POLICY_REFERENCE_VALUES.md](ATTESTATION_VERIFIER_POLICY_REFERENCE_VALUES.md).
+
 ## Update Artifact Types
 
 - `policy_bundle`

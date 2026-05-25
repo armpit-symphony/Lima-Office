@@ -6,7 +6,7 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
-Current working branch: `worker-attestation-trust-root-signed-update-rollback-hardening`
+Current working branch: `attestation-verifier-policy-reference-values-design`
 
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
@@ -15,14 +15,15 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A worker-attestation trust-root and signed update/rollback
+Current phase: Phase 1A attestation verifier policy/reference-value governance
 hardening. Phase 1A mock runtime scaffolding is present, the v2 invariant
 checkpoint and durable replay/evidence, transaction/storage, coordinator,
 linkage, approval/Guardian reconciliation, governance export/delete taxonomy,
 reason-code registry/compatibility, model-routing defaults, and health taxonomy
-checkpoints are reachable. This branch adds fail-closed worker-attestation and
-signed-update/rollback metadata contracts/examples/tests, trust-aware
-model-route linkage, and mock-only attestation/update review runbook hardening.
+checkpoints are reachable. This branch adds fail-closed attestation
+reference-value, endorsement, appraisal-policy, and attestation-result metadata
+contracts/examples/tests, trust-aware model-route linkage, and mock-only
+attestation-verifier governance/runbook hardening.
 Runtime expansion remains blocked until the remaining gates in this file,
 [Baseline](docs/BASELINE.md), and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md)
 are resolved.
@@ -127,12 +128,21 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
   [docs/architecture/WORKER_ATTESTATION_TRUST_ROOT.md](docs/architecture/WORKER_ATTESTATION_TRUST_ROOT.md)
   and
   [docs/architecture/SIGNED_UPDATE_ROLLBACK_TRUST.md](docs/architecture/SIGNED_UPDATE_ROLLBACK_TRUST.md).
+- Attestation verifier/reference-value governance docs in
+  [docs/architecture/ATTESTATION_VERIFIER_POLICY_REFERENCE_VALUES.md](docs/architecture/ATTESTATION_VERIFIER_POLICY_REFERENCE_VALUES.md)
+  and
+  [docs/governance/ATTESTATION_REFERENCE_VALUE_GOVERNANCE.md](docs/governance/ATTESTATION_REFERENCE_VALUE_GOVERNANCE.md).
 - Worker-attestation and signed-update review runbooks in
   [docs/runbooks/worker-attestation-review.md](docs/runbooks/worker-attestation-review.md)
   and
   [docs/runbooks/signed-update-rollback-review.md](docs/runbooks/signed-update-rollback-review.md).
+- Attestation verifier review runbook in
+  [docs/runbooks/attestation-verifier-review.md](docs/runbooks/attestation-verifier-review.md).
 - `worker.attestation` and `update.rollback` schemas/examples for metadata-only
   trust posture and fail-closed verification/rollback linkage.
+- `attestation.reference_value`, `attestation.endorsement`,
+  `attestation.appraisal_policy`, and `attestation.result` schemas/examples for
+  metadata-only appraisal governance and fail-closed attestation result posture.
 - Local Markdown link validation through [scripts/check-doc-links.py](scripts/check-doc-links.py).
 - Phase 1A mock Python runtime scaffolding in [lima_office](lima_office).
 - In-memory worker registry, heartbeat validation, task queue, Guardian policy
@@ -256,15 +266,16 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
   fail-closed metadata, role separation, and blocked breakglass posture, but no
   provider, runtime enforcement, or final cadence is selected.
 - Define final worker attestation method, trust root, signed update format,
-  and rollback trigger defaults. Governance scaffolding now blocks automatic
-  update behavior and automated re-enrollment.
+  and rollback trigger defaults plus final verifier owner/endorsement authority.
+  Governance scaffolding now blocks automatic update behavior and automated
+  re-enrollment.
 - Define final connector consent expiry, live-review criteria, provider scope
   mapping, and prompt-injection test evidence before any live connector review.
 
 ## Next Recommended Lane
 
-After worker-attestation/update trust hardening is reviewed, the next safe lane
-is taxonomy family/parity enforcement and cross-family reason-code constraints
-without adding live services. Phase 1B lab runtime expansion remains blocked
-until remaining gates are approved. Mainline update should wait for explicit
-approval.
+After attestation-verifier/reference-value hardening is reviewed, the next safe
+lane is implementation-gate planning for durable attestation result storage,
+endorsement source validation, and update trust-root ownership without adding
+live services. Phase 1B lab runtime expansion remains blocked until remaining
+gates are approved. Mainline update should wait for explicit approval.

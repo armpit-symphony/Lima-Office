@@ -60,6 +60,11 @@ Attestation posture is recorded in:
 - [worker.heartbeat.schema.json](../../contracts/v1/worker.heartbeat.schema.json)
 - [governance.device_trust.schema.json](../../contracts/v1/governance.device_trust.schema.json)
 - [worker.attestation.schema.json](../../contracts/v1/worker.attestation.schema.json)
+- [attestation.reference_value.schema.json](../../contracts/v1/attestation.reference_value.schema.json)
+- [attestation.endorsement.schema.json](../../contracts/v1/attestation.endorsement.schema.json)
+- [attestation.appraisal_policy.schema.json](../../contracts/v1/attestation.appraisal_policy.schema.json)
+- [attestation.result.schema.json](../../contracts/v1/attestation.result.schema.json)
+- [Attestation Reference Value Governance](ATTESTATION_REFERENCE_VALUE_GOVERNANCE.md)
 
 ## Failed Attestation Behavior
 

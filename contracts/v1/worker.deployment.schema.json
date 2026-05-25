@@ -400,6 +400,18 @@
         "null"
       ]
     },
+    "attestation_result_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "appraisal_policy_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "update_channel": {
       "type": "object",
       "additionalProperties": false,
@@ -696,6 +708,9 @@
         }
       },
       "then": {
+        "required": [
+          "attestation_result_ref"
+        ],
         "properties": {
           "lifecycle_state": {
             "enum": [
@@ -724,6 +739,10 @@
               "unknown",
               "blocked_mvp"
             ]
+          },
+          "attestation_result_ref": {
+            "type": "string",
+            "minLength": 1
           },
           "reason_codes": {
             "contains": {

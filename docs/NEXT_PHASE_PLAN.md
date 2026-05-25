@@ -37,11 +37,15 @@ Recommended order:
 7. Worker attestation trust-root and signed update/rollback hardening
    (checkpoint completed as docs/contracts/tests/mock metadata hardening on
    `worker-attestation-trust-root-signed-update-rollback-hardening`).
-8. Phase 1B lab runtime expansion only after the gates above are approved.
+8. Attestation verifier policy/reference-value governance design (checkpoint
+   completed as docs/contracts/tests/mock metadata hardening on
+   `attestation-verifier-policy-reference-values-design`).
+9. Phase 1B lab runtime expansion only after the gates above are approved.
 
-Next recommended lane after this checkpoint: worker attestation trust-root and
-signed update/rollback implementation-gate hardening while keeping provider
-integration, local inference runtime, and live connector execution blocked.
+Next recommended lane after this checkpoint: durable attestation verifier
+ownership and trust-root authority implementation-gate hardening while keeping
+provider integration, local inference runtime, live connector execution, and
+runtime authorization expansion blocked.
 
 Alternative non-runtime lanes can proceed when they do not obscure the blockers:
 model-routing defaults, final IdP/MFA/RBAC matrix, health taxonomy refinement,

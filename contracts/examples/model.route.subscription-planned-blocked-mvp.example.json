@@ -35,6 +35,8 @@
   "session_policy_ref": "session-policy-ref-subscription-001",
   "device_trust_ref": "device-trust-ref-subscription-001",
   "worker_attestation_ref": "worker-attestation-ref-subscription-001",
+  "attestation_result_ref": "attestation-result-ref-subscription-001",
+  "appraisal_policy_ref": "appraisal-policy-ref-subscription-001",
   "update_rollback_ref": "update-rollback-ref-subscription-001",
   "worker_capability_refs": [
     "capability-ref-supervisor-reasoning-001"

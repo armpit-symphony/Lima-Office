@@ -24,6 +24,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Health status taxonomy](taxonomy/HEALTH_STATUS_TAXONOMY.md)
 - [Model routing defaults](architecture/MODEL_ROUTING_DEFAULTS.md)
 - [Worker attestation trust root](architecture/WORKER_ATTESTATION_TRUST_ROOT.md)
+- [Attestation verifier policy and reference values](architecture/ATTESTATION_VERIFIER_POLICY_REFERENCE_VALUES.md)
 - [Signed update rollback trust](architecture/SIGNED_UPDATE_ROLLBACK_TRUST.md)
 - [Durable transaction/storage RFC](rfcs/RFC_DURABLE_TRANSACTION_STORAGE.md)
 - [Durable storage architecture](architecture/DURABLE_STORAGE_ARCHITECTURE.md)
@@ -64,6 +65,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Export delete conflict policy](governance/EXPORT_DELETE_CONFLICT_POLICY.md)
 - [Connector consent scope revocation policy](governance/CONNECTOR_CONSENT_SCOPE_REVOCATION_POLICY.md)
 - [Worker attestation policy](governance/WORKER_ATTESTATION_POLICY.md)
+- [Attestation reference value governance](governance/ATTESTATION_REFERENCE_VALUE_GOVERNANCE.md)
 - [Signed update rollback policy](governance/SIGNED_UPDATE_ROLLBACK_POLICY.md)
 
 ## UX / Control-Room Docs
@@ -90,6 +92,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [RBAC IdP MFA access review](runbooks/rbac-idp-mfa-access-review.md)
 - [Update rollback approval](runbooks/update-rollback-approval.md)
 - [Signed update rollback review](runbooks/signed-update-rollback-review.md)
+- [Attestation verifier review](runbooks/attestation-verifier-review.md)
 - [Worker onboarding](runbooks/worker-onboarding.md)
 - [Worker deployment](runbooks/worker-deployment.md)
 - [Worker quarantine](runbooks/worker-quarantine.md)

@@ -141,6 +141,29 @@ Related schemas now include stronger trust-aware metadata bindings:
 These are design-only metadata controls. No TPM integration, no signing
 service, no update runtime, and no rollback automation are implemented.
 
+## Attestation Verifier / Reference-Value Governance Hardening
+
+Phase 1A now adds design-only verifier-governance contracts for appraisal
+policy and reference-value lineage:
+
+- `attestation.reference_value` for versioned worker/runtime/policy/model/config
+  hash reference metadata and lifecycle states.
+- `attestation.endorsement` for trusted-placeholder/untrusted/revoked/expired
+  endorsement metadata and evidence linkage.
+- `attestation.appraisal_policy` for required reference/endorsement/evidence
+  sets, freshness windows, and fail-closed policy toggles.
+- `attestation.result` for metadata-only appraisal outcomes (`pass`, `fail`,
+  `inconclusive`, `expired`, `blocked_mvp`) and trust effects.
+
+Related worker/device/model-route schemas now require stronger linkage refs
+(`attestation_result_ref`, `appraisal_policy_ref`) so privileged metadata paths
+can fail closed when attestation appraisal posture is missing, stale, revoked,
+or blocked.
+
+These contracts remain docs/tests/mock metadata only. No TPM quote handling, no
+certificate/signature validation service, no verifier daemon, and no runtime
+authorization expansion are implemented.
+
 ## Governance Export/Delete Taxonomy Hardening
 
 Phase 1A now includes:

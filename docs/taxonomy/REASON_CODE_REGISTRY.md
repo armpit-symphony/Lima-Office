@@ -96,6 +96,23 @@ codes:
 - `policy_bundle_untrusted`
 - `runtime_bundle_untrusted`
 
+Attestation verifier/reference-value governance hardening adds canonical reason
+codes:
+
+- `reference_value_missing`
+- `reference_value_stale`
+- `reference_value_revoked`
+- `endorsement_missing`
+- `endorsement_revoked`
+- `endorsement_expired`
+- `appraisal_policy_missing`
+- `appraisal_policy_revoked`
+- `appraisal_failed`
+- `appraisal_inconclusive`
+- `attestation_result_expired`
+- `attestation_quarantine_required`
+- `attestation_reference_mismatch`
+
 Reference snapshot:
 [contracts/taxonomy/reason-code-registry.catalog.json](../../contracts/taxonomy/reason-code-registry.catalog.json).
 

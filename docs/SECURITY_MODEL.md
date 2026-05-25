@@ -44,6 +44,13 @@ Phase 1A trust-root metadata hardening is documented in
 [Worker Attestation Trust Root](architecture/WORKER_ATTESTATION_TRUST_ROOT.md)
 and represented by
 [worker.attestation.schema.json](../contracts/v1/worker.attestation.schema.json).
+Verifier appraisal/reference-value governance is documented in
+[Attestation Verifier Policy Reference Values](architecture/ATTESTATION_VERIFIER_POLICY_REFERENCE_VALUES.md)
+and
+[Attestation Reference Value Governance](governance/ATTESTATION_REFERENCE_VALUE_GOVERNANCE.md),
+with metadata contracts for `attestation.reference_value`,
+`attestation.endorsement`, `attestation.appraisal_policy`, and
+`attestation.result`.
 
 Deployment planning records may use `attestation_status: not_required_phase0`
 or `manual_review_only`. These values mean weak lab trust only; they do not
@@ -280,6 +287,9 @@ The Phase 0 field-level schemas in [contracts/v1](../contracts/v1) define the mi
   records fail-closed route posture (`mock_only`, `local_planned`,
   `subscription_planned`, `blocked_mvp`), route status/reason codes, taint/risk
   gating, RBAC/session/device trust refs, fallback constraints, and evidence.
+  High-risk selected routes now also require attestation/update appraisal refs
+  (`worker_attestation_ref`, `attestation_result_ref`, `appraisal_policy_ref`,
+  `update_rollback_ref`) so trust drift blocks privileged routing metadata.
   It explicitly blocks live provider calls and local inference execution in
   Phase 1A metadata lanes.
 - Tool invocation: [tool.invocation.schema.json](../contracts/v1/tool.invocation.schema.json) requires tool pack/version, sandbox profile, side-effect class, file/network/connector scope, dry-run posture, approval token/binding linkage where needed, and evidence.

@@ -10,6 +10,10 @@ model providers, send messages, mutate customer systems, or perform remediation.
 Worker attestation trust-root posture in this lane is tracked by
 `worker.attestation` metadata and
 [Worker Attestation Trust Root](../architecture/WORKER_ATTESTATION_TRUST_ROOT.md).
+Verifier appraisal/reference-value governance is tracked by
+[ATTESTATION_VERIFIER_POLICY_REFERENCE_VALUES.md](../architecture/ATTESTATION_VERIFIER_POLICY_REFERENCE_VALUES.md)
+and
+[ATTESTATION_REFERENCE_VALUE_GOVERNANCE.md](../governance/ATTESTATION_REFERENCE_VALUE_GOVERNANCE.md).
 
 ## Target Deployment
 

@@ -25,6 +25,7 @@
     "device_posture_required_for_privileged"
   ],
   "attestation_refs": [],
+  "attestation_result_ref": null,
   "allowed_permissions": [
     "view_supervisor_health",
     "view_worker_fleet",

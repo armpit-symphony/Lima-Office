@@ -38,6 +38,8 @@
   "attestation_status": "verified",
   "trust_root_status": "verified_placeholder",
   "worker_attestation_ref": "wa-attested-001",
+  "attestation_result_ref": "attres-worker-001",
+  "appraisal_policy_ref": "apol-worker-default-v1",
   "update_rollback_ref": "ur-policy-verified-001",
   "evidence_writer_status": "healthy",
   "evidence_spool_depth": 0,

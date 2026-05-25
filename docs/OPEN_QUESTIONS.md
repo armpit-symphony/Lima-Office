@@ -124,6 +124,16 @@ documents the reachable v2 checkpoint that supersedes it.
   requirement, and key lifecycle should replace the placeholder in
   [Worker Attestation Policy](governance/WORKER_ATTESTATION_POLICY.md) and
   [Worker Attestation Trust Root](architecture/WORKER_ATTESTATION_TRUST_ROOT.md)?
+- Attestation verifier ownership: who is the final verifier owner/relying-party
+  owner, and what independent approver separation is required for
+  `attestation.appraisal_policy` and `attestation.reference_value` lifecycle
+  transitions (`proposed` -> `approved` -> `active` -> `revoked`)?
+- Endorsement authority: which endorsement issuers are trusted for
+  `attestation.endorsement` beyond placeholders, and what revocation evidence
+  and freshness SLA should fail closed in future runtime?
+- Appraisal freshness defaults: what final `freshness_seconds` and
+  `clock_skew_allowance_seconds` become normative for
+  `attestation.appraisal_policy` in lab runtime?
 - Update rollback: what signed/verified source format, signer authority,
   known-good selection, rollback trigger matrix, and approval workflow should
   replace the placeholders in [Signed Update Rollback Policy](governance/SIGNED_UPDATE_ROLLBACK_POLICY.md)

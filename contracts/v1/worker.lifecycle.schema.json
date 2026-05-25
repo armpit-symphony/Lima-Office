@@ -216,6 +216,18 @@
         "null"
       ]
     },
+    "attestation_result_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "appraisal_policy_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "attestation_expires_at": {
       "type": [
         "string",
@@ -630,11 +642,44 @@
       "if": {
         "properties": {
           "attestation_status": {
+            "const": "verified"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "worker_attestation_ref",
+          "attestation_result_ref",
+          "appraisal_policy_ref"
+        ],
+        "properties": {
+          "worker_attestation_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "attestation_result_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "appraisal_policy_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "attestation_status": {
             "const": "failed"
           }
         }
       },
       "then": {
+        "required": [
+          "attestation_result_ref"
+        ],
         "properties": {
           "lifecycle_state": {
             "enum": [
@@ -660,6 +705,10 @@
               "unknown",
               "blocked_mvp"
             ]
+          },
+          "attestation_result_ref": {
+            "type": "string",
+            "minLength": 1
           }
         }
       }

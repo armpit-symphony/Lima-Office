@@ -47,6 +47,8 @@ not authorize execution.
 - `session_policy_ref`
 - `device_trust_ref`
 - `worker_attestation_ref`
+- `attestation_result_ref`
+- `appraisal_policy_ref`
 - `update_rollback_ref`
 - `worker_capability_refs`
 - provider/local bundle availability placeholders
@@ -94,6 +96,7 @@ Route records must include:
 - evidence refs
 - tenant/correlation IDs
 - trust posture references (RBAC/session/device) when relevant
+- attestation appraisal/result references for privileged routes
 
 ## Acceptance Gates Before Implementation
 

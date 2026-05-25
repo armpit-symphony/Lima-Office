@@ -27,6 +27,7 @@
   "attestation_refs": [
     "ev-worker-attestation-review-required-001"
   ],
+  "attestation_result_ref": "attres-worker-001",
   "allowed_permissions": [
     "view_task_queue"
   ],

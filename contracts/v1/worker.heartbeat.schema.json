@@ -282,6 +282,18 @@
         "null"
       ]
     },
+    "attestation_result_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "appraisal_policy_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "update_rollback_ref": {
       "type": [
         "string",
@@ -529,6 +541,36 @@
       "if": {
         "properties": {
           "attestation_status": {
+            "const": "verified"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "worker_attestation_ref",
+          "attestation_result_ref",
+          "appraisal_policy_ref"
+        ],
+        "properties": {
+          "worker_attestation_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "attestation_result_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "appraisal_policy_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "attestation_status": {
             "enum": [
               "failed",
               "expired",
@@ -539,6 +581,9 @@
         }
       },
       "then": {
+        "required": [
+          "attestation_result_ref"
+        ],
         "properties": {
           "health_state": {
             "not": {
@@ -549,6 +594,10 @@
             "const": true
           },
           "runbook_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "attestation_result_ref": {
             "type": "string",
             "minLength": 1
           }

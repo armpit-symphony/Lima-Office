@@ -9,6 +9,8 @@ automation.
 This lane also adds metadata-only trust contracts:
 `governance.update_record` and `update.rollback`, plus
 [Signed Update Rollback Trust](../architecture/SIGNED_UPDATE_ROLLBACK_TRUST.md).
+Attestation-result and appraisal linkage posture is further defined in
+[ATTESTATION_VERIFIER_POLICY_REFERENCE_VALUES.md](../architecture/ATTESTATION_VERIFIER_POLICY_REFERENCE_VALUES.md).
 
 ## Update Channels
 

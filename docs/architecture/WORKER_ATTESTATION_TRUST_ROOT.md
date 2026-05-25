@@ -7,6 +7,9 @@ Status: design-only / not implemented.
 Define a fail-closed metadata posture for Arc worker attestation and trust-root
 inputs before any real TPM, secure-boot, or attestation verifier exists.
 
+Verifier-governance details are defined in
+[ATTESTATION_VERIFIER_POLICY_REFERENCE_VALUES.md](ATTESTATION_VERIFIER_POLICY_REFERENCE_VALUES.md).
+
 ## RATS-Style Role Mapping
 
 - Arc worker: attester.
@@ -54,7 +57,8 @@ Mapped in this lane to `worker.attestation`, `worker.lifecycle`,
 - `worker.deployment`: deployment-time trust-root placeholders and refs.
 - `worker.heartbeat`: ongoing trust drift signals and escalation refs.
 - `model.route`: trust-aware routing refs (`worker_attestation_ref`,
-  `update_rollback_ref`) and blocked reason codes.
+  `attestation_result_ref`, `appraisal_policy_ref`, `update_rollback_ref`) and
+  blocked reason codes.
 
 ## Evidence Requirements
 

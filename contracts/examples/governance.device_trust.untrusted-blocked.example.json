@@ -24,6 +24,7 @@
     "managed_device_placeholder"
   ],
   "attestation_refs": [],
+  "attestation_result_ref": null,
   "allowed_permissions": [
     "view_supervisor_health",
     "view_worker_fleet",

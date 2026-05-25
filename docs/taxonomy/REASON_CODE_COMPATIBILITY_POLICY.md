@@ -65,6 +65,8 @@ Allowed only when all are true:
   canonical route/health reason codes.
 - Worker-attestation and signed-update/rollback examples must carry taxonomy
   version and canonical trust/update reason codes.
+- Attestation verifier/reference-value examples must carry taxonomy version and
+  canonical appraisal/reference/endorsement reason codes.
 
 ## Runtime Helper Rules For Unknown Codes
 

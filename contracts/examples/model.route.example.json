@@ -34,6 +34,8 @@
   "session_policy_ref": "session-policy-ref-001",
   "device_trust_ref": "device-trust-ref-001",
   "worker_attestation_ref": "worker-attestation-ref-001",
+  "attestation_result_ref": "attestation-result-ref-001",
+  "appraisal_policy_ref": "appraisal-policy-ref-001",
   "update_rollback_ref": "update-rollback-ref-001",
   "worker_capability_refs": [
     "capability-ref-worker-draft-001"
