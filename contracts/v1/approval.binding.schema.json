@@ -384,7 +384,13 @@
           "breakglass_blocked_mvp",
           "attestation_required",
           "attestation_failed",
-          "privileged_action_blocked"
+          "privileged_action_blocked",
+          "connector_consent_missing",
+          "connector_scope_overbroad",
+          "connector_scope_denied",
+          "connector_object_auth_missing",
+          "connector_property_auth_missing",
+          "connector_live_blocked_mvp"
         ]
       },
       "uniqueItems": true
@@ -726,6 +732,24 @@
       ]
     },
     "replay_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_readiness_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_scope_review_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_consent_ref": {
       "type": [
         "string",
         "null"
@@ -1206,6 +1230,11 @@
           },
           "token_verification_id": {
             "const": null
+          },
+          "mismatch_reasons": {
+            "contains": {
+              "const": "blocked_mvp"
+            }
           }
         }
       }
@@ -1238,6 +1267,42 @@
           "taint_ref_ids": {
             "type": "array",
             "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action_type": {
+            "enum": [
+              "connector_access",
+              "live_connector_access"
+            ]
+          }
+        },
+        "required": [
+          "action_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "connector_readiness_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "connector_scope_review_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "connector_consent_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "mismatch_reasons": {
+            "contains": {
+              "const": "connector_live_blocked_mvp"
+            }
           }
         }
       }

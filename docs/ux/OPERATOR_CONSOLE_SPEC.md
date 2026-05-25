@@ -35,7 +35,7 @@ This is a specification only. It does not implement UI code or runtime controls.
 | LIMA IT handoffs | Show read-only diagnostic handoff and blocked remediation metadata | `lima_it.handoff`, `approval.result` |
 | Deployment/update/attestation | Show worker deployment records, update/rollback records, attestation placeholders, and field checklists | `worker.deployment`, `worker.attestation`, `governance.update_record`, `update.rollback` |
 | Governance/access review | Show identity/MFA placeholders, role review, separation checks, and breakglass denial | `governance.identity`, `governance.access_review`, `governance.breakglass` |
-| Connector readiness | Show mock connector readiness, consent, scope, revocation, and prompt-injection posture | `connector.trust`, `governance.connector_consent` |
+| Connector readiness | Show mock connector readiness, consent, scope, revocation, least-privilege object/property authorization mapping, and prompt-injection posture | `connector.trust`, `connector.readiness`, `connector.scope_review`, `governance.connector_consent` |
 | Audit/export/delete requests | Show export/delete scope, redaction profile, non-exportable classes, and preservation conflict state | `governance.audit_export` |
 
 ## Navigation Model

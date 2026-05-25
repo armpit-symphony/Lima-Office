@@ -6,7 +6,7 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
-Current working branch: `attestation-revocation-reconciliation-drills`
+Current working branch: `live-connector-criteria-design`
 
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
@@ -15,15 +15,16 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A attestation revocation reconciliation drill hardening.
-Phase 1A mock runtime scaffolding is present, the v2 invariant checkpoint and
-durable replay/evidence, transaction/storage, coordinator, linkage,
-approval/Guardian reconciliation, governance export/delete taxonomy,
-reason-code registry/compatibility, model-routing defaults, health taxonomy,
-attestation verifier/reference-value, and durable attestation lineage/authority
-checkpoints are reachable. This branch adds fail-closed attestation revocation
-reconciliation metadata contracts/examples/tests, lineage+transaction+evidence
-drift drill docs/runbook, and mock-only reconciliation helper hardening.
+Current phase: Phase 1A live connector criteria design hardening. Phase 1A mock
+runtime scaffolding is present, the v2 invariant checkpoint and durable
+replay/evidence, transaction/storage, coordinator, linkage, approval/Guardian
+reconciliation, governance export/delete taxonomy, reason-code
+registry/compatibility, model-routing defaults, health taxonomy, attestation
+verifier/reference-value, durable attestation lineage/authority, and
+attestation revocation reconciliation checkpoints are reachable. This branch
+adds fail-closed connector readiness/scope-review metadata contracts/examples,
+live-connector criteria docs/runbook posture, and mock-only connector readiness
+classification helper hardening.
 Runtime expansion remains blocked until the remaining gates in this file,
 [Baseline](docs/BASELINE.md), and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md)
 are resolved.

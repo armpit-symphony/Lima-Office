@@ -10,6 +10,11 @@ Policy ref: `policy.connector_consent_scope_revocation.phase0`
 
 Status: draft scaffold. Live connectors remain blocked.
 
+Related design references:
+
+- [Live Connector Criteria](../architecture/LIVE_CONNECTOR_CRITERIA.md)
+- [Live Connector Readiness Review](../runbooks/live-connector-readiness-review.md)
+
 ## Connector Consent Model
 
 - Connector consent must identify tenant/customer context, connector owner,
@@ -128,6 +133,9 @@ The following remain blocked:
 - `governance.connector_consent` records consent, scope, revocation, and
   prompt-injection posture.
 - `connector.trust` remains mock/readiness-only.
+- `connector.readiness` and `connector.scope_review` record lifecycle, least
+  privilege, object/property authorization mapping, and fail-closed review
+  status.
 - Scope expansion cannot self-approve.
 - Revocation creates evidence.
 - Missing consent, unknown scope, secret exposure, or prompt-injection

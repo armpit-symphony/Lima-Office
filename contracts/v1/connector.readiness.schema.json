@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.lima-office.local/contracts/v1/governance.connector_consent.schema.json",
-  "title": "Governance Connector Consent Contract v1",
+  "$id": "https://schemas.lima-office.local/contracts/v1/connector.readiness.schema.json",
+  "title": "Connector Readiness Contract v1",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -15,31 +15,27 @@
     "correlation_id",
     "causation_id",
     "idempotency_key",
-    "connector_consent_id",
-    "connector_id",
-    "connector_type",
-    "connector_owner_ref",
-    "consent_grantor_ref",
-    "consent_status",
-    "scope_review_status",
-    "requested_scopes",
-    "approved_scopes",
-    "blocked_scopes",
-    "secrets_ref",
-    "secret_material_present",
-    "live_access_enabled",
-    "revocation",
-    "rotation_placeholder",
-    "data_classification",
-    "prompt_injection_review",
-    "connector_readiness_ref",
-    "scope_review_ref",
-    "policy_refs",
-    "status",
     "producer",
     "policy_version",
-    "guardian_decision_id",
+    "connector_readiness_id",
+    "connector_id",
+    "connector_type",
+    "lifecycle_state",
+    "readiness_status",
+    "connector_owner_ref",
+    "consent_ref",
+    "scope_refs",
+    "secrets_ref",
+    "data_classes",
+    "allowed_actions",
+    "blocked_actions",
+    "outbound_action_policy_ref",
+    "rate_limit_policy_ref",
+    "prompt_injection_policy_refs",
+    "approval_policy_refs",
     "evidence_refs",
+    "revocation_refs",
+    "export_delete_impact_refs",
     "reason_codes",
     "created_at",
     "updated_at"
@@ -47,7 +43,7 @@
   "properties": {
     "contract_name": {
       "type": "string",
-      "const": "governance.connector_consent"
+      "const": "connector.readiness"
     },
     "contract_version": {
       "type": "string",
@@ -92,7 +88,34 @@
       "type": "string",
       "minLength": 1
     },
-    "connector_consent_id": {
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "guardian",
+            "operator_console",
+            "security_reviewer"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "connector_readiness_id": {
       "type": "string",
       "minLength": 1
     },
@@ -118,56 +141,44 @@
         "blocked_mvp"
       ]
     },
+    "lifecycle_state": {
+      "type": "string",
+      "enum": [
+        "mock_only",
+        "planned",
+        "consent_pending",
+        "scope_review",
+        "risk_review",
+        "approval_required",
+        "approved_for_lab",
+        "live_blocked_mvp",
+        "revoked",
+        "retired"
+      ]
+    },
+    "readiness_status": {
+      "type": "string",
+      "enum": [
+        "not_ready",
+        "review_required",
+        "approved_for_lab",
+        "blocked_mvp",
+        "revoked",
+        "failed_closed"
+      ]
+    },
     "connector_owner_ref": {
       "type": "string",
       "minLength": 1
     },
-    "consent_grantor_ref": {
+    "consent_ref": {
       "type": [
         "string",
         "null"
       ]
     },
-    "consent_status": {
-      "type": "string",
-      "enum": [
-        "not_requested",
-        "requested",
-        "granted_placeholder",
-        "revoked",
-        "expired",
-        "blocked"
-      ]
-    },
-    "scope_review_status": {
-      "type": "string",
-      "enum": [
-        "not_started",
-        "review_required",
-        "approved_placeholder",
-        "changes_required",
-        "blocked"
-      ]
-    },
-    "requested_scopes": {
+    "scope_refs": {
       "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "uniqueItems": true
-    },
-    "approved_scopes": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "uniqueItems": true
-    },
-    "blocked_scopes": {
-      "type": "array",
-      "minItems": 1,
       "items": {
         "type": "string",
         "minLength": 1
@@ -180,146 +191,103 @@
         "null"
       ]
     },
-    "secret_material_present": {
-      "type": "boolean",
-      "const": false
-    },
-    "live_access_enabled": {
-      "type": "boolean",
-      "const": false
-    },
-    "revocation": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "revocation_status",
-        "revoked_at",
-        "revoked_by_ref",
-        "revocation_evidence_ref"
-      ],
-      "properties": {
-        "revocation_status": {
-          "type": "string",
-          "enum": [
-            "not_applicable",
-            "requested",
-            "revoked",
-            "verification_required",
-            "blocked"
-          ]
-        },
-        "revoked_at": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "format": "date-time"
-        },
-        "revoked_by_ref": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "revocation_evidence_ref": {
-          "type": [
-            "string",
-            "null"
-          ]
-        }
-      }
-    },
-    "rotation_placeholder": {
-      "type": "string",
-      "enum": [
-        "not_selected",
-        "required_before_live",
-        "blocked"
-      ]
-    },
-    "data_classification": {
-      "type": "string",
-      "enum": [
-        "public",
-        "internal",
-        "customer_confidential",
-        "sensitive_hr",
-        "sensitive_finance",
-        "sensitive_legal",
-        "sensitive_medical",
-        "secret"
-      ]
-    },
-    "prompt_injection_review": {
-      "type": "string",
-      "enum": [
-        "not_started",
-        "required_before_live",
-        "reviewed_mock_only",
-        "blocked"
-      ]
-    },
-    "connector_readiness_ref": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "scope_review_ref": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "policy_refs": {
+    "data_classes": {
       "type": "array",
-      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "public",
+          "internal",
+          "customer_confidential",
+          "sensitive_hr",
+          "sensitive_finance",
+          "sensitive_legal",
+          "sensitive_medical",
+          "secret"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "allowed_actions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "metadata_read",
+          "draft_create",
+          "draft_update",
+          "scope_review",
+          "consent_review"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "blocked_actions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "external_send",
+          "form_submit",
+          "customer_record_mutation",
+          "connector_admin",
+          "production_remediation",
+          "live_execution"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "outbound_action_policy_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "rate_limit_policy_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "prompt_injection_policy_refs": {
+      "type": "array",
       "items": {
         "type": "string",
         "minLength": 1
       },
       "uniqueItems": true
     },
-    "status": {
-      "type": "string",
-      "enum": [
-        "draft",
-        "mock_ready",
-        "revoked",
-        "blocked",
-        "future_live_review_required"
-      ]
+    "approval_policy_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
     },
-    "producer": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "component",
-        "produced_at"
-      ],
-      "properties": {
-        "component": {
-          "type": "string",
-          "enum": [
-            "operator_console",
-            "supervisor",
-            "security_reviewer",
-            "connector_owner"
-          ]
-        },
-        "produced_at": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
     },
-    "policy_version": {
-      "type": "string",
-      "minLength": 1
+    "revocation_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
     },
-    "guardian_decision_id": {
-      "type": "string",
-      "minLength": 1
+    "export_delete_impact_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
     },
     "reason_codes": {
       "type": "array",
@@ -362,21 +330,6 @@
         "blocked"
       ]
     },
-    "evidence_refs": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "uniqueItems": true
-    },
-    "blocked_reason": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
     "created_at": {
       "type": "string",
       "format": "date-time"
@@ -390,22 +343,31 @@
     {
       "if": {
         "properties": {
-          "status": {
-            "const": "blocked"
+          "readiness_status": {
+            "const": "approved_for_lab"
           }
         },
         "required": [
-          "status"
+          "readiness_status"
         ]
       },
       "then": {
-        "required": [
-          "blocked_reason"
-        ],
         "properties": {
-          "blocked_reason": {
+          "lifecycle_state": {
+            "const": "approved_for_lab"
+          },
+          "consent_ref": {
             "type": "string",
             "minLength": 1
+          },
+          "scope_refs": {
+            "minItems": 1
+          },
+          "approval_policy_refs": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
           }
         }
       }
@@ -413,21 +375,48 @@
     {
       "if": {
         "properties": {
-          "consent_status": {
-            "const": "revoked"
+          "lifecycle_state": {
+            "const": "live_blocked_mvp"
           }
         },
         "required": [
-          "consent_status"
+          "lifecycle_state"
         ]
       },
       "then": {
         "properties": {
-          "status": {
+          "readiness_status": {
             "enum": [
-              "revoked",
-              "blocked"
+              "blocked_mvp",
+              "failed_closed"
             ]
+          },
+          "reason_codes": {
+            "contains": {
+              "const": "connector_live_blocked_mvp"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "readiness_status": {
+            "const": "revoked"
+          }
+        },
+        "required": [
+          "readiness_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "revocation_refs": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
           },
           "reason_codes": {
             "contains": {
@@ -440,48 +429,12 @@
     {
       "if": {
         "properties": {
-          "status": {
-            "const": "mock_ready"
-          }
-        },
-        "required": [
-          "status"
-        ]
-      },
-      "then": {
-        "properties": {
-          "consent_status": {
-            "enum": [
-              "requested",
-              "granted_placeholder"
-            ]
-          },
-          "scope_review_status": {
-            "enum": [
-              "review_required",
-              "approved_placeholder"
-            ]
-          },
-          "scope_review_ref": {
-            "type": "string",
-            "minLength": 1
-          },
-          "connector_readiness_ref": {
-            "type": "string",
-            "minLength": 1
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
           "connector_type": {
             "enum": [
-              "browser",
-              "rmm_it",
               "payment",
               "legal_regulated",
+              "browser",
+              "rmm_it",
               "blocked_mvp"
             ]
           }
@@ -492,16 +445,73 @@
       },
       "then": {
         "properties": {
-          "status": {
+          "readiness_status": {
             "enum": [
-              "blocked",
-              "future_live_review_required"
+              "blocked_mvp",
+              "review_required",
+              "failed_closed"
             ]
           },
           "reason_codes": {
             "contains": {
               "const": "connector_live_blocked_mvp"
             }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "allowed_actions": {
+            "contains": {
+              "const": "external_send"
+            }
+          }
+        },
+        "required": [
+          "allowed_actions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "approval_policy_refs": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "readiness_status": {
+            "enum": [
+              "approved_for_lab",
+              "review_required"
+            ]
+          }
+        },
+        "required": [
+          "readiness_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "revocation_refs": {
+            "minItems": 1
+          },
+          "rate_limit_policy_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "prompt_injection_policy_refs": {
+            "minItems": 1
+          },
+          "export_delete_impact_refs": {
+            "minItems": 1
           }
         }
       }
@@ -522,9 +532,9 @@
       },
       "then": {
         "properties": {
-          "status": {
+          "readiness_status": {
             "not": {
-              "const": "mock_ready"
+              "const": "approved_for_lab"
             }
           }
         }
@@ -550,9 +560,9 @@
       },
       "then": {
         "properties": {
-          "status": {
+          "readiness_status": {
             "not": {
-              "const": "mock_ready"
+              "const": "approved_for_lab"
             }
           }
         }

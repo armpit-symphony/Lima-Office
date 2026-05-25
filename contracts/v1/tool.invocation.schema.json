@@ -516,6 +516,24 @@
         "null"
       ]
     },
+    "connector_readiness_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_scope_review_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_consent_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "evidence_failure_id": {
       "type": [
         "string",
@@ -631,6 +649,96 @@
         "properties": {
           "approval_required": {
             "const": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "requested_tool": {
+            "properties": {
+              "tool_type": {
+                "const": "connector"
+              }
+            },
+            "required": [
+              "tool_type"
+            ]
+          }
+        },
+        "required": [
+          "requested_tool"
+        ]
+      },
+      "then": {
+        "required": [
+          "connector_readiness_ref",
+          "connector_scope_review_ref",
+          "connector_consent_ref"
+        ],
+        "properties": {
+          "connector_readiness_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "connector_scope_review_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "connector_consent_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "tool_scope": {
+            "properties": {
+              "connector_scope": {
+                "enum": [
+                  "mock_readiness_only",
+                  "approval_required_future_live"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "tool_scope": {
+            "properties": {
+              "connector_scope": {
+                "const": "approval_required_future_live"
+              }
+            },
+            "required": [
+              "connector_scope"
+            ]
+          }
+        },
+        "required": [
+          "tool_scope"
+        ]
+      },
+      "then": {
+        "properties": {
+          "policy_result": {
+            "enum": [
+              "requires_approval",
+              "deny",
+              "block_mvp"
+            ]
+          },
+          "status": {
+            "enum": [
+              "requested",
+              "policy_checked",
+              "denied",
+              "blocked_mvp",
+              "blocked_evidence_unavailable",
+              "evidence_failed"
+            ]
           }
         }
       }

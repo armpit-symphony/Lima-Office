@@ -46,12 +46,15 @@ Recommended order:
 10. Attestation revocation reconciliation drills (checkpoint completed as
     docs/contracts/tests/mock metadata hardening on
     `attestation-revocation-reconciliation-drills`).
-11. Phase 1B lab runtime expansion only after the gates above are approved.
+11. Live connector criteria design (checkpoint completed as
+    docs/contracts/tests/mock metadata hardening on
+    `live-connector-criteria-design`).
+12. Phase 1B lab runtime expansion only after the gates above are approved.
 
-Next recommended lane after this checkpoint: durable attestation-result storage
-and verifier-owner authority implementation-gate hardening while keeping TPM/
-verifier/signature/update runtime, model-provider integration, local inference
-runtime, live connector execution, and runtime authorization expansion blocked.
+Next recommended lane after this checkpoint: connector-provider risk profile and
+revocation drill evidence deepening (docs/contracts/tests only), while keeping
+live connector wiring/execution, OAuth/token runtime, browser automation, and
+runtime authorization expansion blocked.
 
 Alternative non-runtime lanes can proceed when they do not obscure the blockers:
 model-routing defaults, final IdP/MFA/RBAC matrix, health taxonomy refinement,

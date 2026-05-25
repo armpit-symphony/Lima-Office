@@ -119,6 +119,8 @@
         "model_route",
         "memory_access",
         "connector_trust",
+        "connector_readiness",
+        "connector_scope_review",
         "incident",
         "lima_it_handoff",
         "slo_measurement",

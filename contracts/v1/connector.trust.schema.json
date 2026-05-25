@@ -230,6 +230,18 @@
         "null"
       ]
     },
+    "connector_readiness_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_scope_review_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "prompt_injection_exposure": {
       "type": "string",
       "enum": [
@@ -332,5 +344,30 @@
         }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "connector_state": {
+            "enum": [
+              "scope_review_needed",
+              "future_live_candidate"
+            ]
+          }
+        },
+        "required": [
+          "connector_state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "connector_scope_review_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
 }

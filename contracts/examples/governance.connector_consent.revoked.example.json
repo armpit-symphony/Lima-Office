@@ -2,6 +2,7 @@
   "contract_name": "governance.connector_consent",
   "contract_version": "1.0.0",
   "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
   "tenant_id": "tenant-lab-001",
   "customer_context_id": "customer-context-main",
   "environment": "phase0_lab",
@@ -41,6 +42,8 @@
   "rotation_placeholder": "required_before_live",
   "data_classification": "customer_confidential",
   "prompt_injection_review": "required_before_live",
+  "connector_readiness_ref": "connector-readiness-revoked-001",
+  "scope_review_ref": "connector-scope-review-ref-001",
   "policy_refs": [
     "policy.connector_consent_scope_revocation.phase0"
   ],
@@ -54,6 +57,9 @@
   "evidence_refs": [
     "ev-connector-consent-001",
     "ev-connector-revoked-001"
+  ],
+  "reason_codes": [
+    "connector_revoked"
   ],
   "blocked_reason": null,
   "created_at": "2026-05-22T21:20:00Z",

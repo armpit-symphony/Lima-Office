@@ -544,6 +544,24 @@
         "null"
       ]
     },
+    "connector_readiness_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_scope_review_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_consent_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "replay_record_id": {
       "type": [
         "string",
@@ -1383,6 +1401,40 @@
             "enum": [
               "deny_replay",
               "blocked_mvp"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action_class": {
+            "const": "connector_access"
+          }
+        },
+        "required": [
+          "action_class"
+        ]
+      },
+      "then": {
+        "properties": {
+          "connector_readiness_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "connector_scope_review_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "connector_consent_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "decision": {
+            "enum": [
+              "deny",
+              "block_mvp"
             ]
           }
         }

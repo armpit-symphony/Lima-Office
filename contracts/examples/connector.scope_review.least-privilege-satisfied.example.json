@@ -1,0 +1,47 @@
+{
+  "contract_name": "connector.scope_review",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-connector-scope-review-001",
+  "causation_id": null,
+  "idempotency_key": "idem-connector-scope-review-001",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-25T20:40:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "scope_review_id": "connector-scope-review-ref-001",
+  "connector_id": "connector-email-metadata-001",
+  "requested_scopes": [
+    "read_metadata",
+    "draft_create"
+  ],
+  "approved_scopes": [
+    "read_metadata",
+    "draft_create"
+  ],
+  "denied_scopes": [
+    "external_send",
+    "admin_scope"
+  ],
+  "data_classes": [
+    "internal",
+    "customer_confidential"
+  ],
+  "least_privilege_status": "satisfied",
+  "object_authorization_status": "mapped",
+  "property_authorization_status": "mapped",
+  "reviewer_ref": "security-reviewer-ref-001",
+  "evidence_refs": [
+    "ev-connector-scope-review-001"
+  ],
+  "reason_codes": [
+    "approved"
+  ],
+  "created_at": "2026-05-25T20:40:00Z",
+  "reviewed_at": "2026-05-25T20:41:00Z"
+}

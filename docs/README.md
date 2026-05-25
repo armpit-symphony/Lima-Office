@@ -28,6 +28,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Durable attestation result lineage](architecture/DURABLE_ATTESTATION_RESULT_LINEAGE.md)
 - [Attestation revocation reconciliation drills](ATTESTATION_REVOCATION_RECONCILIATION_DRILLS.md)
 - [Signed update rollback trust](architecture/SIGNED_UPDATE_ROLLBACK_TRUST.md)
+- [Live connector criteria](architecture/LIVE_CONNECTOR_CRITERIA.md)
 - [Durable transaction/storage RFC](rfcs/RFC_DURABLE_TRANSACTION_STORAGE.md)
 - [Durable storage architecture](architecture/DURABLE_STORAGE_ARCHITECTURE.md)
 - [Durable transaction coordinator](architecture/DURABLE_TRANSACTION_COORDINATOR.md)
@@ -75,6 +76,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 
 - [UX index](ux/README.md)
 - [Operator console spec](ux/OPERATOR_CONSOLE_SPEC.md)
+- [Connector readiness spec](ux/CONNECTOR_READINESS_SPEC.md)
 - [Operator workflows](ux/OPERATOR_WORKFLOWS.md)
 - [Console information architecture](ux/CONSOLE_INFORMATION_ARCHITECTURE.md)
 - [Console permission model](ux/CONSOLE_PERMISSION_MODEL.md)
@@ -98,6 +100,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Attestation verifier review](runbooks/attestation-verifier-review.md)
 - [Attestation revocation propagation](runbooks/attestation-revocation-propagation.md)
 - [Attestation reconciliation drill](runbooks/attestation-reconciliation-drill.md)
+- [Live connector readiness review](runbooks/live-connector-readiness-review.md)
 - [Worker onboarding](runbooks/worker-onboarding.md)
 - [Worker deployment](runbooks/worker-deployment.md)
 - [Worker quarantine](runbooks/worker-quarantine.md)

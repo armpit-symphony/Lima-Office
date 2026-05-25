@@ -230,6 +230,12 @@ Connectors remain mock/readiness-only in Phase 0. Future connector trust must do
 defines the current fail-closed consent, scope, and revocation posture. It does
 not authorize live connector access.
 
+[Live Connector Criteria](architecture/LIVE_CONNECTOR_CRITERIA.md) and
+[Live Connector Readiness Review](runbooks/live-connector-readiness-review.md)
+define the metadata-only readiness lifecycle, least-privilege/object/property
+authorization checks, outbound policy gates, and revocation drill posture
+required before any future lab-live connector implementation lane.
+
 ## Breakglass
 
 Breakglass is a blocked placeholder in MVP. Requests can be represented by
@@ -307,6 +313,13 @@ The Phase 0 field-level schemas in [contracts/v1](../contracts/v1) define the mi
 - Tool invocation: [tool.invocation.schema.json](../contracts/v1/tool.invocation.schema.json) requires tool pack/version, sandbox profile, side-effect class, file/network/connector scope, dry-run posture, approval token/binding linkage where needed, and evidence.
 - Memory access: [memory.access.schema.json](../contracts/v1/memory.access.schema.json) requires tenant namespace, purpose, retention class, delete/export posture, prompt-injection scan state, and `cross_tenant_access: false`.
 - Connector trust: [connector.trust.schema.json](../contracts/v1/connector.trust.schema.json) is mock/readiness-only in Phase 0 with `mock_only: true`, `live_access_enabled: false`, `secret_material_present: false`, consent/scope review posture, and revocation state.
+- Connector readiness and scope review:
+  [connector.readiness.schema.json](../contracts/v1/connector.readiness.schema.json)
+  and
+  [connector.scope_review.schema.json](../contracts/v1/connector.scope_review.schema.json)
+  define metadata-only lifecycle/readiness gates, least-privilege review,
+  object/property authorization mapping, blocked-MVP connector classes, and
+  fail-closed reason/evidence posture.
 - Evidence artifact: [evidence.artifact.schema.json](../contracts/v1/evidence.artifact.schema.json) defines redaction, retention, payload/integrity refs, export/delete posture, access-control refs, and evidence chain metadata.
 - Evidence failure: [evidence.failure.schema.json](../contracts/v1/evidence.failure.schema.json) records pre-action blocks, post-action degraded state, emergency spool refs, reconciliation, incidents, and quarantine/token-revoke posture.
 - Evidence export manifest:

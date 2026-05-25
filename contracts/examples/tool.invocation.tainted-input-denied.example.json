@@ -41,7 +41,7 @@
     ],
     "file_scope": "none",
     "network_scope": "none",
-    "connector_scope": "none"
+    "connector_scope": "approval_required_future_live"
   },
   "risk_tier": "high",
   "data_classification": "customer_confidential",
@@ -71,6 +71,9 @@
   "input_taint_status": "suspected",
   "approval_result_id": null,
   "token_verification_id": null,
+  "connector_readiness_ref": "connector-readiness-rmm-001",
+  "connector_scope_review_ref": "connector-scope-review-ref-003",
+  "connector_consent_ref": "connector-consent-ref-003",
   "evidence_failure_id": null,
   "incident_id": null,
   "requested_at": "2026-05-18T21:38:00Z",

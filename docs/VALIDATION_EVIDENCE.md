@@ -5,8 +5,8 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `attestation-revocation-reconciliation-drills` on Windows with
-Python 3.12.10.
+Latest captured run: `live-connector-criteria-design` on Windows with Python
+3.12.10.
 
 ## Canonical Integration Branch
 
@@ -41,6 +41,8 @@ Python 3.12.10.
   `durable-attestation-lineage-authority-design`
 - Attestation revocation reconciliation drills branch:
   `attestation-revocation-reconciliation-drills`
+- Live connector criteria design branch:
+  `live-connector-criteria-design`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -162,6 +164,18 @@ Validation remains repository health evidence only; it does not approve TPM
 integration, verifier services, certificate/signature verification services,
 update runtime, rollback automation, model provider integration, live
 connectors, remediation execution, or production operations.
+
+## Live Connector Criteria Design Checkpoint
+
+This branch adds live-connector readiness/scope-review architecture and runbook
+posture, new `connector.readiness` and `connector.scope_review`
+schemas/examples, connector consent/trust/invocation/approval/Guardian
+link-hardening, connector reason-code registry additions, and a mock-only
+connector readiness classifier with fail-closed tests.
+Validation remains repository health evidence only; it does not approve live
+connector implementation, OAuth/OIDC/provider wiring, token handling runtime,
+external API calls, browser automation, remediation execution, or runtime
+authorization expansion.
 
 ## Cross-Contract Linkage Hardening Checkpoint
 

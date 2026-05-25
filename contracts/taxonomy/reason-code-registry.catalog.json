@@ -1,7 +1,72 @@
 {
   "taxonomy_version": "taxonomy-reason-v1",
-  "catalog_version": "phase1a-attestation-reconciliation-v1",
+  "catalog_version": "phase1a-live-connector-criteria-v1",
   "entries": [
+    {
+      "reason_code": "connector_consent_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_scope_overbroad",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_scope_denied",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_revoked",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_revocation_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_object_auth_missing",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_property_auth_missing",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_outbound_action_blocked",
+      "category": "guardian",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_live_blocked_mvp",
+      "category": "blocked_mvp",
+      "status": "blocked"
+    },
+    {
+      "reason_code": "connector_prompt_injection_risk",
+      "category": "guardian",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_rate_limit_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_secret_policy_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_export_delete_impact_unknown",
+      "category": "export_delete",
+      "status": "active"
+    },
     {
       "reason_code": "model_route_unavailable",
       "category": "health",

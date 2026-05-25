@@ -1,0 +1,62 @@
+{
+  "contract_name": "connector.readiness",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-connector-readiness-browser-001",
+  "causation_id": null,
+  "idempotency_key": "idem-connector-readiness-browser-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-25T20:10:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "connector_readiness_id": "connector-readiness-browser-001",
+  "connector_id": "connector-browser-placeholder-001",
+  "connector_type": "browser",
+  "lifecycle_state": "live_blocked_mvp",
+  "readiness_status": "blocked_mvp",
+  "connector_owner_ref": "connector-owner-ref-002",
+  "consent_ref": null,
+  "scope_refs": [],
+  "secrets_ref": null,
+  "data_classes": [
+    "internal"
+  ],
+  "allowed_actions": [
+    "scope_review"
+  ],
+  "blocked_actions": [
+    "external_send",
+    "form_submit",
+    "customer_record_mutation",
+    "connector_admin",
+    "production_remediation",
+    "live_execution"
+  ],
+  "outbound_action_policy_ref": null,
+  "rate_limit_policy_ref": "policy.connector.rate_limit.phase0",
+  "prompt_injection_policy_refs": [
+    "policy.prompt_injection_handling.phase0"
+  ],
+  "approval_policy_refs": [
+    "policy.approval_token_lifecycle.phase0"
+  ],
+  "evidence_refs": [
+    "ev-connector-readiness-browser-001"
+  ],
+  "revocation_refs": [
+    "connector-revocation-runbook-ref-002"
+  ],
+  "export_delete_impact_refs": [
+    "governance-audit-export-impact-ref-002"
+  ],
+  "reason_codes": [
+    "connector_live_blocked_mvp"
+  ],
+  "created_at": "2026-05-25T20:10:00Z",
+  "updated_at": "2026-05-25T20:10:00Z"
+}

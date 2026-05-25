@@ -79,6 +79,22 @@ Model-route and health refinement in this lane adds canonical reason codes:
 - `health_degraded`
 - `health_blocked`
 
+Live connector criteria refinement adds canonical reason codes:
+
+- `connector_consent_missing`
+- `connector_scope_overbroad`
+- `connector_scope_denied`
+- `connector_revoked`
+- `connector_revocation_missing`
+- `connector_object_auth_missing`
+- `connector_property_auth_missing`
+- `connector_outbound_action_blocked`
+- `connector_live_blocked_mvp`
+- `connector_prompt_injection_risk`
+- `connector_rate_limit_missing`
+- `connector_secret_policy_missing`
+- `connector_export_delete_impact_unknown`
+
 Worker-attestation and signed-update/rollback hardening adds canonical reason
 codes:
 

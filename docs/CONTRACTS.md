@@ -815,6 +815,23 @@ contexts, breaking-change coverage gaps, and missing/unsupported
 - Backwards compatibility notes: live connector fields must be added in a later reviewed version; do not reinterpret mock states as live readiness.
 - MVP acceptance gates: mock email/file/ticket connectors can be represented without OAuth, tokens, webhooks, live reads, or writes.
 
+## Connector Readiness Contract v1
+
+- Schema: [connector.readiness.schema.json](../contracts/v1/connector.readiness.schema.json)
+- Example objects: [connector.readiness.email-approved-for-lab.example.json](../contracts/examples/connector.readiness.email-approved-for-lab.example.json), [connector.readiness.browser-blocked-mvp.example.json](../contracts/examples/connector.readiness.browser-blocked-mvp.example.json), [connector.readiness.rmm-it-approval-required.example.json](../contracts/examples/connector.readiness.rmm-it-approval-required.example.json), [connector.readiness.revoked.example.json](../contracts/examples/connector.readiness.revoked.example.json)
+- Purpose: defines metadata-only connector lifecycle/readiness gating before any future lab-live implementation lane.
+- Required fields: common envelope; `connector_readiness_id`, `connector_id`, `connector_type`, `lifecycle_state`, `readiness_status`, owner/consent/scope refs, data classes, allowed/blocked actions, outbound/rate-limit/prompt-injection/approval policy refs, revocation refs, export-delete impact refs, reason codes, and evidence refs.
+- Security requirements: no secret values; only `secrets_ref` placeholders. Missing consent/scope/revocation/evidence fails closed.
+- MVP requirements: blocked connector classes remain non-usable (`browser`, `rmm_it`, `payment`, `legal_regulated`, `cloud_provider`) and external-send/form-submit/customer mutation actions remain blocked metadata posture.
+
+## Connector Scope Review Contract v1
+
+- Schema: [connector.scope_review.schema.json](../contracts/v1/connector.scope_review.schema.json)
+- Example objects: [connector.scope_review.least-privilege-satisfied.example.json](../contracts/examples/connector.scope_review.least-privilege-satisfied.example.json), [connector.scope_review.overbroad-denied.example.json](../contracts/examples/connector.scope_review.overbroad-denied.example.json), [connector.scope_review.object-auth-missing-failed-closed.example.json](../contracts/examples/connector.scope_review.object-auth-missing-failed-closed.example.json)
+- Purpose: defines metadata-only scope/object/property authorization review posture and fail-closed outcomes for overbroad or missing mappings.
+- Required fields: common envelope; `scope_review_id`, connector refs, requested/approved/denied scopes, least-privilege status, object/property authorization status, reviewer/evidence refs, reason codes.
+- Security requirements: overbroad/denied/missing object-property authorization mappings require reason codes and evidence refs.
+
 ## Evidence Export Manifest Contract v1
 
 - Schema: [evidence.export_manifest.schema.json](../contracts/v1/evidence.export_manifest.schema.json)

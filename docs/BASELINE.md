@@ -192,6 +192,18 @@ operations, customer-system mutation, or compliance certification claims.
   update runtime, rollback automation, durable storage implementation, or
   runtime authorization expansion is authorized.
 
+## Live Connector Criteria Design Checkpoint
+
+- Branch: `live-connector-criteria-design`
+- Base: `attestation-revocation-reconciliation-drills`
+- Purpose: define fail-closed metadata criteria for connector readiness, scope
+  review, consent/revocation linkage, and operator readiness evidence before
+  any future live connector implementation is considered.
+- Scope: docs, schemas, examples, tests, and mock-only connector readiness
+  classification helper. No live connector implementation, no OAuth/OIDC
+  provider wiring, no token handling runtime, no external API calls, no
+  browser automation, and no runtime authorization expansion are authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:

@@ -171,6 +171,12 @@ documents the reachable v2 checkpoint that supersedes it.
   mapping, live-review threshold, revocation verification, and prompt-injection
   test evidence should replace the placeholders in
   [Connector Consent Scope Revocation Policy](governance/CONNECTOR_CONSENT_SCOPE_REVOCATION_POLICY.md)?
+- Live connector criteria implementation gates: after
+  [Live Connector Criteria](architecture/LIVE_CONNECTOR_CRITERIA.md) and
+  `connector.readiness` / `connector.scope_review` contracts, what concrete
+  provider-by-provider readiness evidence, revocation SLA, token-storage model,
+  object/property authorization enforcement strategy, and disable-switch
+  behavior are mandatory before any lab-live connector pilot is considered?
 - Model routing defaults: what tasks can use local models, what tasks can use
   subscription/cloud model classes, and what data classifications block cloud
   routing?

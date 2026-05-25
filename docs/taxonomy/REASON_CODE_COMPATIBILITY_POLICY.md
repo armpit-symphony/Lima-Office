@@ -67,6 +67,9 @@ Allowed only when all are true:
   version and canonical trust/update reason codes.
 - Attestation verifier/reference-value examples must carry taxonomy version and
   canonical appraisal/reference/endorsement reason codes.
+- Connector readiness/scope-review/consent examples must carry taxonomy version
+  and canonical connector consent/scope/revocation/object-property authorization
+  reason codes.
 
 ## Runtime Helper Rules For Unknown Codes
 
