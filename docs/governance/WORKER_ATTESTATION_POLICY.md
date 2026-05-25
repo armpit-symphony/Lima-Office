@@ -58,6 +58,7 @@ Attestation posture is recorded in:
 - [worker.deployment.schema.json](../../contracts/v1/worker.deployment.schema.json)
 - [worker.lifecycle.schema.json](../../contracts/v1/worker.lifecycle.schema.json)
 - [worker.heartbeat.schema.json](../../contracts/v1/worker.heartbeat.schema.json)
+- [governance.device_trust.schema.json](../../contracts/v1/governance.device_trust.schema.json)
 
 ## Failed Attestation Behavior
 
@@ -68,6 +69,7 @@ Failed, missing, ambiguous, or mismatched attestation posture requires:
 - Evidence refs.
 - Security reviewer review.
 - Re-enrollment runbook.
+- `reason_codes` indicating `attestation_required` or `attestation_failed`.
 
 ## Quarantine/Re-Enrollment Linkage
 

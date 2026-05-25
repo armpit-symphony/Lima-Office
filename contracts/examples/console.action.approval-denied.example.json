@@ -2,6 +2,7 @@
   "contract_name": "console.action",
   "contract_version": "1.0.0",
   "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
   "tenant_id": "tenant-lab-001",
   "customer_context_id": "customer-context-main",
   "environment": "phase0_lab",
@@ -35,6 +36,9 @@
   "policy_version": "policy-phase0-v1",
   "evidence_refs": [
     "ev-console-action-approval-denied-001"
+  ],
+  "reason_codes": [
+    "denied_by_approver"
   ],
   "denial_reason": "Approval denied by reviewer; no token metadata issued.",
   "created_at": "2026-05-22T22:15:00Z"

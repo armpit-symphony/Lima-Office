@@ -3,6 +3,8 @@
 This model is a UX permission specification only. It does not implement an
 identity provider, role engine, access-control service, or UI.
 
+Canonical contract posture: [RBAC IdP MFA Session Device Trust Matrix](../governance/RBAC_IDP_MFA_SESSION_DEVICE_TRUST_MATRIX.md).
+
 ## Role Matrix
 
 | Role | View permissions | Approve permissions | Deny permissions | Export/delete request permissions | Connector consent permissions | Worker quarantine/re-enrollment permissions | Update/rollback permissions | LIMA IT diagnostic/remediation permissions |
@@ -26,6 +28,7 @@ identity provider, role engine, access-control service, or UI.
   evidence, and audit refs remain required.
 - Missing IdP/MFA, stale access review, missing policy, or ambiguous role
   posture blocks approval-capable UX.
+- Untrusted device posture blocks privileged approve/administer controls.
 
 ## Fail-Closed Permission States
 

@@ -1,0 +1,60 @@
+{
+  "contract_name": "governance.rbac_matrix",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-rbac-field-it-blocked-001",
+  "causation_id": null,
+  "idempotency_key": "idem-rbac-field-it-blocked-001",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-24T14:10:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "matrix_id": "rbac-matrix-field-it-001",
+  "role": "field_it",
+  "permissions": [
+    {
+      "action": "view_worker_fleet",
+      "level": "view"
+    },
+    {
+      "action": "approve_lima_it_diagnostic",
+      "level": "approve"
+    },
+    {
+      "action": "approve_lima_it_remediation",
+      "level": "blocked_mvp"
+    },
+    {
+      "action": "update_rollback_approval",
+      "level": "request"
+    }
+  ],
+  "permission_scope": "worker_fleet_metadata_only",
+  "assurance_requirements": {
+    "identity_assurance": "ial2_or_equivalent",
+    "authenticator_assurance": "aal2_or_equivalent",
+    "federation_assurance": "fal2_or_equivalent",
+    "fresh_intent_required": true
+  },
+  "mfa_requirement": "phishing_resistant_preferred",
+  "session_requirement": "revoke_on_role_change",
+  "device_trust_requirement": "managed_device_placeholder",
+  "separation_of_duties_required": true,
+  "blocked_mvp_actions": [
+    "approve_lima_it_remediation"
+  ],
+  "evidence_refs": [
+    "ev-rbac-field-it-remediation-blocked-001"
+  ],
+  "reason_codes": [
+    "sod_required",
+    "privileged_action_blocked"
+  ],
+  "created_at": "2026-05-24T14:10:00Z",
+  "updated_at": "2026-05-24T14:10:00Z"
+}

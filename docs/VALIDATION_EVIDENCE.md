@@ -5,7 +5,7 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `taxonomy-version-enforcement-hardening` on Windows with
+Latest captured run: `rbac-idp-mfa-session-device-trust-matrix` on Windows with
 Python 3.12.10.
 
 ## Canonical Integration Branch
@@ -29,6 +29,8 @@ Python 3.12.10.
   `reason-code-conformance-ci-gate`
 - Taxonomy-version enforcement hardening branch:
   `taxonomy-version-enforcement-hardening`
+- RBAC IdP MFA session device trust matrix branch:
+  `rbac-idp-mfa-session-device-trust-matrix`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -180,6 +182,18 @@ authorization expansion, export/delete execution, durable storage services, live
 connectors, external sends, real remediation, production operations, or
 customer-system mutation.
 
+## RBAC IdP MFA Session Device Trust Matrix Checkpoint
+
+This branch adds governance matrix/session/device-trust docs and runbook,
+`governance.rbac_matrix`, `governance.session_policy`, and
+`governance.device_trust` schemas/examples, identity/access-review/breakglass
+schema hardening, mock-only access-matrix classification helper logic, and
+fail-closed tests for auditor restrictions, MFA/session/device posture checks,
+SoD gating, breakglass blocking, and attestation-failure blocking.
+Validation remains repository health evidence only; it does not approve real
+IdP integration, OAuth/OIDC/SAML wiring, MFA/session/device runtime
+implementation, or runtime authorization expansion.
+
 ## Strict Schema Validation
 
 Command:
@@ -192,13 +206,13 @@ Result:
 
 ```text
 LIMA Office contract validation
-- schemas parsed: 41
-- examples parsed: 107
-- mapped examples: 107
-- schemas with examples: 41
+- schemas parsed: 44
+- examples parsed: 115
+- mapped examples: 115
+- schemas with examples: 44
 - validation mode: full JSON Schema draft 2020-12 with format checks
 - jsonschema version: 4.26.0
-- unsafe-content scan: 107 example files, 99 markdown files
+- unsafe-content scan: 115 example files, 101 markdown files
 - warnings: 0
 - failures: 0
 Result: PASS
@@ -224,11 +238,11 @@ Result:
 
 ```text
 LIMA Office reason-code conformance
-- schemas scanned: 41
-- examples scanned: 107
-- known canonical/alias codes: 99
-- reason-code values scanned in schemas: 125
-- reason-code values scanned in examples: 81
+- schemas scanned: 44
+- examples scanned: 115
+- known canonical/alias codes: 107
+- reason-code values scanned in schemas: 135
+- reason-code values scanned in examples: 100
 - blocked-in-success violations: 0
 - warnings: 0
 - failures: 0
@@ -256,8 +270,8 @@ Result:
 
 ```text
 LIMA Office markdown link check
-- markdown files scanned: 107
-- local links checked: 806
+- markdown files scanned: 109
+- local links checked: 844
 - external/anchor links ignored: 0
 - failures: 0
 Result: PASS

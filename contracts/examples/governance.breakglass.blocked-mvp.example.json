@@ -12,7 +12,7 @@
   "breakglass_id": "breakglass-blocked-001",
   "requester_identity_ref": "operator-ref-001",
   "emergency_approver_identity_ref": null,
-  "reason_code": "blocked_mvp_placeholder",
+  "reason_code": "breakglass_blocked_mvp",
   "requested_scope": [
     "incident_review"
   ],
@@ -47,6 +47,9 @@
   "guardian_decision_id": "gd-breakglass-001",
   "evidence_refs": [
     "ev-breakglass-denied-001"
+  ],
+  "reason_codes": [
+    "breakglass_blocked_mvp"
   ],
   "denial_reason": "Breakglass is metadata-only and blocked for MVP.",
   "created_at": "2026-05-22T21:10:00Z",

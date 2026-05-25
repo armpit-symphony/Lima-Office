@@ -91,6 +91,13 @@ Breakglass in this repo is represented only by
 `governance.breakglass` metadata and the [Breakglass Review](../runbooks/breakglass-review.md)
 runbook. It is not an executable capability.
 
+Current contract posture is explicitly fail-closed:
+
+- `environment` is `blocked_mvp`.
+- `status` is `denied_mvp` or `blocked`.
+- `reason_code` is `breakglass_blocked_mvp`.
+- breakglass records are evidence-bearing denial metadata only.
+
 ## Blocked Runtime Behavior
 
 Until future policy, contracts, tests, and implementation gates explicitly

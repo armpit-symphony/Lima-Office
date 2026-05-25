@@ -90,6 +90,10 @@ schema validation, broken example coverage, or unsafe positive content.
 
 The gate exits non-zero on violations.
 
+Current branch hardening also validates governance identity posture contracts:
+`governance.rbac_matrix`, `governance.session_policy`, and
+`governance.device_trust` with fail-closed reason-code checks.
+
 ## Example Mapping
 
 Examples map to schemas in this order:

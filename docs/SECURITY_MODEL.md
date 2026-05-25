@@ -76,6 +76,10 @@ Privileged actions require role checks, Guardian decision, approval when require
 Governance scaffolding for identity, MFA, access review, and role separation is
 documented in [Identity And MFA Policy](governance/IDENTITY_AND_MFA_POLICY.md)
 and [Approver Separation Policy](governance/APPROVER_SEPARATION_POLICY.md).
+The canonical role/action/session/device-trust matrix is documented in
+[RBAC IdP MFA Session Device Trust Matrix](governance/RBAC_IDP_MFA_SESSION_DEVICE_TRUST_MATRIX.md)
+and represented by `governance.rbac_matrix`, `governance.session_policy`, and
+`governance.device_trust` contracts.
 The exact IdP, MFA mechanism, session TTL, device trust rule, and runtime RBAC
 enforcement remain unresolved and must fail closed.
 

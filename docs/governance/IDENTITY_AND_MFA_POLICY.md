@@ -10,6 +10,8 @@ Policy ref: `policy.governance_identity.phase0`
 Status: draft scaffold. No identity provider, MFA provider, OAuth wiring, or
 runtime enforcement is implemented by this policy.
 
+Companion matrix: [RBAC IdP MFA Session Device Trust Matrix](RBAC_IDP_MFA_SESSION_DEVICE_TRUST_MATRIX.md).
+
 ## Operator Identity Assumptions
 
 - Operators are named human users represented by opaque identity refs.
@@ -115,7 +117,9 @@ Workers, helper agents, and service identities are not human roles.
 ## Acceptance Gates
 
 - Identity and MFA requirements are represented as policy and contract metadata.
-- Role/action matrix is documented before runtime expansion.
+- Role/action matrix is documented in
+  [RBAC IdP MFA Session Device Trust Matrix](RBAC_IDP_MFA_SESSION_DEVICE_TRUST_MATRIX.md)
+  before runtime expansion.
 - Access review records exist for privileged roles.
 - Human approval requires a human identity ref and evidence.
 - Missing MFA, stale session, ambiguous identity, orphaned role, or unreviewed

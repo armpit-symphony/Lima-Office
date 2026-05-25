@@ -31,6 +31,7 @@
     "policy_version",
     "guardian_decision_id",
     "evidence_refs",
+    "reason_codes",
     "created_at",
     "updated_at"
   ],
@@ -99,7 +100,7 @@
         "security_containment",
         "evidence_preservation",
         "worker_revoke",
-        "blocked_mvp_placeholder"
+        "breakglass_blocked_mvp"
       ]
     },
     "requested_scope": {
@@ -253,6 +254,14 @@
         "null"
       ]
     },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
     "created_at": {
       "type": "string",
       "format": "date-time"
@@ -265,6 +274,29 @@
   "allOf": [
     {
       "properties": {
+        "environment": {
+          "const": "blocked_mvp"
+        },
+        "status": {
+          "enum": [
+            "denied_mvp",
+            "blocked"
+          ]
+        },
+        "reason_code": {
+          "const": "breakglass_blocked_mvp"
+        },
+        "reason_codes": {
+          "contains": {
+            "const": "breakglass_blocked_mvp"
+          }
+        },
+        "revocation_state": {
+          "const": "not_applicable_blocked"
+        },
+        "emergency_approver_identity_ref": {
+          "const": null
+        },
         "expiry": {
           "properties": {
             "renewal_allowed": {

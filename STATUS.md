@@ -6,7 +6,7 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
-Current working branch: `taxonomy-version-enforcement-hardening`
+Current working branch: `rbac-idp-mfa-session-device-trust-matrix`
 
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
@@ -15,14 +15,15 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A taxonomy-version enforcement hardening.
+Current phase: Phase 1A RBAC/IdP/MFA/session/device trust matrix hardening.
 Phase 1A mock runtime scaffolding is present, the v2 invariant checkpoint and
 durable replay/evidence, transaction/storage, coordinator, linkage,
 approval/Guardian reconciliation, governance export/delete taxonomy, and
 reason-code registry/compatibility checkpoints are reachable. This branch adds
 fail-closed CI validation for unknown/deprecated/blocked reason-code misuse,
-mandatory taxonomy-version enforcement for reason-bearing schemas/examples, and
-unsupported-taxonomy fail-closed checks.
+mandatory taxonomy-version enforcement for reason-bearing schemas/examples,
+unsupported-taxonomy fail-closed checks, and governance metadata contracts for
+RBAC/session/device trust posture.
 Runtime expansion remains blocked until the remaining gates in this file,
 [Baseline](docs/BASELINE.md), and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md)
 are resolved.
@@ -54,6 +55,8 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
   metadata.
 - Governance metadata contract schemas and examples for identity, access
   review, breakglass, audit export, connector consent, and update records.
+- Governance metadata contract schemas and examples for RBAC matrix, session
+  policy, and device trust posture.
 - Console metadata contract schemas and examples for view, alert, and
   action-review records.
 - `supervisor.health` contract schema and examples for metadata-only mock
@@ -142,6 +145,9 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
 - Mock-only in-memory approval/Guardian reconciler for metadata-only linkage
   classification across approval chain, Guardian replay, replay records,
   coordinator events, transaction boundaries, and evidence ledger refs.
+- Mock-only in-memory access-matrix evaluator for role/action/session/device
+  trust classification with fail-closed outcomes and `can_authorize: false`
+  posture.
 - Fail-closed Guardian replay invariants for required requested-action tenant,
   customer context, decision ID, action type (when bound), decision scope hash
   (when bound), approval binding (when bound), token verification (when bound),
@@ -209,6 +215,10 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 - Durable replay/evidence posture design now exists as docs/contracts/tests,
   but actual durable storage, transaction implementation, and export/delete
   services are not implemented.
+- RBAC/IdP/MFA/session/device trust matrix now exists as docs/contracts/tests
+  and mock-only metadata classification; real IdP/OAuth/OIDC/SAML integration,
+  real MFA/session/device posture enforcement, and runtime authorization remain
+  blocked.
 - Durable transaction/storage RFC and architecture docs now exist as
   docs/contracts/tests, and coordinator design docs/runbooks now exist as
   docs/contracts/tests/mock-hardening. Cross-contract linkage hardening now

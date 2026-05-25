@@ -20,7 +20,9 @@ documents the reachable v2 checkpoint that supersedes it.
   [Access Review](runbooks/access-review.md) become the default cadence, and
   which events trigger additional reviews?
 - Runtime RBAC matrix: what exact role/action matrix applies after the operator
-  IdP is selected?
+  IdP is selected? Phase 1A now defines metadata posture in
+  [RBAC IdP MFA Session Device Trust Matrix](governance/RBAC_IDP_MFA_SESSION_DEVICE_TRUST_MATRIX.md);
+  open question is implementation-time enforcement and review ownership.
 - Breakglass implementation decision: breakglass is currently blocked in
   [Breakglass Policy](governance/BREAKGLASS_POLICY.md). Should a future lane
   implement any emergency path, and which action classes remain blocked?
@@ -257,6 +259,12 @@ Resolved in [Phase 1A Runtime Scaffolding](PHASE_1A_RUNTIME_SCAFFOLDING.md):
 - What final connector consent expiry, provider scope mapping, and revocation
   verification are required before any live connector review?
 - What access role/RBAC matrix should be enforced once the operator identity provider is selected?
+- What session service semantics (TTL source of truth, revocation propagation,
+  and step-up intent binding) should replace the placeholder
+  `governance.session_policy` metadata contract?
+- What device posture and attestation signals should replace the placeholder
+  `governance.device_trust` metadata contract before privileged runtime paths
+  are implemented?
 - What operator identity provider and MFA level should be assumed for approval and token verification?
 - What worker attestation method should be used before re-enrollment can be automated?
 - Should any future breakglass implementation be allowed beyond the current

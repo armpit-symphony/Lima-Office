@@ -2,6 +2,7 @@
   "contract_name": "worker.deployment",
   "contract_version": "1.0.0",
   "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
   "tenant_id": "tenant-lab-001",
   "customer_context_id": "customer-context-main",
   "environment": "phase0_lab",
@@ -73,11 +74,13 @@
   "approval_request_id": "approval-request-worker-enroll-002",
   "approval_token_id": null,
   "guardian_decision_id": "gd-worker-deploy-local-model-001",
+  "privileged_task_metadata_allowed": false,
   "policy_version": "policy-phase0-v1",
   "evidence_refs": [
     "ev-worker-preflight-local-model-001",
     "ev-worker-model-bundle-review-001"
   ],
+  "reason_codes": [],
   "support_owner_ref": "operator-lab-001",
   "field_it_reviewer_ref": "field-it-reviewer-001",
   "security_reviewer_ref": "security-reviewer-001",

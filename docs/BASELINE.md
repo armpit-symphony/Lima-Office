@@ -121,6 +121,18 @@ operations, customer-system mutation, or compliance certification claims.
   validation only. No runtime authorization, export/delete execution, database,
   queue, migration, service, or durable production storage is authorized.
 
+## RBAC IdP MFA Session Device Trust Matrix Checkpoint
+
+- Branch: `rbac-idp-mfa-session-device-trust-matrix`
+- Base: `taxonomy-version-enforcement-hardening`
+- Purpose: define standards-aligned governance posture for operator/approver/
+  worker/service identity, MFA/session/device trust expectations, and RBAC
+  permission metadata with fail-closed blocked-MVP controls.
+- Scope: docs, schemas, examples, tests, and mock/in-memory access-matrix
+  classification only. No IdP integration, OAuth/OIDC/SAML wiring, MFA runtime,
+  session runtime, device posture runtime, live connector behavior, remediation
+  execution, or production authorization service is authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:

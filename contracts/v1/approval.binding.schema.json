@@ -375,7 +375,16 @@
           "token_revoked",
           "blocked_mvp",
           "tainted_input",
-          "missing_evidence"
+          "missing_evidence",
+          "mfa_required",
+          "device_untrusted",
+          "session_revoked",
+          "role_not_permitted",
+          "sod_required",
+          "breakglass_blocked_mvp",
+          "attestation_required",
+          "attestation_failed",
+          "privileged_action_blocked"
         ]
       },
       "uniqueItems": true

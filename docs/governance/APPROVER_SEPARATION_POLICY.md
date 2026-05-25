@@ -10,6 +10,8 @@ Policy ref: `policy.approver_separation.phase0`
 Status: draft scaffold. This policy does not implement an approval service or
 authorize runtime action.
 
+Companion matrix: [RBAC IdP MFA Session Device Trust Matrix](RBAC_IDP_MFA_SESSION_DEVICE_TRUST_MATRIX.md).
+
 ## Who May Approve What
 
 | Action class | Required approver posture | MVP posture |
@@ -94,6 +96,8 @@ payloads, or bearer token material.
 ## MVP Acceptance Gates
 
 - Approval records include distinct requester and approver refs where required.
+- `governance.rbac_matrix` records mark `approve_lima_it_remediation` as either
+  `blocked_mvp` or separation-of-duties-required metadata only.
 - `approval.binding` records include requester/approver refs, approver role,
   separation check result, identity assurance refs, and evidence refs before
   any approval-required mock path can proceed.

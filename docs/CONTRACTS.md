@@ -237,14 +237,14 @@ contexts, breaking-change coverage gaps, and missing/unsupported
 - Consumer: approval workflow, access review, Guardian policy review, evidence ledger, and operator console spec.
 - Required fields: common envelope; identity record ID, subject ref/type, IdP ref placeholder, MFA status, session assurance, device trust status, roles, least-privilege review, access review ref, joiner/mover/leaver state, policy refs, status, Guardian decision, and evidence refs.
 - Security requirements: human roles must use named identity refs; service and worker identities cannot approve human approval requests; missing or blocked MFA posture fails closed for privileged runtime expansion.
-- MVP acceptance gates: identity/MFA posture can be represented as required but not configured without adding IdP, MFA, OAuth, sessions, or provider wiring.
+- MVP acceptance gates: identity/MFA posture can be represented as required but not configured without adding IdP, MFA, OAuth, sessions, or provider wiring. `taxonomy_version` and `reason_codes` are required so blocked identity posture is machine-auditable.
 
 ## Governance Access Review Contract v1
 
 - Schema: [governance.access_review.schema.json](../contracts/v1/governance.access_review.schema.json)
 - Example object: [governance.access_review.quarterly-placeholder.example.json](../contracts/examples/governance.access_review.quarterly-placeholder.example.json)
 - Purpose: records access review cadence placeholder, reviewed subject refs, findings, and separation-of-duties posture.
-- Security requirements: self-review is blocked; conflicted access reviews require independent review or fail closed.
+- Security requirements: self-review is blocked; conflicted access reviews require independent review or fail closed. `taxonomy_version` and `reason_codes` are required.
 - MVP acceptance gates: quarterly placeholder and joiner/mover/leaver reviews can be represented without runtime role enforcement.
 
 ## Governance Breakglass Contract v1
@@ -252,8 +252,29 @@ contexts, breaking-change coverage gaps, and missing/unsupported
 - Schema: [governance.breakglass.schema.json](../contracts/v1/governance.breakglass.schema.json)
 - Example object: [governance.breakglass.blocked-mvp.example.json](../contracts/examples/governance.breakglass.blocked-mvp.example.json)
 - Purpose: records breakglass requests as denied or blocked metadata in MVP.
-- Security requirements: breakglass cannot bypass Guardian, evidence, incident review, tenant isolation, or blocked-MVP action classes.
+- Security requirements: breakglass cannot bypass Guardian, evidence, incident review, tenant isolation, or blocked-MVP action classes. In MVP this contract is constrained to `environment: blocked_mvp`, `status: denied_mvp|blocked`, and `reason_code: breakglass_blocked_mvp`.
 - MVP acceptance gates: breakglass attempts can be evidenced as denied without creating executable emergency access.
+
+## Governance RBAC Matrix Contract v1
+
+- Schema: [governance.rbac_matrix.schema.json](../contracts/v1/governance.rbac_matrix.schema.json)
+- Example objects: [governance.rbac_matrix.approver-privileged.example.json](../contracts/examples/governance.rbac_matrix.approver-privileged.example.json), [governance.rbac_matrix.auditor-readonly.example.json](../contracts/examples/governance.rbac_matrix.auditor-readonly.example.json), [governance.rbac_matrix.field-it-remediation-blocked.example.json](../contracts/examples/governance.rbac_matrix.field-it-remediation-blocked.example.json)
+- Purpose: records tenant-scoped role/action permission metadata with MFA, session, device trust, and separation-of-duties requirements.
+- Security requirements: privileged approvals require stronger MFA and trusted device posture; auditor role is view-only; LIMA IT remediation and breakglass remain blocked-MVP metadata in this phase.
+
+## Governance Session Policy Contract v1
+
+- Schema: [governance.session_policy.schema.json](../contracts/v1/governance.session_policy.schema.json)
+- Example objects: [governance.session_policy.step-up-required.example.json](../contracts/examples/governance.session_policy.step-up-required.example.json), [governance.session_policy.revoked-on-role-change.example.json](../contracts/examples/governance.session_policy.revoked-on-role-change.example.json)
+- Purpose: records session TTL/idle placeholders, step-up action requirements, and revocation triggers as governance metadata.
+- Security requirements: role-change and untrusted-device revocation triggers fail closed for privileged paths.
+
+## Governance Device Trust Contract v1
+
+- Schema: [governance.device_trust.schema.json](../contracts/v1/governance.device_trust.schema.json)
+- Example objects: [governance.device_trust.operator-managed.example.json](../contracts/examples/governance.device_trust.operator-managed.example.json), [governance.device_trust.worker-attestation-required.example.json](../contracts/examples/governance.device_trust.worker-attestation-required.example.json), [governance.device_trust.untrusted-blocked.example.json](../contracts/examples/governance.device_trust.untrusted-blocked.example.json)
+- Purpose: records operator/worker device trust posture and blocked permission metadata.
+- Security requirements: untrusted devices are read-only/blocked; attestation-failed workers cannot receive privileged task metadata.
 
 ## Governance Audit Export Contract v1
 

@@ -8,6 +8,7 @@
     "contract_name",
     "contract_version",
     "schema_version",
+    "taxonomy_version",
     "tenant_id",
     "customer_context_id",
     "environment",
@@ -38,8 +39,10 @@
     "approval_request_id",
     "approval_token_id",
     "guardian_decision_id",
+    "privileged_task_metadata_allowed",
     "policy_version",
     "evidence_refs",
+    "reason_codes",
     "created_at",
     "updated_at"
   ],
@@ -55,6 +58,10 @@
     "schema_version": {
       "type": "string",
       "const": "1.0.0"
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
     },
     "tenant_id": {
       "type": "string",
@@ -495,6 +502,9 @@
       "type": "string",
       "minLength": 1
     },
+    "privileged_task_metadata_allowed": {
+      "type": "boolean"
+    },
     "policy_version": {
       "type": "string",
       "minLength": 1
@@ -531,6 +541,14 @@
         "string",
         "null"
       ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
     },
     "created_at": {
       "type": "string",
@@ -670,6 +688,34 @@
               "high",
               "blocked"
             ]
+          },
+          "privileged_task_metadata_allowed": {
+            "const": false
+          },
+          "reason_codes": {
+            "contains": {
+              "const": "attestation_failed"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "enum": [
+              "quarantined",
+              "revoked",
+              "retired"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "privileged_task_metadata_allowed": {
+            "const": false
           }
         }
       }

@@ -81,6 +81,8 @@ Phase 0 status values:
 - Incident runbooks.
 - Policy refs and policy snapshot/hash linkage for Guardian decisions.
 - Operator runbooks for approval token lifecycle, evidence writer failure, prompt injection response, worker re-enrollment, and LIMA IT handoff.
+- RBAC/IdP/MFA/session/device-trust matrix contracts and fail-closed reason-code
+  posture for privileged identity actions.
 
 ## Schema Control Map
 
@@ -121,7 +123,9 @@ The Phase 0 schemas do not implement controls, but they define the required reco
   for the first lab?
 - What customer exit/delete proof is required before device reuse or retirement?
 - Which IdP/MFA mechanism, session TTL, and device trust posture should back
-  the governance identity metadata?
+  the governance identity metadata now represented by
+  `governance.rbac_matrix`, `governance.session_policy`, and
+  `governance.device_trust`?
 - What signing root, attestation method, and rollback trigger matrix should
   replace the current placeholders?
 - What durable Guardian replay store, atomic decision-consumption rule, and

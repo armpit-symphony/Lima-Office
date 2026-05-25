@@ -8,6 +8,7 @@
     "contract_name",
     "contract_version",
     "schema_version",
+    "taxonomy_version",
     "tenant_id",
     "customer_context_id",
     "environment",
@@ -29,6 +30,7 @@
     "producer",
     "policy_version",
     "evidence_refs",
+    "reason_codes",
     "created_at"
   ],
   "properties": {
@@ -43,6 +45,10 @@
     "schema_version": {
       "type": "string",
       "const": "1.0.0"
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
     },
     "tenant_id": {
       "type": "string",
@@ -207,6 +213,14 @@
         "null"
       ]
     },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
     "created_at": {
       "type": "string",
       "format": "date-time"
@@ -235,6 +249,59 @@
           },
           "risk_tier": {
             "const": "blocked"
+          },
+          "reason_codes": {
+            "contains": {
+              "const": "role_not_permitted"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action_type": {
+            "const": "lima_it_remediation_blocked"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "enum": [
+              "denied",
+              "blocked"
+            ]
+          },
+          "reason_codes": {
+            "contains": {
+              "const": "privileged_action_blocked"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action_type": {
+            "const": "breakglass_denied_mvp"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "enum": [
+              "denied",
+              "blocked"
+            ]
+          },
+          "reason_codes": {
+            "contains": {
+              "const": "breakglass_blocked_mvp"
+            }
           }
         }
       }

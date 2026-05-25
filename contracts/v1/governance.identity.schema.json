@@ -8,6 +8,7 @@
     "contract_name",
     "contract_version",
     "schema_version",
+    "taxonomy_version",
     "tenant_id",
     "customer_context_id",
     "environment",
@@ -31,6 +32,7 @@
     "policy_version",
     "guardian_decision_id",
     "evidence_refs",
+    "reason_codes",
     "created_at",
     "updated_at"
   ],
@@ -46,6 +48,10 @@
     "schema_version": {
       "type": "string",
       "const": "1.0.0"
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
     },
     "tenant_id": {
       "type": "string",
@@ -95,6 +101,7 @@
         "field_it_reviewer",
         "security_reviewer",
         "compliance_reviewer",
+        "lima_it_reviewer",
         "worker_identity",
         "service_identity",
         "helper_identity"
@@ -285,6 +292,14 @@
         "null"
       ]
     },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
     "created_at": {
       "type": "string",
       "format": "date-time"
@@ -331,6 +346,142 @@
               "blocked",
               "revoked"
             ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "mfa_status": {
+            "const": "required_not_configured"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "enum": [
+              "review_required",
+              "blocked",
+              "revoked"
+            ]
+          },
+          "reason_codes": {
+            "contains": {
+              "const": "mfa_required"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "device_trust_status": {
+            "const": "untrusted"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "enum": [
+              "review_required",
+              "blocked",
+              "revoked"
+            ]
+          },
+          "reason_codes": {
+            "contains": {
+              "const": "device_untrusted"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "session_assurance": {
+            "properties": {
+              "assurance_status": {
+                "const": "expired"
+              }
+            },
+            "required": [
+              "assurance_status"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "enum": [
+              "review_required",
+              "blocked",
+              "revoked"
+            ]
+          },
+          "reason_codes": {
+            "contains": {
+              "const": "session_revoked"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "subject_type": {
+            "const": "worker_identity"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "roles": {
+            "contains": {
+              "const": "worker_node"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "subject_type": {
+            "const": "service_identity"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "roles": {
+            "contains": {
+              "const": "service_identity"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "subject_type": {
+            "const": "helper_identity"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "roles": {
+            "contains": {
+              "const": "helper_agent"
+            }
           }
         }
       }
