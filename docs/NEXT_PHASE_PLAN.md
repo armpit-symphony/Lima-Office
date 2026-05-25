@@ -55,16 +55,17 @@ Recommended order:
 13. Connector trust-boundary linkage invariants and reconciliation posture
     (checkpoint completed as docs/contracts/tests/mock metadata hardening on
     `connector-trust-boundary-linkage-invariants`).
-14. Phase 1B lab runtime expansion only after the gates above are approved.
+14. Connector source-of-truth ownership and escalation-accountability
+    finalization (checkpoint completed as docs/contracts/tests/mock metadata
+    hardening on
+    `connector-source-of-truth-ownership-escalation-accountability`).
+15. Phase 1B lab runtime expansion only after the gates above are approved.
 
-Next recommended lane after this checkpoint: connector provider acceptance
-scoring and revocation-propagation cadence formalization (docs/contracts/tests
-only), while keeping live connector wiring/execution, OAuth/token runtime,
-browser automation, and runtime authorization expansion blocked.
-
-After the connector trust-boundary checkpoint, the next lane is connector
-provider acceptance scoring and revocation-propagation cadence formalization
-(docs/contracts/tests only), with no live connector runtime behavior.
+Next recommended lane after this checkpoint: provider-specific criteria review,
+connector source-of-truth ownership value finalization, and legal/compliance
+checkpoint closure (docs/contracts/tests only), while keeping live connector
+wiring/execution, OAuth/token runtime, browser automation, and runtime
+authorization expansion blocked.
 
 Alternative non-runtime lanes can proceed when they do not obscure the blockers:
 model-routing defaults, final IdP/MFA/RBAC matrix, health taxonomy refinement,
@@ -386,5 +387,16 @@ What now:
 
 - Finalize connector source-of-truth ownership and escalation accountability.
 - Finalize production SLO target values (placeholders remain metadata-only).
+- Keep live connector implementation, OAuth/provider wiring, token runtime, and
+  external API behavior blocked until explicit approval gates are closed.
+
+## Connector Source-Of-Truth Ownership / Escalation Checkpoint
+
+Status: completed as docs/contracts/tests/mock-only hardening in this branch.
+
+What now:
+
+- Finalize provider-specific criteria and legal/compliance checkpoint details.
+- Finalize connector ownership/escalation target values and review cadences.
 - Keep live connector implementation, OAuth/provider wiring, token runtime, and
   external API behavior blocked until explicit approval gates are closed.

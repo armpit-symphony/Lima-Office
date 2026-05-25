@@ -1,0 +1,41 @@
+{
+  "contract_name": "connector.ownership",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-connector-ownership-001",
+  "causation_id": "corr-connector-readiness-001",
+  "idempotency_key": "idem-connector-ownership-001",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-26T03:00:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "connector_ownership_id": "connector-ownership-001",
+  "connector_id": "connector-email-meta-001",
+  "provider_profile_id": "provider-profile-email-001",
+  "connector_readiness_id": "connector-readiness-email-001",
+  "owner_refs": [
+    "actor.connector-owner.001"
+  ],
+  "reviewer_refs": [
+    "actor.scope-reviewer.001"
+  ],
+  "approver_refs": [
+    "actor.consent-approver.001"
+  ],
+  "escalation_refs": [],
+  "ownership_status": "active",
+  "source_of_truth_status": "verified_placeholder",
+  "separation_of_duties_status": "satisfied",
+  "evidence_refs": [
+    "ev-connector-ownership-001"
+  ],
+  "reason_codes": [],
+  "created_at": "2026-05-26T03:00:00Z",
+  "updated_at": "2026-05-26T03:00:00Z",
+  "reviewed_at": "2026-05-26T03:00:00Z"
+}

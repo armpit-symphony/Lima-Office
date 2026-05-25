@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.lima-office.local/contracts/v1/connector.acceptance_score.schema.json",
-  "title": "Connector Acceptance Score Contract v1",
+  "$id": "https://schemas.lima-office.local/contracts/v1/connector.escalation.schema.json",
+  "title": "Connector Escalation Contract v1",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -17,30 +17,23 @@
     "idempotency_key",
     "producer",
     "policy_version",
-    "acceptance_score_id",
+    "connector_escalation_id",
     "connector_id",
-    "provider_profile_id",
-    "connector_readiness_id",
-    "scope_review_id",
-    "connector_consent_id",
-    "revocation_drill_id",
-    "reconciliation_id",
-    "scoring_version",
-    "score_status",
-    "overall_score",
-    "max_score",
-    "dimension_scores",
-    "failed_dimensions",
-    "required_improvements",
-    "reason_codes",
+    "ownership_ref",
+    "escalation_type",
+    "escalation_status",
+    "escalation_owner_ref",
+    "due_at_placeholder",
     "evidence_refs",
+    "reason_codes",
     "created_at",
-    "updated_at"
+    "acknowledged_at",
+    "resolved_at"
   ],
   "properties": {
     "contract_name": {
       "type": "string",
-      "const": "connector.acceptance_score"
+      "const": "connector.escalation"
     },
     "contract_version": {
       "type": "string",
@@ -97,8 +90,8 @@
           "type": "string",
           "enum": [
             "supervisor",
-            "security_reviewer",
             "operator_console",
+            "security_reviewer",
             "compliance_reviewer"
           ]
         },
@@ -112,7 +105,7 @@
       "type": "string",
       "minLength": 1
     },
-    "acceptance_score_id": {
+    "connector_escalation_id": {
       "type": "string",
       "minLength": 1
     },
@@ -120,76 +113,44 @@
       "type": "string",
       "minLength": 1
     },
-    "provider_profile_id": {
+    "ownership_ref": {
       "type": "string",
       "minLength": 1
     },
-    "connector_readiness_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "scope_review_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "connector_consent_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "revocation_drill_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "reconciliation_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "scoring_version": {
-      "type": "string",
-      "minLength": 1
-    },
-    "score_status": {
+    "escalation_type": {
       "type": "string",
       "enum": [
-        "blocked_mvp",
-        "not_ready",
-        "review_required",
-        "approved_for_lab",
-        "degraded",
-        "revoked",
-        "failed_closed"
+        "stale_owner",
+        "missing_owner",
+        "revocation_overdue",
+        "disable_switch_failed",
+        "source_of_truth_conflict",
+        "sod_violation",
+        "risk_threshold_exceeded",
+        "blocked_mvp"
       ]
     },
-    "overall_score": {
-      "type": "number",
-      "minimum": 0
+    "escalation_status": {
+      "type": "string",
+      "enum": [
+        "opened",
+        "acknowledged",
+        "escalated",
+        "resolved",
+        "failed_closed",
+        "blocked_mvp"
+      ]
     },
-    "max_score": {
-      "type": "number",
-      "exclusiveMinimum": 0
+    "escalation_owner_ref": {
+      "type": "string",
+      "minLength": 1
     },
-    "dimension_scores": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "number",
-        "minimum": 0
-      }
-    },
-    "failed_dimensions": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "uniqueItems": true
-    },
-    "required_improvements": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "uniqueItems": true
+    "due_at_placeholder": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
     },
     "reason_codes": {
       "type": "array",
@@ -232,65 +193,6 @@
         "blocked"
       ]
     },
-    "acceptance_score_ref": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "reconciliation_slo_ref": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "connector_ownership_ref": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "connector_escalation_refs": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "uniqueItems": true
-    },
-    "ownership_status": {
-      "type": [
-        "string",
-        "null"
-      ],
-      "enum": [
-        "proposed",
-        "assigned",
-        "active",
-        "stale",
-        "transferred",
-        "revoked",
-        "blocked_mvp",
-        "failed_closed",
-        null
-      ]
-    },
-    "source_of_truth_status": {
-      "type": [
-        "string",
-        "null"
-      ],
-      "enum": [
-        "declared",
-        "verified_placeholder",
-        "stale",
-        "missing",
-        "conflicted",
-        "failed_closed",
-        "blocked_mvp",
-        null
-      ]
-    },
     "evidence_refs": {
       "type": "array",
       "items": {
@@ -303,8 +205,18 @@
       "type": "string",
       "format": "date-time"
     },
-    "updated_at": {
-      "type": "string",
+    "acknowledged_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "resolved_at": {
+      "type": [
+        "string",
+        "null"
+      ],
       "format": "date-time"
     }
   },
@@ -312,18 +224,19 @@
     {
       "if": {
         "properties": {
-          "score_status": {
-            "const": "approved_for_lab"
+          "escalation_status": {
+            "const": "resolved"
           }
         },
         "required": [
-          "score_status"
+          "escalation_status"
         ]
       },
       "then": {
         "properties": {
-          "failed_dimensions": {
-            "maxItems": 0
+          "resolved_at": {
+            "type": "string",
+            "format": "date-time"
           },
           "evidence_refs": {
             "minItems": 1
@@ -334,59 +247,12 @@
     {
       "if": {
         "properties": {
-          "score_status": {
-            "const": "revoked"
-          }
-        },
-        "required": [
-          "score_status"
-        ]
-      },
-      "then": {
-        "properties": {
-          "reason_codes": {
-            "minItems": 1
-          },
-          "evidence_refs": {
-            "minItems": 1
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "score_status": {
+          "escalation_status": {
             "const": "failed_closed"
           }
         },
         "required": [
-          "score_status"
-        ]
-      },
-      "then": {
-        "properties": {
-          "reason_codes": {
-            "minItems": 1
-          },
-          "failed_dimensions": {
-            "minItems": 1
-          },
-          "evidence_refs": {
-            "minItems": 1
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "score_status": {
-            "const": "degraded"
-          }
-        },
-        "required": [
-          "score_status"
+          "escalation_status"
         ]
       },
       "then": {
@@ -403,20 +269,46 @@
     {
       "if": {
         "properties": {
-          "score_status": {
+          "escalation_status": {
             "const": "blocked_mvp"
           }
         },
         "required": [
-          "score_status"
+          "escalation_status"
         ]
       },
       "then": {
         "properties": {
+          "escalation_type": {
+            "const": "blocked_mvp"
+          },
           "reason_codes": {
             "contains": {
               "const": "connector_acceptance_blocked_mvp"
             }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "escalation_type": {
+            "enum": [
+              "missing_owner",
+              "stale_owner",
+              "revocation_overdue"
+            ]
+          }
+        },
+        "required": [
+          "escalation_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence_refs": {
+            "minItems": 1
           }
         }
       }
@@ -437,37 +329,9 @@
       },
       "then": {
         "properties": {
-          "score_status": {
+          "escalation_status": {
             "not": {
-              "const": "approved_for_lab"
-            }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "reason_code_status": {
-            "const": "deprecated"
-          },
-          "deprecated_reason_code_policy": {
-            "enum": [
-              "fail_closed",
-              "blocked_mvp"
-            ]
-          }
-        },
-        "required": [
-          "reason_code_status",
-          "deprecated_reason_code_policy"
-        ]
-      },
-      "then": {
-        "properties": {
-          "score_status": {
-            "not": {
-              "const": "approved_for_lab"
+              "const": "resolved"
             }
           }
         }

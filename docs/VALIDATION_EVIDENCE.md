@@ -5,7 +5,7 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `connector-trust-boundary-linkage-invariants` on Windows with Python
+Latest captured run: `connector-source-of-truth-ownership-escalation-accountability` on Windows with Python
 3.12.10.
 
 ## Canonical Integration Branch
@@ -47,6 +47,8 @@ Latest captured run: `connector-trust-boundary-linkage-invariants` on Windows wi
   `connector-provider-risk-profile-revocation-disable-drills`
 - Connector trust-boundary linkage invariants branch:
   `connector-trust-boundary-linkage-invariants`
+- Connector source-of-truth ownership escalation accountability branch:
+  `connector-source-of-truth-ownership-escalation-accountability`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -609,6 +611,29 @@ Date: 2026-05-25 (local workspace run)
   - 365 tests, OK
 - `python -m pytest -q`: PASS
   - 365 passed, 1 warning, 226 subtests passed
+- `python -B -m compileall lima_office scripts tests`: PASS
+- `git diff --check`: PASS with LF/CRLF normalization warnings only
+- `git diff --cached --check`: PASS
+
+## Latest Run: Connector Source-Of-Truth Ownership / Escalation Accountability Lane
+
+Date: 2026-05-25 (local workspace run)
+
+- `python scripts/validate-contracts.py --require-jsonschema --check-formats --warnings-as-errors`: PASS
+  - schemas parsed: 62
+  - examples parsed: 198
+  - failures: 0, warnings: 0
+- `python scripts/check-reason-codes.py`: PASS
+  - schemas scanned: 62
+  - examples scanned: 198
+  - failures: 0, warnings: 0
+- `python scripts/check-doc-links.py`: PASS
+  - markdown files scanned: 138
+  - failures: 0
+- `python -B -m unittest discover -s tests -v` (from repo root): PASS
+  - 378 tests, OK
+- `python -m pytest -q`: PASS
+  - 378 passed, 1 warning, 234 subtests passed
 - `python -B -m compileall lima_office scripts tests`: PASS
 - `git diff --check`: PASS with LF/CRLF normalization warnings only
 - `git diff --cached --check`: PASS

@@ -77,6 +77,10 @@ Acceptance posture and cadence impact are now tracked by
 [Connector Provider Acceptance Scoring](CONNECTOR_PROVIDER_ACCEPTANCE_SCORING.md)
 and
 [Connector Reconciliation Propagation SLO](CONNECTOR_RECONCILIATION_PROPAGATION_SLO.md).
+Source-of-truth ownership and escalation accountability are now tracked by
+`connector.ownership` and `connector.escalation` records in
+[Connector Source-Of-Truth Ownership](CONNECTOR_SOURCE_OF_TRUTH_OWNERSHIP.md).
+Missing/stale/conflicted ownership posture is fail-closed.
 
 ## MVP Non-Goals
 

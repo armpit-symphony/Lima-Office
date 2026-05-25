@@ -104,6 +104,15 @@ The connector provider-risk lane adds these fail-closed connector codes:
 - `connector_revocation_propagation_missed`
 - `connector_disable_verification_missed`
 - `connector_source_of_truth_missing`
+- `connector_source_of_truth_conflict`
+- `connector_owner_missing`
+- `connector_owner_stale`
+- `connector_owner_conflict`
+- `connector_sod_violation`
+- `connector_escalation_overdue`
+- `connector_revocation_owner_missing`
+- `connector_disable_owner_missing`
+- `connector_accountability_failed_closed`
 - `connector_acceptance_blocked_mvp`
 
 Primary records: `connector.provider_profile`, `connector.revocation_drill`,

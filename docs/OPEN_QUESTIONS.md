@@ -192,6 +192,10 @@ documents the reachable v2 checkpoint that supersedes it.
 - Connector drift propagation SLO: what maximum propagation window is allowed
   between consent/scope/provider risk changes and `connector.reconciliation`
   `failed_closed` visibility in `console.alert` and `supervisor.health`?
+- Connector source-of-truth ownership values: now that `connector.ownership`
+  and `connector.escalation` metadata contracts exist, what final
+  owner/reviewer/escalation role values and review cadences are required per
+  connector category before any future implementation lane?
 - Model routing defaults: what tasks can use local models, what tasks can use
   subscription/cloud model classes, and what data classifications block cloud
   routing?

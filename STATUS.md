@@ -6,7 +6,7 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
-Current working branch: `connector-trust-boundary-linkage-invariants`
+Current working branch: `connector-source-of-truth-ownership-escalation-accountability`
 
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
@@ -15,7 +15,7 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A connector trust-boundary linkage invariant hardening. Phase 1A mock
+Current phase: Phase 1A connector source-of-truth ownership and escalation accountability hardening. Phase 1A mock
 runtime scaffolding is present, the v2 invariant checkpoint and durable
 replay/evidence, transaction/storage, coordinator, linkage, approval/Guardian
 reconciliation, governance export/delete taxonomy, reason-code
@@ -24,10 +24,10 @@ verifier/reference-value, durable attestation lineage/authority, and
 attestation revocation reconciliation checkpoints are reachable. The previous
 branches added fail-closed connector readiness/scope-review/provider-risk/
 revocation-drill metadata contracts/examples and connector criteria docs/
-runbooks. This lane adds cross-contract connector trust-boundary reconciliation
-posture so provider profile, consent, scope review, readiness, trust,
-revocation drill, tool invocation, approval binding, Guardian decision, and
-evidence references fail closed on drift.
+runbooks. The previous lane added cross-contract connector trust-boundary
+reconciliation posture. This lane finalizes connector source-of-truth
+ownership, escalation accountability, stale-owner detection, and SoD
+fail-closed posture for connector governance metadata.
 Runtime expansion remains blocked until the remaining gates in this file,
 [Baseline](docs/BASELINE.md), and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md)
 are resolved.
@@ -165,6 +165,10 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
 - `connector.provider_profile` and `connector.revocation_drill` schemas/examples
   for metadata-only provider risk posture, revocation verification placeholders,
   disable-switch posture, and fail-closed drill outcomes.
+- `connector.ownership` and `connector.escalation` schemas/examples for
+  metadata-only source-of-truth ownership, reviewer/approver separation,
+  escalation lifecycle, stale/missing/conflicted fail-closed posture, and
+  accountability evidence linkage.
 - `attestation.reconciliation` schema/examples and mock-only
   `attestation_reconciliation` helper for fail-closed drift detection across
   lineage/authority/reference/endorsement/appraisal/result/route/transaction/
@@ -200,6 +204,9 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
   `can_authorize: false`.
 - Mock-only connector acceptance-scoring and reconciliation-SLO classifier for
   metadata-only posture, fail-closed drift/propagation handling, and
+  `can_authorize: false`.
+- Mock-only connector ownership/escalation classifier for metadata-only
+  accountability posture, fail-closed stale/conflict/SoD handling, and
   `can_authorize: false`.
 - Mock-only in-memory access-matrix evaluator for role/action/session/device
   trust classification with fail-closed outcomes and `can_authorize: false`
@@ -304,11 +311,13 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 - Define final connector consent expiry, live-review criteria, provider scope
   mapping, prompt-injection test evidence, and production SLO/ownership values
   before any live connector review.
+- Finalize connector source-of-truth ownership values, escalation owner values,
+  and SoD enforcement targets before any future live connector implementation.
 
 ## Next Recommended Lane
 
-After connector provider acceptance scoring and reconciliation SLO are reviewed,
-the next safe lane is connector source-of-truth ownership and governance
-accountability finalization (docs/contracts/tests only) without adding live
-connector execution, OAuth/token runtime, or external APIs. Phase 1B lab runtime
-expansion remains blocked until remaining gates are approved.
+After connector source-of-truth ownership and escalation accountability are
+reviewed, the next safe lane is provider-specific criteria/legal checkpoint
+closure and SLO target-value finalization (docs/contracts/tests only) without
+adding live connector execution, OAuth/token runtime, or external APIs. Phase
+1B lab runtime expansion remains blocked until remaining gates are approved.

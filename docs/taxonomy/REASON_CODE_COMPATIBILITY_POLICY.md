@@ -73,6 +73,8 @@ Allowed only when all are true:
 - Connector acceptance-score and reconciliation-SLO examples must carry
   taxonomy version and canonical score/cadence/revocation-propagation reason
   codes.
+- Connector ownership/escalation examples must carry taxonomy version and
+  canonical ownership/accountability/escalation reason codes.
 
 ## Runtime Helper Rules For Unknown Codes
 

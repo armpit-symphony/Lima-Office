@@ -142,3 +142,8 @@ Risk posture is now also mapped into acceptance score and cadence posture via
 [Connector Provider Acceptance Scoring](../CONNECTOR_PROVIDER_ACCEPTANCE_SCORING.md)
 and
 [Connector Reconciliation Propagation SLO](../CONNECTOR_RECONCILIATION_PROPAGATION_SLO.md).
+
+Ownership/escalation accountability is now mapped via
+[Connector Source-Of-Truth Ownership](../CONNECTOR_SOURCE_OF_TRUTH_OWNERSHIP.md),
+which requires explicit owner/reviewer/escalation metadata for provider-profile
+source-of-truth transitions.

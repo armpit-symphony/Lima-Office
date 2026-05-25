@@ -247,6 +247,10 @@ trust/consent/revocation/invocation/approval/Guardian/evidence records.
 and [Connector Reconciliation Propagation SLO](CONNECTOR_RECONCILIATION_PROPAGATION_SLO.md)
 add fail-closed acceptance and cadence metadata posture (`connector.acceptance_score`,
 `connector.reconciliation_slo`) with no runtime authorization effect.
+Connector source-of-truth ownership and escalation accountability are now
+captured by [Connector Source-Of-Truth Ownership](CONNECTOR_SOURCE_OF_TRUTH_OWNERSHIP.md),
+`connector.ownership`, and `connector.escalation` metadata. Missing/stale/
+conflicted ownership and SoD violations are fail-closed.
 No connector provider integration, token runtime, or external API calls are
 implemented.
 

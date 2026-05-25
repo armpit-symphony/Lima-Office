@@ -262,6 +262,26 @@ This remains docs/contracts/tests/mock-only hardening and does not implement
 live connectors, OAuth/token runtime, external API clients, external sends,
 browser automation, or runtime authorization expansion.
 
+## Connector Source-Of-Truth Ownership / Escalation Accountability Hardening
+
+Phase 1A now adds metadata-only connector ownership and escalation posture:
+
+- `connector.ownership` for owner/reviewer/approver/escalation references,
+  source-of-truth status, separation-of-duties status, and fail-closed
+  ownership lifecycle transitions.
+- `connector.escalation` for stale-owner, missing-owner, revocation-overdue,
+  disable-switch-failed, SoD, and source-of-truth conflict escalation states
+  with evidence and reason-code requirements.
+- Optional linkage fields (`connector_ownership_ref`,
+  `connector_escalation_refs`, `ownership_status`, `source_of_truth_status`)
+  are now available across connector provider/readiness/reconciliation/score/
+  SLO/trust/consent/alert/health records for cross-record accountability
+  review.
+
+This remains docs/contracts/tests/mock-only hardening and does not implement
+live connectors, OAuth/token runtime, external API clients, external sends,
+browser automation, or runtime authorization expansion.
+
 ## Governance Export/Delete Taxonomy Hardening
 
 Phase 1A now includes:

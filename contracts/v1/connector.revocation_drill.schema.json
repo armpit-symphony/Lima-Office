@@ -255,6 +255,53 @@
         null
       ]
     },
+    "connector_ownership_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_escalation_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "ownership_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "proposed",
+        "assigned",
+        "active",
+        "stale",
+        "transferred",
+        "revoked",
+        "blocked_mvp",
+        "failed_closed",
+        null
+      ]
+    },
+    "source_of_truth_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "declared",
+        "verified_placeholder",
+        "stale",
+        "missing",
+        "conflicted",
+        "failed_closed",
+        "blocked_mvp",
+        null
+      ]
+    },
     "created_at": {
       "type": "string",
       "format": "date-time"

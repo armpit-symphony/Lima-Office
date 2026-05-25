@@ -146,3 +146,9 @@ and
 [Connector Reconciliation Propagation SLO](../CONNECTOR_RECONCILIATION_PROPAGATION_SLO.md),
 with `connector.acceptance_score` and `connector.reconciliation_slo` contracts.
 These are design-only metadata controls and do not authorize live connector use.
+
+Source-of-truth ownership and escalation accountability are now further hardened
+by [Connector Source-Of-Truth Ownership](../CONNECTOR_SOURCE_OF_TRUTH_OWNERSHIP.md),
+with `connector.ownership` and `connector.escalation` contracts. Missing/stale/
+conflicted ownership, SoD violations, and revocation/disable accountability
+gaps are fail-closed metadata posture and do not authorize connector use.

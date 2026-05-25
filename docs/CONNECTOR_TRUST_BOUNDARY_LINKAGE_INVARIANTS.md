@@ -37,6 +37,8 @@ single-record validation.
 - `connector.trust`
 - `governance.connector_consent`
 - `connector.revocation_drill`
+- `connector.ownership`
+- `connector.escalation`
 - `tool.invocation`
 - `approval.binding`
 - `guardian.decision`
@@ -53,6 +55,8 @@ single-record validation.
 - `scope_review_id`
 - `connector_consent_id`
 - `revocation_drill_id`
+- `connector_ownership_id`
+- `connector_escalation_id`
 - `tool_invocation_id`
 - `approval_binding_id`
 - `guardian_decision_id`
@@ -70,6 +74,9 @@ single-record validation.
 - `connector_cross_tenant_linkage`
 - `connector_evidence_missing`
 - `connector_trust_revoked_but_guardian_allow`
+- `connector_owner_stale_or_missing`
+- `connector_source_of_truth_conflicted`
+- `connector_sod_violation`
 
 ## Fail-Closed Reconciliation Rules
 
@@ -84,6 +91,7 @@ single-record validation.
 - Tainted connector payload in privileged context is blocked.
 - Trust-revoked connector posture cannot coexist with Guardian allow posture.
 - Missing evidence refs in reconciliation is blocked/fail-closed.
+- Missing/stale/conflicted ownership or SoD violations are blocked/fail-closed.
 
 ## Evidence Requirements
 

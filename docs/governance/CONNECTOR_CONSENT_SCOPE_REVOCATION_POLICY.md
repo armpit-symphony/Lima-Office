@@ -16,6 +16,7 @@ Related design references:
 - [Connector Provider Risk Profiles](../architecture/CONNECTOR_PROVIDER_RISK_PROFILES.md)
 - [Connector Revocation Disable Drills](../CONNECTOR_REVOCATION_DISABLE_DRILLS.md)
 - [Connector Trust-Boundary Linkage Invariants](../CONNECTOR_TRUST_BOUNDARY_LINKAGE_INVARIANTS.md)
+- [Connector Source-Of-Truth Ownership](../CONNECTOR_SOURCE_OF_TRUTH_OWNERSHIP.md)
 - [Live Connector Readiness Review](../runbooks/live-connector-readiness-review.md)
 
 ## Connector Consent Model
@@ -65,6 +66,8 @@ Each connector requires:
 - Scope reviewer ref.
 - Revocation owner ref.
 - Evidence refs.
+- Ownership/escalation linkage refs where fail-closed accountability posture
+  is active.
 
 The connector owner cannot unilaterally approve scope expansion.
 
@@ -155,6 +158,8 @@ The following remain blocked:
   status.
 - Scope expansion cannot self-approve.
 - Revocation creates evidence.
+- Source-of-truth ownership and escalation conflicts require fail-closed
+  `connector.ownership` / `connector.escalation` metadata.
 - Missing consent, unknown scope, secret exposure, or prompt-injection
   unresolved state fails closed.
 - Revoked consent must reconcile with readiness/trust/revocation-drill posture;

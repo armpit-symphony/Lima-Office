@@ -136,3 +136,16 @@ The console must label these as blocked:
   metadata only.
 - No screen implies live connector readiness, external sends, remediation, or
   production operation.
+
+## Connector Ownership Accountability Addendum
+
+Connector views should surface ownership/escalation linkage metadata for
+accountability review:
+
+- `connector_ownership_ref`
+- `connector_escalation_refs`
+- `ownership_status`
+- `source_of_truth_status`
+
+Missing/stale/conflicted ownership and SoD-violation posture must render as
+blocked/fail-closed metadata state with runbook links and evidence refs.

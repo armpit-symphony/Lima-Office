@@ -60,6 +60,8 @@ Any stale path with privileged/outbound implications requires blocked or failed-
 - linkage refs for provider/readiness/reconciliation
 - evidence refs for cadence and propagation status updates
 - reason codes for stale/missed/failed-closed paths
+- ownership/escalation refs when source-of-truth accountability is stale,
+  missing, conflicted, or overdue
 
 ## Blocked-MVP Behavior
 - `blocked_mvp` is terminal for live readiness.
@@ -70,3 +72,4 @@ Any stale path with privileged/outbound implications requires blocked or failed-
 - define hard SLO targets and breach workflows
 - integrate durable evidence lineage
 - implement verified propagation instrumentation
+- finalize connector owner/escalation owner accountability values per tenant

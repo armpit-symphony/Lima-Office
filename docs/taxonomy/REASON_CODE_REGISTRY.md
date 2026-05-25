@@ -199,6 +199,19 @@ reason codes:
 - `connector_source_of_truth_missing`
 - `connector_acceptance_blocked_mvp`
 
+Connector source-of-truth ownership and escalation accountability hardening
+adds canonical reason codes:
+
+- `connector_owner_missing`
+- `connector_owner_stale`
+- `connector_owner_conflict`
+- `connector_sod_violation`
+- `connector_escalation_overdue`
+- `connector_revocation_owner_missing`
+- `connector_disable_owner_missing`
+- `connector_source_of_truth_conflict`
+- `connector_accountability_failed_closed`
+
 Reference snapshot:
 [contracts/taxonomy/reason-code-registry.catalog.json](../../contracts/taxonomy/reason-code-registry.catalog.json).
 

@@ -230,6 +230,19 @@ operations, customer-system mutation, or compliance certification claims.
   automation, remediation execution, durable storage implementation, or runtime
   authorization expansion are authorized.
 
+## Connector Source-Of-Truth Ownership Escalation Accountability Checkpoint
+
+- Branch: `connector-source-of-truth-ownership-escalation-accountability`
+- Base: `connector-provider-acceptance-scoring-reconciliation-slo`
+- Purpose: define metadata-only connector source-of-truth ownership,
+  accountability, escalation, and SoD fail-closed posture across provider/
+  readiness/reconciliation/score/SLO/alert/health records.
+- Scope: docs, schemas, examples, tests, and a mock-only connector ownership
+  classifier. No live connectors, OAuth/OIDC/SAML/provider wiring, token
+  storage/runtime, external API calls, external sends, browser automation,
+  remediation execution, durable storage implementation, or runtime
+  authorization expansion are authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:
@@ -306,6 +319,8 @@ health evidence only; it is not production certification.
   mock-only fail-closed reconciliation helper/tests.
 - Connector acceptance-scoring and reconciliation-SLO docs/contracts/examples
   and mock-only fail-closed scoring/cadence helper/tests.
+- Connector source-of-truth ownership/escalation docs/contracts/examples and
+  mock-only fail-closed ownership/accountability helper/tests.
 
 ## What Does Not Exist
 
@@ -338,11 +353,9 @@ closes the relevant gates:
 
 Recommended order after stabilization:
 
-1. Final connector source-of-truth ownership and escalation accountability
-   matrix (docs/contracts/tests only).
-2. Provider-specific criteria review and legal/compliance checkpoint
+1. Provider-specific criteria review and legal/compliance checkpoint
    normalization.
-3. Phase 1B lab runtime expansion only after the gates above are approved.
+2. Phase 1B lab runtime expansion only after the gates above are approved.
 
 Alternative non-runtime lanes:
 

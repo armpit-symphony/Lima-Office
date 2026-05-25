@@ -153,6 +153,15 @@
         "connector_revocation_propagation_missed",
         "connector_disable_verification_missed",
         "connector_source_of_truth_missing",
+        "connector_source_of_truth_conflict",
+        "connector_owner_missing",
+        "connector_owner_stale",
+        "connector_owner_conflict",
+        "connector_sod_violation",
+        "connector_escalation_overdue",
+        "connector_revocation_owner_missing",
+        "connector_disable_owner_missing",
+        "connector_accountability_failed_closed",
         "connector_acceptance_blocked_mvp",
         "attestation_failed",
         "attestation_expired",
@@ -297,6 +306,15 @@
           "connector_revocation_propagation_missed",
           "connector_disable_verification_missed",
           "connector_source_of_truth_missing",
+          "connector_source_of_truth_conflict",
+          "connector_owner_missing",
+          "connector_owner_stale",
+          "connector_owner_conflict",
+          "connector_sod_violation",
+          "connector_escalation_overdue",
+          "connector_revocation_owner_missing",
+          "connector_disable_owner_missing",
+          "connector_accountability_failed_closed",
           "connector_acceptance_blocked_mvp",
           "attestation_failed",
           "attestation_expired",
@@ -544,6 +562,53 @@
         null
       ]
     },
+    "connector_ownership_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_escalation_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "ownership_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "proposed",
+        "assigned",
+        "active",
+        "stale",
+        "transferred",
+        "revoked",
+        "blocked_mvp",
+        "failed_closed",
+        null
+      ]
+    },
+    "source_of_truth_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "declared",
+        "verified_placeholder",
+        "stale",
+        "missing",
+        "conflicted",
+        "failed_closed",
+        "blocked_mvp",
+        null
+      ]
+    },
     "model_route_id": {
       "type": [
         "string",
@@ -741,6 +806,15 @@
                 "connector_revocation_propagation_missed",
                 "connector_disable_verification_missed",
                 "connector_source_of_truth_missing",
+                "connector_source_of_truth_conflict",
+                "connector_owner_missing",
+                "connector_owner_stale",
+                "connector_owner_conflict",
+                "connector_sod_violation",
+                "connector_escalation_overdue",
+                "connector_revocation_owner_missing",
+                "connector_disable_owner_missing",
+                "connector_accountability_failed_closed",
                 "connector_acceptance_blocked_mvp"
               ]
             }

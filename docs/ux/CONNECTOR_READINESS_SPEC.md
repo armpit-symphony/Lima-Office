@@ -32,6 +32,8 @@ Design-only UX metadata spec. No UI implementation.
 - `connector_reconciliation_id` (from `connector.reconciliation` when present)
 - `acceptance_score_ref`, `score_status`
 - `reconciliation_slo_ref`, `cadence_status`
+- `connector_ownership_ref`, `ownership_status`, `source_of_truth_status`
+- `connector_escalation_refs`
 - `token_rotation_placeholder_status`
 - `reason_codes`
 
@@ -44,3 +46,5 @@ Design-only UX metadata spec. No UI implementation.
 - Reconciliation drift classes must be visible and mapped to runbook guidance.
 - Pending/missed revocation propagation must display blocked or failed-closed
   posture.
+- Missing/stale/conflicted ownership and SoD violations must display
+  failed-closed accountability posture.

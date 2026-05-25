@@ -223,6 +223,51 @@
       "status": "active"
     },
     {
+      "reason_code": "connector_source_of_truth_conflict",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_owner_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_owner_stale",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_owner_conflict",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_sod_violation",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_escalation_overdue",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_revocation_owner_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_disable_owner_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_accountability_failed_closed",
+      "category": "reconciliation",
+      "status": "active"
+    },
+    {
       "reason_code": "connector_acceptance_blocked_mvp",
       "category": "blocked_mvp",
       "status": "blocked"

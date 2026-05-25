@@ -81,3 +81,10 @@ Define a design-only, metadata-only acceptance scoring model for connector provi
 - finalized provider-by-provider safety criteria
 - finalized legal/compliance review for connector data classes
 - implemented and validated runtime controls (future phase)
+
+## Ownership And Accountability Linkage
+- scoring records should link `connector_ownership_ref` and
+  `connector_escalation_refs` where available.
+- stale/missing/conflicted ownership posture should force
+  `score_status: failed_closed` or `review_required`.
+- SoD violations must be reflected in score reason codes and evidence refs.
