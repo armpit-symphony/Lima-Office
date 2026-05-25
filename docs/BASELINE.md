@@ -133,6 +133,18 @@ operations, customer-system mutation, or compliance certification claims.
   session runtime, device posture runtime, live connector behavior, remediation
   execution, or production authorization service is authorized.
 
+## Model Routing Defaults and Health Taxonomy Refinement Checkpoint
+
+- Branch: `model-routing-defaults-health-taxonomy-refinement`
+- Base: `rbac-idp-mfa-session-device-trust-matrix`
+- Purpose: define safe model-route defaults (`mock_only`, `local_planned`,
+  `subscription_planned`, `blocked_mvp`) and aligned health-taxonomy reason
+  semantics for Supervisor/worker/console metadata.
+- Scope: docs, schemas, examples, tests, and mock-only route-classification
+  helper. No model provider integration, no local inference runtime, no runtime
+  authorization expansion, no live connectors, and no remediation execution are
+  authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:

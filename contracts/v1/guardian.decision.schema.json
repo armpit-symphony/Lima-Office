@@ -446,6 +446,57 @@
         "null"
       ]
     },
+    "model_route_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "route_mode": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "mock_only",
+        "local_planned",
+        "subscription_planned",
+        "blocked_mvp",
+        null
+      ]
+    },
+    "route_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "selected",
+        "degraded",
+        "denied",
+        "blocked_mvp",
+        "unavailable",
+        null
+      ]
+    },
+    "route_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "model_route_unavailable",
+          "model_route_blocked_mvp",
+          "model_route_tainted_input_denied",
+          "model_route_privileged_requires_approval",
+          "model_route_provider_blocked_mvp",
+          "model_route_local_execution_blocked_mvp",
+          "model_route_rbac_blocked",
+          "model_route_device_untrusted",
+          "model_route_fallback_denied"
+        ]
+      },
+      "uniqueItems": true
+    },
     "bound_tool_scope": {
       "type": [
         "object",
@@ -1333,6 +1384,64 @@
               "deny_replay",
               "blocked_mvp"
             ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action_class": {
+            "const": "model_route"
+          },
+          "route_mode": {
+            "const": "blocked_mvp"
+          }
+        },
+        "required": [
+          "action_class",
+          "route_mode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "not": {
+              "enum": [
+                "allow",
+                "allow_with_evidence"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "route_reason_codes": {
+            "contains": {
+              "enum": [
+                "model_route_tainted_input_denied",
+                "model_route_rbac_blocked",
+                "model_route_device_untrusted"
+              ]
+            }
+          }
+        },
+        "required": [
+          "route_reason_codes"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "not": {
+              "enum": [
+                "allow",
+                "allow_with_evidence"
+              ]
+            }
           }
         }
       }

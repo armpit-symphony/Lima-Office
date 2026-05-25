@@ -42,6 +42,18 @@
     "worker_stale",
     "evidence_writer_degraded"
   ],
+  "health_domain": "supervisor",
+  "health_reason_codes": [
+    "worker_stale",
+    "evidence_writer_degraded"
+  ],
+  "route_health_counts": {
+    "degraded": 0
+  },
+  "model_route_status_counts": {
+    "selected": 1
+  },
+  "operator_visible": true,
   "evidence_refs": [
     "ev-health-degraded-001"
   ],

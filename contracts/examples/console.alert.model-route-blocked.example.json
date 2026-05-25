@@ -1,0 +1,45 @@
+{
+  "contract_name": "console.alert",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-console-alert-model-route-blocked-001",
+  "causation_id": null,
+  "idempotency_key": "idem-console-alert-model-route-blocked-001",
+  "alert_id": "console-alert-model-route-blocked-001",
+  "actor_ref": "operator-ref-001",
+  "role": "owner_operator",
+  "health_domain": "model_route",
+  "alert_type": "model_route_blocked_mvp",
+  "health_reason_codes": [
+    "model_route_blocked_mvp",
+    "health_blocked"
+  ],
+  "severity": "blocked",
+  "related_contract_refs": [
+    "model.route:mr-subscription-blocked-001"
+  ],
+  "policy_refs": [
+    "policy.model_routing_defaults.phase1a"
+  ],
+  "risk_tier": "blocked",
+  "status": "blocked",
+  "runbook_ref": "docs/runbooks/model-routing-review.md",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-24T22:44:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "evidence_refs": [
+    "ev-console-alert-model-route-blocked-001"
+  ],
+  "operator_visible": true,
+  "model_route_id": "mr-subscription-blocked-001",
+  "route_mode": "blocked_mvp",
+  "route_status": "blocked_mvp",
+  "blocked_reason": "Model route is blocked in MVP.",
+  "created_at": "2026-05-24T22:44:00Z"
+}

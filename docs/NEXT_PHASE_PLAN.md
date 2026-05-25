@@ -31,12 +31,14 @@ Recommended order:
 5. Final RBAC/IdP/MFA/session/device trust matrix (checkpoint completed as
    docs/contracts/tests/mock-hardening on
    `rbac-idp-mfa-session-device-trust-matrix`).
-6. Model-routing defaults and health taxonomy refinement.
+6. Model-routing defaults and health taxonomy refinement (checkpoint completed
+   as docs/contracts/tests/mock metadata hardening on
+   `model-routing-defaults-health-taxonomy-refinement`).
 7. Phase 1B lab runtime expansion only after the gates above are approved.
 
-Next recommended lane after this checkpoint: finalize model-routing defaults
-and health taxonomy refinement while keeping IdP/MFA/session/device-runtime
-implementation blocked and reason-code lifecycle gates enforced.
+Next recommended lane after this checkpoint: worker attestation trust-root and
+signed update/rollback implementation-gate hardening while keeping provider
+integration, local inference runtime, and live connector execution blocked.
 
 Alternative non-runtime lanes can proceed when they do not obscure the blockers:
 model-routing defaults, final IdP/MFA/RBAC matrix, health taxonomy refinement,

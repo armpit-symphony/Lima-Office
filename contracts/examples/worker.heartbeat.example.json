@@ -48,6 +48,7 @@
     "internet_required": false,
     "clock_skew_ms": 120
   },
+  "model_route_status": "mock_only_selected",
   "network_reachability": "supervisor_only",
   "guardian_reachability": "reachable",
   "missed_heartbeat_count": 0,

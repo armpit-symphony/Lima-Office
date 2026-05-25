@@ -118,6 +118,8 @@ Untrusted device posture cannot approve privileged actions.
 Every privileged or denied/blocked action path must include:
 
 - actor identity refs and role refs
+- model-route trust refs (`rbac_context_ref`, `session_policy_ref`,
+  `device_trust_ref`) when route metadata is present
 - Guardian decision ref
 - policy refs
 - evidence refs

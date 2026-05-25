@@ -12,7 +12,11 @@
   "alert_id": "console-alert-worker-stale-001",
   "actor_ref": "field-it-ref-001",
   "role": "field_it",
+  "health_domain": "worker",
   "alert_type": "worker_stale",
+  "health_reason_codes": [
+    "worker_stale"
+  ],
   "severity": "high",
   "related_contract_refs": [
     "worker-heartbeat-ref-arc-file-01",
@@ -33,6 +37,7 @@
   "evidence_refs": [
     "ev-console-alert-worker-stale-001"
   ],
+  "operator_visible": true,
   "blocked_reason": null,
   "created_at": "2026-05-22T22:05:00Z"
 }

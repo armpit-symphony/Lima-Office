@@ -84,6 +84,7 @@ Sanitized example objects are in [examples](examples):
 - [supervisor.health.healthy.example.json](examples/supervisor.health.healthy.example.json)
 - [supervisor.health.degraded.example.json](examples/supervisor.health.degraded.example.json)
 - [supervisor.health.blocked.example.json](examples/supervisor.health.blocked.example.json)
+- [supervisor.health.model-route-degraded.example.json](examples/supervisor.health.model-route-degraded.example.json)
 - [governance.identity.operator-mfa-required.example.json](examples/governance.identity.operator-mfa-required.example.json)
 - [governance.access_review.quarterly-placeholder.example.json](examples/governance.access_review.quarterly-placeholder.example.json)
 - [governance.breakglass.blocked-mvp.example.json](examples/governance.breakglass.blocked-mvp.example.json)
@@ -113,6 +114,7 @@ Sanitized example objects are in [examples](examples):
 - [console.view.operator-dashboard.example.json](examples/console.view.operator-dashboard.example.json)
 - [console.alert.worker-stale.example.json](examples/console.alert.worker-stale.example.json)
 - [console.alert.evidence-missing.example.json](examples/console.alert.evidence-missing.example.json)
+- [console.alert.model-route-blocked.example.json](examples/console.alert.model-route-blocked.example.json)
 - [console.action.approval-denied.example.json](examples/console.action.approval-denied.example.json)
 - [console.action.worker-quarantine-requested.example.json](examples/console.action.worker-quarantine-requested.example.json)
 - [task.execution.example.json](examples/task.execution.example.json)
@@ -162,6 +164,10 @@ Sanitized example objects are in [examples](examples):
 - [approval.chain.lima-it-remediation-blocked.example.json](examples/approval.chain.lima-it-remediation-blocked.example.json)
 - [approval.chain.tainted-input-denied.example.json](examples/approval.chain.tainted-input-denied.example.json)
 - [model.route.example.json](examples/model.route.example.json)
+- [model.route.mock-only-selected.example.json](examples/model.route.mock-only-selected.example.json)
+- [model.route.tainted-privileged-denied.example.json](examples/model.route.tainted-privileged-denied.example.json)
+- [model.route.subscription-planned-blocked-mvp.example.json](examples/model.route.subscription-planned-blocked-mvp.example.json)
+- [model.route.local-planned-degraded.example.json](examples/model.route.local-planned-degraded.example.json)
 - [tool.invocation.example.json](examples/tool.invocation.example.json)
 - [tool.invocation.tainted-input-denied.example.json](examples/tool.invocation.tainted-input-denied.example.json)
 - [memory.access.example.json](examples/memory.access.example.json)
@@ -384,3 +390,9 @@ Guardian decisions must link to relevant `policy_refs`, `policy_version`, approv
 Runtime cannot be built for a behavior until the relevant contract is present, reviewed, and linked to Guardian, approval, evidence, failure, and MVP acceptance gates.
 
 Phase 0 schemas are not permission to implement services. They are the minimum interface boundary future runtime work must satisfy.
+
+## Taxonomy Catalog
+
+- [reason-code-registry.catalog.json](taxonomy/reason-code-registry.catalog.json)
+  records model-route and health reason-code catalog snapshots for
+  docs/contracts/tests consistency.

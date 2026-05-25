@@ -268,7 +268,12 @@ The Phase 0 field-level schemas in [contracts/v1](../contracts/v1) define the mi
 - Helper scope: [helper.scope.schema.json](../contracts/v1/helper.scope.schema.json) keeps helper agents supervisor-side, leased, narrowly scoped, and unable to inherit worker trust.
 - Taint reference: [taint.ref.schema.json](../contracts/v1/taint.ref.schema.json) propagates prompt-injection and untrusted-content state across model, task, tool, memory, approval, and evidence records.
 - Worker identity: [worker.lifecycle.schema.json](../contracts/v1/worker.lifecycle.schema.json), [worker.heartbeat.schema.json](../contracts/v1/worker.heartbeat.schema.json), and [worker.deployment.schema.json](../contracts/v1/worker.deployment.schema.json) require device identity refs, channel identity refs, deployment refs, capability lease/hash posture, heartbeat sequence, supervisor receive time, evidence writer state, quarantine, revoke, update/rollback, and deployment metadata.
-- Model routing: [model.route.schema.json](../contracts/v1/model.route.schema.json) records provider class, local/cloud boundary, egress posture, prompt/response refs, redaction, prompt-injection handling, Guardian decision, and evidence.
+- Model routing: [model.route.schema.json](../contracts/v1/model.route.schema.json)
+  records fail-closed route posture (`mock_only`, `local_planned`,
+  `subscription_planned`, `blocked_mvp`), route status/reason codes, taint/risk
+  gating, RBAC/session/device trust refs, fallback constraints, and evidence.
+  It explicitly blocks live provider calls and local inference execution in
+  Phase 1A metadata lanes.
 - Tool invocation: [tool.invocation.schema.json](../contracts/v1/tool.invocation.schema.json) requires tool pack/version, sandbox profile, side-effect class, file/network/connector scope, dry-run posture, approval token/binding linkage where needed, and evidence.
 - Memory access: [memory.access.schema.json](../contracts/v1/memory.access.schema.json) requires tenant namespace, purpose, retention class, delete/export posture, prompt-injection scan state, and `cross_tenant_access: false`.
 - Connector trust: [connector.trust.schema.json](../contracts/v1/connector.trust.schema.json) is mock/readiness-only in Phase 0 with `mock_only: true`, `live_access_enabled: false`, `secret_material_present: false`, consent/scope review posture, and revocation state.

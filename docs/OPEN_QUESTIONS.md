@@ -114,6 +114,10 @@ documents the reachable v2 checkpoint that supersedes it.
   status, connector readiness, LIMA IT handoff, and degraded/offline/quarantine
   transitions beyond the planning defaults in [Worker Deployment Blueprint](deployment/WORKER_DEPLOYMENT_BLUEPRINT.md)
   and the scaffolding in [Health Reason Taxonomy](ux/HEALTH_REASON_TAXONOMY.md)?
+- Model-route defaults by tenant: Phase 1A now defines safe route-mode and
+  route-status posture in [Model Routing Defaults](architecture/MODEL_ROUTING_DEFAULTS.md)
+  and `model.route` contracts, but tenant/customer override governance remains
+  open.
 - Heartbeat thresholds: what heartbeat interval, missed-heartbeat thresholds,
   stale-age limits, and escalation timing should apply in lab mode?
 - Worker attestation: what trust root, attestation method, TPM/secure boot

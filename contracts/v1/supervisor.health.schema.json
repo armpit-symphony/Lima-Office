@@ -164,7 +164,9 @@
       "enum": [
         "healthy",
         "degraded",
-        "blocked"
+        "blocked",
+        "unknown",
+        "blocked_mvp"
       ]
     },
     "reasons": {
@@ -189,10 +191,74 @@
           "retention_policy_missing",
           "export_delete_policy_missing",
           "idp_mfa_missing",
-          "task_blocked"
+          "task_blocked",
+          "model_route_unavailable",
+          "model_route_blocked_mvp",
+          "model_route_tainted_input_denied",
+          "model_route_privileged_requires_approval",
+          "model_route_provider_blocked_mvp",
+          "model_route_local_execution_blocked_mvp",
+          "model_route_rbac_blocked",
+          "model_route_device_untrusted",
+          "model_route_fallback_denied",
+          "health_unknown",
+          "health_degraded",
+          "health_blocked"
         ]
       },
       "uniqueItems": true
+    },
+    "health_domain": {
+      "type": "string",
+      "const": "supervisor"
+    },
+    "health_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "worker_stale",
+          "worker_quarantined",
+          "worker_revoked",
+          "evidence_missing",
+          "evidence_writer_degraded",
+          "guardian_denied",
+          "approval_expired",
+          "approval_revoked",
+          "token_mismatch",
+          "tainted_input",
+          "connector_revoked",
+          "attestation_failed",
+          "update_rollback_required",
+          "lima_it_remediation_blocked",
+          "retention_policy_missing",
+          "export_delete_policy_missing",
+          "idp_mfa_missing",
+          "task_blocked",
+          "model_route_unavailable",
+          "model_route_blocked_mvp",
+          "model_route_tainted_input_denied",
+          "model_route_privileged_requires_approval",
+          "model_route_provider_blocked_mvp",
+          "model_route_local_execution_blocked_mvp",
+          "model_route_rbac_blocked",
+          "model_route_device_untrusted",
+          "model_route_fallback_denied",
+          "health_unknown",
+          "health_degraded",
+          "health_blocked"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "route_health_counts": {
+      "$ref": "#/$defs/counts"
+    },
+    "model_route_status_counts": {
+      "$ref": "#/$defs/counts"
+    },
+    "operator_visible": {
+      "type": "boolean"
     },
     "evidence_refs": {
       "type": "array",
@@ -343,6 +409,42 @@
         "properties": {
           "reasons": {
             "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "health_status": {
+            "const": "unknown"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "health_reason_codes": {
+            "contains": {
+              "const": "health_unknown"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "health_status": {
+            "const": "blocked_mvp"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "health_reason_codes": {
+            "contains": {
+              "const": "model_route_blocked_mvp"
+            }
           }
         }
       }

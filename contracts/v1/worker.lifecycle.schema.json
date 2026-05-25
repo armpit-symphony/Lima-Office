@@ -327,6 +327,15 @@
         }
       }
     },
+    "model_route_posture": {
+      "type": "string",
+      "enum": [
+        "mock_only",
+        "local_planned",
+        "subscription_planned",
+        "blocked_mvp"
+      ]
+    },
     "data_classification": {
       "type": "string",
       "enum": [
@@ -753,6 +762,27 @@
           "identity_recheck_artifact_id": {
             "type": "string",
             "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "model_route_posture": {
+            "const": "blocked_mvp"
+          }
+        },
+        "required": [
+          "model_route_posture"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lifecycle_state": {
+            "not": {
+              "const": "healthy"
+            }
           }
         }
       }

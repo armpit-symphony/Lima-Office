@@ -1,0 +1,70 @@
+{
+  "taxonomy_version": "taxonomy-reason-v1",
+  "catalog_version": "phase1a-model-route-health-v1",
+  "entries": [
+    {
+      "reason_code": "model_route_unavailable",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "model_route_blocked_mvp",
+      "category": "blocked_mvp",
+      "status": "blocked"
+    },
+    {
+      "reason_code": "model_route_tainted_input_denied",
+      "category": "guardian",
+      "status": "active"
+    },
+    {
+      "reason_code": "model_route_privileged_requires_approval",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "model_route_provider_blocked_mvp",
+      "category": "blocked_mvp",
+      "status": "blocked"
+    },
+    {
+      "reason_code": "model_route_local_execution_blocked_mvp",
+      "category": "blocked_mvp",
+      "status": "blocked"
+    },
+    {
+      "reason_code": "model_route_rbac_blocked",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "model_route_device_untrusted",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "model_route_fallback_denied",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "health_unknown",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "health_degraded",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "health_blocked",
+      "category": "health",
+      "status": "active"
+    }
+  ],
+  "notes": [
+    "Catalog is metadata-only for docs/contracts/test posture.",
+    "No runtime authorization, model execution, or provider connectivity is implemented."
+  ]
+}

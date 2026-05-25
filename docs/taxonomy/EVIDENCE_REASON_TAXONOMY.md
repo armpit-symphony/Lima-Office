@@ -7,6 +7,11 @@ Status: Phase 1A metadata-only taxonomy. No payload export/delete execution.
 Normalize evidence reason vocabulary across evidence artifact, ledger,
 reconciliation, and governance export/delete review records.
 
+Model-route/health route reasons are defined in
+[Health Status Taxonomy](HEALTH_STATUS_TAXONOMY.md); evidence records should
+reference those codes only when capturing route-related denial/degraded
+evidence.
+
 ## Evidence Types
 
 - `evidence.artifact`

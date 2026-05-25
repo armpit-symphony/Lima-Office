@@ -64,6 +64,24 @@ Canonical category set:
 - `blocked_mvp`
 - `tenant_isolation`
 
+Model-route and health refinement in this lane adds canonical reason codes:
+
+- `model_route_unavailable`
+- `model_route_blocked_mvp`
+- `model_route_tainted_input_denied`
+- `model_route_privileged_requires_approval`
+- `model_route_provider_blocked_mvp`
+- `model_route_local_execution_blocked_mvp`
+- `model_route_rbac_blocked`
+- `model_route_device_untrusted`
+- `model_route_fallback_denied`
+- `health_unknown`
+- `health_degraded`
+- `health_blocked`
+
+Reference snapshot:
+[contracts/taxonomy/reason-code-registry.catalog.json](../../contracts/taxonomy/reason-code-registry.catalog.json).
+
 ## Code Format Convention
 
 - `reason_code` is a stable string identifier.

@@ -77,6 +77,7 @@ Phase 0 status values:
 - Connector trust/readiness.
 - Prompt injection handling.
 - Tenant memory boundary.
+- Model-route defaults and health-taxonomy fail-closed posture.
 - Secure update/rollback.
 - Incident runbooks.
 - Policy refs and policy snapshot/hash linkage for Guardian decisions.

@@ -95,6 +95,7 @@ The console must show blocked state when any required item is missing:
 - Evidence refs.
 - Token verification where required.
 - Tenant/customer context.
+- Model-route status/reason taxonomy for high-risk task paths.
 - Worker identity or deployment refs.
 - Connector consent or revocation posture.
 - Governance identity/MFA/access review posture for privileged views.

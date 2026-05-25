@@ -101,6 +101,24 @@ monitoring.
 Approval/Guardian reconciliation drill requirements are defined in
 [Approval Guardian Reconciliation Drills](APPROVAL_GUARDIAN_RECONCILIATION_DRILLS.md).
 
+## Model Routing Defaults Refinement
+
+Phase 1A now hardens `model.route` for metadata-only routing posture:
+
+- required `taxonomy_version` and route policy versioning;
+- explicit `route_mode` (`mock_only`, `local_planned`,
+  `subscription_planned`, `blocked_mvp`) and `route_status`
+  (`selected`, `degraded`, `denied`, `blocked_mvp`, `unavailable`);
+- required route/fallback reason-code arrays bound to taxonomy registry values;
+- explicit RBAC/session/device trust references for privileged-path review;
+- explicit placeholder-only `provider_ref` and `local_model_bundle_ref` with
+  no live provider call and no local inference execution allowed;
+- fail-closed conditionals for high-risk approval requirements, tainted
+  privileged routes, and blocked-MVP route selection.
+
+This remains docs/contracts/tests/mock-only hardening and does not authorize
+provider integration, local inference runtime, or runtime authorization.
+
 ## Governance Export/Delete Taxonomy Hardening
 
 Phase 1A now includes:

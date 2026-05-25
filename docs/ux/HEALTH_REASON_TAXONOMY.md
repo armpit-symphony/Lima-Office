@@ -28,6 +28,18 @@ implementation. Phase 1A v2 uses these codes in metadata-only
 | `export_delete_policy_missing` | Governance/data | Export/delete posture missing or preservation conflict unresolved | Blocked for export/delete | `governance.audit_export` | [Customer exit delete](../runbooks/customer-exit-delete.md) |
 | `idp_mfa_missing` | Governance/identity | Identity provider or MFA posture missing for privileged role | Blocked for approval-capable view | `governance.identity`, `governance.access_review` | [Access review](../runbooks/access-review.md) |
 | `task_blocked` | Task | Task is blocked, denied, or evidence-unavailable after policy/invariant review | Blocked | `task.execution`, `supervisor.health` | [Approval flow](../runbooks/approval-flow.md) |
+| `model_route_unavailable` | Model route | Route classification cannot select safe planned path | High/block review | `model.route`, `supervisor.health`, `console.alert` | [Model routing review](../runbooks/model-routing-review.md) |
+| `model_route_blocked_mvp` | Model route | Route path is blocked by MVP boundary | Blocked-MVP | `model.route`, `console.alert` | [Model routing review](../runbooks/model-routing-review.md) |
+| `model_route_tainted_input_denied` | Model route/Guardian | Tainted privileged input denied for route classification | Blocked | `model.route`, `guardian.decision` | [Model routing review](../runbooks/model-routing-review.md) |
+| `model_route_privileged_requires_approval` | Model route/Governance | High-risk route requires approval posture or denial | Blocked/review-required | `model.route`, `task.execution` | [Model routing review](../runbooks/model-routing-review.md) |
+| `model_route_provider_blocked_mvp` | Model route | Subscription/provider path blocked in MVP | Blocked-MVP | `model.route`, `console.alert` | [Model routing review](../runbooks/model-routing-review.md) |
+| `model_route_local_execution_blocked_mvp` | Model route | Local inference execution remains blocked in MVP | Blocked-MVP | `model.route`, `console.alert` | [Model routing review](../runbooks/model-routing-review.md) |
+| `model_route_rbac_blocked` | Model route/Governance | RBAC posture blocks privileged route | Blocked | `model.route`, `governance.rbac_matrix` | [RBAC IdP MFA access review](../runbooks/rbac-idp-mfa-access-review.md) |
+| `model_route_device_untrusted` | Model route/Governance | Device trust posture blocks privileged route | Blocked | `model.route`, `governance.device_trust` | [RBAC IdP MFA access review](../runbooks/rbac-idp-mfa-access-review.md) |
+| `model_route_fallback_denied` | Model route | Fallback policy denies secondary path | Blocked | `model.route`, `console.alert` | [Model routing review](../runbooks/model-routing-review.md) |
+| `health_unknown` | Health | Health domain cannot be classified safely | Review-required | `supervisor.health`, `console.alert` | [Health taxonomy review](../runbooks/health-taxonomy-review.md) |
+| `health_degraded` | Health | Domain is operating in degraded but observable mode | Warning/high | `supervisor.health`, `worker.heartbeat` | [Health taxonomy review](../runbooks/health-taxonomy-review.md) |
+| `health_blocked` | Health | Domain is fail-closed blocked | Blocked | `supervisor.health`, `console.alert` | [Health taxonomy review](../runbooks/health-taxonomy-review.md) |
 
 ## UX Rules
 

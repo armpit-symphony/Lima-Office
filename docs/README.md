@@ -21,6 +21,8 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Evidence reason taxonomy](taxonomy/EVIDENCE_REASON_TAXONOMY.md)
 - [Reason code registry](taxonomy/REASON_CODE_REGISTRY.md)
 - [Reason code compatibility policy](taxonomy/REASON_CODE_COMPATIBILITY_POLICY.md)
+- [Health status taxonomy](taxonomy/HEALTH_STATUS_TAXONOMY.md)
+- [Model routing defaults](architecture/MODEL_ROUTING_DEFAULTS.md)
 - [Durable transaction/storage RFC](rfcs/RFC_DURABLE_TRANSACTION_STORAGE.md)
 - [Durable storage architecture](architecture/DURABLE_STORAGE_ARCHITECTURE.md)
 - [Durable transaction coordinator](architecture/DURABLE_TRANSACTION_COORDINATOR.md)
@@ -99,6 +101,8 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Transaction failure drills](runbooks/transaction-failure-drills.md)
 - [Approval Guardian reconciliation drill](runbooks/approval-guardian-reconciliation-drill.md)
 - [Export delete conflict review](runbooks/export-delete-conflict-review.md)
+- [Model routing review](runbooks/model-routing-review.md)
+- [Health taxonomy review](runbooks/health-taxonomy-review.md)
 - [Prompt injection response](runbooks/prompt-injection-response.md)
 - [LIMA IT handoff](runbooks/lima-it-handoff.md)
 

@@ -7,6 +7,10 @@ Status: Phase 1A metadata-only taxonomy. Not an authorization surface.
 Define one canonical reason vocabulary for fail-closed reconciliation, linkage
 drift detection, and export/delete conflict posture.
 
+Model-route and domain-health route outcomes use
+[Health Status Taxonomy](HEALTH_STATUS_TAXONOMY.md) and are not substitutes for
+reconciliation/linkage drift classes in this document.
+
 ## Reason-Code Naming Rules
 
 - Use lowercase snake_case.

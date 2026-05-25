@@ -8,6 +8,7 @@
     "contract_name",
     "contract_version",
     "schema_version",
+    "taxonomy_version",
     "tenant_id",
     "customer_context_id",
     "environment",
@@ -18,30 +19,23 @@
     "task_id",
     "producer",
     "requested_by",
-    "route_state",
-    "data_classification",
-    "prompt_sensitivity",
+    "route_policy_version",
+    "route_mode",
+    "model_role",
+    "route_status",
+    "route_reason_codes",
+    "taint_status",
+    "data_class",
     "risk_tier",
-    "model_capability_required",
-    "allowed_provider_classes",
-    "provider_class",
-    "selected_provider_class",
-    "routing_policy_ref",
-    "data_residency_preference",
-    "data_egress_allowed",
-    "cloud_allowed",
-    "fallback_allowed",
-    "prompt_ref",
-    "response_ref",
-    "redaction_required",
-    "policy_version",
-    "guardian_decision_id",
     "approval_required",
-    "approval_token_id",
-    "evidence_artifact_id",
-    "evidence_artifact_ids",
-    "prompt_injection",
-    "failure_behavior",
+    "rbac_context_ref",
+    "session_policy_ref",
+    "device_trust_ref",
+    "worker_capability_refs",
+    "fallback_allowed",
+    "policy_version",
+    "evidence_refs",
+    "policy_refs",
     "created_at"
   ],
   "properties": {
@@ -56,6 +50,9 @@
     "schema_version": {
       "type": "string",
       "const": "1.0.0"
+    },
+    "taxonomy_version": {
+      "type": "string"
     },
     "tenant_id": {
       "type": "string",
@@ -132,7 +129,9 @@
           "enum": [
             "supervisor",
             "worker",
-            "helper_agent"
+            "helper_agent",
+            "sparkpit_operator",
+            "customer_admin"
           ]
         },
         "actor_id": {
@@ -141,18 +140,71 @@
         }
       }
     },
-    "route_state": {
+    "route_policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "route_mode": {
       "type": "string",
       "enum": [
-        "requested",
-        "allowed",
-        "routed",
-        "denied",
-        "failed",
-        "fallback_required"
+        "mock_only",
+        "local_planned",
+        "subscription_planned",
+        "blocked_mvp"
       ]
     },
-    "data_classification": {
+    "model_role": {
+      "type": "string",
+      "enum": [
+        "supervisor_reasoning",
+        "worker_draft",
+        "worker_classification",
+        "it_diagnostic_summary",
+        "file_memory_helper",
+        "governance_review"
+      ]
+    },
+    "route_status": {
+      "type": "string",
+      "enum": [
+        "selected",
+        "degraded",
+        "denied",
+        "blocked_mvp",
+        "unavailable"
+      ]
+    },
+    "route_reason_codes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "model_route_unavailable",
+          "model_route_blocked_mvp",
+          "model_route_tainted_input_denied",
+          "model_route_privileged_requires_approval",
+          "model_route_provider_blocked_mvp",
+          "model_route_local_execution_blocked_mvp",
+          "model_route_rbac_blocked",
+          "model_route_device_untrusted",
+          "model_route_fallback_denied",
+          "health_unknown",
+          "health_degraded",
+          "health_blocked"
+        ]
+      }
+    },
+    "taint_status": {
+      "type": "string",
+      "enum": [
+        "clean",
+        "tainted",
+        "suspected"
+      ]
+    },
+    "data_class": {
       "type": "string",
       "enum": [
         "public",
@@ -161,17 +213,7 @@
         "sensitive_hr",
         "sensitive_finance",
         "sensitive_legal",
-        "sensitive_medical",
-        "secret"
-      ]
-    },
-    "prompt_sensitivity": {
-      "type": "string",
-      "enum": [
-        "low",
-        "moderate",
-        "high",
-        "secret_material_blocked"
+        "sensitive_medical"
       ]
     },
     "risk_tier": {
@@ -183,134 +225,116 @@
         "blocked"
       ]
     },
-    "model_capability_required": {
-      "type": "string",
-      "enum": [
-        "general_reasoning",
-        "document_summary",
-        "classification",
-        "draft_generation",
-        "it_triage",
-        "vision",
-        "coding"
+    "approval_required": {
+      "type": "boolean"
+    },
+    "rbac_context_ref": {
+      "type": [
+        "string",
+        "null"
       ]
     },
-    "allowed_provider_classes": {
+    "session_policy_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "device_trust_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "worker_capability_refs": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "string",
-        "enum": [
-          "local_model",
-          "subscription_cloud_model"
-        ]
+        "minLength": 1
       },
       "uniqueItems": true
     },
-    "provider_class": {
-      "type": "string",
-      "enum": [
-        "local",
-        "subscription",
-        "cloud",
-        "unavailable"
-      ]
-    },
-    "selected_provider_class": {
-      "type": [
-        "string",
-        "null"
-      ],
-      "enum": [
-        "local_model",
-        "subscription_cloud_model",
-        null
-      ]
-    },
-    "routing_policy_ref": {
-      "type": "string",
-      "minLength": 1
-    },
-    "data_residency_preference": {
-      "type": "string",
-      "enum": [
-        "local_only",
-        "local_preferred",
-        "cloud_allowed_if_policy_allows"
-      ]
-    },
-    "data_egress_allowed": {
-      "type": "boolean"
-    },
-    "cloud_allowed": {
-      "type": "boolean"
-    },
     "fallback_allowed": {
       "type": "boolean"
-    },
-    "prompt_ref": {
-      "type": "string",
-      "minLength": 1,
-      "description": "Reference to redacted prompt/input artifact. Raw prompt text is not stored in this contract."
-    },
-    "response_ref": {
-      "type": [
-        "string",
-        "null"
-      ],
-      "description": "Reference to redacted response/output artifact. Raw model output is not stored in this contract."
-    },
-    "redaction_required": {
-      "type": "boolean"
-    },
-    "guardian_decision_id": {
-      "type": "string",
-      "minLength": 1
     },
     "policy_version": {
       "type": "string",
       "minLength": 1
     },
-    "approval_required": {
-      "type": "boolean"
-    },
-    "approval_token_id": {
+    "fallback_policy": {
       "type": [
         "string",
         "null"
       ]
     },
-    "approval_result_id": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "token_verification_id": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "taint_ref_ids": {
+    "fallback_reason_codes": {
       "type": "array",
+      "uniqueItems": true,
       "items": {
         "type": "string",
-        "minLength": 1
-      },
-      "uniqueItems": true
+        "enum": [
+          "model_route_fallback_denied",
+          "model_route_unavailable",
+          "model_route_provider_blocked_mvp",
+          "model_route_local_execution_blocked_mvp",
+          "health_degraded",
+          "health_blocked"
+        ]
+      }
     },
-    "denial_reason": {
+    "provider_ref": {
       "type": [
-        "string",
+        "object",
         "null"
-      ]
+      ],
+      "additionalProperties": false,
+      "required": [
+        "provider_ref_type",
+        "placeholder_ref",
+        "live_call"
+      ],
+      "properties": {
+        "provider_ref_type": {
+          "type": "string",
+          "enum": [
+            "none",
+            "mock_only",
+            "subscription_planned"
+          ]
+        },
+        "placeholder_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "live_call": {
+          "type": "boolean",
+          "const": false
+        }
+      }
     },
-    "evidence_artifact_id": {
-      "type": "string",
-      "minLength": 1
+    "local_model_bundle_ref": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "bundle_ref",
+        "execution_enabled"
+      ],
+      "properties": {
+        "bundle_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "execution_enabled": {
+          "type": "boolean",
+          "const": false
+        }
+      }
     },
-    "evidence_artifact_ids": {
+    "evidence_refs": {
       "type": "array",
       "minItems": 1,
       "items": {
@@ -319,97 +343,14 @@
       },
       "uniqueItems": true
     },
-    "prompt_injection": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "untrusted_input_refs",
-        "content_origin",
-        "injection_suspected",
-        "injection_signals",
-        "containment_action"
-      ],
-      "properties": {
-        "untrusted_input_refs": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1
-          },
-          "uniqueItems": true
-        },
-        "content_origin": {
-          "type": "string",
-          "enum": [
-            "operator",
-            "document",
-            "email",
-            "ticket",
-            "browser",
-            "memory",
-            "connector",
-            "unknown"
-          ]
-        },
-        "injection_suspected": {
-          "type": "boolean"
-        },
-        "injection_signals": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "enum": [
-              "request_secret",
-              "request_unapproved_tool",
-              "ignore_prior_instructions",
-              "none"
-            ]
-          },
-          "uniqueItems": true
-        },
-        "containment_action": {
-          "type": "string",
-          "enum": [
-            "none",
-            "treat_as_untrusted_data",
-            "deny_route",
-            "require_approval"
-          ]
-        }
-      }
-    },
-    "failure_behavior": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "on_provider_unavailable",
-        "on_policy_denial",
-        "on_evidence_failure"
-      ],
-      "properties": {
-        "on_provider_unavailable": {
-          "type": "string",
-          "enum": [
-            "fallback_to_local_if_allowed",
-            "block_task",
-            "escalate_to_operator"
-          ]
-        },
-        "on_policy_denial": {
-          "type": "string",
-          "enum": [
-            "block_task",
-            "request_operator_review"
-          ]
-        },
-        "on_evidence_failure": {
-          "type": "string",
-          "enum": [
-            "block_task",
-            "escalate_to_operator"
-          ]
-        }
-      }
+    "policy_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
     },
     "created_at": {
       "type": "string",
@@ -420,20 +361,20 @@
     {
       "if": {
         "properties": {
-          "data_egress_allowed": {
-            "const": false
+          "route_mode": {
+            "const": "blocked_mvp"
           }
-        }
+        },
+        "required": [
+          "route_mode"
+        ]
       },
       "then": {
         "properties": {
-          "selected_provider_class": {
+          "route_status": {
             "not": {
-              "const": "subscription_cloud_model"
+              "const": "selected"
             }
-          },
-          "cloud_allowed": {
-            "const": false
           }
         }
       }
@@ -441,60 +382,58 @@
     {
       "if": {
         "properties": {
-          "cloud_allowed": {
-            "const": false
+          "taint_status": {
+            "enum": [
+              "tainted",
+              "suspected"
+            ]
+          },
+          "risk_tier": {
+            "const": "high"
           }
-        }
+        },
+        "required": [
+          "taint_status",
+          "risk_tier"
+        ]
       },
       "then": {
         "properties": {
-          "selected_provider_class": {
-            "not": {
-              "const": "subscription_cloud_model"
-            }
+          "route_status": {
+            "enum": [
+              "denied",
+              "blocked_mvp"
+            ]
           }
         }
       }
     },
     {
       "if": {
-        "anyOf": [
-          {
-            "properties": {
-              "prompt_sensitivity": {
-                "const": "secret_material_blocked"
-              }
-            }
-          },
-          {
-            "properties": {
-              "data_classification": {
-                "const": "secret"
-              }
-            }
+        "properties": {
+          "route_mode": {
+            "const": "subscription_planned"
           }
+        },
+        "required": [
+          "route_mode"
         ]
       },
       "then": {
         "required": [
-          "denial_reason"
+          "provider_ref"
         ],
         "properties": {
-          "route_state": {
-            "const": "denied"
-          },
-          "selected_provider_class": {
-            "const": null
-          },
-          "response_ref": {
-            "const": null
-          },
-          "redaction_required": {
-            "const": true
-          },
-          "denial_reason": {
-            "type": "string",
-            "minLength": 1
+          "provider_ref": {
+            "type": "object",
+            "properties": {
+              "provider_ref_type": {
+                "const": "subscription_planned"
+              },
+              "live_call": {
+                "const": false
+              }
+            }
           }
         }
       }
@@ -502,61 +441,175 @@
     {
       "if": {
         "properties": {
-          "prompt_injection": {
+          "route_mode": {
+            "const": "local_planned"
+          }
+        },
+        "required": [
+          "route_mode"
+        ]
+      },
+      "then": {
+        "required": [
+          "local_model_bundle_ref"
+        ],
+        "properties": {
+          "local_model_bundle_ref": {
+            "type": "object",
             "properties": {
-              "injection_suspected": {
+              "execution_enabled": {
+                "const": false
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "route_status": {
+            "const": "selected"
+          }
+        },
+        "required": [
+          "route_status"
+        ]
+      },
+      "then": {
+        "required": [
+          "evidence_refs",
+          "policy_refs"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "fallback_allowed": {
+            "const": true
+          }
+        },
+        "required": [
+          "fallback_allowed"
+        ]
+      },
+      "then": {
+        "properties": {
+          "fallback_policy": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fallback_reason_codes": {
+            "type": "array",
+            "minItems": 1
+          }
+        },
+        "required": [
+          "fallback_policy",
+          "fallback_reason_codes"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "risk_tier": {
+            "const": "high"
+          }
+        },
+        "required": [
+          "risk_tier"
+        ]
+      },
+      "then": {
+        "anyOf": [
+          {
+            "properties": {
+              "approval_required": {
                 "const": true
               }
             },
             "required": [
-              "injection_suspected"
-            ]
-          }
-        }
-      },
-      "then": {
-        "required": [
-          "taint_ref_ids"
-        ],
-        "properties": {
-          "route_state": {
-            "enum": [
-              "denied",
-              "failed",
-              "fallback_required"
+              "approval_required"
             ]
           },
-          "taint_ref_ids": {
-            "type": "array",
-            "minItems": 1
+          {
+            "properties": {
+              "route_status": {
+                "enum": [
+                  "blocked_mvp",
+                  "denied"
+                ]
+              }
+            },
+            "required": [
+              "route_status"
+            ]
           }
-        }
+        ]
       }
     },
     {
       "if": {
         "properties": {
-          "route_state": {
+          "route_reason_codes": {
+            "contains": {
+              "enum": [
+                "model_route_device_untrusted",
+                "model_route_rbac_blocked"
+              ]
+            }
+          },
+          "risk_tier": {
+            "const": "high"
+          }
+        },
+        "required": [
+          "route_reason_codes",
+          "risk_tier"
+        ]
+      },
+      "then": {
+        "properties": {
+          "route_status": {
             "enum": [
               "denied",
-              "failed"
+              "blocked_mvp"
             ]
           }
         }
-      },
-      "then": {
-        "required": [
-          "denial_reason"
-        ],
-        "properties": {
-          "response_ref": {
-            "const": null
+      }
+    },
+    {
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "provider_endpoint"
+            ]
           },
-          "denial_reason": {
-            "type": "string",
-            "minLength": 1
+          {
+            "required": [
+              "provider_api_key"
+            ]
+          },
+          {
+            "required": [
+              "api_key"
+            ]
+          },
+          {
+            "required": [
+              "provider_token"
+            ]
+          },
+          {
+            "required": [
+              "endpoint_url"
+            ]
           }
-        }
+        ]
       }
     }
   ]

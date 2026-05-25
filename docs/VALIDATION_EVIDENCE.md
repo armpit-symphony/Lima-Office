@@ -31,6 +31,8 @@ Python 3.12.10.
   `taxonomy-version-enforcement-hardening`
 - RBAC IdP MFA session device trust matrix branch:
   `rbac-idp-mfa-session-device-trust-matrix`
+- Model routing defaults and health taxonomy branch:
+  `model-routing-defaults-health-taxonomy-refinement`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -118,6 +120,16 @@ mock-only in-memory transition/idempotency validator with fail-closed tests.
 Validation remains repository health evidence only; it does not approve
 databases, queues, durable storage services, live connectors, external sends,
 real remediation, production operations, or customer-system mutation.
+
+## Model Routing Defaults and Health Taxonomy Refinement Checkpoint
+
+This branch hardens `model.route` safety conditionals, adds model-route and
+health taxonomy examples for Supervisor/console, introduces a mock-only
+model-route classifier helper, and adds fail-closed tests.
+Validation remains repository health evidence only; it does not approve model
+provider integration, local inference runtime, runtime authorization expansion,
+live connectors, remediation execution, durable services, or production
+operations.
 
 ## Cross-Contract Linkage Hardening Checkpoint
 
