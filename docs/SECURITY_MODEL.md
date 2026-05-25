@@ -243,6 +243,10 @@ revocation verification placeholders, and fail-closed drill evidence linkage.
 [Connector Trust-Boundary Linkage Invariants](CONNECTOR_TRUST_BOUNDARY_LINKAGE_INVARIANTS.md)
 adds fail-closed reconciliation drift classes across provider/readiness/scope/
 trust/consent/revocation/invocation/approval/Guardian/evidence records.
+[Connector Provider Acceptance Scoring](CONNECTOR_PROVIDER_ACCEPTANCE_SCORING.md)
+and [Connector Reconciliation Propagation SLO](CONNECTOR_RECONCILIATION_PROPAGATION_SLO.md)
+add fail-closed acceptance and cadence metadata posture (`connector.acceptance_score`,
+`connector.reconciliation_slo`) with no runtime authorization effect.
 No connector provider integration, token runtime, or external API calls are
 implemented.
 

@@ -1,0 +1,53 @@
+{
+  "contract_name": "connector.acceptance_score",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-connector-score-004",
+  "causation_id": "corr-connector-slo-003",
+  "idempotency_key": "idem-connector-score-004",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-26T01:15:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "acceptance_score_id": "connector-score-004",
+  "connector_id": "connector-rmm-metadata-001",
+  "provider_profile_id": "provider-profile-rmm-001",
+  "connector_readiness_id": "connector-readiness-rmm-001",
+  "scope_review_id": "connector-scope-review-rmm-001",
+  "connector_consent_id": "connector-consent-rmm-001",
+  "revocation_drill_id": "connector-revocation-drill-rmm-001",
+  "reconciliation_id": "connector-reconcile-004",
+  "scoring_version": "connector-score-v1",
+  "score_status": "failed_closed",
+  "overall_score": 12,
+  "max_score": 100,
+  "dimension_scores": {
+    "revocation_method": 0,
+    "disable_switch": 0,
+    "audit_evidence_completeness": 0
+  },
+  "failed_dimensions": [
+    "revocation_method",
+    "disable_switch",
+    "audit_evidence_completeness"
+  ],
+  "required_improvements": [
+    "evidence_chain_repair",
+    "disable_switch_policy_update"
+  ],
+  "reason_codes": [
+    "connector_score_failed_closed",
+    "connector_disable_verification_missed",
+    "connector_revocation_propagation_missed"
+  ],
+  "evidence_refs": [
+    "ev-connector-score-004"
+  ],
+  "created_at": "2026-05-26T01:15:00Z",
+  "updated_at": "2026-05-26T01:15:00Z"
+}

@@ -97,6 +97,9 @@ single-record validation.
 - Drift outcomes must surface in `console.alert` and `supervisor.health`.
 - Connector-risk and reconciliation reason codes must map to runbooks.
 - Visibility records remain metadata-only and non-authorizing.
+- Reconciliation drift now also maps to `connector.acceptance_score` and
+  `connector.reconciliation_slo` posture so stale/missed/pending propagation
+  states fail closed.
 
 ## MVP Non-Goals
 

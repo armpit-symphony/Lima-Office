@@ -218,6 +218,17 @@
           "connector_cross_tenant_linkage",
           "connector_evidence_missing",
           "connector_trust_revoked_but_allowed",
+          "connector_score_below_threshold",
+          "connector_score_failed_closed",
+          "connector_score_degraded",
+          "connector_slo_missed",
+          "connector_slo_stale",
+          "connector_reconciliation_stale",
+          "connector_revocation_propagation_pending",
+          "connector_revocation_propagation_missed",
+          "connector_disable_verification_missed",
+          "connector_source_of_truth_missing",
+          "connector_acceptance_blocked_mvp",
           "attestation_failed",
           "attestation_result_expired",
           "attestation_quarantine_required",
@@ -329,6 +340,17 @@
           "connector_cross_tenant_linkage",
           "connector_evidence_missing",
           "connector_trust_revoked_but_allowed",
+          "connector_score_below_threshold",
+          "connector_score_failed_closed",
+          "connector_score_degraded",
+          "connector_slo_missed",
+          "connector_slo_stale",
+          "connector_reconciliation_stale",
+          "connector_revocation_propagation_pending",
+          "connector_revocation_propagation_missed",
+          "connector_disable_verification_missed",
+          "connector_source_of_truth_missing",
+          "connector_acceptance_blocked_mvp",
           "attestation_failed",
           "attestation_result_expired",
           "attestation_quarantine_required",
@@ -386,6 +408,49 @@
         ]
       },
       "uniqueItems": true
+    },
+    "acceptance_score_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reconciliation_slo_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "score_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "blocked_mvp",
+        "not_ready",
+        "review_required",
+        "approved_for_lab",
+        "degraded",
+        "revoked",
+        "failed_closed",
+        null
+      ]
+    },
+    "cadence_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "planned",
+        "current",
+        "stale",
+        "missed",
+        "failed_closed",
+        "blocked_mvp",
+        null
+      ]
     },
     "route_health_counts": {
       "$ref": "#/$defs/counts"

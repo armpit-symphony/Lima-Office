@@ -244,6 +244,24 @@ This remains docs/contracts/tests/mock-only hardening and does not implement
 live connector execution, OAuth/token handling, external API calls, or runtime
 authorization expansion.
 
+## Connector Acceptance Scoring / Reconciliation SLO Hardening
+
+Phase 1A now adds metadata-only connector acceptance and cadence posture:
+
+- `connector.acceptance_score` for connector acceptance dimensions, score bands,
+  failed dimensions, and fail-closed status mapping.
+- `connector.reconciliation_slo` for reconciliation cadence placeholders,
+  revocation propagation placeholders, disable-switch verification placeholders,
+  and stale/missed fail-closed linkage.
+- Linkage refs (`acceptance_score_ref`, `reconciliation_slo_ref`,
+  `score_status`, `cadence_status`) are now available on connector provider,
+  readiness, reconciliation, and revocation drill records for cross-record
+  review.
+
+This remains docs/contracts/tests/mock-only hardening and does not implement
+live connectors, OAuth/token runtime, external API clients, external sends,
+browser automation, or runtime authorization expansion.
+
 ## Governance Export/Delete Taxonomy Hardening
 
 Phase 1A now includes:

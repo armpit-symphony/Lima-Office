@@ -358,6 +358,49 @@
         "blocked"
       ]
     },
+    "acceptance_score_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reconciliation_slo_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "score_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "blocked_mvp",
+        "not_ready",
+        "review_required",
+        "approved_for_lab",
+        "degraded",
+        "revoked",
+        "failed_closed",
+        null
+      ]
+    },
+    "cadence_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "planned",
+        "current",
+        "stale",
+        "missed",
+        "failed_closed",
+        "blocked_mvp",
+        null
+      ]
+    },
     "created_at": {
       "type": "string",
       "format": "date-time"
@@ -491,30 +534,6 @@
             "contains": {
               "const": "connector_live_blocked_mvp"
             }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "allowed_actions": {
-            "contains": {
-              "const": "external_send"
-            }
-          }
-        },
-        "required": [
-          "allowed_actions"
-        ]
-      },
-      "then": {
-        "properties": {
-          "approval_policy_refs": {
-            "minItems": 1
-          },
-          "evidence_refs": {
-            "minItems": 1
           }
         }
       }

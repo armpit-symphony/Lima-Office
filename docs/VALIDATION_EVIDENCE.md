@@ -589,3 +589,26 @@ Date: 2026-05-25 (local workspace run)
 - `python -B -m compileall lima_office scripts tests`: PASS
 - `git diff --check`: PASS with LF/CRLF normalization warnings only
 - `git diff --cached --check`: PASS
+
+## Latest Run: Connector Acceptance Scoring / Reconciliation SLO Lane
+
+Date: 2026-05-25 (local workspace run)
+
+- `python scripts/validate-contracts.py --require-jsonschema --check-formats --warnings-as-errors`: PASS
+  - schemas parsed: 60
+  - examples parsed: 190
+  - failures: 0, warnings: 0
+- `python scripts/check-reason-codes.py`: PASS
+  - schemas scanned: 60
+  - examples scanned: 190
+  - failures: 0, warnings: 0
+- `python scripts/check-doc-links.py`: PASS
+  - markdown files scanned: 136
+  - failures: 0
+- `python -B -m unittest discover -s tests -v` (from repo root): PASS
+  - 365 tests, OK
+- `python -m pytest -q`: PASS
+  - 365 passed, 1 warning, 226 subtests passed
+- `python -B -m compileall lima_office scripts tests`: PASS
+- `git diff --check`: PASS with LF/CRLF normalization warnings only
+- `git diff --cached --check`: PASS

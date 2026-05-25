@@ -1,0 +1,65 @@
+{
+  "contract_name": "connector.acceptance_score",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-connector-score-002",
+  "causation_id": "corr-provider-profile-rmm-001",
+  "idempotency_key": "idem-connector-score-002",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-26T01:05:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "acceptance_score_id": "connector-score-002",
+  "connector_id": "connector-rmm-metadata-001",
+  "provider_profile_id": "provider-profile-rmm-001",
+  "connector_readiness_id": "connector-readiness-rmm-001",
+  "scope_review_id": "connector-scope-review-rmm-001",
+  "connector_consent_id": "connector-consent-rmm-001",
+  "revocation_drill_id": "connector-revocation-drill-rmm-001",
+  "reconciliation_id": "connector-reconcile-004",
+  "scoring_version": "connector-score-v1",
+  "score_status": "review_required",
+  "overall_score": 41,
+  "max_score": 100,
+  "dimension_scores": {
+    "consent_completeness": 8,
+    "scope_least_privilege": 6,
+    "object_authorization": 4,
+    "property_authorization": 4,
+    "revocation_method": 3,
+    "disable_switch": 2,
+    "token_rotation_placeholder": 2,
+    "prompt_injection_exposure": 1,
+    "outbound_action_exposure": 1,
+    "rate_limit_controls": 2,
+    "export_delete_impact_mapping": 2,
+    "audit_evidence_completeness": 2,
+    "tenant_isolation": 2,
+    "provider_risk_level": 1,
+    "reconciliation_drift_status": 1
+  },
+  "failed_dimensions": [
+    "provider_risk_level",
+    "disable_switch",
+    "revocation_method"
+  ],
+  "required_improvements": [
+    "provider_risk_signoff",
+    "disable_switch_verification",
+    "revocation_propagation_drill"
+  ],
+  "reason_codes": [
+    "connector_provider_critical_risk",
+    "connector_score_below_threshold"
+  ],
+  "evidence_refs": [
+    "ev-connector-score-002"
+  ],
+  "created_at": "2026-05-26T01:05:00Z",
+  "updated_at": "2026-05-26T01:05:00Z"
+}

@@ -308,6 +308,12 @@ Resolved in [Phase 1A Runtime Scaffolding](PHASE_1A_RUNTIME_SCAFFOLDING.md):
   trigger matrix should replace the placeholders in the update rollback policy?
 - What final connector consent expiry, provider scope mapping, and revocation
   verification are required before any live connector review?
+- What final acceptance-score thresholds (per connector category/risk tier)
+  should replace the current metadata-only placeholders?
+- What final reconciliation cadence and revocation/disable propagation SLO
+  targets should replace placeholder values in `connector.reconciliation_slo`?
+- What final owner/escalation accountability model governs source-of-truth
+  updates for provider profile, readiness, reconciliation, score, and SLO?
 - What access role/RBAC matrix should be enforced once the operator identity provider is selected?
 - What session service semantics (TTL source of truth, revocation propagation,
   and step-up intent binding) should replace the placeholder

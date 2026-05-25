@@ -83,6 +83,17 @@ Status: taxonomy scaffolding for contracts/tests/docs only.
 - `connector_cross_tenant_linkage`
 - `connector_evidence_missing`
 - `connector_trust_revoked_but_allowed`
+- `connector_score_below_threshold`
+- `connector_score_failed_closed`
+- `connector_score_degraded`
+- `connector_slo_missed`
+- `connector_slo_stale`
+- `connector_reconciliation_stale`
+- `connector_revocation_propagation_pending`
+- `connector_revocation_propagation_missed`
+- `connector_disable_verification_missed`
+- `connector_source_of_truth_missing`
+- `connector_acceptance_blocked_mvp`
 - `attestation_required`
 - `attestation_failed`
 - `attestation_expired`

@@ -70,6 +70,9 @@ Allowed only when all are true:
 - Connector readiness/scope-review/consent examples must carry taxonomy version
   and canonical connector consent/scope/revocation/object-property authorization
   reason codes.
+- Connector acceptance-score and reconciliation-SLO examples must carry
+  taxonomy version and canonical score/cadence/revocation-propagation reason
+  codes.
 
 ## Runtime Helper Rules For Unknown Codes
 

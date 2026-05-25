@@ -139,3 +139,10 @@ Connector-path reconciliation is now further hardened by
 [Connector Trust-Boundary Linkage Invariants](../CONNECTOR_TRUST_BOUNDARY_LINKAGE_INVARIANTS.md)
 and its companion runbook. These remain metadata-only controls and do not
 authorize live connector behavior.
+
+Provider acceptance posture is now further hardened by
+[Connector Provider Acceptance Scoring](../CONNECTOR_PROVIDER_ACCEPTANCE_SCORING.md)
+and
+[Connector Reconciliation Propagation SLO](../CONNECTOR_RECONCILIATION_PROPAGATION_SLO.md),
+with `connector.acceptance_score` and `connector.reconciliation_slo` contracts.
+These are design-only metadata controls and do not authorize live connector use.

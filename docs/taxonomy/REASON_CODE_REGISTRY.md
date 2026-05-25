@@ -184,6 +184,21 @@ Attestation revocation reconciliation drills add canonical reason codes:
 - `model_route_selected_with_untrusted_lineage`
 - `transaction_committed_with_revoked_attestation`
 
+Connector acceptance scoring and reconciliation SLO hardening adds canonical
+reason codes:
+
+- `connector_score_below_threshold`
+- `connector_score_failed_closed`
+- `connector_score_degraded`
+- `connector_slo_missed`
+- `connector_slo_stale`
+- `connector_reconciliation_stale`
+- `connector_revocation_propagation_pending`
+- `connector_revocation_propagation_missed`
+- `connector_disable_verification_missed`
+- `connector_source_of_truth_missing`
+- `connector_acceptance_blocked_mvp`
+
 Reference snapshot:
 [contracts/taxonomy/reason-code-registry.catalog.json](../../contracts/taxonomy/reason-code-registry.catalog.json).
 

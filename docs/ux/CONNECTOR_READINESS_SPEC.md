@@ -30,6 +30,8 @@ Design-only UX metadata spec. No UI implementation.
 - `approval_policy_refs`, `evidence_refs`, `revocation_refs`
 - `provider_profile_ref`, `revocation_drill_refs`
 - `connector_reconciliation_id` (from `connector.reconciliation` when present)
+- `acceptance_score_ref`, `score_status`
+- `reconciliation_slo_ref`, `cadence_status`
 - `token_rotation_placeholder_status`
 - `reason_codes`
 
@@ -40,3 +42,5 @@ Design-only UX metadata spec. No UI implementation.
 - Blocked-MVP connector types/actions must show non-usable posture.
 - UI metadata must not imply live execution, OAuth wiring, or token handling.
 - Reconciliation drift classes must be visible and mapped to runbook guidance.
+- Pending/missed revocation propagation must display blocked or failed-closed
+  posture.

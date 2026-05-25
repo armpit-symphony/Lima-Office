@@ -377,3 +377,14 @@ Acceptance gates:
 - Mainline does not imply live connector or production readiness.
 
 Recommended order: parallel with A/B when needed for repository hygiene.
+
+## Connector Acceptance Scoring / Reconciliation SLO Checkpoint
+
+Status: completed as docs/contracts/tests/mock-only hardening in this branch.
+
+What now:
+
+- Finalize connector source-of-truth ownership and escalation accountability.
+- Finalize production SLO target values (placeholders remain metadata-only).
+- Keep live connector implementation, OAuth/provider wiring, token runtime, and
+  external API behavior blocked until explicit approval gates are closed.

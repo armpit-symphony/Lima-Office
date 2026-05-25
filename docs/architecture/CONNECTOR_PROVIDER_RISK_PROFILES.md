@@ -137,3 +137,8 @@ Connector drift detection is further normalized by
 [Connector Trust-Boundary Linkage Invariants](../CONNECTOR_TRUST_BOUNDARY_LINKAGE_INVARIANTS.md),
 which adds reconciliation status + drift-class posture across provider and
 connector governance records.
+
+Risk posture is now also mapped into acceptance score and cadence posture via
+[Connector Provider Acceptance Scoring](../CONNECTOR_PROVIDER_ACCEPTANCE_SCORING.md)
+and
+[Connector Reconciliation Propagation SLO](../CONNECTOR_RECONCILIATION_PROPAGATION_SLO.md).

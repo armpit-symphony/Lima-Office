@@ -304,6 +304,8 @@ health evidence only; it is not production certification.
   mock-only fail-closed reconciliation helper/tests.
 - Connector trust-boundary linkage invariant docs/contracts/examples and
   mock-only fail-closed reconciliation helper/tests.
+- Connector acceptance-scoring and reconciliation-SLO docs/contracts/examples
+  and mock-only fail-closed scoring/cadence helper/tests.
 
 ## What Does Not Exist
 
@@ -336,9 +338,10 @@ closes the relevant gates:
 
 Recommended order after stabilization:
 
-1. Connector provider acceptance scoring and revocation-propagation cadence
-   design (docs/contracts/tests only).
-2. Final connector review authority model and escalation ownership matrix.
+1. Final connector source-of-truth ownership and escalation accountability
+   matrix (docs/contracts/tests only).
+2. Provider-specific criteria review and legal/compliance checkpoint
+   normalization.
 3. Phase 1B lab runtime expansion only after the gates above are approved.
 
 Alternative non-runtime lanes:

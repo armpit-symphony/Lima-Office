@@ -198,6 +198,9 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
 - Mock-only connector risk classifier for provider-profile and
   revocation-drill metadata with fail-closed outcomes and
   `can_authorize: false`.
+- Mock-only connector acceptance-scoring and reconciliation-SLO classifier for
+  metadata-only posture, fail-closed drift/propagation handling, and
+  `can_authorize: false`.
 - Mock-only in-memory access-matrix evaluator for role/action/session/device
   trust classification with fail-closed outcomes and `can_authorize: false`
   posture.
@@ -299,14 +302,13 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
   Governance scaffolding now blocks automatic update behavior and automated
   re-enrollment.
 - Define final connector consent expiry, live-review criteria, provider scope
-  mapping, prompt-injection test evidence, and reconciliation SLO/ownership
+  mapping, prompt-injection test evidence, and production SLO/ownership values
   before any live connector review.
 
 ## Next Recommended Lane
 
-After connector trust-boundary linkage invariants are reviewed, the next safe
-lane is connector provider acceptance scoring and revocation-propagation
-cadence formalization (docs/contracts/tests only) without adding live connector
-execution, OAuth/token runtime, or external APIs. Phase 1B lab runtime
-expansion remains blocked until remaining gates are approved. Mainline update
-should wait for explicit approval.
+After connector provider acceptance scoring and reconciliation SLO are reviewed,
+the next safe lane is connector source-of-truth ownership and governance
+accountability finalization (docs/contracts/tests only) without adding live
+connector execution, OAuth/token runtime, or external APIs. Phase 1B lab runtime
+expansion remains blocked until remaining gates are approved.

@@ -144,6 +144,11 @@ The following remain blocked:
   prompt-injection posture.
 - `connector.provider_profile` and `connector.revocation_drill` capture
   provider-specific risk posture and revocation/disable drill outcomes.
+- `connector.acceptance_score` maps consent/scope/revocation/risk/reconciliation
+  dimensions into a fail-closed score status.
+- `connector.reconciliation_slo` tracks reconciliation cadence and revocation/
+  disable propagation placeholders; stale/missed/pending states block lab-ready
+  posture.
 - `connector.trust` remains mock/readiness-only.
 - `connector.readiness` and `connector.scope_review` record lifecycle, least
   privilege, object/property authorization mapping, and fail-closed review

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.lima-office.local/contracts/v1/connector.revocation_drill.schema.json",
-  "title": "Connector Revocation Drill Contract v1",
+  "$id": "https://schemas.lima-office.local/contracts/v1/connector.reconciliation_slo.schema.json",
+  "title": "Connector Reconciliation SLO Contract v1",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -17,24 +17,27 @@
     "idempotency_key",
     "producer",
     "policy_version",
-    "revocation_drill_id",
+    "reconciliation_slo_id",
     "connector_id",
     "provider_profile_id",
     "connector_readiness_id",
-    "connector_consent_id",
-    "drill_status",
-    "drill_type",
-    "expected_outcome",
-    "actual_outcome",
+    "reconciliation_id",
+    "owner_ref",
+    "cadence_status",
+    "cadence_seconds_placeholder",
+    "last_reconciled_at",
+    "next_due_at",
+    "revocation_propagation_status",
+    "disable_switch_verification_status",
     "evidence_refs",
     "reason_codes",
     "created_at",
-    "completed_at"
+    "updated_at"
   ],
   "properties": {
     "contract_name": {
       "type": "string",
-      "const": "connector.revocation_drill"
+      "const": "connector.reconciliation_slo"
     },
     "contract_version": {
       "type": "string",
@@ -105,7 +108,7 @@
       "type": "string",
       "minLength": 1
     },
-    "revocation_drill_id": {
+    "reconciliation_slo_id": {
       "type": "string",
       "minLength": 1
     },
@@ -121,55 +124,58 @@
       "type": "string",
       "minLength": 1
     },
-    "connector_consent_id": {
+    "reconciliation_id": {
       "type": "string",
       "minLength": 1
     },
-    "drill_status": {
+    "owner_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cadence_status": {
       "type": "string",
       "enum": [
         "planned",
-        "running",
-        "passed",
-        "failed",
+        "current",
+        "stale",
+        "missed",
         "failed_closed",
         "blocked_mvp"
       ]
     },
-    "drill_type": {
-      "type": "string",
-      "enum": [
-        "revocation_verification",
-        "disable_switch_verification",
-        "scope_revocation",
-        "token_rotation_placeholder",
-        "outbound_block",
-        "prompt_injection_block",
-        "cross_tenant_block"
-      ]
+    "cadence_seconds_placeholder": {
+      "type": "integer",
+      "minimum": 1
     },
-    "expected_outcome": {
+    "last_reconciled_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "next_due_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "revocation_propagation_status": {
       "type": "string",
       "enum": [
-        "connector_disabled",
-        "connector_revoked",
-        "action_blocked",
-        "evidence_required",
+        "not_required",
+        "pending",
+        "propagated",
+        "missed",
         "failed_closed",
         "blocked_mvp"
       ]
     },
-    "actual_outcome": {
+    "disable_switch_verification_status": {
       "type": "string",
-      "minLength": 1
-    },
-    "evidence_refs": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "uniqueItems": true
+      "enum": [
+        "not_required",
+        "pending",
+        "verified_placeholder",
+        "missed",
+        "failed_closed",
+        "blocked_mvp"
+      ]
     },
     "reason_codes": {
       "type": "array",
@@ -224,46 +230,20 @@
         "null"
       ]
     },
-    "score_status": {
-      "type": [
-        "string",
-        "null"
-      ],
-      "enum": [
-        "blocked_mvp",
-        "not_ready",
-        "review_required",
-        "approved_for_lab",
-        "degraded",
-        "revoked",
-        "failed_closed",
-        null
-      ]
-    },
-    "cadence_status": {
-      "type": [
-        "string",
-        "null"
-      ],
-      "enum": [
-        "planned",
-        "current",
-        "stale",
-        "missed",
-        "failed_closed",
-        "blocked_mvp",
-        null
-      ]
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
     },
     "created_at": {
       "type": "string",
       "format": "date-time"
     },
-    "completed_at": {
-      "type": [
-        "string",
-        "null"
-      ],
+    "updated_at": {
+      "type": "string",
       "format": "date-time"
     }
   },
@@ -271,38 +251,16 @@
     {
       "if": {
         "properties": {
-          "drill_status": {
-            "const": "passed"
-          }
-        },
-        "required": [
-          "drill_status"
-        ]
-      },
-      "then": {
-        "properties": {
-          "completed_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "evidence_refs": {
-            "minItems": 1
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "drill_status": {
+          "cadence_status": {
             "enum": [
-              "failed",
+              "stale",
+              "missed",
               "failed_closed"
             ]
           }
         },
         "required": [
-          "drill_status"
+          "cadence_status"
         ]
       },
       "then": {
@@ -312,10 +270,6 @@
           },
           "evidence_refs": {
             "minItems": 1
-          },
-          "completed_at": {
-            "type": "string",
-            "format": "date-time"
           }
         }
       }
@@ -323,47 +277,63 @@
     {
       "if": {
         "properties": {
-          "drill_status": {
+          "revocation_propagation_status": {
+            "enum": [
+              "propagated",
+              "failed_closed"
+            ]
+          }
+        },
+        "required": [
+          "revocation_propagation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "disable_switch_verification_status": {
+            "enum": [
+              "verified_placeholder",
+              "failed_closed"
+            ]
+          }
+        },
+        "required": [
+          "disable_switch_verification_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "cadence_status": {
             "const": "blocked_mvp"
           }
         },
         "required": [
-          "drill_status"
+          "cadence_status"
         ]
       },
       "then": {
         "properties": {
-          "expected_outcome": {
-            "enum": [
-              "blocked_mvp",
-              "failed_closed",
-              "action_blocked"
-            ]
-          },
-          "actual_outcome": {
-            "not": {
-              "const": "connector_usable"
-            }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "drill_type": {
-            "const": "cross_tenant_block"
-          }
-        },
-        "required": [
-          "drill_type"
-        ]
-      },
-      "then": {
-        "properties": {
-          "actual_outcome": {
-            "not": {
-              "const": "connector_usable"
+          "reason_codes": {
+            "contains": {
+              "const": "connector_acceptance_blocked_mvp"
             }
           }
         }
@@ -385,48 +355,12 @@
       },
       "then": {
         "properties": {
-          "drill_status": {
+          "cadence_status": {
             "not": {
-              "const": "passed"
+              "const": "current"
             }
           }
         }
-      }
-    },
-    {
-      "not": {
-        "anyOf": [
-          {
-            "required": [
-              "api_key"
-            ]
-          },
-          {
-            "required": [
-              "oauth_token"
-            ]
-          },
-          {
-            "required": [
-              "refresh_token"
-            ]
-          },
-          {
-            "required": [
-              "access_token"
-            ]
-          },
-          {
-            "required": [
-              "private_key"
-            ]
-          },
-          {
-            "required": [
-              "password"
-            ]
-          }
-        ]
       }
     }
   ]

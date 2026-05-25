@@ -100,6 +100,7 @@ The console must show blocked state when any required item is missing:
 - Connector consent or revocation posture.
 - Provider risk profile or revocation-drill evidence linkage.
 - Connector trust-boundary reconciliation drift.
+- Connector acceptance score posture and reconciliation SLO posture.
 - Governance identity/MFA/access review posture for privileged views.
 - Retention/export/delete posture for export or delete requests.
 
