@@ -105,6 +105,18 @@ class ModelRoutingDefaultsHealthTaxonomyTests(unittest.TestCase):
         with self.assertRaises(PolicyDenyError):
             classify_model_route(payload)
 
+    def test_unknown_model_role_fails_closed(self):
+        payload = copy.deepcopy(example("model.route.mock-only-selected.example.json"))
+        payload["model_role"] = "unknown_role"
+        with self.assertRaises(PolicyDenyError):
+            classify_model_route(payload)
+
+    def test_unknown_taint_status_fails_closed(self):
+        payload = copy.deepcopy(example("model.route.mock-only-selected.example.json"))
+        payload["taint_status"] = "unclassified"
+        with self.assertRaises(PolicyDenyError):
+            classify_model_route(payload)
+
     def test_fallback_allowed_without_policy_fails(self):
         payload = copy.deepcopy(example("model.route.local-planned-degraded.example.json"))
         payload["fallback_allowed"] = True

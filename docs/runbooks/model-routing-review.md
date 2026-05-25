@@ -28,6 +28,13 @@ Review model-route metadata for fail-closed routing posture in Phase 1A.
 6. Confirm evidence refs and policy refs are present for selected/degraded
    paths.
 7. Confirm runbook and operator alert links are present.
+8. For `approval_required=true` high-risk routes, verify correlation/evidence
+   linkage to `approval.request`, `approval.result`, `approval.binding`, and
+   `token.verification` records.
+9. If route reason codes indicate governance gaps (for example
+   `retention_policy_missing` or `export_delete_policy_missing` via linked
+   supervisor health), keep the route in blocked/degraded posture and record a
+   governance follow-up owner.
 
 ## Tainted Input Review
 
@@ -50,6 +57,7 @@ Review model-route metadata for fail-closed routing posture in Phase 1A.
 - policy refs used
 - evidence refs linked
 - reason codes and status transition notes
+- approval accountability chain refs when applicable
 
 ## Escalation
 

@@ -92,6 +92,18 @@ Route records must include:
 - tenant/correlation IDs
 - trust posture references (RBAC/session/device) when relevant
 
+When `approval_required: true` is set for privileged/high-risk metadata, route
+records must link (by correlation and evidence refs) to the approval
+accountability chain: `approval.request`, `approval.result`,
+`approval.binding`, and `token.verification`.
+
+Route metadata must remain export/delete-safe:
+
+- no raw prompt/response payload text in route records
+- no secret material in route metadata
+- policy refs should include retention/redaction and export/delete posture where
+  route records are in scope for customer exit or audit export review
+
 ## Acceptance Gates Before Implementation
 
 1. Contract and taxonomy conformance pass with zero warnings/failures.
