@@ -5,7 +5,7 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `taxonomy-version-enforcement-hardening` on Windows with
+Latest captured run: `taxonomy-family-constraint-hardening` on Windows with
 Python 3.12.10.
 
 ## Canonical Integration Branch
@@ -29,6 +29,8 @@ Python 3.12.10.
   `reason-code-conformance-ci-gate`
 - Taxonomy-version enforcement hardening branch:
   `taxonomy-version-enforcement-hardening`
+- Taxonomy-family constraint hardening branch:
+  `taxonomy-family-constraint-hardening`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -180,6 +182,16 @@ authorization expansion, export/delete execution, durable storage services, live
 connectors, external sends, real remediation, production operations, or
 customer-system mutation.
 
+## Taxonomy-Family Constraint Hardening Checkpoint
+
+This branch hardens reason-code governance by enforcing contract-family reason
+category constraints, strict runtime/catalog parity checks, and fail-closed
+family mismatch behavior in CI.
+Validation remains repository health evidence only; it does not approve runtime
+authorization expansion, export/delete execution, durable storage services, live
+connectors, external sends, real remediation, production operations, or
+customer-system mutation.
+
 ## Strict Schema Validation
 
 Command:
@@ -226,9 +238,9 @@ Result:
 LIMA Office reason-code conformance
 - schemas scanned: 41
 - examples scanned: 107
-- known canonical/alias codes: 99
+- known canonical/alias codes: 100
 - reason-code values scanned in schemas: 125
-- reason-code values scanned in examples: 81
+- reason-code values scanned in examples: 79
 - blocked-in-success violations: 0
 - warnings: 0
 - failures: 0
@@ -257,7 +269,7 @@ Result:
 ```text
 LIMA Office markdown link check
 - markdown files scanned: 107
-- local links checked: 806
+- local links checked: 817
 - external/anchor links ignored: 0
 - failures: 0
 Result: PASS
@@ -274,7 +286,7 @@ python -B -m unittest discover -s tests -v
 Result:
 
 ```text
-Ran 218 tests
+Ran 235 tests
 
 OK
 ```
@@ -342,7 +354,7 @@ python -m pytest -q
 Result:
 
 ```text
-218 passed, 1 warning, 143 subtests passed
+235 passed, 1 warning, 143 subtests passed
 ```
 
 Warning: pytest could not create/write `.pytest_cache` because access was

@@ -121,6 +121,36 @@ operations, customer-system mutation, or compliance certification claims.
   validation only. No runtime authorization, export/delete execution, database,
   queue, migration, service, or durable production storage is authorized.
 
+## Reason-Code Conformance CI Gate Checkpoint
+
+- Branch: `reason-code-conformance-ci-gate`
+- Base: `reason-code-registry-compatibility-policy`
+- Purpose: enforce fail-closed CI checks for unknown/deprecated/blocked
+  reason-code misuse and taxonomy-version drift in schemas/examples.
+- Scope: validation tooling, tests, workflow updates, and docs only. No runtime
+  authorization, export/delete execution, database, queue, migration, service,
+  or durable production storage is authorized.
+
+## Taxonomy-Version Enforcement Checkpoint
+
+- Branch: `taxonomy-version-enforcement-hardening`
+- Base: `reason-code-conformance-ci-gate`
+- Purpose: require `taxonomy_version` for all reason-bearing contracts/examples
+  and fail closed on unsupported versions.
+- Scope: validation tooling, schemas/examples, tests, and docs only. No runtime
+  authorization, export/delete execution, database, queue, migration, service,
+  or durable production storage is authorized.
+
+## Taxonomy-Family Constraint Checkpoint
+
+- Branch: `taxonomy-family-constraint-hardening`
+- Base: `taxonomy-version-enforcement-hardening`
+- Purpose: enforce contract-family reason-category constraints and strict
+  runtime/catalog parity so reason semantics cannot drift across families.
+- Scope: validation tooling, taxonomy helper metadata, schemas/examples/tests,
+  and docs only. No runtime authorization, export/delete execution, database,
+  queue, migration, service, or durable production storage is authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:
@@ -138,6 +168,9 @@ The following reachable branches are ancestors of the integration branch:
 | `governance-policy-details` | `944088eac5d41d2547ae0343500d3ab591a1256e` | Governance policy docs, runbooks, and governance metadata contracts. |
 | `operator-console-ux-spec` | `bac6f80cc63dd15ec7cd3d669193160c3766a8e1` | Operator console UX specification docs and console metadata contracts. |
 | `durable-replay-evidence-posture` | `7123163482860a93992b4597d49b5231cd5cb34b` | Durable replay/evidence posture docs, schemas, examples, and mock tests. |
+| `reason-code-registry-compatibility-policy` | `cf9b64734569a80b23a898182d57612b05deefc2` | Canonical reason-code registry/compatibility contracts, examples, docs, and tests. |
+| `reason-code-conformance-ci-gate` | `d693c75` | Fail-closed reason-code conformance gate script, tests, and CI workflow wiring. |
+| `taxonomy-version-enforcement-hardening` | `f3b3f66463d97149bbed39b947f615e786ca1543` | Mandatory `taxonomy_version` enforcement for reason-bearing schemas/examples with fail-closed version checks. |
 
 ## Excluded Or Missing Branches
 
@@ -156,6 +189,7 @@ The canonical validation set is:
 
 ```powershell
 python scripts/validate-contracts.py --require-jsonschema --check-formats --warnings-as-errors
+python scripts/check-reason-codes.py
 python scripts/check-doc-links.py
 python -B -m unittest discover -s tests -v
 python -m pytest -q

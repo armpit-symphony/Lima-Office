@@ -217,6 +217,133 @@ class ReasonCodeConformanceCITests(unittest.TestCase):
             shutil.rmtree(repo_root)
         self.assertNotEqual(0, rc)
 
+    def test_wrong_family_reason_code_fails(self):
+        repo_root = _repo_fixture_copy()
+        try:
+            path = repo_root / "contracts" / "examples" / "governance.audit_export.export-denied.example.json"
+            payload = _read_json(path)
+            payload["reason_codes"] = ["recon_mismatched_approval_binding"]
+            _write_json(path, payload)
+            rc = self._run_checker(repo_root)
+        finally:
+            shutil.rmtree(repo_root)
+        self.assertNotEqual(0, rc)
+
+    def test_tenant_isolation_code_passes_in_blocked_context(self):
+        repo_root = _repo_fixture_copy()
+        try:
+            path = repo_root / "contracts" / "examples" / "guardian.replay.scope-mismatch.example.json"
+            payload = _read_json(path)
+            payload["mismatch_reasons"] = ["tenant_mismatch"]
+            _write_json(path, payload)
+            rc = self._run_checker(repo_root)
+        finally:
+            shutil.rmtree(repo_root)
+        self.assertEqual(0, rc)
+
+    def test_tenant_isolation_code_fails_in_success_context(self):
+        repo_root = _repo_fixture_copy()
+        try:
+            path = repo_root / "contracts" / "examples" / "approval.result.approved.example.json"
+            payload = _read_json(path)
+            payload["result_reason_code"] = "tenant_mismatch"
+            _write_json(path, payload)
+            rc = self._run_checker(repo_root)
+        finally:
+            shutil.rmtree(repo_root)
+        self.assertNotEqual(0, rc)
+
+    def test_evidence_code_in_guardian_family_fails(self):
+        repo_root = _repo_fixture_copy()
+        try:
+            path = repo_root / "contracts" / "examples" / "guardian.decision.allowed-one-time.example.json"
+            payload = _read_json(path)
+            payload["linkage_failure_reasons"] = ["evidence_ref_missing"]
+            _write_json(path, payload)
+            rc = self._run_checker(repo_root)
+        finally:
+            shutil.rmtree(repo_root)
+        self.assertNotEqual(0, rc)
+
+    def test_deprecated_alias_still_respects_family_rules(self):
+        repo_root = _repo_fixture_copy()
+        denied_rc = 0
+        try:
+            allowed_path = repo_root / "contracts" / "examples" / "governance.audit_export.export-denied.example.json"
+            allowed_payload = _read_json(allowed_path)
+            allowed_payload["reason_codes"] = ["export_delete_review_required_legacy"]
+            _write_json(allowed_path, allowed_payload)
+            allowed_rc = self._run_checker(repo_root)
+            self.assertEqual(0, allowed_rc)
+
+            denied_path = repo_root / "contracts" / "examples" / "approval.result.approved.example.json"
+            denied_payload = _read_json(denied_path)
+            denied_payload["result_reason_code"] = "export_delete_review_required_legacy"
+            _write_json(denied_path, denied_payload)
+            denied_rc = self._run_checker(repo_root)
+        finally:
+            shutil.rmtree(repo_root)
+        self.assertNotEqual(0, denied_rc)
+
+    def test_runtime_only_code_missing_in_registry_fails(self):
+        repo_root = _repo_fixture_copy()
+        try:
+            catalog_path = repo_root / "contracts" / "taxonomy" / "reason-code-registry.catalog.json"
+            payload = _read_json(catalog_path)
+            payload["reason_codes"] = [row for row in payload.get("reason_codes", []) if row.get("reason_code") != "approval_missing"]
+            _write_json(catalog_path, payload)
+            rc = self._run_checker(repo_root)
+        finally:
+            shutil.rmtree(repo_root)
+        self.assertNotEqual(0, rc)
+
+    def test_registry_only_code_missing_in_runtime_fails(self):
+        repo_root = _repo_fixture_copy()
+        try:
+            catalog_path = repo_root / "contracts" / "taxonomy" / "reason-code-registry.catalog.json"
+            payload = _read_json(catalog_path)
+            payload.setdefault("reason_codes", []).append(
+                {
+                    "reason_code": "registry_only_code_ci_test",
+                    "category": "governance",
+                    "status": "active",
+                    "severity": "warning",
+                    "evidence_required": False,
+                    "fail_closed_required": False,
+                    "replaced_by": None,
+                    "aliases": [],
+                }
+            )
+            _write_json(catalog_path, payload)
+            rc = self._run_checker(repo_root)
+        finally:
+            shutil.rmtree(repo_root)
+        self.assertNotEqual(0, rc)
+
+    def test_compatibility_record_for_unknown_reason_code_fails(self):
+        repo_root = _repo_fixture_copy()
+        try:
+            path = repo_root / "contracts" / "examples" / "reason.code.compatibility.add-compatible.example.json"
+            payload = _read_json(path)
+            payload["reason_code"] = "unknown_reason_code_ci_test"
+            _write_json(path, payload)
+            rc = self._run_checker(repo_root)
+        finally:
+            shutil.rmtree(repo_root)
+        self.assertNotEqual(0, rc)
+
+    def test_wrong_taxonomy_family_fails(self):
+        repo_root = _repo_fixture_copy()
+        try:
+            path = repo_root / "contracts" / "examples" / "approval.binding.bound-valid.example.json"
+            payload = _read_json(path)
+            payload["taxonomy_version"] = "taxonomy-reason-v1"
+            _write_json(path, payload)
+            rc = self._run_checker(repo_root)
+        finally:
+            shutil.rmtree(repo_root)
+        self.assertNotEqual(0, rc)
+
     def test_deprecated_code_with_compatibility_still_requires_taxonomy_version(self):
         repo_root = _repo_fixture_copy()
         try:

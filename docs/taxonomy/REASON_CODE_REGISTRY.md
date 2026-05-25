@@ -64,6 +64,105 @@ Canonical category set:
 - `blocked_mvp`
 - `tenant_isolation`
 
+## Contract Families
+
+Canonical contract-family set:
+
+- `approval`
+- `guardian`
+- `replay`
+- `reconciliation`
+- `linkage`
+- `evidence`
+- `export_delete`
+- `governance`
+- `transaction`
+- `health`
+- `console`
+- `supervisor`
+- `worker`
+- `blocked_mvp`
+- `tenant_isolation`
+
+Family/category enforcement is defined in
+[lima_office/runtime/taxonomy.py](../../lima_office/runtime/taxonomy.py) and
+enforced in [check-reason-codes.py](../../scripts/check-reason-codes.py).
+
+### Family Category Rules
+
+- `approval`: allow `approval_binding`, `guardian`, `replay`, `linkage`,
+  `evidence`; disallow `export_delete`, `transaction`, `health`, `governance`
+  unless explicit exception.
+- `guardian`: allow `guardian`, `replay`, `linkage`, `approval_binding`,
+  disallow `evidence`, `governance`, `health`, `transaction` unless explicit
+  exception.
+- `replay`: allow `replay`, `guardian`, `linkage`, `approval_binding`,
+  `transaction`, `evidence`; disallow `health`, `governance` unless explicit
+  exception.
+- `reconciliation`: allow `reconciliation`, `linkage`, `evidence`, `guardian`,
+  `replay`, `approval_binding`, `transaction`; disallow `health`,
+  `export_delete` unless explicit exception.
+- `linkage`: allow `linkage`, `reconciliation`, `approval_binding`, `guardian`,
+  `replay`, `evidence`, `governance`, `health`; disallow `export_delete`
+  unless explicit exception.
+- `evidence`: allow `evidence`, `linkage`, `reconciliation`, `replay`,
+  `transaction`, `export_delete`; disallow `health`, `governance` unless
+  explicit exception.
+- `export_delete`: allow `export_delete`, `evidence`; disallow `reconciliation`,
+  `linkage`, `transaction`, `health`, `approval_binding` unless explicit
+  exception.
+- `governance`: allow `governance`, `export_delete`, `evidence`,
+  `reconciliation`, `linkage`; disallow `health`, `approval_binding`,
+  `transaction` unless explicit exception.
+- `transaction`: allow `transaction`, `linkage`, `reconciliation`, `evidence`,
+  `replay`, `approval_binding`; disallow `health`, `governance` unless explicit
+  exception.
+- `health`: allow `health`, `evidence`, `guardian`, `approval_binding`;
+  disallow `transaction`, `export_delete`, `reconciliation` unless explicit
+  exception.
+- `console`: allow `health`, `evidence`, `governance`, `export_delete`,
+  `reconciliation`, `linkage`; disallow `approval_binding`, `transaction`
+  unless explicit exception.
+- `supervisor`: allow `health`, `evidence`, `guardian`, `approval_binding`,
+  `reconciliation`, `linkage`; disallow `transaction`, `export_delete` unless
+  explicit exception.
+- `worker`: allow `health`, `evidence`, `governance`, `guardian`, `linkage`;
+  disallow `transaction`, `export_delete`, `approval_binding` unless explicit
+  exception.
+- `blocked_mvp`: allow only `blocked_mvp`.
+- `tenant_isolation`: allow only `tenant_isolation`.
+
+### Cross-Family Exceptions
+
+- `blocked_mvp` and `tenant_isolation` categories are explicit cross-cutting
+  exceptions and must still fail closed when mismatched to success contexts.
+- Field-level constraints still apply:
+  `reconciliation_reason_codes` must be one of reconciliation/linkage/
+  tenant_isolation/blocked_mvp, `evidence_reason_codes` must be one of
+  evidence/export_delete/tenant_isolation/blocked_mvp, and
+  `export_delete_conflict_codes`/`conflict_codes` must be one of
+  export_delete/tenant_isolation/blocked_mvp.
+
+### Evidence And Fail-Closed Rules
+
+- Family mismatch is always fail-closed.
+- Any blocked/critical code in success-complete contexts is rejected.
+- Deprecated alias handling is metadata-only and cannot bypass family checks.
+- Cross-family exceptions do not bypass evidence requirements for blocked or
+  critical reason outcomes.
+
+## Registry Runtime Parity
+
+- Canonical registry catalog:
+  [contracts/taxonomy/reason-code-registry.catalog.json](../../contracts/taxonomy/reason-code-registry.catalog.json)
+- Runtime registry source:
+  [lima_office/runtime/taxonomy.py](../../lima_office/runtime/taxonomy.py)
+- CI rejects:
+  - registry-only codes missing in runtime
+  - runtime-only codes missing in catalog
+  - metadata drift (`category`, `status`, `severity`, `aliases`,
+    `replaced_by`, `evidence_required`, `fail_closed_required`)
+
 ## Code Format Convention
 
 - `reason_code` is a stable string identifier.

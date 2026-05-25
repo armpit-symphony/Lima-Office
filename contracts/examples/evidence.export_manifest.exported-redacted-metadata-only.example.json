@@ -61,9 +61,7 @@
   "canonical_tool_scope": null,
   "canonical_worker_id": null,
   "canonical_task_id": "task-export-prepare-003",
-  "reason_codes": [
-    "export_manifest_redaction_required"
-  ],
+  "reason_codes": [],
   "reconciliation_reason_codes": [],
   "evidence_reason_codes": [],
   "export_delete_conflict_codes": [],
@@ -82,4 +80,3 @@
   "raw_content_included": false,
   "secret_material_included": false
 }
-

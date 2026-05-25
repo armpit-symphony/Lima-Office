@@ -65,6 +65,17 @@ Mapping:
 - `cross_tenant_blocked`
 - `blocked_mvp`
 
+## Contract-Family Scope
+
+- Primary families: `reconciliation`, `linkage`.
+- Allowed secondary contexts (explicit): `approval`, `guardian`, `replay`,
+  `transaction`, `console`, `supervisor` when reconciliation drill metadata is
+  present.
+- Disallowed primary use: `export_delete` and `health` contracts unless
+  explicitly modeled as blocked/fail-closed evidence.
+- Cross-cutting exceptions: `blocked_mvp`, `tenant_isolation` remain allowed
+  only as fail-closed outcomes.
+
 ## Canonical Linkage Failure Reasons
 
 - `linkage_missing_ref`

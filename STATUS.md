@@ -6,7 +6,7 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
-Current working branch: `taxonomy-version-enforcement-hardening`
+Current working branch: `taxonomy-family-constraint-hardening`
 
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
@@ -15,14 +15,14 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A taxonomy-version enforcement hardening.
+Current phase: Phase 1A taxonomy-family constraint hardening.
 Phase 1A mock runtime scaffolding is present, the v2 invariant checkpoint and
 durable replay/evidence, transaction/storage, coordinator, linkage,
 approval/Guardian reconciliation, governance export/delete taxonomy, and
 reason-code registry/compatibility checkpoints are reachable. This branch adds
-fail-closed CI validation for unknown/deprecated/blocked reason-code misuse,
-mandatory taxonomy-version enforcement for reason-bearing schemas/examples, and
-unsupported-taxonomy fail-closed checks.
+fail-closed CI validation for contract-family/category mismatches, strict
+registry/runtime taxonomy parity checks, and catalog-backed reason-code
+governance in addition to mandatory taxonomy-version enforcement.
 Runtime expansion remains blocked until the remaining gates in this file,
 [Baseline](docs/BASELINE.md), and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md)
 are resolved.
@@ -115,7 +115,11 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
 - Strict reason-code conformance validation through
   [scripts/check-reason-codes.py](scripts/check-reason-codes.py), including
   mandatory `taxonomy_version` checks for reason-bearing schema/example
-  payloads.
+  payloads, contract-family/category mismatch rejection, and strict
+  registry/runtime parity checks.
+- Canonical reason-code catalog in
+  [contracts/taxonomy/reason-code-registry.catalog.json](contracts/taxonomy/reason-code-registry.catalog.json)
+  for deterministic parity checks against runtime taxonomy metadata.
 - Local Markdown link validation through [scripts/check-doc-links.py](scripts/check-doc-links.py).
 - Phase 1A mock Python runtime scaffolding in [lima_office](lima_office).
 - In-memory worker registry, heartbeat validation, task queue, Guardian policy
@@ -237,7 +241,7 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 
 ## Next Recommended Lane
 
-After taxonomy-version enforcement hardening is reviewed, the next safe lane is
+After taxonomy-family constraint hardening is reviewed, the next safe lane is
 final RBAC/IdP/MFA/session/device trust matrix closure, still without adding
 live services. Phase 1B lab runtime expansion remains blocked until remaining
 gates are approved. Mainline update should wait for explicit approval.

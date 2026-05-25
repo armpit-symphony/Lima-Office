@@ -28,6 +28,16 @@ reconciliation, and governance export/delete review records.
 - `delete_review`
 - `failed_closed`
 
+## Contract-Family Scope
+
+- Primary families: `evidence`, `export_delete`.
+- Allowed secondary contexts: `transaction`, `replay`, `reconciliation`,
+  `linkage`, `governance` when evidence or fail-closed metadata is explicit.
+- Disallowed primary use: `health`/`console` success contexts where evidence
+  reasons would hide operational state drift.
+- Cross-cutting exceptions: `blocked_mvp`, `tenant_isolation` remain explicit
+  fail-closed paths only.
+
 ## Evidence Status Values
 
 - `recorded`

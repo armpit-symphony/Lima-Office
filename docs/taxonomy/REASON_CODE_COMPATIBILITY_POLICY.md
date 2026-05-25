@@ -11,11 +11,27 @@ silent semantic drift across contracts, examples, and mock helpers.
 
 - `taxonomy_version` identifies the compatible reason-code set.
 - Unknown or unsupported `taxonomy_version` values fail closed.
+- Wrong-family `taxonomy_version` values fail closed (for example reason-family
+  versions in recon-family operational contracts).
 - Every reason-code change must be represented by:
   - registry record (`reason.code.registry`)
   - compatibility record (`reason.code.compatibility`)
   - updated examples/tests/docs
 - Authorization-sensitive paths default to fail-closed on ambiguity.
+
+## Contract-Family Constraints
+
+- Every reason-bearing schema is mapped to a canonical contract family.
+- Family/category mismatches fail closed in CI.
+- Cross-family use is limited to explicit exceptions (`blocked_mvp`,
+  `tenant_isolation`) and does not bypass evidence requirements.
+- Field-scoped arrays keep stricter category rules:
+  - `reconciliation_reason_codes` -> reconciliation/linkage/tenant_isolation/
+    blocked_mvp
+  - `evidence_reason_codes` -> evidence/export_delete/tenant_isolation/
+    blocked_mvp
+  - `export_delete_conflict_codes` / `conflict_codes` -> export_delete/
+    tenant_isolation/blocked_mvp
 
 ## When A Reason Code May Be Added
 
@@ -68,10 +84,19 @@ Allowed only when all are true:
 - Unknown code outcome is fail-closed for authorization/reconciliation/export/
   delete classifications.
 - Unknown or unsupported `taxonomy_version` is also fail-closed.
+- Wrong-family reason codes are fail-closed.
 - Helper output may include unknown-code diagnostics but `can_authorize` must
   remain `false`.
 - CI reason-code conformance gate must fail on unknown codes found in schemas
   or examples.
+
+## Registry/Runtime Parity
+
+- Runtime taxonomy registry and contract registry catalog must remain in strict
+  parity for code ID, category, status, severity, replacement, alias list, and
+  evidence/fail-closed metadata.
+- Registry-only or runtime-only reason codes fail CI.
+- Compatibility records referencing unknown reason codes fail CI.
 
 ## Export/Audit Preservation Of Old Codes
 

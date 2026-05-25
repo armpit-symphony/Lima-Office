@@ -212,7 +212,11 @@ Reason-code conformance blocks:
 
 - unknown reason codes in schemas/examples
 - deprecated reason codes without compatibility records
+- wrong-family reason-code category usage by contract family
 - blocked reason codes in successful/completed/exported contexts
+- registry/runtime taxonomy parity drift between
+  `contracts/taxonomy/reason-code-registry.catalog.json` and
+  `lima_office/runtime/taxonomy.py`
 - breaking-change compatibility records without `affected_contracts` and
   `evidence_refs`
 - missing `taxonomy_version` in any reason-bearing schema/example

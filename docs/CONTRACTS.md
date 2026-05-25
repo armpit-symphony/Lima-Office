@@ -133,8 +133,9 @@ Reason-code usage conformance is CI-gated by
 [scripts/check-reason-codes.py](../scripts/check-reason-codes.py). The gate
 scans `contracts/v1` and `contracts/examples` and fails closed on unknown
 reason codes, deprecated-code compatibility gaps, blocked-codes in success
-contexts, breaking-change coverage gaps, and missing/unsupported
-`taxonomy_version` in reason-bearing schemas/examples.
+contexts, contract-family/category mismatches, runtime/catalog parity drift,
+breaking-change coverage gaps, and missing/unsupported `taxonomy_version` in
+reason-bearing schemas/examples.
 
 ## Common Field Groups
 

@@ -75,16 +75,24 @@ schema validation, broken example coverage, or unsafe positive content.
   `reason_code_registry_refs`, `unknown_reason_code_policy`,
   `deprecated_reason_code_policy`, and `reason_code_status`.
 - Canonical reason-code catalog from
-  [lima_office/runtime/taxonomy.py](../lima_office/runtime/taxonomy.py) plus
-  `reason.code.registry` examples.
+  [contracts/taxonomy/reason-code-registry.catalog.json](../contracts/taxonomy/reason-code-registry.catalog.json)
+  with strict parity to
+  [lima_office/runtime/taxonomy.py](../lima_office/runtime/taxonomy.py).
 - Unknown reason-code detection (fail closed).
 - Deprecated-code usage enforcement requiring `reason.code.compatibility`
   coverage.
+- Contract-family category checks (fail closed on mismatched family/category).
+- Field-level category checks for reconciliation/evidence/export-delete reason
+  arrays.
+- Compatibility parity checks requiring known `reason_code` and
+  `previous_reason_code` references.
 - Breaking-change compatibility record requirements (`affected_contracts` and
   `evidence_refs`).
-- Blocked reason codes in success contexts (`approved`, `committed`,
-  `completed`, `prepared`, `exported`, and related success statuses).
+- Fail-closed-required reason codes in success contexts (`approved`,
+  `committed`, `completed`, `prepared`, `exported`, and related success
+  statuses).
 - `taxonomy_version` is mandatory for all reason-bearing schemas/examples.
+- Wrong taxonomy-version family fails closed.
 - Unsupported `taxonomy_version` values fail closed.
 - Versionless reason-code payloads fail closed.
 
@@ -185,28 +193,41 @@ To add a new reason code safely:
 
 1. Add/update runtime registry entry in
    [lima_office/runtime/taxonomy.py](../lima_office/runtime/taxonomy.py).
-2. Add `reason.code.registry` example row.
-3. Add or update `reason.code.compatibility` example row.
-4. Update contract examples that consume the code.
-5. Add/adjust tests.
-6. Run strict validation commands.
+2. Update canonical catalog row in
+   [contracts/taxonomy/reason-code-registry.catalog.json](../contracts/taxonomy/reason-code-registry.catalog.json).
+3. Add `reason.code.registry` example row.
+4. Add or update `reason.code.compatibility` example row.
+5. Update contract examples that consume the code.
+6. Add/adjust tests.
+7. Run strict validation commands.
 
 To add a reason-bearing field safely:
 
 1. Add the field to the relevant contract with explicit reason-code semantics.
 2. Require `taxonomy_version` in that contract.
-3. Add/update examples with explicit `taxonomy_version`.
-4. Add/update tests for unknown/deprecated/blocked/version behavior.
-5. Run `python scripts/check-reason-codes.py` and confirm zero warnings/failures.
+3. Map the contract to a family in runtime taxonomy metadata if new.
+4. Add/update examples with explicit `taxonomy_version`.
+5. Add/update tests for unknown/deprecated/blocked/version/family behavior.
+6. Run `python scripts/check-reason-codes.py` and confirm zero warnings/failures.
+
+To add a cross-family exception safely:
+
+1. Add explicit exception metadata in
+   [lima_office/runtime/taxonomy.py](../lima_office/runtime/taxonomy.py).
+2. Document rationale in taxonomy docs.
+3. Add negative tests proving non-exception paths still fail closed.
+4. Re-run strict validation commands.
 
 To add a new taxonomy version safely:
 
 1. Update supported versions in
    [lima_office/runtime/taxonomy.py](../lima_office/runtime/taxonomy.py).
-2. Add/adjust `reason.code.registry` and `reason.code.compatibility` examples.
-3. Update reason-bearing contract examples to the intended version.
-4. Add tests for supported and unsupported versions.
-5. Run strict validation commands.
+2. Update canonical catalog version/family records in
+   [contracts/taxonomy/reason-code-registry.catalog.json](../contracts/taxonomy/reason-code-registry.catalog.json).
+3. Add/adjust `reason.code.registry` and `reason.code.compatibility` examples.
+4. Update reason-bearing contract examples to the intended family/version.
+5. Add tests for supported, unsupported, and wrong-family versions.
+6. Run strict validation commands.
 
 To deprecate/alias safely:
 
@@ -215,3 +236,22 @@ To deprecate/alias safely:
    migration notes and affected contracts.
 3. Keep deprecated meaning stable through migration window.
 4. Ensure deprecated usage remains metadata-only where policy allows.
+5. Ensure alias/canonical code still passes contract-family constraints.
+
+## Gate Failure Triage
+
+When `python scripts/check-reason-codes.py` fails:
+
+1. Unknown code: fix typo or add runtime+catalog+registry entries.
+2. Family mismatch: move code to the correct contract family or add explicit
+   cross-family exception.
+3. Registry/runtime parity mismatch: reconcile
+   `runtime/taxonomy.py` and the canonical catalog.
+4. Compatibility mismatch: fix `reason.code.compatibility` references and
+   required breaking-change evidence/affected contracts.
+5. Taxonomy family/version mismatch: set a supported, family-correct
+   `taxonomy_version`.
+6. Re-run:
+   `python scripts/check-reason-codes.py`,
+   `python scripts/validate-contracts.py --require-jsonschema --check-formats --warnings-as-errors`,
+   and `python scripts/check-doc-links.py`.

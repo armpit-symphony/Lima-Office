@@ -49,6 +49,9 @@ documents the reachable v2 checkpoint that supersedes it.
   fields (`result_reason_code`, `blocked_reason_code`,
   `quarantine_reason_code`) be moved under strict taxonomy governance in this
   major-version line, or deferred to a future major-version migration lane?
+- Contract-family exception governance: what approval/evidence process is
+  required before adding any new cross-family reason-category exception beyond
+  explicit `blocked_mvp` and `tenant_isolation` allowances?
 - Audit export: what final export manifest format, integrity metadata, package
   retention, and access-control refs are required beyond
   [Audit Export And Customer Exit Policy](governance/AUDIT_EXPORT_AND_CUSTOMER_EXIT_POLICY.md)?
@@ -97,6 +100,9 @@ documents the reachable v2 checkpoint that supersedes it.
 - Linkage drift taxonomy enforcement: reason-code registries now exist, but how
   should runtime emitters and storage pipelines enforce registry-only values in
   durable mode?
+- Registry/catalog ownership: who approves updates to
+  `contracts/taxonomy/reason-code-registry.catalog.json` and how is runtime
+  parity audited when multiple branches edit taxonomy metadata concurrently?
 - Reconciliation ownership: which role owns terminal-state selection for partial
   commit ambiguity during coordinator recovery, and what approval separation is
   required?

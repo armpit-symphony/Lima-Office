@@ -1,0 +1,991 @@
+{
+  "catalog_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "source": "lima_office.runtime.taxonomy.REASON_CODE_REGISTRY",
+  "reason_codes": [
+    {
+      "reason_code": "action_type_mismatch",
+      "category": "linkage",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "ambiguous_timestamp",
+      "category": "guardian",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "approval_binding_mismatch",
+      "category": "approval_binding",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "approval_denied",
+      "category": "approval_binding",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "approval_expired",
+      "category": "health",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "approval_missing",
+      "category": "approval_binding",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "approval_request_mismatch",
+      "category": "approval_binding",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "approval_result_mismatch",
+      "category": "approval_binding",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "approval_revoked",
+      "category": "health",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "approval_token_mismatch",
+      "category": "approval_binding",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "approved",
+      "category": "approval_binding",
+      "status": "active",
+      "severity": "info",
+      "evidence_required": false,
+      "fail_closed_required": false,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "attestation_failed",
+      "category": "health",
+      "status": "active",
+      "severity": "critical",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "blocked_action_class_file_delete",
+      "category": "blocked_mvp",
+      "status": "blocked",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "blocked_mvp",
+      "category": "blocked_mvp",
+      "status": "blocked",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "blocked_mvp_authorization_attempt",
+      "category": "blocked_mvp",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "blocked_mvp_export_delete_execution",
+      "category": "blocked_mvp",
+      "status": "blocked",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "cancelled",
+      "category": "approval_binding",
+      "status": "active",
+      "severity": "warning",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "capability_mismatch",
+      "category": "health",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "connector_revoked",
+      "category": "health",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "customer_context_mismatch",
+      "category": "tenant_isolation",
+      "status": "active",
+      "severity": "critical",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "decision_expired",
+      "category": "guardian",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "decision_revoked",
+      "category": "guardian",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "decision_scope_hash_mismatch",
+      "category": "guardian",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "decision_stale",
+      "category": "guardian",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "delete_export_conflict_active",
+      "category": "export_delete",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "denied_by_approver",
+      "category": "approval_binding",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "evidence_failed_closed_required",
+      "category": "evidence",
+      "status": "active",
+      "severity": "critical",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "evidence_preservation",
+      "category": "governance",
+      "status": "active",
+      "severity": "warning",
+      "evidence_required": true,
+      "fail_closed_required": false,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "evidence_raw_content_blocked",
+      "category": "evidence",
+      "status": "blocked",
+      "severity": "critical",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "evidence_ref_missing",
+      "category": "evidence",
+      "status": "active",
+      "severity": "critical",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "evidence_unavailable",
+      "category": "evidence",
+      "status": "active",
+      "severity": "critical",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "evidence_writer_degraded",
+      "category": "health",
+      "status": "active",
+      "severity": "warning",
+      "evidence_required": true,
+      "fail_closed_required": false,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "evidence_writer_failed",
+      "category": "evidence",
+      "status": "active",
+      "severity": "critical",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "evidence_writer_failure",
+      "category": "evidence",
+      "status": "active",
+      "severity": "critical",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "evidence_writer_unavailable",
+      "category": "evidence",
+      "status": "active",
+      "severity": "critical",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "expired",
+      "category": "approval_binding",
+      "status": "active",
+      "severity": "warning",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "export_delete_blocked_mvp",
+      "category": "export_delete",
+      "status": "blocked",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "export_delete_conflict_active",
+      "category": "export_delete",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "export_delete_policy_missing",
+      "category": "health",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "export_delete_preservation_hold_active",
+      "category": "export_delete",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "export_delete_retention_window_active",
+      "category": "export_delete",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "export_delete_review_required",
+      "category": "export_delete",
+      "status": "deprecated",
+      "severity": "warning",
+      "evidence_required": false,
+      "fail_closed_required": false,
+      "replaced_by": "export_delete_conflict_active",
+      "aliases": [
+        "export_delete_review_required_legacy"
+      ]
+    },
+    {
+      "reason_code": "export_manifest_conflict_evidence_required",
+      "category": "export_delete",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "export_manifest_redaction_required",
+      "category": "evidence",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "failed_closed_terminal_state",
+      "category": "transaction",
+      "status": "active",
+      "severity": "critical",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "guardian_decision_mismatch",
+      "category": "guardian",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "guardian_denied",
+      "category": "health",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "health_guardian_replay_denied",
+      "category": "health",
+      "status": "active",
+      "severity": "warning",
+      "evidence_required": false,
+      "fail_closed_required": false,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "heartbeat_missed",
+      "category": "health",
+      "status": "active",
+      "severity": "degraded",
+      "evidence_required": true,
+      "fail_closed_required": false,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "identity_provider_outage",
+      "category": "governance",
+      "status": "active",
+      "severity": "warning",
+      "evidence_required": true,
+      "fail_closed_required": false,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "identity_verification_failed",
+      "category": "health",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "idp_mfa_missing",
+      "category": "health",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "ledger_unavailable",
+      "category": "evidence",
+      "status": "active",
+      "severity": "critical",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "lima_it_remediation_blocked",
+      "category": "health",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "missing_evidence",
+      "category": "evidence",
+      "status": "active",
+      "severity": "critical",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": [
+        "evidence_missing"
+      ]
+    },
+    {
+      "reason_code": "missing_expiry",
+      "category": "guardian",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "nonce_already_consumed",
+      "category": "replay",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "nonce_replay_denied",
+      "category": "replay",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "nonce_replayed",
+      "category": "replay",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "operation_scope_widened",
+      "category": "approval_binding",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "operator_containment",
+      "category": "governance",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "partial_scope_requires_new_request",
+      "category": "approval_binding",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "prompt_injection_suspected",
+      "category": "guardian",
+      "status": "active",
+      "severity": "critical",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "recon_coordinator_event_mismatch",
+      "category": "reconciliation",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "recon_cross_tenant_linkage",
+      "category": "tenant_isolation",
+      "status": "active",
+      "severity": "critical",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "recon_evidence_ref_missing",
+      "category": "reconciliation",
+      "status": "active",
+      "severity": "critical",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "recon_mismatched_approval_binding",
+      "category": "reconciliation",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "recon_mismatched_token_verification",
+      "category": "reconciliation",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "recon_missing_guardian_decision",
+      "category": "reconciliation",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "recon_replay_record_mismatch",
+      "category": "reconciliation",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "recon_replay_record_missing",
+      "category": "reconciliation",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "recon_stale_guardian_decision",
+      "category": "reconciliation",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "replay_store_unavailable",
+      "category": "replay",
+      "status": "active",
+      "severity": "critical",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "resource_scope_widened",
+      "category": "approval_binding",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "retention_policy_missing",
+      "category": "health",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "rollback_after_partial_commit",
+      "category": "transaction",
+      "status": "active",
+      "severity": "degraded",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "scope_mismatch",
+      "category": "linkage",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "security_containment",
+      "category": "governance",
+      "status": "active",
+      "severity": "warning",
+      "evidence_required": true,
+      "fail_closed_required": false,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "sensitive_access_denied",
+      "category": "governance",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "superseded",
+      "category": "approval_binding",
+      "status": "active",
+      "severity": "warning",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "suspicious_tool_request",
+      "category": "guardian",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "tainted_input",
+      "category": "guardian",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "task_blocked",
+      "category": "health",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "task_mismatch",
+      "category": "linkage",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "tenant_mismatch",
+      "category": "tenant_isolation",
+      "status": "active",
+      "severity": "critical",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "token_atomicity_ambiguous",
+      "category": "transaction",
+      "status": "active",
+      "severity": "critical",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "token_expired",
+      "category": "approval_binding",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "token_mismatch",
+      "category": "health",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "token_revoked",
+      "category": "approval_binding",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "token_verification_mismatch",
+      "category": "approval_binding",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "tool_scope_mismatch",
+      "category": "linkage",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "update_rollback_required",
+      "category": "health",
+      "status": "active",
+      "severity": "degraded",
+      "evidence_required": true,
+      "fail_closed_required": false,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "update_verification_failed",
+      "category": "health",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "worker_mismatch",
+      "category": "linkage",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "worker_quarantined",
+      "category": "health",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "worker_revoke",
+      "category": "governance",
+      "status": "active",
+      "severity": "warning",
+      "evidence_required": true,
+      "fail_closed_required": false,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "worker_revoked",
+      "category": "health",
+      "status": "active",
+      "severity": "blocked",
+      "evidence_required": true,
+      "fail_closed_required": true,
+      "replaced_by": null,
+      "aliases": []
+    },
+    {
+      "reason_code": "worker_stale",
+      "category": "health",
+      "status": "active",
+      "severity": "warning",
+      "evidence_required": false,
+      "fail_closed_required": false,
+      "replaced_by": null,
+      "aliases": []
+    }
+  ]
+}

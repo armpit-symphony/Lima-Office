@@ -28,9 +28,12 @@ Recommended order:
 4. Taxonomy-version enforcement hardening for all reason-bearing contracts and
    examples (checkpoint completed as validation/schema/docs/tests hardening on
    `taxonomy-version-enforcement-hardening`).
-5. Final RBAC/IdP/MFA/session/device trust matrix.
-6. Model-routing defaults and health taxonomy refinement.
-7. Phase 1B lab runtime expansion only after the gates above are approved.
+5. Taxonomy-family constraint hardening with registry/runtime parity checks
+   (checkpoint completed as validation/schema/docs/tests hardening on
+   `taxonomy-family-constraint-hardening`).
+6. Final RBAC/IdP/MFA/session/device trust matrix.
+7. Model-routing defaults and health taxonomy refinement.
+8. Phase 1B lab runtime expansion only after the gates above are approved.
 
 Next recommended lane after this checkpoint: finalize RBAC/IdP/MFA/session/
 device trust matrix while keeping reason-code removal/deprecation windows as

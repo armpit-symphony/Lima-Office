@@ -125,5 +125,7 @@ These docs define boundaries, contracts, and mock scaffolding. They do not appro
 
 Validation now includes a fail-closed reason-code conformance gate via
 `python scripts/check-reason-codes.py`; reason-bearing schemas/examples must
-carry a supported `taxonomy_version` or the gate fails closed. See
+carry a supported `taxonomy_version`, use contract-family-allowed reason-code
+categories, and remain in strict runtime/catalog parity or the gate fails
+closed. See
 [Validation](VALIDATION.md).

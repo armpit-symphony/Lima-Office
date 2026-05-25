@@ -32,10 +32,14 @@ implementation. Phase 1A v2 uses these codes in metadata-only
 ## UX Rules
 
 - Missing data is not healthy.
+- Health-family contracts should primarily use `health` category reasons; use of
+  non-health categories is limited to explicit fail-closed evidence/blocked-MVP
+  contexts.
 - Blocked-MVP states cannot be converted to approval-capable states by the
   console.
 - Every reason code must map to a runbook and evidence or evidence-failure ref.
 - Future runtime must treat unknown reason codes as review-required or blocked.
+- Wrong-family reason codes must fail closed in CI validation.
 - Health/status reason arrays serialized in contracts/examples must include
   `taxonomy_version`; missing or unsupported taxonomy versions fail closed.
 - Governance/export/delete reason-code alignment is defined in
