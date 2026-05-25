@@ -1,0 +1,42 @@
+{
+  "contract_name": "update.rollback",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-update-signature-failed-001",
+  "causation_id": "governance-update-record-002",
+  "idempotency_key": "idem-update-signature-failed-001",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-25T15:40:00Z"
+  },
+  "update_id": "ur-signature-failed-001",
+  "worker_id": "worker-arc-004",
+  "deployment_id": "wd-004",
+  "artifact_type": "config_bundle",
+  "update_status": "failed",
+  "update_channel": "manual_review",
+  "policy_version": "policy-phase1a-v1",
+  "artifact_hash": null,
+  "signer_ref": null,
+  "signing_key_ref": null,
+  "provenance_ref": null,
+  "transparency_log_ref": null,
+  "rollback_target_ref": null,
+  "rollback_reason_codes": [],
+  "verification_reason_codes": [
+    "update_signature_invalid",
+    "update_provenance_missing"
+  ],
+  "model_route_policy_refs": [],
+  "evidence_refs": [
+    "ev-update-signature-failed-001"
+  ],
+  "created_at": "2026-05-25T15:40:00Z",
+  "verified_at": null,
+  "applied_at": null,
+  "rolled_back_at": null
+}

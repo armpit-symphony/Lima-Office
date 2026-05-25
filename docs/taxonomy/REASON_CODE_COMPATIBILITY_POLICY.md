@@ -63,6 +63,8 @@ Allowed only when all are true:
 - Deprecated or alias examples must carry explicit compatibility evidence.
 - Model-route and health route/status examples must carry taxonomy version and
   canonical route/health reason codes.
+- Worker-attestation and signed-update/rollback examples must carry taxonomy
+  version and canonical trust/update reason codes.
 
 ## Runtime Helper Rules For Unknown Codes
 

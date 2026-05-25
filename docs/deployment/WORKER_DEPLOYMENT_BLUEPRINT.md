@@ -7,6 +7,10 @@ This blueprint is docs/contracts scaffolding only. It does not install software,
 start services, run background workers, wire live connectors, call external
 model providers, send messages, mutate customer systems, or perform remediation.
 
+Worker attestation trust-root posture in this lane is tracked by
+`worker.attestation` metadata and
+[Worker Attestation Trust Root](../architecture/WORKER_ATTESTATION_TRUST_ROOT.md).
+
 ## Target Deployment
 
 The target deployment is:

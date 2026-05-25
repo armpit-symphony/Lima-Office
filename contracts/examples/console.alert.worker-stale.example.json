@@ -19,8 +19,8 @@
   ],
   "severity": "high",
   "related_contract_refs": [
-    "worker-heartbeat-ref-arc-file-01",
-    "worker-lifecycle-ref-arc-file-01"
+    "worker.heartbeat:hb-file-001",
+    "worker.lifecycle:wle-file-registered-001"
   ],
   "policy_refs": [
     "policy.console_ux.phase0",

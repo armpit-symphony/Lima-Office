@@ -34,7 +34,10 @@ Recommended order:
 6. Model-routing defaults and health taxonomy refinement (checkpoint completed
    as docs/contracts/tests/mock metadata hardening on
    `model-routing-defaults-health-taxonomy-refinement`).
-7. Phase 1B lab runtime expansion only after the gates above are approved.
+7. Worker attestation trust-root and signed update/rollback hardening
+   (checkpoint completed as docs/contracts/tests/mock metadata hardening on
+   `worker-attestation-trust-root-signed-update-rollback-hardening`).
+8. Phase 1B lab runtime expansion only after the gates above are approved.
 
 Next recommended lane after this checkpoint: worker attestation trust-root and
 signed update/rollback implementation-gate hardening while keeping provider

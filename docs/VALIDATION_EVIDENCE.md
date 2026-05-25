@@ -5,7 +5,7 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `rbac-idp-mfa-session-device-trust-matrix` on Windows with
+Latest captured run: `worker-attestation-trust-root-signed-update-rollback-hardening` on Windows with
 Python 3.12.10.
 
 ## Canonical Integration Branch
@@ -33,6 +33,8 @@ Python 3.12.10.
   `rbac-idp-mfa-session-device-trust-matrix`
 - Model routing defaults and health taxonomy branch:
   `model-routing-defaults-health-taxonomy-refinement`
+- Worker attestation/signed update rollback branch:
+  `worker-attestation-trust-root-signed-update-rollback-hardening`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -131,6 +133,18 @@ provider integration, local inference runtime, runtime authorization expansion,
 live connectors, remediation execution, durable services, or production
 operations.
 
+## Worker Attestation and Signed Update Rollback Hardening Checkpoint
+
+This branch adds worker-attestation trust-root and signed-update/rollback trust
+architecture docs, new `worker.attestation` and `update.rollback`
+schemas/examples, a mock-only trust-posture classifier, trust-aware model-route
+hardening, and fail-closed tests for attestation/update verification/rollback
+metadata paths.
+Validation remains repository health evidence only; it does not approve TPM
+integration, signing services, update runtime, rollback automation, model
+provider integration, live connectors, remediation execution, or production
+operations.
+
 ## Cross-Contract Linkage Hardening Checkpoint
 
 This branch adds cross-contract linkage posture docs, linkage-status and
@@ -218,13 +232,13 @@ Result:
 
 ```text
 LIMA Office contract validation
-- schemas parsed: 44
-- examples parsed: 115
-- mapped examples: 115
-- schemas with examples: 44
+- schemas parsed: 46
+- examples parsed: 130
+- mapped examples: 130
+- schemas with examples: 46
 - validation mode: full JSON Schema draft 2020-12 with format checks
 - jsonschema version: 4.26.0
-- unsafe-content scan: 115 example files, 101 markdown files
+- unsafe-content scan: 130 example files, 117 markdown files
 - warnings: 0
 - failures: 0
 Result: PASS
@@ -250,11 +264,11 @@ Result:
 
 ```text
 LIMA Office reason-code conformance
-- schemas scanned: 44
-- examples scanned: 115
-- known canonical/alias codes: 107
-- reason-code values scanned in schemas: 135
-- reason-code values scanned in examples: 100
+- schemas scanned: 46
+- examples scanned: 130
+- known canonical/alias codes: 129
+- reason-code values scanned in schemas: 275
+- reason-code values scanned in examples: 140
 - blocked-in-success violations: 0
 - warnings: 0
 - failures: 0
@@ -300,7 +314,7 @@ python -B -m unittest discover -s tests -v
 Result:
 
 ```text
-Ran 218 tests
+Ran 267 tests
 
 OK
 ```
@@ -368,7 +382,7 @@ python -m pytest -q
 Result:
 
 ```text
-218 passed, 1 warning, 143 subtests passed
+267 passed, 1 warning, 166 subtests passed
 ```
 
 Warning: pytest could not create/write `.pytest_cache` because access was

@@ -31,6 +31,7 @@
     "lifecycle_state",
     "encryption_status",
     "attestation_status",
+    "trust_root_status",
     "update_channel",
     "rollback_state",
     "data_classification",
@@ -382,6 +383,23 @@
         "failed"
       ]
     },
+    "trust_root_status": {
+      "type": "string",
+      "enum": [
+        "unknown",
+        "hardware_root_placeholder",
+        "software_only_placeholder",
+        "verified_placeholder",
+        "failed",
+        "blocked_mvp"
+      ]
+    },
+    "worker_attestation_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "update_channel": {
       "type": "object",
       "additionalProperties": false,
@@ -460,6 +478,14 @@
           ]
         }
       }
+    },
+    "update_rollback_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
     },
     "data_classification": {
       "type": "string",
@@ -691,6 +717,13 @@
           },
           "privileged_task_metadata_allowed": {
             "const": false
+          },
+          "trust_root_status": {
+            "enum": [
+              "failed",
+              "unknown",
+              "blocked_mvp"
+            ]
           },
           "reason_codes": {
             "contains": {

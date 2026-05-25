@@ -55,6 +55,7 @@
   "lifecycle_state": "enrolled",
   "encryption_status": "enabled",
   "attestation_status": "manual_review_only",
+  "trust_root_status": "hardware_root_placeholder",
   "update_channel": {
     "policy_bundle": "manual_review",
     "worker_runtime": "blocked",
@@ -85,6 +86,10 @@
   "field_it_reviewer_ref": "field-it-reviewer-001",
   "security_reviewer_ref": "security-reviewer-001",
   "blocked_reason": null,
+  "worker_attestation_ref": "wa-local-model-001",
+  "update_rollback_refs": [
+    "ur-policy-verified-001"
+  ],
   "created_at": "2026-05-22T20:10:00Z",
   "updated_at": "2026-05-22T20:10:00Z"
 }

@@ -190,9 +190,43 @@
       "type": "string",
       "enum": [
         "not_required_phase0",
+        "manual_review_only",
         "pending",
         "verified",
-        "failed"
+        "failed",
+        "expired",
+        "revoked",
+        "blocked_mvp"
+      ]
+    },
+    "trust_root_status": {
+      "type": "string",
+      "enum": [
+        "unknown",
+        "hardware_root_placeholder",
+        "software_only_placeholder",
+        "verified_placeholder",
+        "failed",
+        "blocked_mvp"
+      ]
+    },
+    "worker_attestation_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "attestation_expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "update_rollback_ref": {
+      "type": [
+        "string",
+        "null"
       ]
     },
     "capability_lease_id": {
@@ -619,6 +653,38 @@
           },
           "capability_lease_revoked": {
             "const": true
+          },
+          "trust_root_status": {
+            "enum": [
+              "failed",
+              "unknown",
+              "blocked_mvp"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "attestation_status": {
+            "const": "expired"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "attestation_expires_at"
+        ],
+        "properties": {
+          "health_state": {
+            "not": {
+              "const": "healthy"
+            }
+          },
+          "attestation_expires_at": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       }

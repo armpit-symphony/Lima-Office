@@ -6,6 +6,10 @@ Define the planning posture for Arc worker updates and rollbacks. This blueprint
 does not install software, stage files, run updates, or implement rollback
 automation.
 
+This lane also adds metadata-only trust contracts:
+`governance.update_record` and `update.rollback`, plus
+[Signed Update Rollback Trust](../architecture/SIGNED_UPDATE_ROLLBACK_TRUST.md).
+
 ## Update Channels
 
 ### Policy Bundle

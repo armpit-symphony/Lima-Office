@@ -1,0 +1,46 @@
+{
+  "contract_name": "worker.attestation",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-worker-attestation-expired-001",
+  "causation_id": "worker-heartbeat-002",
+  "idempotency_key": "idem-worker-attestation-expired-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-25T15:10:00Z"
+  },
+  "attestation_id": "wa-expired-001",
+  "worker_id": "worker-arc-003",
+  "deployment_id": "wd-003",
+  "supervisor_id": "supervisor-lab-001",
+  "attestation_status": "expired",
+  "trust_root_status": "unknown",
+  "evidence_type": "policy_hash_manifest",
+  "os_image_hash": "sha256:expired-os-image-003",
+  "runtime_hash": "sha256:expired-runtime-003",
+  "policy_bundle_hash": "sha256:expired-policy-003",
+  "model_bundle_hash": "sha256:expired-model-003",
+  "config_hash": "sha256:expired-config-003",
+  "reference_value_refs": [
+    "refvals-worker-arc-003-v1"
+  ],
+  "endorsement_refs": [],
+  "appraisal_policy_refs": [
+    "policy.worker_attestation.phase0"
+  ],
+  "device_trust_ref": "device-trust-worker-arc-003",
+  "evidence_refs": [
+    "ev-worker-attestation-expired-001"
+  ],
+  "reason_codes": [
+    "attestation_expired",
+    "trust_root_unknown"
+  ],
+  "policy_version": "policy-phase1a-v1",
+  "created_at": "2026-05-25T15:10:00Z",
+  "expires_at": "2026-05-25T14:59:59Z"
+}

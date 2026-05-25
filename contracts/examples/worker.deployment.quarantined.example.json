@@ -55,6 +55,7 @@
   "lifecycle_state": "quarantined",
   "encryption_status": "enabled",
   "attestation_status": "failed",
+  "trust_root_status": "failed",
   "update_channel": {
     "policy_bundle": "manual_review",
     "worker_runtime": "blocked",
@@ -88,6 +89,10 @@
   "field_it_reviewer_ref": "field-it-reviewer-001",
   "security_reviewer_ref": "security-reviewer-001",
   "blocked_reason": "Attestation failed during field preflight; worker remains quarantined.",
+  "worker_attestation_ref": "wa-failed-001",
+  "update_rollback_refs": [
+    "ur-runtime-rollback-001"
+  ],
   "created_at": "2026-05-22T20:20:00Z",
   "updated_at": "2026-05-22T20:20:00Z"
 }

@@ -16,6 +16,19 @@ BLOCKED_PRIVILEGED_CODES = frozenset(
         "model_route_rbac_blocked",
     }
 )
+TRUST_BLOCK_CODES = frozenset(
+    {
+        "attestation_failed",
+        "attestation_expired",
+        "trust_root_failed",
+        "update_signature_missing",
+        "update_signature_invalid",
+        "update_provenance_missing",
+        "model_bundle_untrusted",
+        "policy_bundle_untrusted",
+        "runtime_bundle_untrusted",
+    }
+)
 
 
 def classify_model_route(payload: dict[str, Any]) -> dict[str, Any]:
@@ -54,10 +67,29 @@ def classify_model_route(payload: dict[str, Any]) -> dict[str, Any]:
             raise PolicyDenyError("high-risk route requires approval_required or blocked/denied status")
         if taint_status in {"tainted", "suspected"} and route_status not in {"blocked_mvp", "denied"}:
             raise PolicyDenyError("tainted privileged route must be denied or blocked")
+        for ref_field in (
+            "rbac_context_ref",
+            "session_policy_ref",
+            "device_trust_ref",
+            "worker_attestation_ref",
+            "update_rollback_ref",
+        ):
+            ref_value = payload.get(ref_field)
+            if route_status == "selected" and (not isinstance(ref_value, str) or not ref_value.strip()):
+                raise PolicyDenyError(
+                    f"high-risk selected route requires {ref_field}"
+                )
 
     if risk_tier == "high" and BLOCKED_PRIVILEGED_CODES.intersection(route_reason_codes):
         if route_status not in {"blocked_mvp", "denied"}:
             raise PolicyDenyError("untrusted RBAC/device route reason must block privileged route")
+    if "model_route_device_untrusted" in route_reason_codes:
+        device_trust_ref = payload.get("device_trust_ref")
+        if not isinstance(device_trust_ref, str) or not device_trust_ref.strip():
+            raise PolicyDenyError("model_route_device_untrusted requires device_trust_ref")
+    if TRUST_BLOCK_CODES.intersection(route_reason_codes):
+        if route_status not in {"denied", "blocked_mvp", "unavailable"}:
+            raise PolicyDenyError("trust failure reason codes require denied/blocked/unavailable status")
 
     provider_ref = payload.get("provider_ref")
     if route_mode == "subscription_planned":
@@ -72,6 +104,10 @@ def classify_model_route(payload: dict[str, Any]) -> dict[str, Any]:
             raise PolicyDenyError("local_planned requires local_model_bundle_ref placeholder")
         if local_ref.get("execution_enabled") is not False:
             raise PolicyDenyError("local_planned cannot imply local inference execution")
+        if route_status == "selected":
+            attestation_ref = payload.get("worker_attestation_ref")
+            if not isinstance(attestation_ref, str) or not attestation_ref.strip():
+                raise PolicyDenyError("local_planned selected route requires worker_attestation_ref")
 
     if route_status == "selected":
         evidence_refs = payload.get("evidence_refs") or []

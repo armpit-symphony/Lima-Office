@@ -61,6 +61,71 @@
       "reason_code": "health_blocked",
       "category": "health",
       "status": "active"
+    },
+    {
+      "reason_code": "attestation_required",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_failed",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_expired",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "trust_root_unknown",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "trust_root_failed",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "update_signature_missing",
+      "category": "transaction",
+      "status": "active"
+    },
+    {
+      "reason_code": "update_signature_invalid",
+      "category": "transaction",
+      "status": "active"
+    },
+    {
+      "reason_code": "update_provenance_missing",
+      "category": "transaction",
+      "status": "active"
+    },
+    {
+      "reason_code": "update_rollback_required",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "update_blocked_mvp",
+      "category": "blocked_mvp",
+      "status": "blocked"
+    },
+    {
+      "reason_code": "model_bundle_untrusted",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "policy_bundle_untrusted",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "runtime_bundle_untrusted",
+      "category": "health",
+      "status": "active"
     }
   ],
   "notes": [

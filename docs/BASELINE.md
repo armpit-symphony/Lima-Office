@@ -145,6 +145,18 @@ operations, customer-system mutation, or compliance certification claims.
   authorization expansion, no live connectors, and no remediation execution are
   authorized.
 
+## Worker Attestation Trust Root and Signed Update Rollback Hardening Checkpoint
+
+- Branch: `worker-attestation-trust-root-signed-update-rollback-hardening`
+- Base: `model-routing-defaults-health-taxonomy-refinement`
+- Purpose: define metadata-only worker attestation trust-root posture and
+  signed update/rollback trust metadata with fail-closed reason/evidence
+  linkage.
+- Scope: docs, schemas, examples, tests, and mock-only trust-posture
+  classifier. No TPM runtime, signing service, update runtime, rollback
+  automation, model provider integration, or remediation execution is
+  authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:

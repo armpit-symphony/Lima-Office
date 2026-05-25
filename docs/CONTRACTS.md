@@ -119,6 +119,28 @@ Phase 1A now hardens `model.route` for metadata-only routing posture:
 This remains docs/contracts/tests/mock-only hardening and does not authorize
 provider integration, local inference runtime, or runtime authorization.
 
+## Worker Attestation / Signed Update Rollback Hardening
+
+Phase 1A now adds metadata-only trust posture contracts for worker attestation
+and signed update/rollback review:
+
+- `worker.attestation` for attestation status, trust-root placeholder status,
+  hash-manifest refs, appraisal-policy refs, and fail-closed reason/evidence
+  linkage.
+- `update.rollback` for artifact hash/signer/key/provenance refs, update and
+  rollback status transitions, model-bundle blocked-MVP posture, and fail-closed
+  verification/rollback reason-code linkage.
+
+Related schemas now include stronger trust-aware metadata bindings:
+
+- `worker.deployment` includes trust-root status and attestation linkage refs.
+- `worker.heartbeat` includes attestation/update trust drift posture fields.
+- `model.route` includes attestation/update refs and blocked trust reason-code
+  constraints for privileged routes.
+
+These are design-only metadata controls. No TPM integration, no signing
+service, no update runtime, and no rollback automation are implemented.
+
 ## Governance Export/Delete Taxonomy Hardening
 
 Phase 1A now includes:

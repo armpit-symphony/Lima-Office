@@ -111,7 +111,16 @@
         "tainted_input",
         "connector_revoked",
         "attestation_failed",
+        "attestation_expired",
+        "trust_root_failed",
         "update_rollback_required",
+        "update_signature_missing",
+        "update_signature_invalid",
+        "update_provenance_missing",
+        "update_blocked_mvp",
+        "model_bundle_untrusted",
+        "policy_bundle_untrusted",
+        "runtime_bundle_untrusted",
         "lima_it_remediation_blocked",
         "retention_policy_missing",
         "export_delete_policy_missing",
@@ -167,7 +176,16 @@
           "tainted_input",
           "connector_revoked",
           "attestation_failed",
+          "attestation_expired",
+          "trust_root_failed",
           "update_rollback_required",
+          "update_signature_missing",
+          "update_signature_invalid",
+          "update_provenance_missing",
+          "update_blocked_mvp",
+          "model_bundle_untrusted",
+          "policy_bundle_untrusted",
+          "runtime_bundle_untrusted",
           "lima_it_remediation_blocked",
           "retention_policy_missing",
           "export_delete_policy_missing",
@@ -203,7 +221,7 @@
       "minItems": 1,
       "items": {
         "type": "string",
-        "minLength": 1
+        "pattern": "^[a-z][a-z0-9._-]+:[A-Za-z0-9._:-]+$"
       },
       "uniqueItems": true
     },
@@ -440,7 +458,14 @@
                 "model_route_local_execution_blocked_mvp",
                 "model_route_rbac_blocked",
                 "model_route_device_untrusted",
-                "model_route_fallback_denied"
+                "model_route_fallback_denied",
+                "model_bundle_untrusted",
+                "policy_bundle_untrusted",
+                "runtime_bundle_untrusted",
+                "update_signature_missing",
+                "update_signature_invalid",
+                "update_provenance_missing",
+                "update_blocked_mvp"
               ]
             }
           }

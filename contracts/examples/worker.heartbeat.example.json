@@ -2,6 +2,7 @@
   "contract_name": "worker.heartbeat",
   "contract_version": "1.0.0",
   "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
   "tenant_id": "tenant-lab-001",
   "customer_context_id": "customer-context-main",
   "environment": "phase0_lab",
@@ -34,6 +35,10 @@
   "update_version": "lab-worker-image-0.1.0",
   "rollback_version": "lab-worker-image-0.0.9",
   "update_status": "current",
+  "attestation_status": "verified",
+  "trust_root_status": "verified_placeholder",
+  "worker_attestation_ref": "wa-attested-001",
+  "update_rollback_ref": "ur-policy-verified-001",
   "evidence_writer_status": "healthy",
   "evidence_spool_depth": 0,
   "last_evidence_write_at": "2026-05-18T21:14:44Z",
@@ -58,6 +63,8 @@
   "evidence_artifact_ids": [
     "ev-heartbeat-file-001"
   ],
+  "operator_action_required": false,
+  "runbook_ref": null,
   "last_task_id": "task-file-sort-001",
   "last_task_status": "in_progress",
   "quarantine_reason": null

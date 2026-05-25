@@ -10,6 +10,12 @@ Policy ref: `policy.signed_update_rollback.phase0`
 Status: draft scaffold. No update agent, installer, service, scheduler, or
 rollback automation is implemented.
 
+Metadata records for this policy lane are represented by:
+
+- [governance.update_record.schema.json](../../contracts/v1/governance.update_record.schema.json)
+- [update.rollback.schema.json](../../contracts/v1/update.rollback.schema.json)
+- [Signed Update Rollback Review Runbook](../runbooks/signed-update-rollback-review.md)
+
 ## Signed Update Expectation
 
 Future updates must have:

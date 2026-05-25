@@ -34,6 +34,8 @@
   "rbac_context_ref": "rbac-context-ref-privileged-001",
   "session_policy_ref": "session-policy-ref-privileged-001",
   "device_trust_ref": "device-trust-ref-privileged-001",
+  "worker_attestation_ref": "worker-attestation-ref-privileged-001",
+  "update_rollback_ref": "update-rollback-ref-privileged-001",
   "worker_capability_refs": [
     "capability-ref-governance-review-001"
   ],

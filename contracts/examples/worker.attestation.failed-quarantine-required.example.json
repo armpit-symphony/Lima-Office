@@ -1,0 +1,49 @@
+{
+  "contract_name": "worker.attestation",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-worker-attestation-failed-001",
+  "causation_id": "worker-heartbeat-001",
+  "idempotency_key": "idem-worker-attestation-failed-001",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-25T15:05:00Z"
+  },
+  "attestation_id": "wa-failed-001",
+  "worker_id": "worker-arc-002",
+  "deployment_id": "wd-002",
+  "supervisor_id": "supervisor-lab-001",
+  "attestation_status": "failed",
+  "trust_root_status": "failed",
+  "evidence_type": "runtime_hash_manifest",
+  "os_image_hash": "sha256:failed-os-image-002",
+  "runtime_hash": "sha256:failed-runtime-002",
+  "policy_bundle_hash": "sha256:failed-policy-002",
+  "model_bundle_hash": "sha256:failed-model-002",
+  "config_hash": "sha256:failed-config-002",
+  "reference_value_refs": [
+    "refvals-worker-arc-002-v1"
+  ],
+  "endorsement_refs": [
+    "endorsement-placeholder-worker-arc-002"
+  ],
+  "appraisal_policy_refs": [
+    "policy.worker_attestation.phase0"
+  ],
+  "device_trust_ref": "device-trust-worker-arc-002",
+  "evidence_refs": [
+    "ev-worker-attestation-failed-001",
+    "ev-worker-quarantine-requested-001"
+  ],
+  "reason_codes": [
+    "attestation_failed",
+    "trust_root_failed"
+  ],
+  "policy_version": "policy-phase1a-v1",
+  "created_at": "2026-05-25T15:05:00Z",
+  "expires_at": null
+}

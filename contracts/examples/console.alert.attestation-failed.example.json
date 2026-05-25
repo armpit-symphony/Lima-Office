@@ -1,0 +1,59 @@
+{
+  "contract_name": "console.alert",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-alert-attestation-failed-001",
+  "causation_id": "worker-attestation-failed-001",
+  "idempotency_key": "idem-alert-attestation-failed-001",
+  "alert_id": "alert-attestation-failed-001",
+  "actor_ref": "operator-security-reviewer-001",
+  "role": "security_reviewer",
+  "health_domain": "worker",
+  "alert_type": "attestation_failed",
+  "health_reason_codes": [
+    "attestation_failed",
+    "trust_root_failed",
+    "health_blocked"
+  ],
+  "severity": "blocked",
+  "related_contract_refs": [
+    "worker.attestation:wa-failed-001",
+    "worker.lifecycle:wl-quarantine-001"
+  ],
+  "policy_refs": [
+    "policy.worker_attestation.phase0",
+    "policy.worker_quarantine_reenrollment.phase0"
+  ],
+  "risk_tier": "blocked",
+  "status": "blocked",
+  "runbook_ref": "runbook.worker-attestation-review",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-25T16:00:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "reason_codes": [
+    "attestation_failed",
+    "trust_root_failed"
+  ],
+  "reason_code_registry_refs": [
+    "reason.code.registry:attestation_failed",
+    "reason.code.registry:trust_root_failed"
+  ],
+  "unknown_reason_code_policy": "fail_closed",
+  "deprecated_reason_code_policy": "allow_with_warning",
+  "reason_code_status": "active",
+  "evidence_refs": [
+    "ev-alert-attestation-failed-001"
+  ],
+  "blocked_reason": "Attestation evidence failed appraisal policy.",
+  "model_route_id": null,
+  "route_mode": null,
+  "route_status": null,
+  "operator_visible": true,
+  "created_at": "2026-05-25T16:00:00Z"
+}

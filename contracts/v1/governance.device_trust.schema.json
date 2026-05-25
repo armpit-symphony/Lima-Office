@@ -313,7 +313,10 @@
           },
           "reason_codes": {
             "contains": {
-              "const": "attestation_failed"
+              "enum": [
+                "attestation_failed",
+                "trust_root_failed"
+              ]
             }
           }
         }

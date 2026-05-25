@@ -30,6 +30,8 @@ Version 1 schemas are in [v1](v1):
 - [worker.lifecycle.schema.json](v1/worker.lifecycle.schema.json)
 - [worker.heartbeat.schema.json](v1/worker.heartbeat.schema.json)
 - [worker.deployment.schema.json](v1/worker.deployment.schema.json)
+- [worker.attestation.schema.json](v1/worker.attestation.schema.json)
+- [update.rollback.schema.json](v1/update.rollback.schema.json)
 - [supervisor.health.schema.json](v1/supervisor.health.schema.json)
 - [governance.identity.schema.json](v1/governance.identity.schema.json)
 - [governance.access_review.schema.json](v1/governance.access_review.schema.json)
@@ -81,10 +83,18 @@ Sanitized example objects are in [examples](examples):
 - [worker.deployment.lightweight.example.json](examples/worker.deployment.lightweight.example.json)
 - [worker.deployment.local-model.example.json](examples/worker.deployment.local-model.example.json)
 - [worker.deployment.quarantined.example.json](examples/worker.deployment.quarantined.example.json)
+- [worker.attestation.attested-metadata-only.example.json](examples/worker.attestation.attested-metadata-only.example.json)
+- [worker.attestation.failed-quarantine-required.example.json](examples/worker.attestation.failed-quarantine-required.example.json)
+- [worker.attestation.expired.example.json](examples/worker.attestation.expired.example.json)
+- [update.rollback.policy-bundle-verified.example.json](examples/update.rollback.policy-bundle-verified.example.json)
+- [update.rollback.model-bundle-blocked-mvp.example.json](examples/update.rollback.model-bundle-blocked-mvp.example.json)
+- [update.rollback.runtime-rollback-required.example.json](examples/update.rollback.runtime-rollback-required.example.json)
+- [update.rollback.failed-signature.example.json](examples/update.rollback.failed-signature.example.json)
 - [supervisor.health.healthy.example.json](examples/supervisor.health.healthy.example.json)
 - [supervisor.health.degraded.example.json](examples/supervisor.health.degraded.example.json)
 - [supervisor.health.blocked.example.json](examples/supervisor.health.blocked.example.json)
 - [supervisor.health.model-route-degraded.example.json](examples/supervisor.health.model-route-degraded.example.json)
+- [supervisor.health.attestation-degraded.example.json](examples/supervisor.health.attestation-degraded.example.json)
 - [governance.identity.operator-mfa-required.example.json](examples/governance.identity.operator-mfa-required.example.json)
 - [governance.access_review.quarterly-placeholder.example.json](examples/governance.access_review.quarterly-placeholder.example.json)
 - [governance.breakglass.blocked-mvp.example.json](examples/governance.breakglass.blocked-mvp.example.json)
@@ -115,6 +125,7 @@ Sanitized example objects are in [examples](examples):
 - [console.alert.worker-stale.example.json](examples/console.alert.worker-stale.example.json)
 - [console.alert.evidence-missing.example.json](examples/console.alert.evidence-missing.example.json)
 - [console.alert.model-route-blocked.example.json](examples/console.alert.model-route-blocked.example.json)
+- [console.alert.attestation-failed.example.json](examples/console.alert.attestation-failed.example.json)
 - [console.action.approval-denied.example.json](examples/console.action.approval-denied.example.json)
 - [console.action.worker-quarantine-requested.example.json](examples/console.action.worker-quarantine-requested.example.json)
 - [task.execution.example.json](examples/task.execution.example.json)
@@ -394,5 +405,5 @@ Phase 0 schemas are not permission to implement services. They are the minimum i
 ## Taxonomy Catalog
 
 - [reason-code-registry.catalog.json](taxonomy/reason-code-registry.catalog.json)
-  records model-route and health reason-code catalog snapshots for
-  docs/contracts/tests consistency.
+  records model-route, health, worker-attestation, and signed-update/rollback
+  reason-code catalog snapshots for docs/contracts/tests consistency.

@@ -46,6 +46,8 @@ not authorize execution.
 - `rbac_context_ref`
 - `session_policy_ref`
 - `device_trust_ref`
+- `worker_attestation_ref`
+- `update_rollback_ref`
 - `worker_capability_refs`
 - provider/local bundle availability placeholders
 - cost/capacity placeholders
@@ -66,6 +68,7 @@ No external provider calls or local inference runs are permitted in this lane.
 - Missing policy/evidence refs for selected/degraded route => blocked.
 - High-risk route without approval requirement => blocked or denied.
 - Untrusted device/session/RBAC posture for privileged route => blocked.
+- Failed/expired attestation or untrusted update metadata => blocked.
 - Blocked-MVP classes cannot be selected.
 
 ## Tainted Input Rules

@@ -6,6 +6,9 @@ Define the planned deployment lifecycle for Arc worker mini PCs. This lifecycle
 maps to contracts and runbooks only; it does not implement runtime state
 machines or worker services.
 
+Attestation/update trust linkage in this lane is metadata-only via
+`worker.attestation` and `update.rollback` records.
+
 ## Lifecycle States
 
 | State | Meaning | Assignment posture |

@@ -40,6 +40,11 @@ Each Arc worker must have:
 
 Hardware attestation is an open question for Phase 0.
 
+Phase 1A trust-root metadata hardening is documented in
+[Worker Attestation Trust Root](architecture/WORKER_ATTESTATION_TRUST_ROOT.md)
+and represented by
+[worker.attestation.schema.json](../contracts/v1/worker.attestation.schema.json).
+
 Deployment planning records may use `attestation_status: not_required_phase0`
 or `manual_review_only`. These values mean weak lab trust only; they do not
 allow privileged work, automated re-enrollment, live connector access, or
@@ -197,6 +202,9 @@ install/update remains approval-required and non-executing in this docs lane.
 Governance metadata for update review is represented by
 [governance.update_record.schema.json](../contracts/v1/governance.update_record.schema.json)
 and [Signed Update Rollback Policy](governance/SIGNED_UPDATE_ROLLBACK_POLICY.md).
+Phase 1A also adds metadata-only
+[update.rollback.schema.json](../contracts/v1/update.rollback.schema.json) and
+[Signed Update Rollback Trust](architecture/SIGNED_UPDATE_ROLLBACK_TRUST.md).
 
 ## Connector Trust Program
 

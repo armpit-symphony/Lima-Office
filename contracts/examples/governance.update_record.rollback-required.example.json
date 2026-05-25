@@ -2,6 +2,7 @@
   "contract_name": "governance.update_record",
   "contract_version": "1.0.0",
   "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
   "tenant_id": "tenant-lab-001",
   "customer_context_id": "customer-context-main",
   "environment": "phase0_lab",
@@ -41,7 +42,15 @@
     "rollback_reason": "Verification source format is unresolved.",
     "rollback_evidence_ref": "ev-update-rollback-required-001"
   },
+  "verification_reason_codes": [
+    "update_signature_missing"
+  ],
+  "rollback_reason_codes": [
+    "update_rollback_required"
+  ],
   "attestation_status": "manual_review_only",
+  "worker_attestation_ref": "wa-manual-review-001",
+  "update_rollback_ref": "ur-runtime-rollback-001",
   "policy_refs": [
     "policy.signed_update_rollback.phase0"
   ],

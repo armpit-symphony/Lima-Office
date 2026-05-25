@@ -19,8 +19,8 @@
   ],
   "severity": "blocked",
   "related_contract_refs": [
-    "evidence-failure-ref-pre-action-001",
-    "task-execution-ref-001"
+    "evidence.failure:ef-pre-action-001",
+    "task.execution:te-001"
   ],
   "policy_refs": [
     "policy.console_ux.phase0",

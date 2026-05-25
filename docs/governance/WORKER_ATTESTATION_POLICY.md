@@ -59,6 +59,7 @@ Attestation posture is recorded in:
 - [worker.lifecycle.schema.json](../../contracts/v1/worker.lifecycle.schema.json)
 - [worker.heartbeat.schema.json](../../contracts/v1/worker.heartbeat.schema.json)
 - [governance.device_trust.schema.json](../../contracts/v1/governance.device_trust.schema.json)
+- [worker.attestation.schema.json](../../contracts/v1/worker.attestation.schema.json)
 
 ## Failed Attestation Behavior
 
@@ -78,6 +79,7 @@ Attestation failure links to:
 - [Worker Lifecycle](../deployment/WORKER_LIFECYCLE.md)
 - [Worker Deployment Blueprint](../deployment/WORKER_DEPLOYMENT_BLUEPRINT.md)
 - [Worker Attestation Failure Runbook](../runbooks/worker-attestation-failure.md)
+- [Worker Attestation Review Runbook](../runbooks/worker-attestation-review.md)
 - [Worker Quarantine And Re-Enrollment](../policies/worker-quarantine-reenrollment.md)
 
 ## MVP Placeholder Status

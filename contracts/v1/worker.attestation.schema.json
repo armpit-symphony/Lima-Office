@@ -1,0 +1,388 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/worker.attestation.schema.json",
+  "title": "Worker Attestation Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "attestation_id",
+    "worker_id",
+    "deployment_id",
+    "supervisor_id",
+    "attestation_status",
+    "trust_root_status",
+    "evidence_type",
+    "os_image_hash",
+    "runtime_hash",
+    "policy_bundle_hash",
+    "model_bundle_hash",
+    "config_hash",
+    "reference_value_refs",
+    "endorsement_refs",
+    "appraisal_policy_refs",
+    "device_trust_ref",
+    "evidence_refs",
+    "reason_codes",
+    "policy_version",
+    "created_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "worker.attestation"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "worker",
+            "guardian",
+            "operator_console",
+            "field_it_reviewer",
+            "security_reviewer"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "attestation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "worker_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "deployment_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "supervisor_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "attestation_status": {
+      "type": "string",
+      "enum": [
+        "not_required",
+        "required",
+        "pending",
+        "attested",
+        "failed",
+        "expired",
+        "revoked",
+        "blocked_mvp"
+      ]
+    },
+    "trust_root_status": {
+      "type": "string",
+      "enum": [
+        "unknown",
+        "hardware_root_placeholder",
+        "software_only_placeholder",
+        "verified_placeholder",
+        "failed",
+        "blocked_mvp"
+      ]
+    },
+    "evidence_type": {
+      "type": "string",
+      "enum": [
+        "metadata_only",
+        "tpm_quote_placeholder",
+        "secure_boot_placeholder",
+        "runtime_hash_manifest",
+        "policy_hash_manifest",
+        "model_hash_manifest"
+      ]
+    },
+    "os_image_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runtime_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_bundle_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model_bundle_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "config_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reference_value_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "endorsement_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "appraisal_policy_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "device_trust_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "attestation_status": {
+            "const": "attested"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "evidence_refs": {
+            "minItems": 1
+          },
+          "appraisal_policy_refs": {
+            "minItems": 1
+          },
+          "trust_root_status": {
+            "not": {
+              "enum": [
+                "failed",
+                "blocked_mvp"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "attestation_status": {
+            "const": "failed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "reason_codes": {
+            "minItems": 1,
+            "contains": {
+              "const": "attestation_failed"
+            }
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "attestation_status": {
+            "const": "expired"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "expires_at"
+        ],
+        "properties": {
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reason_codes": {
+            "contains": {
+              "const": "attestation_expired"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "attestation_status": {
+            "const": "blocked_mvp"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "trust_root_status": {
+            "enum": [
+              "unknown",
+              "blocked_mvp"
+            ]
+          },
+          "reason_codes": {
+            "contains": {
+              "const": "update_blocked_mvp"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "trust_root_status": {
+            "const": "failed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "reason_codes": {
+            "minItems": 1,
+            "contains": {
+              "const": "trust_root_failed"
+            }
+          },
+          "attestation_status": {
+            "enum": [
+              "failed",
+              "revoked",
+              "blocked_mvp"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "evidence_type": {
+            "const": "metadata_only"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "endorsement_refs": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
+}

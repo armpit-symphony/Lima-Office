@@ -99,6 +99,22 @@ class ModelRoutingDefaultsHealthTaxonomyTests(unittest.TestCase):
         with self.assertRaises(PolicyDenyError):
             classify_model_route(payload)
 
+    def test_high_risk_selected_requires_attestation_and_update_refs(self):
+        payload = copy.deepcopy(example("model.route.mock-only-selected.example.json"))
+        payload["risk_tier"] = "high"
+        payload["approval_required"] = True
+        payload["update_rollback_ref"] = None
+        payload["route_status"] = "selected"
+        with self.assertRaises(PolicyDenyError):
+            classify_model_route(payload)
+
+    def test_trust_failure_reason_codes_require_blocked_or_denied_status(self):
+        payload = copy.deepcopy(example("model.route.mock-only-selected.example.json"))
+        payload["route_reason_codes"] = ["update_signature_invalid"]
+        payload["route_status"] = "selected"
+        with self.assertRaises(PolicyDenyError):
+            classify_model_route(payload)
+
     def test_unknown_route_mode_fails_closed(self):
         payload = copy.deepcopy(example("model.route.mock-only-selected.example.json"))
         payload["route_mode"] = "live_cloud"

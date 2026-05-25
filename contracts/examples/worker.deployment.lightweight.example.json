@@ -55,6 +55,7 @@
   "lifecycle_state": "provisioned",
   "encryption_status": "enabled",
   "attestation_status": "not_required_phase0",
+  "trust_root_status": "software_only_placeholder",
   "update_channel": {
     "policy_bundle": "manual_review",
     "worker_runtime": "blocked",
@@ -84,6 +85,8 @@
   "field_it_reviewer_ref": "field-it-reviewer-001",
   "security_reviewer_ref": null,
   "blocked_reason": null,
+  "worker_attestation_ref": null,
+  "update_rollback_refs": [],
   "created_at": "2026-05-22T20:00:00Z",
   "updated_at": "2026-05-22T20:00:00Z"
 }

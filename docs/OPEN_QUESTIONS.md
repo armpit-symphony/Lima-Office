@@ -122,10 +122,12 @@ documents the reachable v2 checkpoint that supersedes it.
   stale-age limits, and escalation timing should apply in lab mode?
 - Worker attestation: what trust root, attestation method, TPM/secure boot
   requirement, and key lifecycle should replace the placeholder in
-  [Worker Attestation Policy](governance/WORKER_ATTESTATION_POLICY.md)?
+  [Worker Attestation Policy](governance/WORKER_ATTESTATION_POLICY.md) and
+  [Worker Attestation Trust Root](architecture/WORKER_ATTESTATION_TRUST_ROOT.md)?
 - Update rollback: what signed/verified source format, signer authority,
   known-good selection, rollback trigger matrix, and approval workflow should
-  replace the placeholders in [Signed Update Rollback Policy](governance/SIGNED_UPDATE_ROLLBACK_POLICY.md)?
+  replace the placeholders in [Signed Update Rollback Policy](governance/SIGNED_UPDATE_ROLLBACK_POLICY.md)
+  and [Signed Update Rollback Trust](architecture/SIGNED_UPDATE_ROLLBACK_TRUST.md)?
 - Worker hardware baseline: what exceptions, local-model sizing thresholds, and
   exact lab acceptance criteria should be applied to the vendor-neutral classes
   in [Worker Hardware Baseline](deployment/WORKER_HARDWARE_BASELINE.md)?

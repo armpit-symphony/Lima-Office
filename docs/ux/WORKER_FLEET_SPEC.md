@@ -57,6 +57,12 @@ Show attestation status:
 - `pending`.
 - `verified_placeholder`.
 - `failed`.
+- `expired`.
+- `revoked`.
+- `blocked_mvp`.
+
+Also show trust-root posture metadata (`trust_root_status`) and
+`worker_attestation_ref`.
 
 Attestation absence is weak lab trust only and cannot permit automated
 re-enrollment or privileged work.
@@ -65,6 +71,7 @@ re-enrollment or privileged work.
 
 Show update version, rollback version, update status, rollback required state,
 known-good ref, and [Update Rollback Approval](../runbooks/update-rollback-approval.md).
+When present, show `update_rollback_ref` and reason-code metadata.
 
 ## Quarantine/Revoke Controls
 
@@ -97,3 +104,5 @@ Each worker detail links to:
 - [Worker quarantine](../runbooks/worker-quarantine.md)
 - [Worker re-enrollment](../runbooks/worker-reenrollment.md)
 - [Worker attestation failure](../runbooks/worker-attestation-failure.md)
+- [Worker attestation review](../runbooks/worker-attestation-review.md)
+- [Signed update rollback review](../runbooks/signed-update-rollback-review.md)

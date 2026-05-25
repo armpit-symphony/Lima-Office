@@ -6,7 +6,7 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
-Current working branch: `model-routing-defaults-health-taxonomy-refinement`
+Current working branch: `worker-attestation-trust-root-signed-update-rollback-hardening`
 
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
@@ -15,14 +15,14 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A model-routing defaults and health taxonomy refinement.
-Phase 1A mock runtime scaffolding is present, the v2 invariant checkpoint and
-durable replay/evidence, transaction/storage, coordinator, linkage,
-approval/Guardian reconciliation, governance export/delete taxonomy, and
-reason-code registry/compatibility checkpoints are reachable. This branch adds
-fail-closed model-route posture contracts/examples/tests, consistent
-model-route/health taxonomy reason codes, and mock-only runbook hardening for
-route and health review paths.
+Current phase: Phase 1A worker-attestation trust-root and signed update/rollback
+hardening. Phase 1A mock runtime scaffolding is present, the v2 invariant
+checkpoint and durable replay/evidence, transaction/storage, coordinator,
+linkage, approval/Guardian reconciliation, governance export/delete taxonomy,
+reason-code registry/compatibility, model-routing defaults, and health taxonomy
+checkpoints are reachable. This branch adds fail-closed worker-attestation and
+signed-update/rollback metadata contracts/examples/tests, trust-aware
+model-route linkage, and mock-only attestation/update review runbook hardening.
 Runtime expansion remains blocked until the remaining gates in this file,
 [Baseline](docs/BASELINE.md), and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md)
 are resolved.
@@ -123,7 +123,16 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
   [docs/taxonomy/HEALTH_STATUS_TAXONOMY.md](docs/taxonomy/HEALTH_STATUS_TAXONOMY.md),
   [docs/runbooks/model-routing-review.md](docs/runbooks/model-routing-review.md),
   and [docs/runbooks/health-taxonomy-review.md](docs/runbooks/health-taxonomy-review.md).
-  payloads.
+- Worker-attestation and signed-update trust docs in
+  [docs/architecture/WORKER_ATTESTATION_TRUST_ROOT.md](docs/architecture/WORKER_ATTESTATION_TRUST_ROOT.md)
+  and
+  [docs/architecture/SIGNED_UPDATE_ROLLBACK_TRUST.md](docs/architecture/SIGNED_UPDATE_ROLLBACK_TRUST.md).
+- Worker-attestation and signed-update review runbooks in
+  [docs/runbooks/worker-attestation-review.md](docs/runbooks/worker-attestation-review.md)
+  and
+  [docs/runbooks/signed-update-rollback-review.md](docs/runbooks/signed-update-rollback-review.md).
+- `worker.attestation` and `update.rollback` schemas/examples for metadata-only
+  trust posture and fail-closed verification/rollback linkage.
 - Local Markdown link validation through [scripts/check-doc-links.py](scripts/check-doc-links.py).
 - Phase 1A mock Python runtime scaffolding in [lima_office](lima_office).
 - In-memory worker registry, heartbeat validation, task queue, Guardian policy
@@ -153,6 +162,8 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
 - Mock-only in-memory access-matrix evaluator for role/action/session/device
   trust classification with fail-closed outcomes and `can_authorize: false`
   posture.
+- Mock-only trust-posture classifier for attestation/update metadata with
+  fail-closed blocked states and `can_authorize: false` posture.
 - Fail-closed Guardian replay invariants for required requested-action tenant,
   customer context, decision ID, action type (when bound), decision scope hash
   (when bound), approval binding (when bound), token verification (when bound),
@@ -252,7 +263,8 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 
 ## Next Recommended Lane
 
-After taxonomy-version enforcement hardening is reviewed, the next safe lane is
-final RBAC/IdP/MFA/session/device trust matrix closure, still without adding
-live services. Phase 1B lab runtime expansion remains blocked until remaining
-gates are approved. Mainline update should wait for explicit approval.
+After worker-attestation/update trust hardening is reviewed, the next safe lane
+is taxonomy family/parity enforcement and cross-family reason-code constraints
+without adding live services. Phase 1B lab runtime expansion remains blocked
+until remaining gates are approved. Mainline update should wait for explicit
+approval.

@@ -79,6 +79,23 @@ Model-route and health refinement in this lane adds canonical reason codes:
 - `health_degraded`
 - `health_blocked`
 
+Worker-attestation and signed-update/rollback hardening adds canonical reason
+codes:
+
+- `attestation_required`
+- `attestation_failed`
+- `attestation_expired`
+- `trust_root_unknown`
+- `trust_root_failed`
+- `update_signature_missing`
+- `update_signature_invalid`
+- `update_provenance_missing`
+- `update_rollback_required`
+- `update_blocked_mvp`
+- `model_bundle_untrusted`
+- `policy_bundle_untrusted`
+- `runtime_bundle_untrusted`
+
 Reference snapshot:
 [contracts/taxonomy/reason-code-registry.catalog.json](../../contracts/taxonomy/reason-code-registry.catalog.json).
 

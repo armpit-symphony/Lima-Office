@@ -8,6 +8,7 @@
     "contract_name",
     "contract_version",
     "schema_version",
+    "taxonomy_version",
     "tenant_id",
     "customer_context_id",
     "environment",
@@ -37,6 +38,8 @@
     "update_version",
     "rollback_version",
     "update_status",
+    "attestation_status",
+    "trust_root_status",
     "evidence_writer_status",
     "evidence_spool_depth",
     "last_evidence_write_at",
@@ -63,6 +66,10 @@
     "schema_version": {
       "type": "string",
       "const": "1.0.0"
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
     },
     "tenant_id": {
       "type": "string",
@@ -243,6 +250,42 @@
         "update_pending_approval",
         "update_failed",
         "rollback_needed"
+      ]
+    },
+    "attestation_status": {
+      "type": "string",
+      "enum": [
+        "not_required_phase0",
+        "manual_review_only",
+        "pending",
+        "verified",
+        "failed",
+        "expired",
+        "revoked",
+        "blocked_mvp"
+      ]
+    },
+    "trust_root_status": {
+      "type": "string",
+      "enum": [
+        "unknown",
+        "hardware_root_placeholder",
+        "software_only_placeholder",
+        "verified_placeholder",
+        "failed",
+        "blocked_mvp"
+      ]
+    },
+    "worker_attestation_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "update_rollback_ref": {
+      "type": [
+        "string",
+        "null"
       ]
     },
     "evidence_writer_status": {
@@ -480,6 +523,72 @@
             "minLength": 1
           }
         }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "attestation_status": {
+            "enum": [
+              "failed",
+              "expired",
+              "revoked",
+              "blocked_mvp"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "health_state": {
+            "not": {
+              "const": "healthy"
+            }
+          },
+          "operator_action_required": {
+            "const": true
+          },
+          "runbook_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "runbook_ref"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "update_status": {
+            "const": "rollback_needed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "health_state": {
+            "not": {
+              "const": "healthy"
+            }
+          },
+          "operator_action_required": {
+            "const": true
+          },
+          "runbook_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "update_rollback_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "runbook_ref",
+          "update_rollback_ref"
+        ]
       }
     },
     {

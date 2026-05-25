@@ -33,6 +33,8 @@
   "rbac_context_ref": "rbac-context-ref-002",
   "session_policy_ref": "session-policy-ref-002",
   "device_trust_ref": "device-trust-ref-002",
+  "worker_attestation_ref": "worker-attestation-ref-002",
+  "update_rollback_ref": "update-rollback-ref-002",
   "worker_capability_refs": [
     "capability-ref-worker-draft-002"
   ],
