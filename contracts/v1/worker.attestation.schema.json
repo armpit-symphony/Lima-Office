@@ -33,6 +33,9 @@
     "appraisal_policy_refs",
     "attestation_result_ref",
     "device_trust_ref",
+    "lineage_refs",
+    "authority_refs",
+    "revocation_propagation_refs",
     "evidence_refs",
     "reason_codes",
     "policy_version",
@@ -218,6 +221,30 @@
         "null"
       ]
     },
+    "lineage_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "authority_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "revocation_propagation_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
     "reason_codes": {
       "type": "array",
       "items": {
@@ -349,6 +376,28 @@
             "contains": {
               "const": "update_blocked_mvp"
             }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "attestation_status": {
+            "const": "revoked"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "reason_codes": {
+            "minItems": 1,
+            "contains": {
+              "const": "attestation_lineage_revoked"
+            }
+          },
+          "evidence_refs": {
+            "minItems": 1
           }
         }
       }

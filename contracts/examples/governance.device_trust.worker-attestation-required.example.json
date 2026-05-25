@@ -28,6 +28,12 @@
     "ev-worker-attestation-review-required-001"
   ],
   "attestation_result_ref": "attres-worker-001",
+  "lineage_refs": [
+    "attestation.result.lineage:lineage-worker-001-current"
+  ],
+  "authority_refs": [
+    "attestation.authority:authority-verifier-owner-001"
+  ],
   "allowed_permissions": [
     "view_task_queue"
   ],

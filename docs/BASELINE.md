@@ -186,6 +186,7 @@ The following reachable branches are ancestors of the integration branch:
 | `governance-policy-details` | `944088eac5d41d2547ae0343500d3ab591a1256e` | Governance policy docs, runbooks, and governance metadata contracts. |
 | `operator-console-ux-spec` | `bac6f80cc63dd15ec7cd3d669193160c3766a8e1` | Operator console UX specification docs and console metadata contracts. |
 | `durable-replay-evidence-posture` | `7123163482860a93992b4597d49b5231cd5cb34b` | Durable replay/evidence posture docs, schemas, examples, and mock tests. |
+| `attestation-verifier-policy-reference-values-design` | `87976c9` | Attestation reference-value/endorsement/appraisal/result metadata contracts, docs, and mock verifier tests. |
 
 ## Excluded Or Missing Branches
 
@@ -236,6 +237,7 @@ health evidence only; it is not production certification.
 - Closeout archive, runtime boundaries, worker deployment blueprint, governance
   policy details, and operator console UX specification.
 - Worker deployment, governance, and console metadata contracts and examples.
+- Durable attestation lineage/authority metadata contracts and runbook posture.
 
 ## What Does Not Exist
 

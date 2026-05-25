@@ -6,7 +6,7 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
-Current working branch: `attestation-verifier-policy-reference-values-design`
+Current working branch: `durable-attestation-lineage-authority-design`
 
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
@@ -15,15 +15,16 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A attestation verifier policy/reference-value governance
+Current phase: Phase 1A durable attestation lineage and verifier-owner authority
 hardening. Phase 1A mock runtime scaffolding is present, the v2 invariant
 checkpoint and durable replay/evidence, transaction/storage, coordinator,
 linkage, approval/Guardian reconciliation, governance export/delete taxonomy,
 reason-code registry/compatibility, model-routing defaults, and health taxonomy
 checkpoints are reachable. This branch adds fail-closed attestation
-reference-value, endorsement, appraisal-policy, and attestation-result metadata
-contracts/examples/tests, trust-aware model-route linkage, and mock-only
-attestation-verifier governance/runbook hardening.
+reference-value, endorsement, appraisal-policy, attestation-result lineage, and
+verifier-owner authority metadata contracts/examples/tests, trust-aware
+model-route linkage, and mock-only attestation-verifier governance/runbook
+hardening.
 Runtime expansion remains blocked until the remaining gates in this file,
 [Baseline](docs/BASELINE.md), and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md)
 are resolved.
@@ -143,6 +144,13 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
 - `attestation.reference_value`, `attestation.endorsement`,
   `attestation.appraisal_policy`, and `attestation.result` schemas/examples for
   metadata-only appraisal governance and fail-closed attestation result posture.
+- `attestation.result.lineage` and `attestation.authority` schemas/examples for
+  durable attestation-result lineage posture, verifier-owner authority posture,
+  and revocation propagation metadata.
+- Durable lineage/authority docs in
+  [docs/architecture/DURABLE_ATTESTATION_RESULT_LINEAGE.md](docs/architecture/DURABLE_ATTESTATION_RESULT_LINEAGE.md),
+  [docs/governance/VERIFIER_OWNER_AUTHORITY_POLICY.md](docs/governance/VERIFIER_OWNER_AUTHORITY_POLICY.md),
+  and [docs/runbooks/attestation-revocation-propagation.md](docs/runbooks/attestation-revocation-propagation.md).
 - Local Markdown link validation through [scripts/check-doc-links.py](scripts/check-doc-links.py).
 - Phase 1A mock Python runtime scaffolding in [lima_office](lima_office).
 - In-memory worker registry, heartbeat validation, task queue, Guardian policy

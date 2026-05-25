@@ -153,5 +153,6 @@ Every privileged or denied/blocked action path must include:
 - Role/action matrix is represented by `governance.rbac_matrix`.
 - Session posture is represented by `governance.session_policy`.
 - Device trust posture is represented by `governance.device_trust`.
+- Attestation trust authority posture is represented by `attestation.authority`.
 - Access review runbook captures SoD, MFA, session, and device trust evidence.
 - Unknown/ambiguous identity and trust posture fails closed.

@@ -27,6 +27,9 @@
   "policy_refs": [
     "policy.attestation.reference_values.phase1a"
   ],
+  "authority_refs": [
+    "attestation.authority:authority-reference-approver-001"
+  ],
   "evidence_refs": [
     "evidence:artifact:attestation-refv-model-revoked-001"
   ],

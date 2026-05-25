@@ -156,3 +156,11 @@ No model execution is performed.
 - Fail-closed tests cover missing/stale/revoked policy inputs.
 - Model-route privileged metadata paths block on failed attestation appraisal.
 - No runtime attestation/verifier/signature/update behavior is implemented.
+
+## Durable Lineage Extension
+
+Durable lineage and authority hardening is defined in
+[Durable Attestation Result Lineage](DURABLE_ATTESTATION_RESULT_LINEAGE.md) and
+[Verifier Owner Authority Policy](../governance/VERIFIER_OWNER_AUTHORITY_POLICY.md),
+with operator drill posture in
+[Attestation Revocation Propagation](../runbooks/attestation-revocation-propagation.md).

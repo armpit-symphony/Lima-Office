@@ -26,6 +26,8 @@
     "posture_requirements",
     "attestation_refs",
     "attestation_result_ref",
+    "lineage_refs",
+    "authority_refs",
     "allowed_permissions",
     "blocked_permissions",
     "evidence_refs",
@@ -181,6 +183,22 @@
         "string",
         "null"
       ]
+    },
+    "lineage_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "authority_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
     },
     "allowed_permissions": {
       "type": "array",

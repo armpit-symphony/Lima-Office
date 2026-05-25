@@ -23,6 +23,9 @@
   "policy_refs": [
     "policy.attestation.endorsement.phase1a"
   ],
+  "authority_refs": [
+    "attestation.authority:authority-reference-approver-001"
+  ],
   "evidence_refs": [
     "evidence:artifact:attestation-endorsement-revoked-001"
   ],

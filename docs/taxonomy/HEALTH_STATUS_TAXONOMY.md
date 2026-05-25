@@ -75,6 +75,17 @@ Status: taxonomy scaffolding for contracts/tests/docs only.
 - `attestation_result_expired`
 - `attestation_quarantine_required`
 - `attestation_reference_mismatch`
+- `attestation_lineage_stale`
+- `attestation_lineage_revoked`
+- `attestation_lineage_conflicted`
+- `attestation_result_trust_conflict`
+- `revocation_propagation_pending`
+- `revocation_propagation_failed`
+- `verifier_authority_missing`
+- `verifier_authority_revoked`
+- `reference_authority_missing`
+- `endorsement_authority_missing`
+- `quarantine_clearance_sod_required`
 - `health_unknown`
 - `health_degraded`
 - `health_blocked`

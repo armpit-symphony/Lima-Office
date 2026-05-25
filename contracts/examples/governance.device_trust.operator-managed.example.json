@@ -26,6 +26,10 @@
   ],
   "attestation_refs": [],
   "attestation_result_ref": null,
+  "lineage_refs": [],
+  "authority_refs": [
+    "attestation.authority:authority-verifier-owner-001"
+  ],
   "allowed_permissions": [
     "view_supervisor_health",
     "view_worker_fleet",

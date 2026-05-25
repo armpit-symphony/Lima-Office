@@ -26,6 +26,7 @@
     "applies_to_deployment_ids",
     "approved_by_ref",
     "policy_refs",
+    "authority_refs",
     "evidence_refs",
     "reason_codes",
     "policy_version",
@@ -172,6 +173,14 @@
       ]
     },
     "policy_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "authority_refs": {
       "type": "array",
       "items": {
         "type": "string",

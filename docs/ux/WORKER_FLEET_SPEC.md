@@ -64,6 +64,8 @@ Show attestation status:
 Also show trust-root posture metadata (`trust_root_status`) and
 `worker_attestation_ref`.
 When present, also show `attestation_result_ref` and `appraisal_policy_ref`.
+When present, also show `lineage_refs`, `authority_refs`, and
+`revocation_propagation_refs` from trust records.
 
 Attestation absence is weak lab trust only and cannot permit automated
 re-enrollment or privileged work.
@@ -107,4 +109,5 @@ Each worker detail links to:
 - [Worker attestation failure](../runbooks/worker-attestation-failure.md)
 - [Worker attestation review](../runbooks/worker-attestation-review.md)
 - [Attestation verifier review](../runbooks/attestation-verifier-review.md)
+- [Attestation revocation propagation](../runbooks/attestation-revocation-propagation.md)
 - [Signed update rollback review](../runbooks/signed-update-rollback-review.md)

@@ -1,0 +1,60 @@
+{
+  "contract_name": "console.alert",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant_acme",
+  "customer_context_id": "cust_acme_primary",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-alert-attestation-propagation-001",
+  "causation_id": "lineage-worker-002-revoked",
+  "idempotency_key": "idem-alert-attestation-propagation-001",
+  "alert_id": "alert-attestation-propagation-001",
+  "actor_ref": "operator-security-reviewer-001",
+  "role": "security_reviewer",
+  "health_domain": "worker",
+  "alert_type": "revocation_propagation_pending",
+  "health_reason_codes": [
+    "attestation_lineage_revoked",
+    "revocation_propagation_pending",
+    "health_blocked"
+  ],
+  "severity": "blocked",
+  "related_contract_refs": [
+    "attestation.result.lineage:lineage-worker-002-revoked",
+    "governance.device_trust:dtrust-worker-002",
+    "model.route:route-worker-002-03"
+  ],
+  "policy_refs": [
+    "policy.attestation.lineage.phase1a",
+    "policy.worker_quarantine_reenrollment.phase0"
+  ],
+  "risk_tier": "blocked",
+  "status": "blocked",
+  "runbook_ref": "runbook.attestation-revocation-propagation",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-24T23:35:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "reason_codes": [
+    "attestation_lineage_revoked",
+    "revocation_propagation_pending"
+  ],
+  "reason_code_registry_refs": [
+    "reason.code.registry:attestation_lineage_revoked",
+    "reason.code.registry:revocation_propagation_pending"
+  ],
+  "unknown_reason_code_policy": "fail_closed",
+  "deprecated_reason_code_policy": "allow_with_warning",
+  "reason_code_status": "active",
+  "evidence_refs": [
+    "evidence:artifact:attestation-propagation-alert-001"
+  ],
+  "blocked_reason": "Attestation revocation propagation is still pending for privileged worker posture.",
+  "model_route_id": "route-worker-002-03",
+  "route_mode": "mock_only",
+  "route_status": "denied",
+  "operator_visible": true,
+  "created_at": "2026-05-24T23:35:00Z"
+}

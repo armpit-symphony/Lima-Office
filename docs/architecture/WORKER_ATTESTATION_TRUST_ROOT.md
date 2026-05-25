@@ -79,3 +79,7 @@ Mapped in this lane to `worker.attestation`, `worker.lifecycle`,
 2. Verifier/appraisal implementation and evidence integrity checks.
 3. Durable storage for attestation history and revocation lineage.
 4. Runtime-enforced quarantine/re-enrollment automation.
+
+Durable lineage and authority roles are further defined in
+[Durable Attestation Result Lineage](DURABLE_ATTESTATION_RESULT_LINEAGE.md) and
+[Verifier Owner Authority Policy](../governance/VERIFIER_OWNER_AUTHORITY_POLICY.md).

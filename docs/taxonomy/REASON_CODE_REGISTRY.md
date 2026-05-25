@@ -113,6 +113,20 @@ codes:
 - `attestation_quarantine_required`
 - `attestation_reference_mismatch`
 
+Durable attestation lineage/authority hardening adds canonical reason codes:
+
+- `attestation_lineage_stale`
+- `attestation_lineage_revoked`
+- `attestation_lineage_conflicted`
+- `revocation_propagation_pending`
+- `revocation_propagation_failed`
+- `verifier_authority_missing`
+- `verifier_authority_revoked`
+- `reference_authority_missing`
+- `endorsement_authority_missing`
+- `quarantine_clearance_sod_required`
+- `attestation_result_trust_conflict`
+
 Reference snapshot:
 [contracts/taxonomy/reason-code-registry.catalog.json](../../contracts/taxonomy/reason-code-registry.catalog.json).
 

@@ -164,6 +164,21 @@ These contracts remain docs/tests/mock metadata only. No TPM quote handling, no
 certificate/signature validation service, no verifier daemon, and no runtime
 authorization expansion are implemented.
 
+## Durable Attestation Lineage and Authority Hardening
+
+Phase 1A now adds metadata-only lineage/authority contracts:
+
+- `attestation.result.lineage` for current/stale/revoked/conflicted/quarantine
+  trust lineage posture, revocation propagation status, and cross-contract refs
+  (worker/device/model-route/update/transaction/ledger).
+- `attestation.authority` for verifier-owner/reference-approver/endorsement
+  reviewer/device-trust reviewer lifecycle posture, assurance/MFA/device-trust
+  requirements, and SoD-bound quarantine-clearance gating.
+
+Related contracts now carry optional lineage/authority refs so trust posture can
+be correlated across attestation, device trust, and model route records without
+adding runtime authorization behavior.
+
 ## Governance Export/Delete Taxonomy Hardening
 
 Phase 1A now includes:

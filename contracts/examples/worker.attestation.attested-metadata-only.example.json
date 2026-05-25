@@ -34,6 +34,15 @@
   ],
   "attestation_result_ref": "attres-worker-001",
   "device_trust_ref": "device-trust-worker-arc-001",
+  "lineage_refs": [
+    "attestation.result.lineage:lineage-worker-001-current"
+  ],
+  "authority_refs": [
+    "attestation.authority:authority-verifier-owner-001"
+  ],
+  "revocation_propagation_refs": [
+    "evidence.ledger.entry:ledger-propagation-worker-001"
+  ],
   "evidence_refs": [
     "ev-worker-attestation-attested-001"
   ],

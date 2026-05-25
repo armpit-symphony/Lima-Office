@@ -292,6 +292,12 @@ The Phase 0 field-level schemas in [contracts/v1](../contracts/v1) define the mi
   `update_rollback_ref`) so trust drift blocks privileged routing metadata.
   It explicitly blocks live provider calls and local inference execution in
   Phase 1A metadata lanes.
+- Attestation lineage/authority:
+  [attestation.result.lineage.schema.json](../contracts/v1/attestation.result.lineage.schema.json)
+  and
+  [attestation.authority.schema.json](../contracts/v1/attestation.authority.schema.json)
+  bind verifier-owner/reference-approver metadata, revocation propagation
+  posture, and fail-closed trust-effect transitions.
 - Tool invocation: [tool.invocation.schema.json](../contracts/v1/tool.invocation.schema.json) requires tool pack/version, sandbox profile, side-effect class, file/network/connector scope, dry-run posture, approval token/binding linkage where needed, and evidence.
 - Memory access: [memory.access.schema.json](../contracts/v1/memory.access.schema.json) requires tenant namespace, purpose, retention class, delete/export posture, prompt-injection scan state, and `cross_tenant_access: false`.
 - Connector trust: [connector.trust.schema.json](../contracts/v1/connector.trust.schema.json) is mock/readiness-only in Phase 0 with `mock_only: true`, `live_access_enabled: false`, `secret_material_present: false`, consent/scope review posture, and revocation state.

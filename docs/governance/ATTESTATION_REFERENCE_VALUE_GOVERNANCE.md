@@ -79,3 +79,6 @@ Each class must preserve evidence linkage and revocation trail.
 - Revoked/deprecated trust metadata in privileged paths: blocked or quarantine.
 - Blocked-MVP states cannot be interpreted as trusted.
 - No live update distribution, signing service, verifier service, or TPM runtime.
+
+Verifier-owner and authority lifecycle controls are expanded in
+[Verifier Owner Authority Policy](VERIFIER_OWNER_AUTHORITY_POLICY.md).

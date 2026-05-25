@@ -24,6 +24,7 @@
     "valid_from",
     "valid_until",
     "policy_refs",
+    "authority_refs",
     "evidence_refs",
     "reason_codes",
     "policy_version",
@@ -150,6 +151,14 @@
       "format": "date-time"
     },
     "policy_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "authority_refs": {
       "type": "array",
       "items": {
         "type": "string",

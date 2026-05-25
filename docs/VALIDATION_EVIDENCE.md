@@ -5,7 +5,7 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `attestation-verifier-policy-reference-values-design` on Windows with
+Latest captured run: `durable-attestation-lineage-authority-design` on Windows with
 Python 3.12.10.
 
 ## Canonical Integration Branch
@@ -37,6 +37,8 @@ Python 3.12.10.
   `worker-attestation-trust-root-signed-update-rollback-hardening`
 - Attestation verifier/reference-value governance branch:
   `attestation-verifier-policy-reference-values-design`
+- Durable attestation lineage/authority branch:
+  `durable-attestation-lineage-authority-design`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -474,3 +476,26 @@ tests satisfy the repository checks. It does not prove:
 - Customer exit/delete readiness.
 - LIMA IT separation of duties.
 - Real remediation readiness.
+
+## Latest Run: Durable Attestation Lineage Authority Lane
+
+Date: 2026-05-24 (local workspace run)
+
+- `python scripts/validate-contracts.py --require-jsonschema --check-formats --warnings-as-errors`: PASS
+  - schemas parsed: 52
+  - examples parsed: 149
+  - failures: 0, warnings: 0
+- `python scripts/check-reason-codes.py`: PASS
+  - schemas scanned: 52
+  - examples scanned: 149
+  - failures: 0, warnings: 0
+- `python scripts/check-doc-links.py`: PASS
+  - markdown files scanned: 123
+  - failures: 0
+- `python -B -m unittest discover -s tests -v` (from repo root): PASS
+  - 299 tests, OK
+- `python -m pytest -q`: PASS
+  - 299 passed, 1 warning, 185 subtests passed
+- `python -B -m compileall lima_office scripts tests`: PASS
+- `git diff --check`: PASS with LF/CRLF normalization warnings only
+- `git diff --cached --check`: PASS

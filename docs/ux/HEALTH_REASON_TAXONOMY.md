@@ -79,3 +79,22 @@ implementation. Phase 1A v2 uses these codes in metadata-only
 - Registry versioning/deprecation/alias handling is defined in
   [Reason Code Registry](../taxonomy/REASON_CODE_REGISTRY.md) and
   [Reason Code Compatibility Policy](../taxonomy/REASON_CODE_COMPATIBILITY_POLICY.md).
+
+## Attestation Lineage Additions
+
+The attestation-lineage authority lane adds these health/alert codes:
+
+- `attestation_lineage_stale`
+- `attestation_lineage_revoked`
+- `attestation_lineage_conflicted`
+- `attestation_result_trust_conflict`
+- `revocation_propagation_pending`
+- `revocation_propagation_failed`
+- `verifier_authority_missing`
+- `verifier_authority_revoked`
+- `reference_authority_missing`
+- `endorsement_authority_missing`
+- `quarantine_clearance_sod_required`
+
+These remain metadata-only, fail-closed governance signals. They do not
+authorize runtime actions.

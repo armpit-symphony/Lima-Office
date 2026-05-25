@@ -36,6 +36,9 @@
     "model_route_select"
   ],
   "approved_by_ref": null,
+  "authority_refs": [
+    "attestation.authority:authority-verifier-owner-001"
+  ],
   "evidence_refs": [
     "evidence:artifact:attestation-appraisal-policy-blocked-001"
   ],

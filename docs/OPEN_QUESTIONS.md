@@ -283,6 +283,12 @@ Resolved in [Phase 1A Runtime Scaffolding](PHASE_1A_RUNTIME_SCAFFOLDING.md):
   are implemented?
 - What operator identity provider and MFA level should be assumed for approval and token verification?
 - What worker attestation method should be used before re-enrollment can be automated?
+- What durable storage and reconciliation model should back `attestation.result.lineage`
+  and `attestation.authority` before privileged runtime trust decisions are implemented?
+- What revocation propagation SLA and monotonic revocation-generation policy
+  should be required for lineage records?
+- What authority attestation (verifier-owner/reference-approver/reviewer)
+  lifecycle proofs are required for audit/export posture?
 - Should any future breakglass implementation be allowed beyond the current
   blocked placeholder, and which actions remain blocked during breakglass?
 - If LIMA IT remediation is reviewed after MVP, who is the independent approver

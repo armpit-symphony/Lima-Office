@@ -64,7 +64,10 @@ Attestation posture is recorded in:
 - [attestation.endorsement.schema.json](../../contracts/v1/attestation.endorsement.schema.json)
 - [attestation.appraisal_policy.schema.json](../../contracts/v1/attestation.appraisal_policy.schema.json)
 - [attestation.result.schema.json](../../contracts/v1/attestation.result.schema.json)
+- [attestation.result.lineage.schema.json](../../contracts/v1/attestation.result.lineage.schema.json)
+- [attestation.authority.schema.json](../../contracts/v1/attestation.authority.schema.json)
 - [Attestation Reference Value Governance](ATTESTATION_REFERENCE_VALUE_GOVERNANCE.md)
+- [Verifier Owner Authority Policy](VERIFIER_OWNER_AUTHORITY_POLICY.md)
 
 ## Failed Attestation Behavior
 

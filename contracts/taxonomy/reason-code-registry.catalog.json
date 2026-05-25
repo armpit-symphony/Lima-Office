@@ -191,6 +191,61 @@
       "reason_code": "attestation_reference_mismatch",
       "category": "linkage",
       "status": "active"
+    },
+    {
+      "reason_code": "attestation_lineage_stale",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_lineage_revoked",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_lineage_conflicted",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "revocation_propagation_pending",
+      "category": "transaction",
+      "status": "active"
+    },
+    {
+      "reason_code": "revocation_propagation_failed",
+      "category": "transaction",
+      "status": "active"
+    },
+    {
+      "reason_code": "verifier_authority_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "verifier_authority_revoked",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "reference_authority_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "endorsement_authority_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "quarantine_clearance_sod_required",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_result_trust_conflict",
+      "category": "linkage",
+      "status": "active"
     }
   ],
   "notes": [

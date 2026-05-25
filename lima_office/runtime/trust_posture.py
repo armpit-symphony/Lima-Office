@@ -9,7 +9,7 @@ from lima_office.runtime.taxonomy import validate_reason_codes, validate_taxonom
 
 
 BLOCKING_ATTESTATION_STATUSES = frozenset({"failed", "expired", "revoked", "blocked_mvp"})
-BLOCKING_TRUST_ROOT_STATUSES = frozenset({"failed", "blocked_mvp"})
+BLOCKING_TRUST_ROOT_STATUSES = frozenset({"unknown", "failed", "blocked_mvp"})
 BLOCKING_UPDATE_STATUSES = frozenset({"failed", "rolled_back", "blocked_mvp"})
 BLOCKING_VERIFICATION_CODES = frozenset(
     {

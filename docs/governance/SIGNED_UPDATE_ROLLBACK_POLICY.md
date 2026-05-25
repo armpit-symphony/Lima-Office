@@ -128,6 +128,8 @@ Operator or reviewer approval is required for:
 ## Acceptance Gates
 
 - `governance.update_record` can represent update and rollback posture.
+- `update.rollback` and `attestation.result.lineage` can represent rollback to
+  attestation trust propagation linkage.
 - Update/rollback runbook exists.
 - Signed/verified source format is marked open.
 - Known-good, rollback trigger, approval, evidence, and quarantine behavior are

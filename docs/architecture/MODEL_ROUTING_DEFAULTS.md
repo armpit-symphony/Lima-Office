@@ -97,6 +97,12 @@ Route records must include:
 - tenant/correlation IDs
 - trust posture references (RBAC/session/device) when relevant
 - attestation appraisal/result references for privileged routes
+- attestation lineage/authority/revocation propagation refs when present
+
+Lineage or authority conflict reason codes (for example
+`attestation_lineage_revoked`, `revocation_propagation_pending`,
+`verifier_authority_revoked`) must map to `denied`, `blocked_mvp`, or
+`unavailable`, never `selected`.
 
 ## Acceptance Gates Before Implementation
 

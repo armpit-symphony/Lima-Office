@@ -266,6 +266,10 @@ Prerequisites:
 - Approval/Guardian reconciliation drill contracts/tests exist, but durable
   reconciliation services, durable replay/transaction storage, and operator
   automation remain explicitly deferred.
+- Attestation result lineage and verifier-owner authority contracts/runbook
+  exist, but durable attestation storage, authority service integration,
+  revocation automation, and quarantine-clearance automation are explicitly
+  deferred.
 - Health reason taxonomy is defined.
 - Durable evidence/export posture is defined.
 - Durable memory retention, delete/export, raw-content, and customer exit
