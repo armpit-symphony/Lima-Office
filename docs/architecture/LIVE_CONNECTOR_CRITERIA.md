@@ -134,3 +134,8 @@ Additional pre-live requirements now include:
 - explicit provider profile linkage in readiness/scope/consent/invocation paths
 - explicit drill evidence for revocation/disable/cross-tenant/prompt-injection
   fail-closed outcomes
+
+Connector-path reconciliation is now further hardened by
+[Connector Trust-Boundary Linkage Invariants](../CONNECTOR_TRUST_BOUNDARY_LINKAGE_INVARIANTS.md)
+and its companion runbook. These remain metadata-only controls and do not
+authorize live connector behavior.

@@ -240,6 +240,9 @@ required before any future lab-live connector implementation lane.
 and [Connector Revocation Disable Drills](CONNECTOR_REVOCATION_DISABLE_DRILLS.md)
 extend this posture with provider-specific risk levels, disable-switch and
 revocation verification placeholders, and fail-closed drill evidence linkage.
+[Connector Trust-Boundary Linkage Invariants](CONNECTOR_TRUST_BOUNDARY_LINKAGE_INVARIANTS.md)
+adds fail-closed reconciliation drift classes across provider/readiness/scope/
+trust/consent/revocation/invocation/approval/Guardian/evidence records.
 No connector provider integration, token runtime, or external API calls are
 implemented.
 
@@ -327,6 +330,11 @@ The Phase 0 field-level schemas in [contracts/v1](../contracts/v1) define the mi
   define metadata-only lifecycle/readiness gates, least-privilege review,
   object/property authorization mapping, blocked-MVP connector classes, and
   fail-closed reason/evidence posture.
+- Connector reconciliation:
+  [connector.reconciliation.schema.json](../contracts/v1/connector.reconciliation.schema.json)
+  defines metadata-only reconciled/drift/revocation-pending/action-blocked/
+  failed-closed posture across provider/readiness/scope/trust/consent/
+  revocation-drill/tool/approval/Guardian/evidence refs.
 - Evidence artifact: [evidence.artifact.schema.json](../contracts/v1/evidence.artifact.schema.json) defines redaction, retention, payload/integrity refs, export/delete posture, access-control refs, and evidence chain metadata.
 - Evidence failure: [evidence.failure.schema.json](../contracts/v1/evidence.failure.schema.json) records pre-action blocks, post-action degraded state, emergency spool refs, reconciliation, incidents, and quarantine/token-revoke posture.
 - Evidence export manifest:

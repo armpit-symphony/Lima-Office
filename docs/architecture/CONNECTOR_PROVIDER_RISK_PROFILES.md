@@ -132,3 +132,8 @@ Provider risk posture transitions must include evidence refs for:
 - Consent/scope/readiness/trust/invocation/Guardian linkages are tested for
   drift detection.
 - Live connector execution remains blocked until future approved runtime lanes.
+
+Connector drift detection is further normalized by
+[Connector Trust-Boundary Linkage Invariants](../CONNECTOR_TRUST_BOUNDARY_LINKAGE_INVARIANTS.md),
+which adds reconciliation status + drift-class posture across provider and
+connector governance records.

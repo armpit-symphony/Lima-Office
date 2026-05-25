@@ -1,0 +1,48 @@
+{
+  "contract_name": "console.alert",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-console-alert-connector-reconcile-001",
+  "causation_id": "corr-connector-reconcile-002",
+  "idempotency_key": "idem-console-alert-connector-reconcile-001",
+  "alert_id": "alert-connector-reconcile-001",
+  "actor_ref": "operator-security-001",
+  "role": "security_reviewer",
+  "health_domain": "connector",
+  "alert_type": "connector_scope_overbroad",
+  "health_reason_codes": [
+    "connector_reconciliation_drift",
+    "scope_overbroad_but_invocation_requested"
+  ],
+  "severity": "blocked",
+  "related_contract_refs": [
+    "connector.reconciliation:connector-reconcile-003",
+    "connector.scope_review:connector-scope-review-overbroad-001",
+    "tool.invocation:tool-invocation-connector-write-001"
+  ],
+  "policy_refs": [
+    "policy.connector_consent_scope_revocation.phase0"
+  ],
+  "risk_tier": "blocked",
+  "status": "active",
+  "runbook_ref": "runbook:connector-trust-boundary-reconciliation-drill",
+  "producer": {
+    "component": "operator_console",
+    "produced_at": "2026-05-25T22:45:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "evidence_refs": [
+    "ev-console-alert-connector-reconcile-001"
+  ],
+  "operator_visible": true,
+  "blocked_reason": "scope overbroad while invocation requested",
+  "reason_codes": [
+    "connector_reconciliation_drift",
+    "scope_overbroad_but_invocation_requested"
+  ],
+  "created_at": "2026-05-25T22:45:00Z"
+}

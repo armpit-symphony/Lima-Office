@@ -216,6 +216,20 @@ operations, customer-system mutation, or compliance certification claims.
   token storage/runtime, external API calls, browser automation, remediation
   execution, or runtime authorization expansion are authorized.
 
+## Connector Trust-Boundary Linkage Invariants Checkpoint
+
+- Branch: `connector-trust-boundary-linkage-invariants`
+- Base: `connector-provider-risk-profile-revocation-disable-drills`
+- Purpose: define and test fail-closed cross-contract connector reconciliation
+  invariants so provider profile, consent, scope review, readiness, trust,
+  revocation drill, tool invocation, approval binding, Guardian decision, and
+  evidence references cannot drift while appearing individually valid.
+- Scope: docs, schemas, examples, tests, and a mock-only connector
+  reconciliation helper. No live connectors, OAuth/OIDC/SAML/provider wiring,
+  token storage/runtime, external API calls, external sends, browser
+  automation, remediation execution, durable storage implementation, or runtime
+  authorization expansion are authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:
@@ -288,6 +302,8 @@ health evidence only; it is not production certification.
 - Durable attestation lineage/authority metadata contracts and runbook posture.
 - Attestation revocation reconciliation drill docs/contracts/examples and
   mock-only fail-closed reconciliation helper/tests.
+- Connector trust-boundary linkage invariant docs/contracts/examples and
+  mock-only fail-closed reconciliation helper/tests.
 
 ## What Does Not Exist
 
@@ -320,11 +336,10 @@ closes the relevant gates:
 
 Recommended order after stabilization:
 
-1. Coordinator/reconciliation invariant hardening and cross-contract
-   transition-gating details for replay/token/evidence/export metadata.
-2. Final RBAC/IdP/MFA/session/device trust matrix.
-3. Model-routing defaults and health taxonomy refinement.
-4. Phase 1B lab runtime expansion only after the gates above are approved.
+1. Connector provider acceptance scoring and revocation-propagation cadence
+   design (docs/contracts/tests only).
+2. Final connector review authority model and escalation ownership matrix.
+3. Phase 1B lab runtime expansion only after the gates above are approved.
 
 Alternative non-runtime lanes:
 

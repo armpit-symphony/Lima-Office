@@ -1447,6 +1447,10 @@
             "type": "string",
             "minLength": 1
           },
+          "connector_revocation_drill_ref": {
+            "type": "string",
+            "minLength": 1
+          },
           "decision": {
             "enum": [
               "deny",

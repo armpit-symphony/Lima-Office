@@ -5,7 +5,7 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `connector-provider-risk-profile-revocation-disable-drills` on Windows with Python
+Latest captured run: `connector-trust-boundary-linkage-invariants` on Windows with Python
 3.12.10.
 
 ## Canonical Integration Branch
@@ -45,6 +45,8 @@ Latest captured run: `connector-provider-risk-profile-revocation-disable-drills`
   `live-connector-criteria-design`
 - Connector provider risk profile and revocation disable drills branch:
   `connector-provider-risk-profile-revocation-disable-drills`
+- Connector trust-boundary linkage invariants branch:
+  `connector-trust-boundary-linkage-invariants`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -189,6 +191,19 @@ Validation remains repository health evidence only; it does not approve live
 connector implementation, OAuth/OIDC/SAML/provider wiring, token handling
 runtime, external API calls, external sends, browser automation, remediation
 execution, or runtime authorization expansion.
+
+## Connector Trust-Boundary Linkage Invariants Checkpoint
+
+This branch adds connector trust-boundary reconciliation drill design docs and
+runbook posture, a new `connector.reconciliation` contract with sanitized
+examples, fail-closed linkage updates across connector invocation/approval/
+Guardian/consent/alert/health contracts, connector reconciliation reason-code
+registry updates, and a mock-only reconciliation helper with drift-detection
+tests.
+Validation remains repository health evidence only; it does not approve live
+connector implementation, OAuth/OIDC/SAML/provider wiring, token runtime,
+external API calls, external sends, browser automation, remediation execution,
+or runtime authorization expansion.
 
 ## Cross-Contract Linkage Hardening Checkpoint
 
@@ -548,6 +563,29 @@ Date: 2026-05-25 (local workspace run)
   - 314 tests, OK
 - `python -m pytest -q`: PASS
   - 314 passed, 1 warning, 191 subtests passed
+- `python -B -m compileall lima_office scripts tests`: PASS
+- `git diff --check`: PASS with LF/CRLF normalization warnings only
+- `git diff --cached --check`: PASS
+
+## Latest Run: Connector Trust-Boundary Linkage Invariants Lane
+
+Date: 2026-05-25 (local workspace run)
+
+- `python scripts/validate-contracts.py --require-jsonschema --check-formats --warnings-as-errors`: PASS
+  - schemas parsed: 58
+  - examples parsed: 181
+  - failures: 0, warnings: 0
+- `python scripts/check-reason-codes.py`: PASS
+  - schemas scanned: 58
+  - examples scanned: 181
+  - failures: 0, warnings: 0
+- `python scripts/check-doc-links.py`: PASS
+  - markdown files scanned: 133
+  - failures: 0
+- `python -B -m unittest discover -s tests -v` (from repo root): PASS
+  - 353 tests, OK
+- `python -m pytest -q`: PASS
+  - 353 passed, 1 warning, 217 subtests passed
 - `python -B -m compileall lima_office scripts tests`: PASS
 - `git diff --check`: PASS with LF/CRLF normalization warnings only
 - `git diff --cached --check`: PASS

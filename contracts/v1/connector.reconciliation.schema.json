@@ -1,0 +1,368 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/connector.reconciliation.schema.json",
+  "title": "Connector Reconciliation Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "policy_version",
+    "connector_reconciliation_id",
+    "connector_id",
+    "provider_profile_id",
+    "connector_readiness_id",
+    "scope_review_id",
+    "connector_trust_id",
+    "connector_consent_id",
+    "revocation_drill_id",
+    "tool_invocation_id",
+    "approval_binding_id",
+    "guardian_decision_id",
+    "reconciliation_status",
+    "drift_classes",
+    "reason_codes",
+    "evidence_refs",
+    "created_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "connector.reconciliation"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "security_reviewer",
+            "operator_console",
+            "guardian"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "connector_reconciliation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "connector_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider_profile_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "connector_readiness_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scope_review_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "connector_trust_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "connector_consent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "revocation_drill_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tool_invocation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approval_binding_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "guardian_decision_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reconciliation_status": {
+      "type": "string",
+      "enum": [
+        "reconciled",
+        "drift_detected",
+        "revocation_pending",
+        "action_blocked",
+        "failed_closed",
+        "blocked_mvp"
+      ]
+    },
+    "drift_classes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "consent_revoked_but_readiness_approved",
+          "scope_overbroad_but_invocation_requested",
+          "provider_critical_but_ready",
+          "revocation_drill_failed_but_connector_enabled",
+          "disable_switch_missing_but_ready",
+          "outbound_action_missing_approval",
+          "tainted_connector_payload_used_for_tool",
+          "connector_cross_tenant_linkage",
+          "connector_evidence_missing",
+          "connector_trust_revoked_but_guardian_allow"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "resolved_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "const": "reconciled"
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "drift_classes": {
+            "maxItems": 0
+          },
+          "reason_codes": {
+            "contains": {
+              "const": "approved"
+            }
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "const": "drift_detected"
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "drift_classes": {
+            "minItems": 1
+          },
+          "reason_codes": {
+            "minItems": 1,
+            "contains": {
+              "const": "connector_reconciliation_drift"
+            }
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "const": "revocation_pending"
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "revocation_drill_id": {
+            "minLength": 1
+          },
+          "reason_codes": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "const": "action_blocked"
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason_codes": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "const": "failed_closed"
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason_codes": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "const": "blocked_mvp"
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason_codes": {
+            "contains": {
+              "const": "connector_live_blocked_mvp"
+            }
+          },
+          "drift_classes": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
+}

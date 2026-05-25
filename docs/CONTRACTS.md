@@ -224,6 +224,26 @@ live connectors, OAuth/OIDC/provider wiring, token storage, API clients,
 external sends, browser automation, remediation execution, or runtime
 authorization expansion.
 
+## Connector Trust-Boundary Reconciliation Hardening
+
+Phase 1A now adds metadata-only connector reconciliation posture:
+
+- `connector.reconciliation` for reconciled/drift/revocation-pending/
+  action-blocked/failed-closed/blocked-MVP status across provider/readiness/
+  scope/trust/consent/revocation-drill/tool/approval/Guardian/evidence links.
+- Drift classes for consent revoked while ready, scope overbroad while
+  invocation requested, provider critical while ready, failed revocation drill
+  while enabled, missing disable switch while ready, outbound action missing
+  approval linkage, tainted connector payload use, cross-tenant linkage,
+  missing evidence, and trust-revoked while Guardian allow posture.
+- Connector path linkage now requires `connector_revocation_drill_ref` for
+  connector access conditions in `tool.invocation`, `approval.binding`, and
+  `guardian.decision`.
+
+This remains docs/contracts/tests/mock-only hardening and does not implement
+live connector execution, OAuth/token handling, external API calls, or runtime
+authorization expansion.
+
 ## Governance Export/Delete Taxonomy Hardening
 
 Phase 1A now includes:

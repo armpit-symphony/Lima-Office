@@ -118,6 +118,61 @@
       "status": "active"
     },
     {
+      "reason_code": "connector_reconciliation_drift",
+      "category": "reconciliation",
+      "status": "active"
+    },
+    {
+      "reason_code": "consent_revoked_but_ready",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "scope_overbroad_but_invocation_requested",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "provider_critical_but_ready",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "revocation_drill_failed_but_enabled",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "disable_switch_missing_but_ready",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "outbound_missing_approval",
+      "category": "guardian",
+      "status": "active"
+    },
+    {
+      "reason_code": "tainted_connector_payload_blocked",
+      "category": "guardian",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_cross_tenant_linkage",
+      "category": "tenant_isolation",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_evidence_missing",
+      "category": "evidence",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_trust_revoked_but_allowed",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
       "reason_code": "model_route_unavailable",
       "category": "health",
       "status": "active"

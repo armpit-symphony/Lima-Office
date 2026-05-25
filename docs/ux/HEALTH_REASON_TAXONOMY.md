@@ -83,6 +83,17 @@ The connector provider-risk lane adds these fail-closed connector codes:
 - `connector_outbound_capability_blocked`
 - `connector_prompt_injection_blocked`
 - `connector_cross_tenant_blocked`
+- `connector_reconciliation_drift`
+- `consent_revoked_but_ready`
+- `scope_overbroad_but_invocation_requested`
+- `provider_critical_but_ready`
+- `revocation_drill_failed_but_enabled`
+- `disable_switch_missing_but_ready`
+- `outbound_missing_approval`
+- `tainted_connector_payload_blocked`
+- `connector_cross_tenant_linkage`
+- `connector_evidence_missing`
+- `connector_trust_revoked_but_allowed`
 
 Primary records: `connector.provider_profile`, `connector.revocation_drill`,
 `connector.readiness`, `connector.scope_review`, `console.alert`,

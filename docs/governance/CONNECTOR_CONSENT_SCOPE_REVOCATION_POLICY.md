@@ -15,6 +15,7 @@ Related design references:
 - [Live Connector Criteria](../architecture/LIVE_CONNECTOR_CRITERIA.md)
 - [Connector Provider Risk Profiles](../architecture/CONNECTOR_PROVIDER_RISK_PROFILES.md)
 - [Connector Revocation Disable Drills](../CONNECTOR_REVOCATION_DISABLE_DRILLS.md)
+- [Connector Trust-Boundary Linkage Invariants](../CONNECTOR_TRUST_BOUNDARY_LINKAGE_INVARIANTS.md)
 - [Live Connector Readiness Review](../runbooks/live-connector-readiness-review.md)
 
 ## Connector Consent Model
@@ -151,3 +152,5 @@ The following remain blocked:
 - Revocation creates evidence.
 - Missing consent, unknown scope, secret exposure, or prompt-injection
   unresolved state fails closed.
+- Revoked consent must reconcile with readiness/trust/revocation-drill posture;
+  conflicting states are treated as reconciliation drift and fail closed.

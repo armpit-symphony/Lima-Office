@@ -68,6 +68,10 @@ Each drill result must carry:
 - supervisor health surface for connector risk degradation
 - traceability from drill result to readiness/scope/consent/trust records
 
+Cross-contract reconciliation output is tracked by
+`connector.reconciliation` records and linked operator drill posture in
+[Connector Trust-Boundary Reconciliation Drill](runbooks/connector-trust-boundary-reconciliation-drill.md).
+
 ## MVP Non-Goals
 
 - no live connector implementation

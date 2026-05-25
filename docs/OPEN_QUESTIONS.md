@@ -185,6 +185,13 @@ documents the reachable v2 checkpoint that supersedes it.
   `scope_revocation`, `token_rotation_placeholder`, `prompt_injection_block`,
   `cross_tenant_block`) is required before any provider can be considered for
   future implementation lanes?
+- Connector reconciliation source of truth: should
+  `connector.reconciliation` be emitted from readiness/trust state transitions,
+  from tool invocation review, or from a dedicated reconciliation owner in
+  future durable mode?
+- Connector drift propagation SLO: what maximum propagation window is allowed
+  between consent/scope/provider risk changes and `connector.reconciliation`
+  `failed_closed` visibility in `console.alert` and `supervisor.health`?
 - Model routing defaults: what tasks can use local models, what tasks can use
   subscription/cloud model classes, and what data classifications block cloud
   routing?

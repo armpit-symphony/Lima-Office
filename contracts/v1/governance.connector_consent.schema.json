@@ -445,6 +445,31 @@
               "blocked"
             ]
           },
+          "revocation": {
+            "properties": {
+              "revocation_status": {
+                "const": "revoked"
+              },
+              "revoked_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "revoked_by_ref": {
+                "type": "string",
+                "minLength": 1
+              },
+              "revocation_evidence_ref": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "revocation_status",
+              "revoked_at",
+              "revoked_by_ref",
+              "revocation_evidence_ref"
+            ]
+          },
           "reason_codes": {
             "contains": {
               "const": "connector_revoked"

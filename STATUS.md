@@ -6,7 +6,7 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
-Current working branch: `connector-provider-risk-profile-revocation-disable-drills`
+Current working branch: `connector-trust-boundary-linkage-invariants`
 
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
@@ -15,18 +15,19 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A connector provider-risk and revocation/disable drill hardening. Phase 1A mock
+Current phase: Phase 1A connector trust-boundary linkage invariant hardening. Phase 1A mock
 runtime scaffolding is present, the v2 invariant checkpoint and durable
 replay/evidence, transaction/storage, coordinator, linkage, approval/Guardian
 reconciliation, governance export/delete taxonomy, reason-code
 registry/compatibility, model-routing defaults, health taxonomy, attestation
 verifier/reference-value, durable attestation lineage/authority, and
 attestation revocation reconciliation checkpoints are reachable. The previous
-branch added fail-closed connector readiness/scope-review metadata
-contracts/examples and live-connector criteria docs/runbook posture. This lane
-adds provider-risk profile and revocation/disable drill metadata contracts,
-examples, runbook posture, and mock-only connector risk classification
-hardening.
+branches added fail-closed connector readiness/scope-review/provider-risk/
+revocation-drill metadata contracts/examples and connector criteria docs/
+runbooks. This lane adds cross-contract connector trust-boundary reconciliation
+posture so provider profile, consent, scope review, readiness, trust,
+revocation drill, tool invocation, approval binding, Guardian decision, and
+evidence references fail closed on drift.
 Runtime expansion remains blocked until the remaining gates in this file,
 [Baseline](docs/BASELINE.md), and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md)
 are resolved.
@@ -298,13 +299,14 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
   Governance scaffolding now blocks automatic update behavior and automated
   re-enrollment.
 - Define final connector consent expiry, live-review criteria, provider scope
-  mapping, and prompt-injection test evidence before any live connector review.
+  mapping, prompt-injection test evidence, and reconciliation SLO/ownership
+  before any live connector review.
 
 ## Next Recommended Lane
 
-After attestation-revocation reconciliation drills are reviewed, the next safe
-lane is durable attestation result storage and authority-change sequencing
-design (generation ordering, durable propagation, and reconciliation replay)
-without adding live services. Phase 1B lab runtime expansion remains blocked
-until remaining gates are approved. Mainline update should wait for explicit
-approval.
+After connector trust-boundary linkage invariants are reviewed, the next safe
+lane is connector provider acceptance scoring and revocation-propagation
+cadence formalization (docs/contracts/tests only) without adding live connector
+execution, OAuth/token runtime, or external APIs. Phase 1B lab runtime
+expansion remains blocked until remaining gates are approved. Mainline update
+should wait for explicit approval.

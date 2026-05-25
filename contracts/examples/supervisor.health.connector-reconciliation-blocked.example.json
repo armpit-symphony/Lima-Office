@@ -1,0 +1,75 @@
+{
+  "contract_name": "supervisor.health",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-supervisor-health-connector-reconcile-001",
+  "causation_id": "corr-connector-reconcile-004",
+  "idempotency_key": "idem-supervisor-health-connector-reconcile-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-25T22:50:00Z"
+  },
+  "supervisor_id": "supervisor-lab-001",
+  "generated_at": "2026-05-25T22:50:00Z",
+  "mode": "mock",
+  "worker_count": 2,
+  "worker_state_counts": {
+    "healthy": 2
+  },
+  "task_state_counts": {
+    "blocked": 1
+  },
+  "guardian_decision_counts": {
+    "deny": 1
+  },
+  "evidence_status_counts": {
+    "available": 5
+  },
+  "stale_heartbeat_count": 0,
+  "quarantined_worker_count": 0,
+  "revoked_worker_count": 0,
+  "blocked_task_count": 1,
+  "denied_action_count": 1,
+  "degraded_component_count": 1,
+  "health_status": "blocked",
+  "reasons": [
+    "connector_reconciliation_drift",
+    "provider_critical_but_ready"
+  ],
+  "health_domain": "supervisor",
+  "health_reason_codes": [
+    "connector_reconciliation_drift",
+    "provider_critical_but_ready"
+  ],
+  "route_health_counts": {
+    "blocked": 1
+  },
+  "model_route_status_counts": {
+    "blocked_mvp": 1
+  },
+  "operator_visible": true,
+  "evidence_refs": [
+    "ev-supervisor-health-connector-reconcile-001"
+  ],
+  "policy_refs": [
+    "policy.connector_consent_scope_revocation.phase0"
+  ],
+  "related_contract_refs": [
+    "connector.reconciliation:connector-reconcile-004",
+    "connector.provider_profile:provider-profile-rmm-001",
+    "connector.revocation_drill:connector-revocation-drill-rmm-001"
+  ],
+  "data_classification": "internal",
+  "redaction_level": "metadata_only",
+  "raw_customer_content_present": false,
+  "secret_material_present": false,
+  "policy_version": "policy-phase0-v1",
+  "reason_codes": [
+    "connector_reconciliation_drift",
+    "provider_critical_but_ready"
+  ]
+}

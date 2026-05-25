@@ -688,7 +688,8 @@
           "connector_readiness_ref",
           "connector_scope_review_ref",
           "connector_consent_ref",
-          "provider_profile_ref"
+          "provider_profile_ref",
+          "connector_revocation_drill_ref"
         ],
         "properties": {
           "connector_readiness_ref": {
@@ -704,6 +705,10 @@
             "minLength": 1
           },
           "provider_profile_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "connector_revocation_drill_ref": {
             "type": "string",
             "minLength": 1
           },
