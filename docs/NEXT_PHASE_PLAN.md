@@ -40,12 +40,18 @@ Recommended order:
 8. Attestation verifier policy/reference-value governance design (checkpoint
    completed as docs/contracts/tests/mock metadata hardening on
    `attestation-verifier-policy-reference-values-design`).
-9. Phase 1B lab runtime expansion only after the gates above are approved.
+9. Durable attestation lineage/authority design (checkpoint completed as
+   docs/contracts/tests/mock metadata hardening on
+   `durable-attestation-lineage-authority-design`).
+10. Attestation revocation reconciliation drills (checkpoint completed as
+    docs/contracts/tests/mock metadata hardening on
+    `attestation-revocation-reconciliation-drills`).
+11. Phase 1B lab runtime expansion only after the gates above are approved.
 
-Next recommended lane after this checkpoint: durable attestation verifier
-ownership and trust-root authority implementation-gate hardening while keeping
-provider integration, local inference runtime, live connector execution, and
-runtime authorization expansion blocked.
+Next recommended lane after this checkpoint: durable attestation-result storage
+and verifier-owner authority implementation-gate hardening while keeping TPM/
+verifier/signature/update runtime, model-provider integration, local inference
+runtime, live connector execution, and runtime authorization expansion blocked.
 
 Alternative non-runtime lanes can proceed when they do not obscure the blockers:
 model-routing defaults, final IdP/MFA/RBAC matrix, health taxonomy refinement,
@@ -97,6 +103,13 @@ with stricter reconciliation conditionals across approval/Guardian/replay/
 transaction/ledger contracts, a mock in-memory reconciler, and fail-closed
 negative-path drill tests. Durable transaction/runtime implementation remains
 blocked.
+
+Attestation revocation reconciliation drills are now represented in
+[ATTESTATION_REVOCATION_RECONCILIATION_DRILLS](ATTESTATION_REVOCATION_RECONCILIATION_DRILLS.md)
+with `attestation.reconciliation` metadata contracts/examples, fail-closed
+drift classes spanning lineage/authority/reference/endorsement/appraisal/
+result/route/transaction/ledger records, and a mock-only reconciliation helper.
+Durable storage and runtime trust-authorization remain blocked.
 
 ## Option A: Worker Deployment Blueprint
 

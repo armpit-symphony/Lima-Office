@@ -127,6 +127,20 @@ Durable attestation lineage/authority hardening adds canonical reason codes:
 - `quarantine_clearance_sod_required`
 - `attestation_result_trust_conflict`
 
+Attestation revocation reconciliation drills add canonical reason codes:
+
+- `attestation_reconciliation_drift`
+- `attestation_revocation_pending`
+- `attestation_revocation_not_propagated`
+- `attestation_quarantine_mismatch`
+- `attestation_cross_tenant_linkage`
+- `verifier_authority_conflict`
+- `appraisal_policy_revoked_but_active`
+- `trusted_result_with_revoked_endorsement`
+- `trusted_result_with_revoked_reference`
+- `model_route_selected_with_untrusted_lineage`
+- `transaction_committed_with_revoked_attestation`
+
 Reference snapshot:
 [contracts/taxonomy/reason-code-registry.catalog.json](../../contracts/taxonomy/reason-code-registry.catalog.json).
 

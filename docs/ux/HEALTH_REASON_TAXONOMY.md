@@ -98,3 +98,20 @@ The attestation-lineage authority lane adds these health/alert codes:
 
 These remain metadata-only, fail-closed governance signals. They do not
 authorize runtime actions.
+
+Attestation revocation reconciliation drills add:
+
+- `attestation_reconciliation_drift`
+- `attestation_revocation_pending`
+- `attestation_revocation_not_propagated`
+- `attestation_quarantine_mismatch`
+- `attestation_cross_tenant_linkage`
+- `verifier_authority_conflict`
+- `appraisal_policy_revoked_but_active`
+- `trusted_result_with_revoked_endorsement`
+- `trusted_result_with_revoked_reference`
+- `model_route_selected_with_untrusted_lineage`
+- `transaction_committed_with_revoked_attestation`
+
+These codes are metadata-only fail-closed reconciliation signals and do not
+authorize runtime action.

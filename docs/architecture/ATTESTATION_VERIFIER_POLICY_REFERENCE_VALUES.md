@@ -164,3 +164,9 @@ Durable lineage and authority hardening is defined in
 [Verifier Owner Authority Policy](../governance/VERIFIER_OWNER_AUTHORITY_POLICY.md),
 with operator drill posture in
 [Attestation Revocation Propagation](../runbooks/attestation-revocation-propagation.md).
+
+Attestation reconciliation drill posture is defined in
+[ATTESTATION_REVOCATION_RECONCILIATION_DRILLS](../ATTESTATION_REVOCATION_RECONCILIATION_DRILLS.md)
+and
+[attestation-reconciliation-drill](../runbooks/attestation-reconciliation-drill.md).
+Reconciliations are metadata-only and fail closed on revocation/authority drift.

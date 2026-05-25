@@ -179,6 +179,25 @@ Related contracts now carry optional lineage/authority refs so trust posture can
 be correlated across attestation, device trust, and model route records without
 adding runtime authorization behavior.
 
+## Attestation Revocation Reconciliation Drills
+
+Phase 1A now adds metadata-only reconciliation drift posture:
+
+- `attestation.reconciliation` for reconciled/drift/revocation-pending/
+  quarantine-required/failed-closed/blocked-MVP status across lineage,
+  authority, reference, endorsement, appraisal, result, route, transaction, and
+  ledger refs.
+- New drift classes for revoked-reference-with-current-lineage,
+  revoked-endorsement-with-trusted-result, revoked-appraisal-with-selected-route,
+  expired-result-with-active-worker, pending-propagation-with-privileged-route,
+  quarantine mismatch, untrusted-lineage selected route, committed transaction
+  with revoked attestation, missing revocation evidence, cross-tenant linkage,
+  and revoked verifier authority conflicts.
+- Console/supervisor examples now include reconciliation drift signals.
+
+This remains docs/contracts/tests/mock-only hardening. No verifier runtime,
+TPM, signing, update, or authorization execution is implemented.
+
 ## Governance Export/Delete Taxonomy Hardening
 
 Phase 1A now includes:

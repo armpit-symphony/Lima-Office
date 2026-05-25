@@ -100,9 +100,13 @@ Route records must include:
 - attestation lineage/authority/revocation propagation refs when present
 
 Lineage or authority conflict reason codes (for example
-`attestation_lineage_revoked`, `revocation_propagation_pending`,
-`verifier_authority_revoked`) must map to `denied`, `blocked_mvp`, or
-`unavailable`, never `selected`.
+`attestation_lineage_revoked`, `attestation_revocation_pending`,
+`attestation_revocation_not_propagated`, `verifier_authority_conflict`,
+`model_route_selected_with_untrusted_lineage`) must map to `denied`,
+`blocked_mvp`, or `unavailable`, never `selected`.
+
+Drift-class posture for these cases is defined in
+[ATTESTATION_REVOCATION_RECONCILIATION_DRILLS](../ATTESTATION_REVOCATION_RECONCILIATION_DRILLS.md).
 
 ## Acceptance Gates Before Implementation
 

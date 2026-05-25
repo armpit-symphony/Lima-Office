@@ -1,0 +1,60 @@
+{
+  "contract_name": "console.alert",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant_acme",
+  "customer_context_id": "cust_acme_primary",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-alert-attestation-reconciliation-drift-001",
+  "causation_id": "recon-attestation-003",
+  "idempotency_key": "idem-alert-attestation-reconciliation-drift-001",
+  "alert_id": "alert-attestation-reconciliation-drift-001",
+  "actor_ref": "operator-security-reviewer-001",
+  "role": "security_reviewer",
+  "health_domain": "worker",
+  "alert_type": "attestation_reconciliation_drift",
+  "health_reason_codes": [
+    "attestation_reconciliation_drift",
+    "trusted_result_with_revoked_reference",
+    "health_blocked"
+  ],
+  "severity": "blocked",
+  "related_contract_refs": [
+    "attestation.reconciliation:recon-attestation-003",
+    "attestation.result.lineage:lineage-worker-003-current",
+    "model.route:route-worker-003-privileged"
+  ],
+  "policy_refs": [
+    "policy.attestation.reconciliation.phase1a",
+    "policy.worker_attestation.phase0"
+  ],
+  "risk_tier": "blocked",
+  "status": "blocked",
+  "runbook_ref": "runbook.attestation-reconciliation-drill",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-25T14:45:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "reason_codes": [
+    "attestation_reconciliation_drift",
+    "trusted_result_with_revoked_reference"
+  ],
+  "reason_code_registry_refs": [
+    "reason.code.registry:attestation_reconciliation_drift",
+    "reason.code.registry:trusted_result_with_revoked_reference"
+  ],
+  "unknown_reason_code_policy": "fail_closed",
+  "deprecated_reason_code_policy": "allow_with_warning",
+  "reason_code_status": "active",
+  "evidence_refs": [
+    "ev-attestation-reconciliation-alert-001"
+  ],
+  "blocked_reason": "Attestation reconciliation drift detected between reference status and trusted route posture.",
+  "model_route_id": "route-worker-003-privileged",
+  "route_mode": "mock_only",
+  "route_status": "denied",
+  "operator_visible": true,
+  "created_at": "2026-05-25T14:45:00Z"
+}

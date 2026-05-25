@@ -66,6 +66,7 @@ Attestation posture is recorded in:
 - [attestation.result.schema.json](../../contracts/v1/attestation.result.schema.json)
 - [attestation.result.lineage.schema.json](../../contracts/v1/attestation.result.lineage.schema.json)
 - [attestation.authority.schema.json](../../contracts/v1/attestation.authority.schema.json)
+- [attestation.reconciliation.schema.json](../../contracts/v1/attestation.reconciliation.schema.json)
 - [Attestation Reference Value Governance](ATTESTATION_REFERENCE_VALUE_GOVERNANCE.md)
 - [Verifier Owner Authority Policy](VERIFIER_OWNER_AUTHORITY_POLICY.md)
 
@@ -88,6 +89,7 @@ Attestation failure links to:
 - [Worker Deployment Blueprint](../deployment/WORKER_DEPLOYMENT_BLUEPRINT.md)
 - [Worker Attestation Failure Runbook](../runbooks/worker-attestation-failure.md)
 - [Worker Attestation Review Runbook](../runbooks/worker-attestation-review.md)
+- [Attestation Reconciliation Drill](../runbooks/attestation-reconciliation-drill.md)
 - [Worker Quarantine And Re-Enrollment](../policies/worker-quarantine-reenrollment.md)
 
 ## MVP Placeholder Status
@@ -95,3 +97,8 @@ Attestation failure links to:
 This policy does not automate attestation or re-enrollment. Until attestation
 method, trust bootstrap, key lifecycle, and re-enrollment gates are resolved,
 attestation failures stay fail-closed and automated release remains blocked.
+
+Revocation/reconciliation drift also stays fail closed. Selected privileged
+model-route posture, active worker posture, and committed transaction posture
+cannot remain valid when `attestation.reconciliation` reports `drift_detected`,
+`revocation_pending`, `quarantine_required`, or `failed_closed`.

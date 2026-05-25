@@ -82,3 +82,8 @@ Each class must preserve evidence linkage and revocation trail.
 
 Verifier-owner and authority lifecycle controls are expanded in
 [Verifier Owner Authority Policy](VERIFIER_OWNER_AUTHORITY_POLICY.md).
+
+Attestation drift/revocation reconciliation posture is expanded in
+[ATTESTATION_REVOCATION_RECONCILIATION_DRILLS](../ATTESTATION_REVOCATION_RECONCILIATION_DRILLS.md)
+with fail-closed drift classes for revoked-reference/revoked-endorsement/
+revoked-appraisal conflicts and required evidence refs.

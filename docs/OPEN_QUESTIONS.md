@@ -134,6 +134,19 @@ documents the reachable v2 checkpoint that supersedes it.
 - Appraisal freshness defaults: what final `freshness_seconds` and
   `clock_skew_allowance_seconds` become normative for
   `attestation.appraisal_policy` in lab runtime?
+- Attestation reconciliation source of truth: should
+  `attestation.reconciliation` be generated primarily from lineage records,
+  transaction/coordinator events, or an independent reconciliation authority
+  service in future durable mode?
+- Attestation revocation propagation SLO: what maximum latency and ordering
+  guarantees should apply between revoked reference/endorsement/policy metadata
+  and blocked model-route/worker/transaction posture?
+- Attestation reconciliation evidence minimum set: which evidence refs are
+  mandatory per drift class (`reference_value_revoked_but_lineage_current`,
+  `endorsement_revoked_but_result_trusted`,
+  `appraisal_policy_revoked_but_route_selected`,
+  `transaction_committed_with_revoked_attestation`,
+  `cross_tenant_attestation_linkage`) before a drift can be resolved?
 - Update rollback: what signed/verified source format, signer authority,
   known-good selection, rollback trigger matrix, and approval workflow should
   replace the placeholders in [Signed Update Rollback Policy](governance/SIGNED_UPDATE_ROLLBACK_POLICY.md)

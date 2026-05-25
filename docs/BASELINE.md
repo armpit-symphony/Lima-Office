@@ -169,6 +169,29 @@ operations, customer-system mutation, or compliance certification claims.
   service, update runtime, rollback automation, model provider integration, or
   remediation execution is authorized.
 
+## Durable Attestation Lineage and Authority Design Checkpoint
+
+- Branch: `durable-attestation-lineage-authority-design`
+- Base: `attestation-verifier-policy-reference-values-design`
+- Purpose: define durable attestation lineage metadata, verifier-owner
+  authority posture, and fail-closed revocation propagation/linkage controls
+  across worker/device/model-route/transaction/evidence contracts.
+- Scope: docs, schemas, examples, tests, and mock-only lineage/authority
+  helpers. No durable storage engine, TPM runtime, verifier service, or runtime
+  authorization expansion is authorized.
+
+## Attestation Revocation Reconciliation Drills Checkpoint
+
+- Branch: `attestation-revocation-reconciliation-drills`
+- Base: `durable-attestation-lineage-authority-design`
+- Purpose: define and test fail-closed reconciliation drills so revocation,
+  expiry, authority, quarantine, and transaction/evidence linkage drift cannot
+  appear as trusted posture.
+- Scope: docs, schemas, examples, tests, and mock-only reconciliation helper.
+  No TPM runtime, verifier service, certificate/signature validation service,
+  update runtime, rollback automation, durable storage implementation, or
+  runtime authorization expansion is authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:
@@ -187,6 +210,7 @@ The following reachable branches are ancestors of the integration branch:
 | `operator-console-ux-spec` | `bac6f80cc63dd15ec7cd3d669193160c3766a8e1` | Operator console UX specification docs and console metadata contracts. |
 | `durable-replay-evidence-posture` | `7123163482860a93992b4597d49b5231cd5cb34b` | Durable replay/evidence posture docs, schemas, examples, and mock tests. |
 | `attestation-verifier-policy-reference-values-design` | `87976c9` | Attestation reference-value/endorsement/appraisal/result metadata contracts, docs, and mock verifier tests. |
+| `durable-attestation-lineage-authority-design` | `cf531783c80faa2abfc674c5f0e69f4d179c16cd` | Durable attestation lineage/authority contracts, docs, runbook posture, and mock lineage fail-closed tests. |
 
 ## Excluded Or Missing Branches
 
@@ -238,6 +262,8 @@ health evidence only; it is not production certification.
   policy details, and operator console UX specification.
 - Worker deployment, governance, and console metadata contracts and examples.
 - Durable attestation lineage/authority metadata contracts and runbook posture.
+- Attestation revocation reconciliation drill docs/contracts/examples and
+  mock-only fail-closed reconciliation helper/tests.
 
 ## What Does Not Exist
 

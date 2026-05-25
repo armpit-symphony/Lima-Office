@@ -55,6 +55,7 @@ Phase 0 status values:
 | Blocked-MVP action attempted by operator or worker | Elevation, tampering | Phase 0 blocked action is treated as approvable | Approval result denial, Guardian block, task/tool blocked state | Blocked action request, production touch or remediation attempt | Approval denial, Guardian decision, tool/task denial evidence | schema_defined |
 | Model/tool hallucination causing business action | Tampering, repudiation | Model invents action, recipient, or record update | Draft-first workflow, approval for writes, evidence checks | High-risk action request, confidence mismatch | Task result, approval record, Guardian decision | schema_defined |
 | Update supply-chain compromise | Tampering, elevation | Bad update changes worker/supervisor behavior | Verified update source, known-good rollback, approval | Version mismatch, failed verification | Update evidence, incident record, rollback record | future_review |
+| Attestation revocation drift across lineage/route/transaction | Tampering, elevation, repudiation | Revoked trust metadata appears as selected route, active worker, or committed transaction | Attestation reconciliation contract, lineage/authority refs, fail-closed drift classes, quarantine propagation posture | Drift-class detection, cross-tenant linkage detection, missing revocation evidence checks | `attestation.reconciliation`, `attestation.result.lineage`, `model.route`, `transaction.boundary`, evidence ledger refs | schema_defined |
 | Customer network compromise | Spoofing, denial, disclosure | Local attacker targets supervisor/worker channel | Authenticated channel, firewall assumptions, quarantine | Connection anomaly, repeated failures | Network incident record, worker containment | schema_defined |
 | Worker deployment spoofing | Spoofing, elevation | Unapproved mini PC is enrolled as a trusted worker | Deployment record, device/channel identity refs, operator approval, Guardian decision | Deployment preflight mismatch, duplicate worker ID, missing evidence | `worker.deployment`, worker lifecycle, Guardian decision, enrollment evidence | schema_defined |
 | Operator identity or MFA ambiguity | Spoofing, elevation, repudiation | Ambiguous operator or stale role approves privileged work | Identity/MFA policy, access review, approver separation, Guardian decision | Missing MFA posture, stale access review, self-approval, conflicted approver | Governance identity/access review records, approval evidence | schema_defined |
@@ -84,6 +85,9 @@ Phase 0 status values:
 - Operator runbooks for approval token lifecycle, evidence writer failure, prompt injection response, worker re-enrollment, and LIMA IT handoff.
 - RBAC/IdP/MFA/session/device-trust matrix contracts and fail-closed reason-code
   posture for privileged identity actions.
+- Attestation reconciliation drift controls so revoked/stale authority/
+  reference/endorsement/policy/result states cannot coexist with selected
+  privileged routes or committed transaction metadata.
 
 ## Schema Control Map
 
@@ -103,6 +107,7 @@ The Phase 0 schemas do not implement controls, but they define the required reco
 | Unsafe audit export or customer exit delete | `governance.audit_export`, `evidence.artifact`, `memory.access`, `incident.ops` | Export/delete records require tenant scope, redaction profile, non-exportable classes, evidence preservation conflict posture, Guardian decision, and evidence refs. |
 | Connector consent or scope drift | `governance.connector_consent`, `connector.trust`, `taint.ref`, `evidence.artifact` | Consent and scope records keep live access false, secret material absent, blocked scopes explicit, revocation evidenced, and prompt-injection review required before live review. |
 | Update supply-chain or rollback failure | `governance.update_record`, `update.rollback`, `worker.attestation`, `attestation.reference_value`, `attestation.endorsement`, `attestation.appraisal_policy`, `attestation.result`, `attestation.result.lineage`, `attestation.authority`, `worker.deployment`, `worker.lifecycle`, `worker.heartbeat`, `incident.ops` | Update/attestation records require source/version/hash refs, signature verification placeholder, staged rollout posture, automatic update false, known-good rollback, appraisal policy/reference/endorsement posture, attestation result linkage, verifier-owner authority posture, revocation propagation posture, and evidence refs. |
+| Attestation revocation reconciliation drift | `attestation.reconciliation`, `attestation.result.lineage`, `attestation.authority`, `attestation.reference_value`, `attestation.endorsement`, `attestation.appraisal_policy`, `attestation.result`, `model.route`, `worker.lifecycle`, `worker.heartbeat`, `governance.device_trust`, `transaction.boundary`, `transaction.coordinator.event`, `evidence.ledger.entry` | Reconciliation records must detect and fail-close drift classes (revoked reference/endorsement, revoked appraisal with selected route, expired result with active worker, pending revocation with privileged route, cross-tenant linkage, committed transaction with revoked attestation, and missing revocation evidence). |
 | Unsafe approval UX | `console.action`, `approval.request`, `approval.result`, `approval.token`, `token.verification`, `guardian.decision`, `evidence.artifact` | Console action records have `runtime_effect: false`; approval UX must show scope hash, risk, data class, expiry, taint, evidence, and deny/block states before metadata decisions. |
 | Mock state presented as live | `console.view`, `console.alert`, `guardian.decision`, `connector.trust`, `lima_it.handoff` | Console views label mock, dry-run, and blocked-MVP states and cannot imply live connector readiness, external sends, remediation, or production operation. |
 | Evidence omission in command view | `console.alert`, `console.view`, `evidence.artifact`, `evidence.failure`, `incident.ops` | Missing evidence creates blocked alert/review state; evidence viewer shows redaction, retention, integrity refs, and runbook links. |
@@ -136,3 +141,6 @@ The Phase 0 schemas do not implement controls, but they define the required reco
   verifier?
 - What durable replay-store atomicity and export-manifest integrity checks are
   required before export/delete flows can be implemented?
+- What reconciliation source-of-truth and propagation SLA should govern
+  `attestation.reconciliation` before any privileged runtime trust decisions
+  are implemented?

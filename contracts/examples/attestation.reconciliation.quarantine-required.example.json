@@ -1,0 +1,56 @@
+{
+  "contract_name": "attestation.reconciliation",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant_acme",
+  "customer_context_id": "cust_acme_primary",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-att-recon-quarantine-001",
+  "causation_id": "lineage-worker-004-quarantine",
+  "idempotency_key": "idem-att-recon-quarantine-001",
+  "producer": {
+    "component": "field_it_reviewer",
+    "produced_at": "2026-05-25T14:30:00Z"
+  },
+  "policy_version": "policy.attestation.reconciliation.phase1a.v1",
+  "reconciliation_id": "recon-attestation-004",
+  "lineage_id": "lineage-worker-004-quarantine",
+  "attestation_result_id": "attres-worker-004",
+  "authority_refs": [
+    "attestation.authority:authority-verifier-owner-001"
+  ],
+  "reference_value_refs": [
+    "attestation.reference_value:refv-runtime-2026-05-24"
+  ],
+  "endorsement_refs": [
+    "attestation.endorsement:endorsement-worker-node-004"
+  ],
+  "appraisal_policy_id": "apol-worker-default-v1",
+  "worker_id": "arc_worker_04",
+  "deployment_id": "deploy-worker-004",
+  "worker_lifecycle_ref": "worker.lifecycle:wle-worker-004-quarantine",
+  "device_trust_ref": "governance.device_trust:dtrust-worker-004",
+  "model_route_refs": [
+    "model.route:route-worker-004-privileged"
+  ],
+  "transaction_refs": [
+    "transaction.boundary:txn-attestation-worker-004"
+  ],
+  "ledger_entry_refs": [
+    "evidence.ledger.entry:ledger-attestation-worker-004"
+  ],
+  "reconciliation_status": "quarantine_required",
+  "drift_classes": [
+    "quarantine_required_but_worker_active"
+  ],
+  "reason_codes": [
+    "attestation_quarantine_mismatch",
+    "attestation_quarantine_required"
+  ],
+  "evidence_refs": [
+    "ev-attestation-reconciliation-quarantine-001"
+  ],
+  "created_at": "2026-05-25T14:30:00Z",
+  "resolved_at": null
+}

@@ -5,7 +5,7 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `durable-attestation-lineage-authority-design` on Windows with
+Latest captured run: `attestation-revocation-reconciliation-drills` on Windows with
 Python 3.12.10.
 
 ## Canonical Integration Branch
@@ -39,6 +39,8 @@ Python 3.12.10.
   `attestation-verifier-policy-reference-values-design`
 - Durable attestation lineage/authority branch:
   `durable-attestation-lineage-authority-design`
+- Attestation revocation reconciliation drills branch:
+  `attestation-revocation-reconciliation-drills`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -496,6 +498,29 @@ Date: 2026-05-24 (local workspace run)
   - 299 tests, OK
 - `python -m pytest -q`: PASS
   - 299 passed, 1 warning, 185 subtests passed
+- `python -B -m compileall lima_office scripts tests`: PASS
+- `git diff --check`: PASS with LF/CRLF normalization warnings only
+- `git diff --cached --check`: PASS
+
+## Latest Run: Attestation Revocation Reconciliation Drills Lane
+
+Date: 2026-05-25 (local workspace run)
+
+- `python scripts/validate-contracts.py --require-jsonschema --check-formats --warnings-as-errors`: PASS
+  - schemas parsed: 53
+  - examples parsed: 155
+  - failures: 0, warnings: 0
+- `python scripts/check-reason-codes.py`: PASS
+  - schemas scanned: 53
+  - examples scanned: 155
+  - failures: 0, warnings: 0
+- `python scripts/check-doc-links.py`: PASS
+  - markdown files scanned: 125
+  - failures: 0
+- `python -B -m unittest discover -s tests -v` (from repo root): PASS
+  - 314 tests, OK
+- `python -m pytest -q`: PASS
+  - 314 passed, 1 warning, 191 subtests passed
 - `python -B -m compileall lima_office scripts tests`: PASS
 - `git diff --check`: PASS with LF/CRLF normalization warnings only
 - `git diff --cached --check`: PASS

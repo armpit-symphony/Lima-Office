@@ -69,6 +69,19 @@ The canonical lineage chain is:
 - Ledger/transaction refs are required for durable chain reconstruction in
   future implementation phases.
 
+## Reconciliation Drill Linkage
+
+- `attestation.reconciliation` is the fail-closed reconciliation output that
+  binds lineage + authority + reference-value + endorsement + appraisal +
+  result posture to worker/device/model-route/transaction/evidence metadata.
+- Drift classes (for example revoked reference with current lineage, selected
+  route with untrusted lineage, or committed transaction with revoked
+  attestation) must never be represented as trusted posture.
+- Operator drill/runbook posture is defined in
+  [ATTESTATION_REVOCATION_RECONCILIATION_DRILLS](../ATTESTATION_REVOCATION_RECONCILIATION_DRILLS.md)
+  and
+  [attestation-reconciliation-drill](../runbooks/attestation-reconciliation-drill.md).
+
 ## Export/Delete Placeholders
 
 - Export/delete behavior remains placeholder-only.

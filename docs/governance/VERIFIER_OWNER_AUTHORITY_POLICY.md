@@ -53,3 +53,14 @@ reject attestation trust results in a fail-closed, separation-of-duties model.
 - SoD-required actions represented and tested.
 - Revoked/expired authority fail-closed behavior tested.
 - No breakglass override path for trust decisions in MVP.
+
+## Reconciliation Linkage
+
+- Authority lifecycle state must reconcile against
+  `attestation.result.lineage` and `attestation.reconciliation`.
+- Revoked/suspended/expired verifier-owner authority cannot coexist with active
+  appraisal acceptance; this must produce fail-closed reconciliation drift.
+- Drill posture is defined in
+  [ATTESTATION_REVOCATION_RECONCILIATION_DRILLS](../ATTESTATION_REVOCATION_RECONCILIATION_DRILLS.md)
+  and
+  [attestation-reconciliation-drill](../runbooks/attestation-reconciliation-drill.md).

@@ -6,7 +6,7 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
-Current working branch: `durable-attestation-lineage-authority-design`
+Current working branch: `attestation-revocation-reconciliation-drills`
 
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
@@ -15,16 +15,15 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A durable attestation lineage and verifier-owner authority
-hardening. Phase 1A mock runtime scaffolding is present, the v2 invariant
-checkpoint and durable replay/evidence, transaction/storage, coordinator,
-linkage, approval/Guardian reconciliation, governance export/delete taxonomy,
-reason-code registry/compatibility, model-routing defaults, and health taxonomy
-checkpoints are reachable. This branch adds fail-closed attestation
-reference-value, endorsement, appraisal-policy, attestation-result lineage, and
-verifier-owner authority metadata contracts/examples/tests, trust-aware
-model-route linkage, and mock-only attestation-verifier governance/runbook
-hardening.
+Current phase: Phase 1A attestation revocation reconciliation drill hardening.
+Phase 1A mock runtime scaffolding is present, the v2 invariant checkpoint and
+durable replay/evidence, transaction/storage, coordinator, linkage,
+approval/Guardian reconciliation, governance export/delete taxonomy,
+reason-code registry/compatibility, model-routing defaults, health taxonomy,
+attestation verifier/reference-value, and durable attestation lineage/authority
+checkpoints are reachable. This branch adds fail-closed attestation revocation
+reconciliation metadata contracts/examples/tests, lineage+transaction+evidence
+drift drill docs/runbook, and mock-only reconciliation helper hardening.
 Runtime expansion remains blocked until the remaining gates in this file,
 [Baseline](docs/BASELINE.md), and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md)
 are resolved.
@@ -151,6 +150,13 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
   [docs/architecture/DURABLE_ATTESTATION_RESULT_LINEAGE.md](docs/architecture/DURABLE_ATTESTATION_RESULT_LINEAGE.md),
   [docs/governance/VERIFIER_OWNER_AUTHORITY_POLICY.md](docs/governance/VERIFIER_OWNER_AUTHORITY_POLICY.md),
   and [docs/runbooks/attestation-revocation-propagation.md](docs/runbooks/attestation-revocation-propagation.md).
+- Attestation revocation reconciliation drill docs and runbook in
+  [docs/ATTESTATION_REVOCATION_RECONCILIATION_DRILLS.md](docs/ATTESTATION_REVOCATION_RECONCILIATION_DRILLS.md)
+  and [docs/runbooks/attestation-reconciliation-drill.md](docs/runbooks/attestation-reconciliation-drill.md).
+- `attestation.reconciliation` schema/examples and mock-only
+  `attestation_reconciliation` helper for fail-closed drift detection across
+  lineage/authority/reference/endorsement/appraisal/result/route/transaction/
+  ledger metadata.
 - Local Markdown link validation through [scripts/check-doc-links.py](scripts/check-doc-links.py).
 - Phase 1A mock Python runtime scaffolding in [lima_office](lima_office).
 - In-memory worker registry, heartbeat validation, task queue, Guardian policy
@@ -282,8 +288,9 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 
 ## Next Recommended Lane
 
-After attestation-verifier/reference-value hardening is reviewed, the next safe
-lane is implementation-gate planning for durable attestation result storage,
-endorsement source validation, and update trust-root ownership without adding
-live services. Phase 1B lab runtime expansion remains blocked until remaining
-gates are approved. Mainline update should wait for explicit approval.
+After attestation-revocation reconciliation drills are reviewed, the next safe
+lane is durable attestation result storage and authority-change sequencing
+design (generation ordering, durable propagation, and reconciliation replay)
+without adding live services. Phase 1B lab runtime expansion remains blocked
+until remaining gates are approved. Mainline update should wait for explicit
+approval.

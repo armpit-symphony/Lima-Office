@@ -83,3 +83,8 @@ Mapped in this lane to `worker.attestation`, `worker.lifecycle`,
 Durable lineage and authority roles are further defined in
 [Durable Attestation Result Lineage](DURABLE_ATTESTATION_RESULT_LINEAGE.md) and
 [Verifier Owner Authority Policy](../governance/VERIFIER_OWNER_AUTHORITY_POLICY.md).
+
+Revocation/reconciliation drift drill posture is defined in
+[ATTESTATION_REVOCATION_RECONCILIATION_DRILLS](../ATTESTATION_REVOCATION_RECONCILIATION_DRILLS.md)
+and
+[attestation-reconciliation-drill](../runbooks/attestation-reconciliation-drill.md).

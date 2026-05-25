@@ -133,6 +133,9 @@ Every privileged or denied/blocked action path must include:
 - Missing MFA/session/device posture for privileged actions blocks action.
 - Untrusted device posture blocks privileged actions.
 - Attestation-failed worker posture blocks privileged task metadata.
+- Attestation reconciliation drift/revocation-pending/quarantine-required/
+  failed-closed posture in `attestation.reconciliation` blocks privileged task
+  metadata.
 - Breakglass remains `blocked_mvp`.
 - LIMA IT remediation execution remains `blocked_mvp`.
 - Missing evidence refs for denied/blocked privileged paths blocks completion.
