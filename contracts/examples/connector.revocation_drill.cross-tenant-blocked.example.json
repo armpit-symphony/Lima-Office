@@ -1,0 +1,35 @@
+{
+  "contract_name": "connector.revocation_drill",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-revocation-drill-003",
+  "causation_id": null,
+  "idempotency_key": "idem-revocation-drill-003",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-25T21:14:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "revocation_drill_id": "connector-revocation-drill-003",
+  "connector_id": "connector-email-metadata-001",
+  "provider_profile_id": "provider-profile-email-001",
+  "connector_readiness_id": "connector-readiness-email-001",
+  "connector_consent_id": "connector-consent-email-001",
+  "drill_status": "failed_closed",
+  "drill_type": "cross_tenant_block",
+  "expected_outcome": "action_blocked",
+  "actual_outcome": "cross_tenant_reference_blocked",
+  "evidence_refs": [
+    "ev-revocation-drill-003"
+  ],
+  "reason_codes": [
+    "connector_cross_tenant_blocked",
+    "connector_revocation_drill_failed"
+  ],
+  "created_at": "2026-05-25T21:14:00Z",
+  "completed_at": "2026-05-25T21:15:00Z"
+}

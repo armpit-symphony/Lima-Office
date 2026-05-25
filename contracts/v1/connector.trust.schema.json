@@ -230,6 +230,12 @@
         "null"
       ]
     },
+    "provider_profile_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "connector_readiness_ref": {
       "type": [
         "string",
@@ -240,6 +246,31 @@
       "type": [
         "string",
         "null"
+      ]
+    },
+    "revocation_drill_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "disable_switch_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "token_rotation_placeholder_status": {
+      "type": "string",
+      "enum": [
+        "not_selected",
+        "required_before_live",
+        "documented_placeholder",
+        "missing",
+        "failed_closed",
+        "blocked_mvp"
       ]
     },
     "prompt_injection_exposure": {
@@ -363,6 +394,33 @@
       "then": {
         "properties": {
           "connector_scope_review_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provider_profile_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "revocation_status": {
+            "const": "revoked"
+          }
+        },
+        "required": [
+          "revocation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "revocation_drill_refs": {
+            "minItems": 1
+          },
+          "disable_switch_ref": {
             "type": "string",
             "minLength": 1
           }

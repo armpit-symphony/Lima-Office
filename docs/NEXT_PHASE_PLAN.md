@@ -49,12 +49,15 @@ Recommended order:
 11. Live connector criteria design (checkpoint completed as
     docs/contracts/tests/mock metadata hardening on
     `live-connector-criteria-design`).
-12. Phase 1B lab runtime expansion only after the gates above are approved.
+12. Connector provider risk-profile and revocation/disable drill hardening
+    (checkpoint completed as docs/contracts/tests/mock metadata hardening on
+    `connector-provider-risk-profile-revocation-disable-drills`).
+13. Phase 1B lab runtime expansion only after the gates above are approved.
 
-Next recommended lane after this checkpoint: connector-provider risk profile and
-revocation drill evidence deepening (docs/contracts/tests only), while keeping
-live connector wiring/execution, OAuth/token runtime, browser automation, and
-runtime authorization expansion blocked.
+Next recommended lane after this checkpoint: connector trust-boundary linkage
+integration and provider-by-provider acceptance-gate scoring (docs/contracts/
+tests only), while keeping live connector wiring/execution, OAuth/token
+runtime, browser automation, and runtime authorization expansion blocked.
 
 Alternative non-runtime lanes can proceed when they do not obscure the blockers:
 model-routing defaults, final IdP/MFA/RBAC matrix, health taxonomy refinement,

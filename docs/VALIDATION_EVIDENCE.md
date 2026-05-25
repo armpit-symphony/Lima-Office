@@ -5,7 +5,7 @@ canonical integration branch, and Phase 1A invariant checkpoint v2. Validation
 is not production certification and does not approve live connectors, external
 sends, real remediation, production operations, or customer-system mutation.
 
-Latest captured run: `live-connector-criteria-design` on Windows with Python
+Latest captured run: `connector-provider-risk-profile-revocation-disable-drills` on Windows with Python
 3.12.10.
 
 ## Canonical Integration Branch
@@ -43,6 +43,8 @@ Latest captured run: `live-connector-criteria-design` on Windows with Python
   `attestation-revocation-reconciliation-drills`
 - Live connector criteria design branch:
   `live-connector-criteria-design`
+- Connector provider risk profile and revocation disable drills branch:
+  `connector-provider-risk-profile-revocation-disable-drills`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -176,6 +178,17 @@ Validation remains repository health evidence only; it does not approve live
 connector implementation, OAuth/OIDC/provider wiring, token handling runtime,
 external API calls, browser automation, remediation execution, or runtime
 authorization expansion.
+
+## Connector Provider Risk Profile Revocation Disable Drills Checkpoint
+
+This branch adds provider-risk profile and revocation/disable drill docs and
+runbooks, new `connector.provider_profile` and `connector.revocation_drill`
+schemas/examples, stronger readiness/scope/consent linkage refs, connector
+risk reason-code additions, and mock-only connector-risk classification tests.
+Validation remains repository health evidence only; it does not approve live
+connector implementation, OAuth/OIDC/SAML/provider wiring, token handling
+runtime, external API calls, external sends, browser automation, remediation
+execution, or runtime authorization expansion.
 
 ## Cross-Contract Linkage Hardening Checkpoint
 

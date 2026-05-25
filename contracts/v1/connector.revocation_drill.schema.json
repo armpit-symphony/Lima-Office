@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.lima-office.local/contracts/v1/connector.scope_review.schema.json",
-  "title": "Connector Scope Review Contract v1",
+  "$id": "https://schemas.lima-office.local/contracts/v1/connector.revocation_drill.schema.json",
+  "title": "Connector Revocation Drill Contract v1",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -17,26 +17,24 @@
     "idempotency_key",
     "producer",
     "policy_version",
-    "scope_review_id",
+    "revocation_drill_id",
     "connector_id",
-    "provider_profile_ref",
-    "requested_scopes",
-    "approved_scopes",
-    "denied_scopes",
-    "data_classes",
-    "least_privilege_status",
-    "object_authorization_status",
-    "property_authorization_status",
-    "reviewer_ref",
+    "provider_profile_id",
+    "connector_readiness_id",
+    "connector_consent_id",
+    "drill_status",
+    "drill_type",
+    "expected_outcome",
+    "actual_outcome",
     "evidence_refs",
     "reason_codes",
     "created_at",
-    "reviewed_at"
+    "completed_at"
   ],
   "properties": {
     "contract_name": {
       "type": "string",
-      "const": "connector.scope_review"
+      "const": "connector.revocation_drill"
     },
     "contract_version": {
       "type": "string",
@@ -92,9 +90,9 @@
         "component": {
           "type": "string",
           "enum": [
+            "supervisor",
             "security_reviewer",
-            "operator_console",
-            "supervisor"
+            "operator_console"
           ]
         },
         "produced_at": {
@@ -107,7 +105,7 @@
       "type": "string",
       "minLength": 1
     },
-    "scope_review_id": {
+    "revocation_drill_id": {
       "type": "string",
       "minLength": 1
     },
@@ -115,88 +113,55 @@
       "type": "string",
       "minLength": 1
     },
-    "provider_profile_ref": {
-      "type": [
-        "string",
-        "null"
-      ]
+    "provider_profile_id": {
+      "type": "string",
+      "minLength": 1
     },
-    "requested_scopes": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "uniqueItems": true
+    "connector_readiness_id": {
+      "type": "string",
+      "minLength": 1
     },
-    "approved_scopes": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "uniqueItems": true
+    "connector_consent_id": {
+      "type": "string",
+      "minLength": 1
     },
-    "denied_scopes": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "uniqueItems": true
-    },
-    "data_classes": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "enum": [
-          "public",
-          "internal",
-          "customer_confidential",
-          "sensitive_hr",
-          "sensitive_finance",
-          "sensitive_legal",
-          "sensitive_medical",
-          "secret"
-        ]
-      },
-      "uniqueItems": true
-    },
-    "least_privilege_status": {
+    "drill_status": {
       "type": "string",
       "enum": [
-        "satisfied",
-        "overbroad",
-        "review_required",
-        "denied",
-        "blocked_mvp"
-      ]
-    },
-    "object_authorization_status": {
-      "type": "string",
-      "enum": [
-        "required",
-        "mapped",
-        "missing",
+        "planned",
+        "running",
+        "passed",
+        "failed",
         "failed_closed",
         "blocked_mvp"
       ]
     },
-    "property_authorization_status": {
+    "drill_type": {
       "type": "string",
       "enum": [
-        "required",
-        "mapped",
-        "missing",
+        "revocation_verification",
+        "disable_switch_verification",
+        "scope_revocation",
+        "token_rotation_placeholder",
+        "outbound_block",
+        "prompt_injection_block",
+        "cross_tenant_block"
+      ]
+    },
+    "expected_outcome": {
+      "type": "string",
+      "enum": [
+        "connector_disabled",
+        "connector_revoked",
+        "action_blocked",
+        "evidence_required",
         "failed_closed",
         "blocked_mvp"
       ]
     },
-    "reviewer_ref": {
-      "type": [
-        "string",
-        "null"
-      ]
+    "actual_outcome": {
+      "type": "string",
+      "minLength": 1
     },
     "evidence_refs": {
       "type": "array",
@@ -251,7 +216,7 @@
       "type": "string",
       "format": "date-time"
     },
-    "reviewed_at": {
+    "completed_at": {
       "type": [
         "string",
         "null"
@@ -263,28 +228,22 @@
     {
       "if": {
         "properties": {
-          "least_privilege_status": {
-            "const": "satisfied"
+          "drill_status": {
+            "const": "passed"
           }
         },
         "required": [
-          "least_privilege_status"
+          "drill_status"
         ]
       },
       "then": {
         "properties": {
-          "reviewer_ref": {
+          "completed_at": {
             "type": "string",
-            "minLength": 1
+            "format": "date-time"
           },
           "evidence_refs": {
             "minItems": 1
-          },
-          "object_authorization_status": {
-            "const": "mapped"
-          },
-          "property_authorization_status": {
-            "const": "mapped"
           }
         }
       }
@@ -292,56 +251,28 @@
     {
       "if": {
         "properties": {
-          "least_privilege_status": {
+          "drill_status": {
             "enum": [
-              "overbroad",
-              "denied",
-              "blocked_mvp"
-            ]
-          }
-        },
-        "required": [
-          "least_privilege_status"
-        ]
-      },
-      "then": {
-        "properties": {
-          "reason_codes": {
-            "minItems": 1
-          },
-          "evidence_refs": {
-            "minItems": 1
-          },
-          "reviewer_ref": {
-            "type": "string",
-            "minLength": 1
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "object_authorization_status": {
-            "enum": [
-              "missing",
+              "failed",
               "failed_closed"
             ]
           }
         },
         "required": [
-          "object_authorization_status"
+          "drill_status"
         ]
       },
       "then": {
         "properties": {
           "reason_codes": {
-            "contains": {
-              "const": "connector_object_auth_missing"
-            }
+            "minItems": 1
           },
           "evidence_refs": {
             "minItems": 1
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       }
@@ -349,46 +280,26 @@
     {
       "if": {
         "properties": {
-          "property_authorization_status": {
+          "drill_status": {
+            "const": "blocked_mvp"
+          }
+        },
+        "required": [
+          "drill_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "expected_outcome": {
             "enum": [
-              "missing",
-              "failed_closed"
+              "blocked_mvp",
+              "failed_closed",
+              "action_blocked"
             ]
-          }
-        },
-        "required": [
-          "property_authorization_status"
-        ]
-      },
-      "then": {
-        "properties": {
-          "reason_codes": {
-            "contains": {
-              "const": "connector_property_auth_missing"
-            }
           },
-          "evidence_refs": {
-            "minItems": 1
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "least_privilege_status": {
-            "const": "overbroad"
-          }
-        },
-        "required": [
-          "least_privilege_status"
-        ]
-      },
-      "then": {
-        "properties": {
-          "reason_codes": {
-            "contains": {
-              "const": "connector_scope_overbroad"
+          "actual_outcome": {
+            "not": {
+              "const": "connector_usable"
             }
           }
         }
@@ -397,19 +308,19 @@
     {
       "if": {
         "properties": {
-          "least_privilege_status": {
-            "const": "denied"
+          "drill_type": {
+            "const": "cross_tenant_block"
           }
         },
         "required": [
-          "least_privilege_status"
+          "drill_type"
         ]
       },
       "then": {
         "properties": {
-          "reason_codes": {
-            "contains": {
-              "const": "connector_scope_denied"
+          "actual_outcome": {
+            "not": {
+              "const": "connector_usable"
             }
           }
         }
@@ -431,40 +342,48 @@
       },
       "then": {
         "properties": {
-          "least_privilege_status": {
+          "drill_status": {
             "not": {
-              "const": "satisfied"
+              "const": "passed"
             }
           }
         }
       }
     },
     {
-      "if": {
-        "properties": {
-          "reason_code_status": {
-            "const": "deprecated"
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "api_key"
+            ]
           },
-          "deprecated_reason_code_policy": {
-            "enum": [
-              "fail_closed",
-              "blocked_mvp"
+          {
+            "required": [
+              "oauth_token"
+            ]
+          },
+          {
+            "required": [
+              "refresh_token"
+            ]
+          },
+          {
+            "required": [
+              "access_token"
+            ]
+          },
+          {
+            "required": [
+              "private_key"
+            ]
+          },
+          {
+            "required": [
+              "password"
             ]
           }
-        },
-        "required": [
-          "reason_code_status",
-          "deprecated_reason_code_policy"
         ]
-      },
-      "then": {
-        "properties": {
-          "least_privilege_status": {
-            "not": {
-              "const": "satisfied"
-            }
-          }
-        }
       }
     }
   ]

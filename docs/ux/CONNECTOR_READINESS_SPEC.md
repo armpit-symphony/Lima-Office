@@ -16,6 +16,7 @@ Design-only UX metadata spec. No UI implementation.
 - Object/property authorization status.
 - Prompt-injection and outbound policy posture.
 - Revocation and rollback/disable drill state.
+- Provider risk profile and revocation-drill posture state.
 - Evidence and approval policy references.
 
 ## Required Fields
@@ -27,6 +28,8 @@ Design-only UX metadata spec. No UI implementation.
 - `object_authorization_status`, `property_authorization_status`
 - `allowed_actions`, `blocked_actions`
 - `approval_policy_refs`, `evidence_refs`, `revocation_refs`
+- `provider_profile_ref`, `revocation_drill_refs`
+- `token_rotation_placeholder_status`
 - `reason_codes`
 
 ## Fail-Closed UX Rules

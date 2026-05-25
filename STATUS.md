@@ -6,7 +6,7 @@ Canonical integration branch: `integration/phase-0-1a-baseline`
 
 Superseding invariant checkpoint branch: `phase-1a-invariant-checkpoint-v2`
 
-Current working branch: `live-connector-criteria-design`
+Current working branch: `connector-provider-risk-profile-revocation-disable-drills`
 
 Integration source branch: `operator-console-ux-spec` at
 `bac6f80cc63dd15ec7cd3d669193160c3766a8e1`
@@ -15,16 +15,18 @@ Current reachable baseline: Phase 0 architecture/contracts/policies, Phase 1A
 mock runtime scaffolding, closeout archive, worker deployment blueprint,
 governance policy details, and operator console UX specification.
 
-Current phase: Phase 1A live connector criteria design hardening. Phase 1A mock
+Current phase: Phase 1A connector provider-risk and revocation/disable drill hardening. Phase 1A mock
 runtime scaffolding is present, the v2 invariant checkpoint and durable
 replay/evidence, transaction/storage, coordinator, linkage, approval/Guardian
 reconciliation, governance export/delete taxonomy, reason-code
 registry/compatibility, model-routing defaults, health taxonomy, attestation
 verifier/reference-value, durable attestation lineage/authority, and
-attestation revocation reconciliation checkpoints are reachable. This branch
-adds fail-closed connector readiness/scope-review metadata contracts/examples,
-live-connector criteria docs/runbook posture, and mock-only connector readiness
-classification helper hardening.
+attestation revocation reconciliation checkpoints are reachable. The previous
+branch added fail-closed connector readiness/scope-review metadata
+contracts/examples and live-connector criteria docs/runbook posture. This lane
+adds provider-risk profile and revocation/disable drill metadata contracts,
+examples, runbook posture, and mock-only connector risk classification
+hardening.
 Runtime expansion remains blocked until the remaining gates in this file,
 [Baseline](docs/BASELINE.md), and [Next Phase Plan](docs/NEXT_PHASE_PLAN.md)
 are resolved.
@@ -154,6 +156,14 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
 - Attestation revocation reconciliation drill docs and runbook in
   [docs/ATTESTATION_REVOCATION_RECONCILIATION_DRILLS.md](docs/ATTESTATION_REVOCATION_RECONCILIATION_DRILLS.md)
   and [docs/runbooks/attestation-reconciliation-drill.md](docs/runbooks/attestation-reconciliation-drill.md).
+- Connector provider-risk profile and revocation/disable drill docs in
+  [docs/architecture/CONNECTOR_PROVIDER_RISK_PROFILES.md](docs/architecture/CONNECTOR_PROVIDER_RISK_PROFILES.md),
+  [docs/CONNECTOR_REVOCATION_DISABLE_DRILLS.md](docs/CONNECTOR_REVOCATION_DISABLE_DRILLS.md),
+  and
+  [docs/runbooks/connector-revocation-disable-drill.md](docs/runbooks/connector-revocation-disable-drill.md).
+- `connector.provider_profile` and `connector.revocation_drill` schemas/examples
+  for metadata-only provider risk posture, revocation verification placeholders,
+  disable-switch posture, and fail-closed drill outcomes.
 - `attestation.reconciliation` schema/examples and mock-only
   `attestation_reconciliation` helper for fail-closed drift detection across
   lineage/authority/reference/endorsement/appraisal/result/route/transaction/
@@ -184,6 +194,9 @@ checkpoint. Do not treat `e714310...` itself as integrated or validated.
 - Mock-only in-memory approval/Guardian reconciler for metadata-only linkage
   classification across approval chain, Guardian replay, replay records,
   coordinator events, transaction boundaries, and evidence ledger refs.
+- Mock-only connector risk classifier for provider-profile and
+  revocation-drill metadata with fail-closed outcomes and
+  `can_authorize: false`.
 - Mock-only in-memory access-matrix evaluator for role/action/session/device
   trust classification with fail-closed outcomes and `can_authorize: false`
   posture.

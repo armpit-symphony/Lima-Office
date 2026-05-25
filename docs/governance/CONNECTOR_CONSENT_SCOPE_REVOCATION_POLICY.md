@@ -13,6 +13,8 @@ Status: draft scaffold. Live connectors remain blocked.
 Related design references:
 
 - [Live Connector Criteria](../architecture/LIVE_CONNECTOR_CRITERIA.md)
+- [Connector Provider Risk Profiles](../architecture/CONNECTOR_PROVIDER_RISK_PROFILES.md)
+- [Connector Revocation Disable Drills](../CONNECTOR_REVOCATION_DISABLE_DRILLS.md)
 - [Live Connector Readiness Review](../runbooks/live-connector-readiness-review.md)
 
 ## Connector Consent Model
@@ -89,6 +91,13 @@ Revocation requires:
 
 Revoked connectors cannot receive new tasks or scope expansion.
 
+Revocation readiness now also requires:
+
+- provider-profile linkage (`provider_profile_ref`)
+- revocation-drill linkage (`revocation_drill_refs`)
+- disable-switch posture metadata
+- fail-closed reason/evidence when revocation or disable verification is missing
+
 ## Rotation Placeholder
 
 Credential and token rotation are future implementation topics. This policy
@@ -132,6 +141,8 @@ The following remain blocked:
 
 - `governance.connector_consent` records consent, scope, revocation, and
   prompt-injection posture.
+- `connector.provider_profile` and `connector.revocation_drill` capture
+  provider-specific risk posture and revocation/disable drill outcomes.
 - `connector.trust` remains mock/readiness-only.
 - `connector.readiness` and `connector.scope_review` record lifecycle, least
   privilege, object/property authorization mapping, and fail-closed review

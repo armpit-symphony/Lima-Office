@@ -16,6 +16,7 @@
   "policy_version": "policy-phase0-v1",
   "scope_review_id": "connector-scope-review-ref-003",
   "connector_id": "connector-file-storage-metadata-001",
+  "provider_profile_ref": "provider-profile-file-storage-001",
   "requested_scopes": [
     "read_metadata",
     "read_content"

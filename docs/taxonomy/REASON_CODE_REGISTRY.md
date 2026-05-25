@@ -95,6 +95,19 @@ Live connector criteria refinement adds canonical reason codes:
 - `connector_secret_policy_missing`
 - `connector_export_delete_impact_unknown`
 
+Connector provider-risk and revocation-disable drill refinement adds:
+
+- `connector_provider_high_risk`
+- `connector_provider_critical_risk`
+- `connector_disable_switch_missing`
+- `connector_disable_switch_failed`
+- `connector_revocation_unverified`
+- `connector_revocation_drill_failed`
+- `connector_token_rotation_missing`
+- `connector_outbound_capability_blocked`
+- `connector_prompt_injection_blocked`
+- `connector_cross_tenant_blocked`
+
 Worker-attestation and signed-update/rollback hardening adds canonical reason
 codes:
 

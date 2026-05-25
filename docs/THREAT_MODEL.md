@@ -76,6 +76,7 @@ Phase 0 status values:
 - Approval request/result.
 - Evidence artifact redaction and retention.
 - Connector trust/readiness.
+- Connector provider risk profile and revocation/disable drill evidence.
 - Prompt injection handling.
 - Tenant memory boundary.
 - Model-route defaults and health-taxonomy fail-closed posture.
@@ -141,6 +142,8 @@ The Phase 0 schemas do not implement controls, but they define the required reco
   verifier?
 - What durable replay-store atomicity and export-manifest integrity checks are
   required before export/delete flows can be implemented?
+- What provider-specific risk thresholds and revocation/disable drill cadence
+  should be mandatory before any future connector implementation lane?
 - What reconciliation source-of-truth and propagation SLA should govern
   `attestation.reconciliation` before any privileged runtime trust decisions
   are implemented?

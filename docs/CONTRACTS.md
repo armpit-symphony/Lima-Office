@@ -198,6 +198,32 @@ Phase 1A now adds metadata-only reconciliation drift posture:
 This remains docs/contracts/tests/mock-only hardening. No verifier runtime,
 TPM, signing, update, or authorization execution is implemented.
 
+## Connector Provider Risk / Revocation Drill Hardening
+
+Phase 1A now adds metadata-only provider-risk and revocation-drill posture:
+
+- `connector.provider_profile` for provider risk levels, revocation/disable
+  method posture, object/property authorization posture, rate-limit and
+  prompt-injection exposure posture, and fail-closed evidence linkage.
+- `connector.revocation_drill` for tenant-scoped revocation/disable/scope/
+  cross-tenant/prompt-injection drill outcomes with explicit expected vs actual
+  fail-closed posture and evidence refs.
+
+Related connector contracts now include stronger linkage refs:
+
+- `connector.readiness` requires `provider_profile_ref`,
+  `revocation_drill_refs`, and `token_rotation_placeholder_status`.
+- `connector.scope_review` requires `provider_profile_ref`.
+- `governance.connector_consent` now links provider profile and revocation
+  drill refs for revoked and mock-ready pathways.
+- `tool.invocation`, `approval.binding`, and `guardian.decision` add optional
+  provider-profile/revocation-drill linkage refs for connector access paths.
+
+This remains docs/contracts/tests/mock-only hardening and does not implement
+live connectors, OAuth/OIDC/provider wiring, token storage, API clients,
+external sends, browser automation, remediation execution, or runtime
+authorization expansion.
+
 ## Governance Export/Delete Taxonomy Hardening
 
 Phase 1A now includes:

@@ -17,6 +17,7 @@
   "connector_readiness_id": "connector-readiness-rmm-001",
   "connector_id": "connector-rmm-placeholder-001",
   "connector_type": "rmm_it",
+  "provider_profile_ref": "provider-profile-rmm-001",
   "lifecycle_state": "approval_required",
   "readiness_status": "review_required",
   "connector_owner_ref": "connector-owner-ref-003",
@@ -56,6 +57,10 @@
   "revocation_refs": [
     "connector-revocation-runbook-ref-003"
   ],
+  "revocation_drill_refs": [
+    "connector-revocation-drill-002"
+  ],
+  "token_rotation_placeholder_status": "required_before_live",
   "export_delete_impact_refs": [
     "governance-audit-export-impact-ref-003"
   ],

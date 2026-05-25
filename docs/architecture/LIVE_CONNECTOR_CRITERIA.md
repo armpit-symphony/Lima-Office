@@ -120,3 +120,17 @@ Default blocked action classes for all connectors in MVP:
 - Revocation and rollback/disable drills documented and tested as metadata-only.
 - Guardian/approval/evidence linkage documented and tested for connector paths.
 - MVP block posture remains enforced for live connector execution.
+
+## Provider-Risk Extension
+
+This criteria is extended by
+[Connector Provider Risk Profiles](CONNECTOR_PROVIDER_RISK_PROFILES.md) and
+[Connector Revocation Disable Drills](../CONNECTOR_REVOCATION_DISABLE_DRILLS.md).
+
+Additional pre-live requirements now include:
+
+- provider risk profile records (`connector.provider_profile`)
+- revocation/disable drill records (`connector.revocation_drill`)
+- explicit provider profile linkage in readiness/scope/consent/invocation paths
+- explicit drill evidence for revocation/disable/cross-tenant/prompt-injection
+  fail-closed outcomes

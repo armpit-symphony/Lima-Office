@@ -68,6 +68,56 @@
       "status": "active"
     },
     {
+      "reason_code": "connector_provider_high_risk",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_provider_critical_risk",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_disable_switch_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_disable_switch_failed",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_revocation_unverified",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_revocation_drill_failed",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_token_rotation_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_outbound_capability_blocked",
+      "category": "guardian",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_prompt_injection_blocked",
+      "category": "guardian",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_cross_tenant_blocked",
+      "category": "tenant_isolation",
+      "status": "active"
+    },
+    {
       "reason_code": "model_route_unavailable",
       "category": "health",
       "status": "active"

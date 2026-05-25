@@ -204,6 +204,18 @@ operations, customer-system mutation, or compliance certification claims.
   provider wiring, no token handling runtime, no external API calls, no
   browser automation, and no runtime authorization expansion are authorized.
 
+## Connector Provider Risk Profile Revocation Disable Drills Checkpoint
+
+- Branch: `connector-provider-risk-profile-revocation-disable-drills`
+- Base: `live-connector-criteria-design`
+- Purpose: define metadata-only provider risk profiles and revocation/disable
+  drill evidence posture so connector lifecycle/readiness/scope/consent/trust
+  records fail closed on risk drift and revocation gaps.
+- Scope: docs, schemas, examples, tests, and mock-only connector risk
+  classification helper. No live connectors, OAuth/OIDC/SAML/provider wiring,
+  token storage/runtime, external API calls, browser automation, remediation
+  execution, or runtime authorization expansion are authorized.
+
 ## Included Branches And Commits
 
 The following reachable branches are ancestors of the integration branch:

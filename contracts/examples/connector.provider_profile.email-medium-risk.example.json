@@ -1,0 +1,50 @@
+{
+  "contract_name": "connector.provider_profile",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-provider-profile-email-001",
+  "causation_id": null,
+  "idempotency_key": "idem-provider-profile-email-001",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-25T21:00:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "provider_profile_id": "provider-profile-email-001",
+  "connector_type": "email",
+  "provider_ref": "provider-ref-email-metadata-001",
+  "provider_status": "review_required",
+  "risk_level": "medium",
+  "data_classes": [
+    "internal",
+    "customer_confidential"
+  ],
+  "outbound_capabilities": [
+    "metadata_read",
+    "draft_create",
+    "draft_update"
+  ],
+  "object_authorization_status": "mapped",
+  "property_authorization_status": "mapped",
+  "token_sensitivity": "medium",
+  "revocation_method_status": "documented",
+  "disable_switch_status": "documented",
+  "rate_limit_status": "documented",
+  "prompt_injection_exposure": "medium",
+  "export_delete_impact_status": "mapped",
+  "policy_refs": [
+    "policy.connector_consent_scope_revocation.phase0"
+  ],
+  "evidence_refs": [
+    "ev-provider-profile-email-001"
+  ],
+  "reason_codes": [
+    "connector_provider_high_risk"
+  ],
+  "created_at": "2026-05-25T21:00:00Z",
+  "updated_at": "2026-05-25T21:00:00Z"
+}

@@ -17,6 +17,7 @@
   "connector_readiness_id": "connector-readiness-revoked-001",
   "connector_id": "connector-email-metadata-001",
   "connector_type": "email",
+  "provider_profile_ref": "provider-profile-email-001",
   "lifecycle_state": "revoked",
   "readiness_status": "revoked",
   "connector_owner_ref": "connector-owner-ref-001",
@@ -54,6 +55,10 @@
     "ev-connector-consent-revoked-001",
     "runbook.connector-revocation.phase0"
   ],
+  "revocation_drill_refs": [
+    "connector-revocation-drill-001"
+  ],
+  "token_rotation_placeholder_status": "required_before_live",
   "export_delete_impact_refs": [
     "governance-audit-export-impact-ref-001"
   ],

@@ -69,6 +69,26 @@ implementation. Phase 1A v2 uses these codes in metadata-only
 | `health_degraded` | Health | Domain is operating in degraded but observable mode | Warning/high | `supervisor.health`, `worker.heartbeat` | [Health taxonomy review](../runbooks/health-taxonomy-review.md) |
 | `health_blocked` | Health | Domain is fail-closed blocked | Blocked | `supervisor.health`, `console.alert` | [Health taxonomy review](../runbooks/health-taxonomy-review.md) |
 
+## Connector Provider-Risk Additions
+
+The connector provider-risk lane adds these fail-closed connector codes:
+
+- `connector_provider_high_risk`
+- `connector_provider_critical_risk`
+- `connector_disable_switch_missing`
+- `connector_disable_switch_failed`
+- `connector_revocation_unverified`
+- `connector_revocation_drill_failed`
+- `connector_token_rotation_missing`
+- `connector_outbound_capability_blocked`
+- `connector_prompt_injection_blocked`
+- `connector_cross_tenant_blocked`
+
+Primary records: `connector.provider_profile`, `connector.revocation_drill`,
+`connector.readiness`, `connector.scope_review`, `console.alert`,
+`supervisor.health`. Runbook:
+[Connector revocation disable drill](../runbooks/connector-revocation-disable-drill.md).
+
 ## UX Rules
 
 - Missing data is not healthy.

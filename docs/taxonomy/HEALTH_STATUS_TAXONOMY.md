@@ -62,6 +62,16 @@ Status: taxonomy scaffolding for contracts/tests/docs only.
 - `connector_rate_limit_missing`
 - `connector_secret_policy_missing`
 - `connector_export_delete_impact_unknown`
+- `connector_provider_high_risk`
+- `connector_provider_critical_risk`
+- `connector_disable_switch_missing`
+- `connector_disable_switch_failed`
+- `connector_revocation_unverified`
+- `connector_revocation_drill_failed`
+- `connector_token_rotation_missing`
+- `connector_outbound_capability_blocked`
+- `connector_prompt_injection_blocked`
+- `connector_cross_tenant_blocked`
 - `attestation_required`
 - `attestation_failed`
 - `attestation_expired`

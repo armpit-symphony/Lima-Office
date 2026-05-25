@@ -121,6 +121,8 @@
         "connector_trust",
         "connector_readiness",
         "connector_scope_review",
+        "connector_provider_profile",
+        "connector_revocation_drill",
         "incident",
         "lima_it_handoff",
         "slo_measurement",

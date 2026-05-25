@@ -755,6 +755,18 @@
         "null"
       ]
     },
+    "provider_profile_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_revocation_drill_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "denial_evidence_ref": {
       "type": [
         "string",
@@ -1296,6 +1308,10 @@
             "minLength": 1
           },
           "connector_consent_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provider_profile_ref": {
             "type": "string",
             "minLength": 1
           },

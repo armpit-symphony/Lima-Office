@@ -17,6 +17,7 @@
   "connector_readiness_id": "connector-readiness-email-001",
   "connector_id": "connector-email-metadata-001",
   "connector_type": "email",
+  "provider_profile_ref": "provider-profile-email-001",
   "lifecycle_state": "approved_for_lab",
   "readiness_status": "approved_for_lab",
   "connector_owner_ref": "connector-owner-ref-001",
@@ -57,6 +58,10 @@
   "revocation_refs": [
     "connector-revocation-runbook-ref-001"
   ],
+  "revocation_drill_refs": [
+    "connector-revocation-drill-001"
+  ],
+  "token_rotation_placeholder_status": "required_before_live",
   "export_delete_impact_refs": [
     "governance-audit-export-impact-ref-001"
   ],

@@ -177,6 +177,14 @@ documents the reachable v2 checkpoint that supersedes it.
   provider-by-provider readiness evidence, revocation SLA, token-storage model,
   object/property authorization enforcement strategy, and disable-switch
   behavior are mandatory before any lab-live connector pilot is considered?
+- Provider risk profile authority: who owns final approval/revocation authority
+  per provider profile (`connector.provider_profile`) and what independent SoD
+  evidence is mandatory for risk-level promotion to `approved_for_lab`?
+- Revocation drill coverage: what minimum cadence and drill matrix
+  (`revocation_verification`, `disable_switch_verification`,
+  `scope_revocation`, `token_rotation_placeholder`, `prompt_injection_block`,
+  `cross_tenant_block`) is required before any provider can be considered for
+  future implementation lanes?
 - Model routing defaults: what tasks can use local models, what tasks can use
   subscription/cloud model classes, and what data classifications block cloud
   routing?

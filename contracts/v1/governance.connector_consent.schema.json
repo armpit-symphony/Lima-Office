@@ -32,8 +32,10 @@
     "rotation_placeholder",
     "data_classification",
     "prompt_injection_review",
+    "provider_profile_ref",
     "connector_readiness_ref",
     "scope_review_ref",
+    "revocation_drill_refs",
     "policy_refs",
     "status",
     "producer",
@@ -259,6 +261,12 @@
         "blocked"
       ]
     },
+    "provider_profile_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "connector_readiness_ref": {
       "type": [
         "string",
@@ -270,6 +278,14 @@
         "string",
         "null"
       ]
+    },
+    "revocation_drill_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
     },
     "policy_refs": {
       "type": "array",
@@ -466,6 +482,10 @@
             "type": "string",
             "minLength": 1
           },
+          "provider_profile_ref": {
+            "type": "string",
+            "minLength": 1
+          },
           "connector_readiness_ref": {
             "type": "string",
             "minLength": 1
@@ -501,6 +521,46 @@
           "reason_codes": {
             "contains": {
               "const": "connector_live_blocked_mvp"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consent_status": {
+            "const": "revoked"
+          }
+        },
+        "required": [
+          "consent_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "revocation_drill_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "rotation_placeholder": {
+            "const": "required_before_live"
+          }
+        },
+        "required": [
+          "rotation_placeholder"
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "not": {
+              "const": "mock_ready"
             }
           }
         }

@@ -236,6 +236,13 @@ define the metadata-only readiness lifecycle, least-privilege/object/property
 authorization checks, outbound policy gates, and revocation drill posture
 required before any future lab-live connector implementation lane.
 
+[Connector Provider Risk Profiles](architecture/CONNECTOR_PROVIDER_RISK_PROFILES.md)
+and [Connector Revocation Disable Drills](CONNECTOR_REVOCATION_DISABLE_DRILLS.md)
+extend this posture with provider-specific risk levels, disable-switch and
+revocation verification placeholders, and fail-closed drill evidence linkage.
+No connector provider integration, token runtime, or external API calls are
+implemented.
+
 ## Breakglass
 
 Breakglass is a blocked placeholder in MVP. Requests can be represented by

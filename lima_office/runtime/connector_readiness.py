@@ -103,6 +103,26 @@ def classify_connector_readiness(
         blocked = True
         failure_reasons.add("connector_revocation_missing")
 
+    revocation_drill_refs = readiness.get("revocation_drill_refs")
+    if not isinstance(revocation_drill_refs, list) or not revocation_drill_refs:
+        blocked = True
+        failure_reasons.add("connector_revocation_unverified")
+
+    provider_profile_ref = readiness.get("provider_profile_ref")
+    if readiness_status in {"approved_for_lab", "review_required"} and (
+        not isinstance(provider_profile_ref, str) or not provider_profile_ref
+    ):
+        blocked = True
+        failure_reasons.add("connector_provider_high_risk")
+
+    token_rotation_placeholder_status = str(readiness.get("token_rotation_placeholder_status") or "")
+    if token_rotation_placeholder_status in {"missing", "failed_closed"}:
+        blocked = True
+        failure_reasons.add("connector_token_rotation_missing")
+    if readiness_status in {"approved_for_lab", "review_required"} and token_rotation_placeholder_status == "":
+        blocked = True
+        failure_reasons.add("connector_token_rotation_missing")
+
     evidence_refs = readiness.get("evidence_refs")
     if not isinstance(evidence_refs, list) or not evidence_refs:
         blocked = True

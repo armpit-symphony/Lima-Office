@@ -13,6 +13,7 @@
   "connector_id": "connector-email-mock-001",
   "connector_type": "email",
   "connector_owner_ref": "connector-owner-ref-001",
+  "provider_profile_ref": "provider-profile-email-001",
   "consent_grantor_ref": "operator-ref-001",
   "consent_status": "revoked",
   "scope_review_status": "blocked",
@@ -44,6 +45,9 @@
   "prompt_injection_review": "required_before_live",
   "connector_readiness_ref": "connector-readiness-revoked-001",
   "scope_review_ref": "connector-scope-review-ref-001",
+  "revocation_drill_refs": [
+    "connector-revocation-drill-001"
+  ],
   "policy_refs": [
     "policy.connector_consent_scope_revocation.phase0"
   ],

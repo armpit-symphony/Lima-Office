@@ -74,6 +74,8 @@
   "connector_readiness_ref": "connector-readiness-rmm-001",
   "connector_scope_review_ref": "connector-scope-review-ref-003",
   "connector_consent_ref": "connector-consent-ref-003",
+  "provider_profile_ref": "provider-profile-rmm-001",
+  "connector_revocation_drill_ref": "connector-revocation-drill-004",
   "evidence_failure_id": null,
   "incident_id": null,
   "requested_at": "2026-05-18T21:38:00Z",

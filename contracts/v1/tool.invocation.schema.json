@@ -534,6 +534,18 @@
         "null"
       ]
     },
+    "provider_profile_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_revocation_drill_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "evidence_failure_id": {
       "type": [
         "string",
@@ -675,7 +687,8 @@
         "required": [
           "connector_readiness_ref",
           "connector_scope_review_ref",
-          "connector_consent_ref"
+          "connector_consent_ref",
+          "provider_profile_ref"
         ],
         "properties": {
           "connector_readiness_ref": {
@@ -687,6 +700,10 @@
             "minLength": 1
           },
           "connector_consent_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provider_profile_ref": {
             "type": "string",
             "minLength": 1
           },
@@ -739,6 +756,37 @@
               "blocked_evidence_unavailable",
               "evidence_failed"
             ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "denied"
+          },
+          "requested_tool": {
+            "properties": {
+              "tool_type": {
+                "const": "connector"
+              }
+            },
+            "required": [
+              "tool_type"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "requested_tool"
+        ]
+      },
+      "then": {
+        "properties": {
+          "connector_revocation_drill_ref": {
+            "type": "string",
+            "minLength": 1
           }
         }
       }

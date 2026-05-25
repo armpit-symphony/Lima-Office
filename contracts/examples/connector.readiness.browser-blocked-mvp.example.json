@@ -17,6 +17,7 @@
   "connector_readiness_id": "connector-readiness-browser-001",
   "connector_id": "connector-browser-placeholder-001",
   "connector_type": "browser",
+  "provider_profile_ref": "provider-profile-browser-001",
   "lifecycle_state": "live_blocked_mvp",
   "readiness_status": "blocked_mvp",
   "connector_owner_ref": "connector-owner-ref-002",
@@ -51,6 +52,10 @@
   "revocation_refs": [
     "connector-revocation-runbook-ref-002"
   ],
+  "revocation_drill_refs": [
+    "connector-revocation-drill-003"
+  ],
+  "token_rotation_placeholder_status": "blocked_mvp",
   "export_delete_impact_refs": [
     "governance-audit-export-impact-ref-002"
   ],
