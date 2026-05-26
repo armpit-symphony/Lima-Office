@@ -87,3 +87,19 @@ These blockers remain open after the current Phase 0/1A hardening baseline. None
   independent gate-audit sign-off on the simulator baseline tag?
 - Must durable storage/transaction planning be completed before any Phase 1B
   implementation slice?
+
+## Phase 1C supervised lab orchestration gate
+
+- Which single next simulator slice should be approved first, if any:
+  supervisor orchestration simulator, evidence lifecycle simulator, or Guardian
+  replay drill simulator?
+- What is the exact orchestrator metadata boundary so "decision envelope"
+  behavior cannot drift into dispatch semantics?
+- Are worker/task simulator APIs stable enough for read-only orchestration
+  compatibility checks?
+- Should monotonic timestamp and idempotency hardening be completed before
+  any orchestration simulator slice?
+- Should evidence lifecycle simulator hardening come before any orchestration
+  simulator coupling?
+- What mandatory post-implementation audit checklist should apply to every
+  future tiny Phase 1C slice?

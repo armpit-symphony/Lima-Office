@@ -12,6 +12,7 @@ Date: May 26, 2026
 - Independent slice audit branch: `audit-worker-lifecycle-simulator-only`
 - Independent task slice audit branch: `audit-task-lifecycle-simulator-only`
 - Independent simulator baseline tag audit branch: `audit-phase-1b-simulator-baseline-tag`
+- Phase 1C planning branch: `phase-1c-supervised-lab-orchestration-planning`
 
 ## Baseline posture
 
@@ -20,6 +21,7 @@ Date: May 26, 2026
 - Phase 1A hardening chain through connector defaults/SLO thresholds: present.
 - Phase 1B narrow slices implemented: worker lifecycle simulator and task lifecycle simulator (both in-memory).
 - Phase 1B simulator slices are now frozen in `integration/phase-1b-simulator-baseline`.
+- Phase 1C planning lane is open as docs/runbook/gate planning only.
 - Broader runtime expansion remains blocked pending separate gates.
 
 ## Latest validation snapshot (this branch)
@@ -71,4 +73,8 @@ Recommended conservative sequence:
 5. Tag `lima-office-phase-1b-simulator-baseline` should be used as the frozen baseline anchor for independent gate audit.
 6. Independent gate audit on tag baseline is recorded in `docs/audits/PHASE_1B_SIMULATOR_BASELINE_TAG_AUDIT.md` with result `PASS WITH WARNINGS`.
 7. Keep broader Phase 1B implementation blocked beyond these in-memory simulator slices.
-8. If expanding further, require separate explicit gate approval and fresh independent audit.
+8. Phase 1C planning artifacts are tracked in:
+   - `docs/PHASE_1C_SUPERVISED_LAB_ORCHESTRATION_PLAN.md`
+   - `docs/PHASE_1C_SUPERVISOR_LAB_ORCHESTRATOR_GATE.md`
+   - `docs/runbooks/phase-1c-supervised-lab-orchestration-drill.md`
+9. Any Phase 1C implementation slice requires explicit approval and fresh independent audit.

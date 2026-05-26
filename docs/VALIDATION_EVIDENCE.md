@@ -5,12 +5,16 @@ Date: May 26, 2026
 This file records the latest validation run for the narrow Phase 1B
 worker-lifecycle and task-lifecycle simulator lanes.
 
+Phase 1C planning branch validation is also recorded below.
+
 ## Scope
 
 - Branch: `integration/phase-1b-simulator-baseline`
 - Base branch: `safety-patch-disposition` / `e31e225`
 - Scope basis: explicit approved tiny Phase 1B slices (worker lifecycle simulator only, task lifecycle simulator only)
 - Main branch update: not performed in this lane
+- Phase 1C planning branch: `phase-1c-supervised-lab-orchestration-planning`
+- Phase 1C base branch: `audit-phase-1b-simulator-baseline-tag` / `be52227`
 
 ## Commands
 
@@ -49,6 +53,35 @@ git status
   - `439 passed, 1 warning, 244 subtests passed`
 - `compileall`: `PASS`
 - `git diff --check`: `PASS` (after whitespace cleanup)
+- `git diff --cached --check`: `PASS`
+
+## Phase 1C Planning Branch Update
+
+Planning lane: docs/runbook/gate updates only. No runtime implementation added.
+
+Latest command results on `phase-1c-supervised-lab-orchestration-planning`:
+
+- `validate-contracts`: `PASS`
+  - schemas parsed: `65`
+  - examples parsed: `208`
+  - mapped examples: `208`
+  - schemas with examples: `65`
+- `check-reason-codes`: `PASS`
+  - schemas scanned: `65`
+  - examples scanned: `208`
+  - known canonical/alias codes: `227`
+  - reason-code values scanned in schemas: `610`
+  - reason-code values scanned in examples: `323`
+- `check-doc-links`: `PASS`
+  - markdown files scanned: `156`
+  - local links checked: `1083`
+- `unittest`: `PASS`
+  - `Ran 439 tests`
+  - `OK`
+- `pytest`: `PASS`
+  - `439 passed, 1 warning, 244 subtests passed`
+- `compileall`: `PASS`
+- `git diff --check`: `PASS`
 - `git diff --cached --check`: `PASS`
 
 ## Independent audit note

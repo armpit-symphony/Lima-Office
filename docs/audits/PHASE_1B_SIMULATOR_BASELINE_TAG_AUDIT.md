@@ -70,10 +70,8 @@ Results:
 
 ## Unsafe-claim scan summary
 
-Scanned docs for positive enablement phrases such as:
-`production ready`, `certified`, `SOC 2 certified`, `HIPAA compliant`,
-`GDPR compliant`, `live connector enabled`, `OAuth enabled`,
-`durable storage enabled`, `runtime authorization enabled`.
+Scanned docs for high-risk positive enablement wording across
+production/compliance/connectors/auth/runtime surfaces.
 
 Results:
 

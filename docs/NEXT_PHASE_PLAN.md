@@ -38,6 +38,83 @@ Any future tiny implementation slice requires separate explicit approval after:
 This branch does not approve any additional implementation slice beyond the
 already audited worker/task lifecycle simulators.
 
+## Phase 1C Decision Matrix (Planning Only)
+
+This section is planning-only and does not approve implementation by itself.
+
+### Option 1: Supervisor Lab Orchestrator Simulator Only
+
+- Purpose:
+  metadata-only supervisor decision envelope simulator that reads worker/task
+  simulator snapshots and returns fail-closed compatibility outcomes.
+- Allowed work:
+  in-memory metadata reads, compatibility checks, and metadata-only results.
+- Blocked work:
+  dispatch, assignment execution, tool execution, connector/model calls,
+  network/file persistence, background loops/services.
+- Prerequisites:
+  explicit approval, audited baseline branch ancestry, fail-closed test plan,
+  and post-implementation independent audit gate.
+- Risk level:
+  medium-high (highest risk of dispatch creep).
+- Recommendation:
+  defer unless explicitly approved after stronger evidence/idempotency posture.
+
+### Option 2: Evidence Lifecycle Simulator Only
+
+- Purpose:
+  metadata-only simulation of pre-action/post-action/denial evidence lifecycle
+  and linkage integrity.
+- Allowed work:
+  in-memory evidence-lifecycle compatibility checks and fail-closed outcomes.
+- Blocked work:
+  durable evidence storage, export/delete execution, external IO.
+- Prerequisites:
+  explicit approval, strict no-storage/no-network boundaries, audit plan.
+- Risk level:
+  medium.
+- Recommendation:
+  preferred first implementation candidate if one tiny Phase 1C slice is
+  approved.
+
+### Option 3: Guardian Replay Drill Simulator Only
+
+- Purpose:
+  metadata-only replay/expiry drill sequencing for Guardian decisions.
+- Allowed work:
+  in-memory drill metadata checks and fail-closed outcome classification.
+- Blocked work:
+  runtime authorization expansion, durable replay services, dispatch behavior.
+- Prerequisites:
+  explicit approval, replay-drill-only scope definition, independent audit.
+- Risk level:
+  medium-low.
+- Recommendation:
+  viable as a narrow alternative to Option 2.
+
+### Option 4: Pause / Merge / Audit Only
+
+- Purpose:
+  preserve audited baseline and avoid additional implementation risk.
+- Allowed work:
+  docs, gates, audits, runbook and contract consistency updates only.
+- Blocked work:
+  any new runtime implementation slice.
+- Prerequisites:
+  none beyond baseline validation/audit hygiene.
+- Risk level:
+  low.
+- Recommendation:
+  default conservative path unless explicit approval is granted.
+
+### Phase 1C Recommendation
+
+- Default: Option 4 (pause/merge/audit only).
+- If one tiny implementation slice is explicitly approved:
+  Option 2 (evidence lifecycle simulator only) before Option 1.
+- Any implementation still requires explicit approval, full validation pass,
+  and a fresh independent audit.
+
 Blocked surfaces remain blocked:
 
 - live connectors

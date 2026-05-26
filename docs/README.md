@@ -53,6 +53,8 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Phase 1B implementation gate checklist](PHASE_1B_IMPLEMENTATION_GATE_CHECKLIST.md)
 - [Phase 1B worker lifecycle simulator](PHASE_1B_WORKER_LIFECYCLE_SIMULATOR.md)
 - [Phase 1B task lifecycle simulator](PHASE_1B_TASK_LIFECYCLE_SIMULATOR.md)
+- [Phase 1C supervised lab orchestration plan](PHASE_1C_SUPERVISED_LAB_ORCHESTRATION_PLAN.md)
+- [Phase 1C supervisor lab orchestrator gate](PHASE_1C_SUPERVISOR_LAB_ORCHESTRATOR_GATE.md)
 - [Phase 0 / Phase 1A closeout](PHASE_0_1A_CLOSEOUT.md)
 - [Next phase plan](NEXT_PHASE_PLAN.md)
 - [Runtime boundaries](RUNTIME_BOUNDARIES.md)
@@ -143,6 +145,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Model routing review](runbooks/model-routing-review.md)
 - [Health taxonomy review](runbooks/health-taxonomy-review.md)
 - [Phase 1B lab runtime drill](runbooks/phase-1b-lab-runtime-drill.md)
+- [Phase 1C supervised lab orchestration drill](runbooks/phase-1c-supervised-lab-orchestration-drill.md)
 - [Prompt injection response](runbooks/prompt-injection-response.md)
 - [LIMA IT handoff](runbooks/lima-it-handoff.md)
 
