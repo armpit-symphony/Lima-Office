@@ -6,7 +6,34 @@ Current checkpoint basis:
 
 - Latest hardening checkpoint: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
 - Review branch: `major-baseline-stabilization-next-phase-gate-review`
-- Integration refresh status: `integration/phase-0-1a-baseline` updated to `0d4188d`
+- Integration refresh status: `integration/phase-0-1a-baseline` updated to `26d5789`
+
+## Phase 1B Planning-Only Update (May 26, 2026)
+
+Current recommendation is Phase 1B planning-only, tracked in:
+
+- [PHASE_1B_LAB_RUNTIME_PLAN.md](PHASE_1B_LAB_RUNTIME_PLAN.md)
+- [PHASE_1B_IMPLEMENTATION_GATE_CHECKLIST.md](PHASE_1B_IMPLEMENTATION_GATE_CHECKLIST.md)
+- [runbooks/phase-1b-lab-runtime-drill.md](runbooks/phase-1b-lab-runtime-drill.md)
+
+This branch does not approve Phase 1B runtime implementation.
+
+Any future tiny implementation slice requires separate explicit approval after:
+
+1. implementation-gate checklist pass,
+2. safety patch disposition completion,
+3. fresh validation and audit confirmation.
+
+Blocked surfaces remain blocked:
+
+- live connectors
+- OAuth/OIDC/SAML/provider wiring and token runtime
+- durable storage/service implementation
+- real model provider calls and local inference runtime
+- real IdP/MFA/session runtime authorization
+- real attestation/verifier/signing runtime
+- real export/delete runtime
+- remediation execution
 
 ## Decision Matrix
 
@@ -77,6 +104,7 @@ Recommended sequence:
 1. Option F (independent audit / pause).
 2. Option B (Phase 1B lab runtime planning only).
 3. Option D (storage/transaction implementation planning only), if audit findings permit.
+4. Consider a tiny implementation slice only after explicit gate approval.
 
 Explicit non-recommendations for this gate:
 

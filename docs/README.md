@@ -49,6 +49,8 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Open questions](OPEN_QUESTIONS.md)
 - [Validation](VALIDATION.md)
 - [Phase 1A runtime scaffolding](PHASE_1A_RUNTIME_SCAFFOLDING.md)
+- [Phase 1B lab runtime plan](PHASE_1B_LAB_RUNTIME_PLAN.md)
+- [Phase 1B implementation gate checklist](PHASE_1B_IMPLEMENTATION_GATE_CHECKLIST.md)
 - [Phase 0 / Phase 1A closeout](PHASE_0_1A_CLOSEOUT.md)
 - [Next phase plan](NEXT_PHASE_PLAN.md)
 - [Runtime boundaries](RUNTIME_BOUNDARIES.md)
@@ -133,6 +135,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Export delete conflict review](runbooks/export-delete-conflict-review.md)
 - [Model routing review](runbooks/model-routing-review.md)
 - [Health taxonomy review](runbooks/health-taxonomy-review.md)
+- [Phase 1B lab runtime drill](runbooks/phase-1b-lab-runtime-drill.md)
 - [Prompt injection response](runbooks/prompt-injection-response.md)
 - [LIMA IT handoff](runbooks/lima-it-handoff.md)
 

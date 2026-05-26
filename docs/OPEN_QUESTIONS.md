@@ -66,3 +66,18 @@ These blockers remain open after the current Phase 0/1A hardening baseline. None
   2. Archive/discard with documented traceability.
 - Do not silently merge or delete it without explicit instruction.
 - Recommended immediate lane: independent audit decision on this artifact before any Phase 1B implementation discussion.
+
+## Phase 1B planning gate
+
+- What is the exact first mock lab runner scope: supervisor+worker+task+replay
+  bundle, or a narrower subset?
+- What is the final disposition for
+  `model-routing-health-taxonomy.partial.patch` before any implementation lane?
+- Should the refreshed integration baseline be tagged/refrozen before any tiny
+  Phase 1B implementation proposal?
+- Should `main` remain untouched through Phase 1B planning and first tiny slice
+  evaluation?
+- If implementation is later approved, should the first tiny slice be worker
+  lifecycle simulator only, or task lifecycle transitions only?
+- Must durable storage/transaction planning be completed before any Phase 1B
+  implementation slice?
