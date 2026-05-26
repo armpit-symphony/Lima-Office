@@ -152,3 +152,10 @@ by [Connector Source-Of-Truth Ownership](../CONNECTOR_SOURCE_OF_TRUTH_OWNERSHIP.
 with `connector.ownership` and `connector.escalation` contracts. Missing/stale/
 conflicted ownership, SoD violations, and revocation/disable accountability
 gaps are fail-closed metadata posture and do not authorize connector use.
+
+Connector default-value and target placeholders are now further hardened by
+[Connector Defaults and SLO Targets](../CONNECTOR_DEFAULTS_AND_SLO_TARGETS.md),
+with `connector.defaults`, `connector.slo_target`, and
+`connector.score_threshold` contracts. These records define default blocked-MVP
+categories, tenant override posture, and placeholder review targets only; they
+do not authorize live connector behavior.

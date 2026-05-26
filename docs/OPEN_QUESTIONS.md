@@ -318,6 +318,11 @@ Resolved in [Phase 1A Runtime Scaffolding](PHASE_1A_RUNTIME_SCAFFOLDING.md):
   targets should replace placeholder values in `connector.reconciliation_slo`?
 - What final owner/escalation accountability model governs source-of-truth
   updates for provider profile, readiness, reconciliation, score, and SLO?
+- What tenant-override exception policy (approval count, expiry window,
+  rollback evidence, and SoD constraints) should govern connector default
+  overrides?
+- What provider-category default table should remain permanently blocked-MVP
+  versus approval-required for future lab-only review?
 - What access role/RBAC matrix should be enforced once the operator identity provider is selected?
 - What session service semantics (TTL source of truth, revocation propagation,
   and step-up intent binding) should replace the placeholder

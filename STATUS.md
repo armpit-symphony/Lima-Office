@@ -311,13 +311,13 @@ See [Validation Evidence](docs/VALIDATION_EVIDENCE.md) for the captured result.
 - Define final connector consent expiry, live-review criteria, provider scope
   mapping, prompt-injection test evidence, and production SLO/ownership values
   before any live connector review.
-- Finalize connector source-of-truth ownership values, escalation owner values,
-  and SoD enforcement targets before any future live connector implementation.
+- Finalize tenant/customer-specific connector default values, escalation target
+  values, revocation/disable propagation values, and acceptance threshold
+  values before any future live connector implementation.
 
 ## Next Recommended Lane
 
-After connector source-of-truth ownership and escalation accountability are
-reviewed, the next safe lane is provider-specific criteria/legal checkpoint
-closure and SLO target-value finalization (docs/contracts/tests only) without
-adding live connector execution, OAuth/token runtime, or external APIs. Phase
-1B lab runtime expansion remains blocked until remaining gates are approved.
+After connector defaults and SLO target metadata finalization, the next safe
+lane is major baseline stabilization and next-phase gate review (docs/contracts
+/tests evidence only), with no live connector execution, no OAuth/token
+runtime, no external APIs, and no runtime authorization expansion.

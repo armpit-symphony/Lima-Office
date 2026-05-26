@@ -212,6 +212,19 @@ adds canonical reason codes:
 - `connector_source_of_truth_conflict`
 - `connector_accountability_failed_closed`
 
+Connector defaults and SLO target finalization adds canonical reason codes:
+
+- `connector_defaults_missing`
+- `connector_defaults_stale`
+- `connector_defaults_override_review_required`
+- `connector_slo_target_missing`
+- `connector_slo_target_missed`
+- `connector_score_threshold_missing`
+- `connector_score_threshold_stale`
+- `connector_threshold_blocked_mvp`
+- `connector_default_outbound_blocked`
+- `connector_provider_category_blocked_mvp`
+
 Reference snapshot:
 [contracts/taxonomy/reason-code-registry.catalog.json](../../contracts/taxonomy/reason-code-registry.catalog.json).
 

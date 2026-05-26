@@ -343,6 +343,13 @@ The Phase 0 field-level schemas in [contracts/v1](../contracts/v1) define the mi
   defines metadata-only reconciled/drift/revocation-pending/action-blocked/
   failed-closed posture across provider/readiness/scope/trust/consent/
   revocation-drill/tool/approval/Guardian/evidence refs.
+- Connector defaults and placeholder targets:
+  [connector.defaults.schema.json](../contracts/v1/connector.defaults.schema.json),
+  [connector.slo_target.schema.json](../contracts/v1/connector.slo_target.schema.json),
+  and
+  [connector.score_threshold.schema.json](../contracts/v1/connector.score_threshold.schema.json)
+  define fail-closed defaults, blocked-MVP category posture, tenant override
+  status, and evidence-linked cadence/threshold placeholders.
 - Evidence artifact: [evidence.artifact.schema.json](../contracts/v1/evidence.artifact.schema.json) defines redaction, retention, payload/integrity refs, export/delete posture, access-control refs, and evidence chain metadata.
 - Evidence failure: [evidence.failure.schema.json](../contracts/v1/evidence.failure.schema.json) records pre-action blocks, post-action degraded state, emergency spool refs, reconciliation, incidents, and quarantine/token-revoke posture.
 - Evidence export manifest:

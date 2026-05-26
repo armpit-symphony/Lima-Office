@@ -73,3 +73,14 @@ Any stale path with privileged/outbound implications requires blocked or failed-
 - integrate durable evidence lineage
 - implement verified propagation instrumentation
 - finalize connector owner/escalation owner accountability values per tenant
+
+## Defaults and Target Linkage
+
+Connector SLO placeholder posture is now linked to:
+
+- `connector.defaults`
+- `connector.slo_target`
+- `connector.score_threshold`
+
+with explicit refs/version fields in related contracts. This remains
+metadata-only governance posture and does not implement live enforcement.

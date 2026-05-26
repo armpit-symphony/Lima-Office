@@ -75,6 +75,8 @@ Allowed only when all are true:
   codes.
 - Connector ownership/escalation examples must carry taxonomy version and
   canonical ownership/accountability/escalation reason codes.
+- Connector defaults/SLO-target/score-threshold examples must carry taxonomy
+  version and canonical defaults/threshold/cadence reason codes.
 
 ## Runtime Helper Rules For Unknown Codes
 

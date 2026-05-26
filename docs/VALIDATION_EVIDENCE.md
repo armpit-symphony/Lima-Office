@@ -49,6 +49,8 @@ Latest captured run: `connector-source-of-truth-ownership-escalation-accountabil
   `connector-trust-boundary-linkage-invariants`
 - Connector source-of-truth ownership escalation accountability branch:
   `connector-source-of-truth-ownership-escalation-accountability`
+- Connector source-of-truth values and SLO target finalization branch:
+  `connector-source-of-truth-values-slo-target-finalization`
 - Included branches and excluded checkpoints are listed in
   [Baseline](BASELINE.md).
 - `main` was not updated by this validation evidence.
@@ -206,6 +208,18 @@ Validation remains repository health evidence only; it does not approve live
 connector implementation, OAuth/OIDC/SAML/provider wiring, token runtime,
 external API calls, external sends, browser automation, remediation execution,
 or runtime authorization expansion.
+
+## Connector Defaults and SLO Target Finalization Checkpoint
+
+This branch adds connector default-value, SLO-target, and score-threshold
+design docs/runbook posture, new `connector.defaults`,
+`connector.slo_target`, and `connector.score_threshold` contracts with
+sanitized examples, taxonomy additions for defaults/threshold reasons, and a
+mock-only defaults classifier with fail-closed tests.
+Validation remains repository health evidence only; it does not approve live
+connector implementation, OAuth/OIDC/SAML/provider wiring, token handling
+runtime, external API calls, external sends, browser automation, remediation
+execution, or runtime authorization expansion.
 
 ## Cross-Contract Linkage Hardening Checkpoint
 

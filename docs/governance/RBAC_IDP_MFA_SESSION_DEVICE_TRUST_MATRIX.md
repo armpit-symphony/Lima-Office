@@ -159,5 +159,8 @@ Every privileged or denied/blocked action path must include:
 - Attestation trust authority posture is represented by `attestation.authority`.
 - Connector source-of-truth ownership/escalation accountability is represented
   by `connector.ownership` and `connector.escalation`.
+- Connector defaults/SLO-target/score-threshold accountability is represented
+  by `connector.defaults`, `connector.slo_target`, and
+  `connector.score_threshold`.
 - Access review runbook captures SoD, MFA, session, and device trust evidence.
 - Unknown/ambiguous identity and trust posture fails closed.

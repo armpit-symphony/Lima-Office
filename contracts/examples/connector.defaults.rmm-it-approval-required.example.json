@@ -1,0 +1,65 @@
+{
+  "contract_name": "connector.defaults",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-connector-defaults-rmm-001",
+  "causation_id": null,
+  "idempotency_key": "idem-connector-defaults-rmm-001",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-26T11:30:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "connector_defaults_id": "connector-defaults-rmm-001",
+  "defaults_version": "defaults-v1",
+  "provider_category": "rmm_it",
+  "default_lifecycle_state": "approval_required",
+  "default_readiness_status": "review_required",
+  "default_acceptance_status": "review_required",
+  "default_risk_level": "critical",
+  "default_owner_required": true,
+  "default_reviewer_required": true,
+  "default_approver_required": true,
+  "default_revocation_required": true,
+  "default_disable_switch_required": true,
+  "default_outbound_action_policy": "approval_required",
+  "default_blocked_actions": [
+    "external_send",
+    "form_submit",
+    "record_mutation",
+    "live_api_call",
+    "remediation_execution"
+  ],
+  "default_allowed_actions": [
+    "metadata_read",
+    "scope_review",
+    "consent_review"
+  ],
+  "default_evidence_requirements": [
+    "owner_assignment",
+    "reviewer_assignment",
+    "approver_assignment",
+    "revocation_posture",
+    "disable_switch_posture",
+    "approval_trace",
+    "policy_refs"
+  ],
+  "tenant_override_status": "review_required",
+  "policy_refs": [
+    "policy.connector_defaults.phase1a",
+    "policy.connector_consent_scope.phase1a"
+  ],
+  "evidence_refs": [
+    "ev-connector-defaults-rmm-001"
+  ],
+  "reason_codes": [
+    "connector_provider_category_blocked_mvp",
+    "connector_default_outbound_blocked"
+  ],
+  "created_at": "2026-05-26T11:30:00Z",
+  "updated_at": "2026-05-26T11:30:00Z"
+}

@@ -101,6 +101,7 @@ The console must show blocked state when any required item is missing:
 - Provider risk profile or revocation-drill evidence linkage.
 - Connector trust-boundary reconciliation drift.
 - Connector acceptance score posture and reconciliation SLO posture.
+- Connector default-value, SLO-target, and score-threshold posture.
 - Governance identity/MFA/access review posture for privileged views.
 - Retention/export/delete posture for export or delete requests.
 
@@ -149,3 +150,12 @@ accountability review:
 
 Missing/stale/conflicted ownership and SoD-violation posture must render as
 blocked/fail-closed metadata state with runbook links and evidence refs.
+
+Connector views should also surface defaults/target linkage metadata:
+
+- `connector_defaults_ref`
+- `connector_slo_target_ref`
+- `score_threshold_ref`
+- `defaults_version`
+- `slo_version`
+- `scoring_version`

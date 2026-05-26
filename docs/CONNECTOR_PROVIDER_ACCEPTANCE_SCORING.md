@@ -88,3 +88,17 @@ Define a design-only, metadata-only acceptance scoring model for connector provi
 - stale/missing/conflicted ownership posture should force
   `score_status: failed_closed` or `review_required`.
 - SoD violations must be reflected in score reason codes and evidence refs.
+
+## Defaults and Threshold Linkage
+
+Acceptance scoring now links to defaults/target posture using:
+
+- `connector_defaults_ref`
+- `connector_slo_target_ref`
+- `score_threshold_ref`
+- `defaults_version`
+- `slo_version`
+- `scoring_version`
+
+These are metadata-only cross-record references. They do not authorize runtime
+connector use.

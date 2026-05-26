@@ -1,6 +1,6 @@
 {
   "taxonomy_version": "taxonomy-reason-v1",
-  "catalog_version": "phase1a-live-connector-criteria-v1",
+  "catalog_version": "phase1a-connector-defaults-slo-target-v1",
   "entries": [
     {
       "reason_code": "connector_consent_missing",
@@ -269,6 +269,56 @@
     },
     {
       "reason_code": "connector_acceptance_blocked_mvp",
+      "category": "blocked_mvp",
+      "status": "blocked"
+    },
+    {
+      "reason_code": "connector_defaults_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_defaults_stale",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_defaults_override_review_required",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_slo_target_missing",
+      "category": "reconciliation",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_slo_target_missed",
+      "category": "reconciliation",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_score_threshold_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_score_threshold_stale",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_threshold_blocked_mvp",
+      "category": "blocked_mvp",
+      "status": "blocked"
+    },
+    {
+      "reason_code": "connector_default_outbound_blocked",
+      "category": "guardian",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_provider_category_blocked_mvp",
       "category": "blocked_mvp",
       "status": "blocked"
     },

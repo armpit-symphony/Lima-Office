@@ -121,3 +121,15 @@ records.
 - no token runtime or external API calls
 - no runtime authorization expansion
 - no durable service automation for ownership/escalation
+
+## Defaults Linkage
+
+Ownership/accountability posture is now linked to default-value and target
+metadata contracts:
+
+- `connector.defaults`
+- `connector.slo_target`
+- `connector.score_threshold`
+
+This linkage supports fail-closed source-of-truth review without authorizing
+runtime connector execution.

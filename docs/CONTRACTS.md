@@ -258,6 +258,29 @@ Phase 1A now adds metadata-only connector acceptance and cadence posture:
   readiness, reconciliation, and revocation drill records for cross-record
   review.
 
+## Connector Defaults / SLO Target Finalization
+
+Phase 1A now adds metadata-only default-value and placeholder-target posture:
+
+- `connector.defaults` for owner/reviewer/approver requirements, source-of-truth
+  default posture, blocked-MVP provider categories, outbound default policy,
+  tenant override status, and evidence/reason linkage.
+- `connector.slo_target` for owner/reviewer cadence placeholders, revocation and
+  disable verification placeholders, stale/missed/failed-closed posture, and
+  evidence-linked escalation metadata.
+- `connector.score_threshold` for placeholder threshold values, blocked-MVP
+  category sets, required scoring dimensions, and threshold status.
+- Optional linkage refs (`connector_defaults_ref`, `connector_slo_target_ref`,
+  `score_threshold_ref`, `defaults_version`, `slo_version`,
+  `scoring_version`) are now available on connector ownership/escalation,
+  provider, readiness, reconciliation, acceptance score, console alert, and
+  supervisor health contracts.
+
+This remains docs/contracts/tests/mock-only hardening and does not implement
+live connectors, OAuth/OIDC/SAML wiring, token handling, API clients, external
+sends, browser automation, remediation execution, or runtime authorization
+expansion.
+
 This remains docs/contracts/tests/mock-only hardening and does not implement
 live connectors, OAuth/token runtime, external API clients, external sends,
 browser automation, or runtime authorization expansion.

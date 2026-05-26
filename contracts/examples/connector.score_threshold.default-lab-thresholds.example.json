@@ -1,0 +1,49 @@
+{
+  "contract_name": "connector.score_threshold",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-connector-threshold-email-001",
+  "causation_id": null,
+  "idempotency_key": "idem-connector-threshold-email-001",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-26T12:10:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "score_threshold_id": "connector-score-threshold-default-001",
+  "scoring_version": "scoring-v1",
+  "provider_category": "email",
+  "approved_for_lab_min_score_placeholder": 85,
+  "review_required_min_score_placeholder": 60,
+  "degraded_max_failed_dimensions_placeholder": 1,
+  "blocked_mvp_categories": [
+    "browser",
+    "rmm_it",
+    "cloud_provider",
+    "payment",
+    "legal_regulated"
+  ],
+  "required_dimensions": [
+    "consent_scope",
+    "least_privilege_object_auth",
+    "least_privilege_property_auth",
+    "revocation_posture",
+    "disable_switch_posture",
+    "evidence_completeness"
+  ],
+  "threshold_status": "active_placeholder",
+  "connector_defaults_ref": "connector.defaults:connector-defaults-email-001",
+  "connector_slo_target_ref": "connector.slo_target:connector-slo-target-email-001",
+  "evidence_refs": [
+    "ev-connector-threshold-email-001"
+  ],
+  "reason_codes": [
+    "connector_default_outbound_blocked"
+  ],
+  "created_at": "2026-05-26T12:10:00Z",
+  "updated_at": "2026-05-26T12:10:00Z"
+}

@@ -125,6 +125,42 @@
       "type": "string",
       "minLength": 1
     },
+    "connector_defaults_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_slo_target_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "score_threshold_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "defaults_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "slo_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "scoring_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "owner_refs": {
       "type": "array",
       "items": {

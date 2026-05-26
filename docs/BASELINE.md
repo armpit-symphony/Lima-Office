@@ -321,6 +321,8 @@ health evidence only; it is not production certification.
   and mock-only fail-closed scoring/cadence helper/tests.
 - Connector source-of-truth ownership/escalation docs/contracts/examples and
   mock-only fail-closed ownership/accountability helper/tests.
+- Connector defaults/SLO-target/score-threshold docs/contracts/examples and
+  mock-only fail-closed defaults/cadence/threshold helper/tests.
 
 ## What Does Not Exist
 
@@ -353,9 +355,10 @@ closes the relevant gates:
 
 Recommended order after stabilization:
 
-1. Provider-specific criteria review and legal/compliance checkpoint
+1. Major baseline stabilization and next-phase gate review.
+2. Provider-specific criteria review and legal/compliance checkpoint
    normalization.
-2. Phase 1B lab runtime expansion only after the gates above are approved.
+3. Phase 1B lab runtime expansion only after the gates above are approved.
 
 Alternative non-runtime lanes:
 

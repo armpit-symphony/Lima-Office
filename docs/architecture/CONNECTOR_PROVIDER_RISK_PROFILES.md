@@ -147,3 +147,8 @@ Ownership/escalation accountability is now mapped via
 [Connector Source-Of-Truth Ownership](../CONNECTOR_SOURCE_OF_TRUTH_OWNERSHIP.md),
 which requires explicit owner/reviewer/escalation metadata for provider-profile
 source-of-truth transitions.
+
+Provider-risk defaults and placeholder target values are now additionally mapped
+via [Connector Defaults and SLO Targets](../CONNECTOR_DEFAULTS_AND_SLO_TARGETS.md)
+and the `connector.defaults`, `connector.slo_target`, and
+`connector.score_threshold` contracts. This remains metadata-only posture.

@@ -400,3 +400,18 @@ What now:
 - Finalize connector ownership/escalation target values and review cadences.
 - Keep live connector implementation, OAuth/provider wiring, token runtime, and
   external API behavior blocked until explicit approval gates are closed.
+
+## Connector Defaults / SLO Target Finalization Checkpoint
+
+Status: completed as docs/contracts/tests/mock-only hardening in this branch.
+
+What now:
+
+- Finalize tenant/customer-specific numeric defaults and target values.
+- Finalize provider-category override governance and SoD exception process.
+- Keep live connector implementation, OAuth/provider wiring, token runtime, and
+  external API behavior blocked until explicit approval gates are closed.
+
+Recommended next lane:
+
+- Major baseline stabilization and next-phase gate review.

@@ -160,6 +160,9 @@ The following remain blocked:
 - Revocation creates evidence.
 - Source-of-truth ownership and escalation conflicts require fail-closed
   `connector.ownership` / `connector.escalation` metadata.
+- Defaults/threshold/SLO-target conflicts require fail-closed
+  `connector.defaults` / `connector.slo_target` /
+  `connector.score_threshold` metadata.
 - Missing consent, unknown scope, secret exposure, or prompt-injection
   unresolved state fails closed.
 - Revoked consent must reconcile with readiness/trust/revocation-drill posture;

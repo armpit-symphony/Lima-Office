@@ -377,6 +377,42 @@
         "null"
       ]
     },
+    "connector_defaults_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_slo_target_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "score_threshold_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "defaults_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "slo_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "scoring_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "connector_escalation_refs": {
       "type": "array",
       "items": {
@@ -617,6 +653,7 @@
             "enum": [
               "browser",
               "rmm_it",
+              "cloud_provider",
               "payment",
               "legal_regulated"
             ]

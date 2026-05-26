@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.lima-office.local/contracts/v1/connector.reconciliation_slo.schema.json",
-  "title": "Connector Reconciliation SLO Contract v1",
+  "$id": "https://schemas.lima-office.local/contracts/v1/connector.slo_target.schema.json",
+  "title": "Connector SLO Target Contract v1",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -17,27 +17,28 @@
     "idempotency_key",
     "producer",
     "policy_version",
-    "reconciliation_slo_id",
+    "connector_slo_target_id",
+    "slo_version",
     "connector_id",
-    "provider_profile_id",
-    "connector_readiness_id",
-    "reconciliation_id",
+    "provider_category",
+    "owner_review_cadence_seconds_placeholder",
+    "revocation_propagation_seconds_placeholder",
+    "disable_switch_verification_seconds_placeholder",
+    "stale_owner_escalation_seconds_placeholder",
+    "reconciliation_cadence_seconds_placeholder",
+    "target_status",
     "owner_ref",
-    "cadence_status",
-    "cadence_seconds_placeholder",
-    "last_reconciled_at",
-    "next_due_at",
-    "revocation_propagation_status",
-    "disable_switch_verification_status",
+    "reviewer_ref",
     "evidence_refs",
     "reason_codes",
     "created_at",
-    "updated_at"
+    "updated_at",
+    "reviewed_at"
   ],
   "properties": {
     "contract_name": {
       "type": "string",
-      "const": "connector.reconciliation_slo"
+      "const": "connector.slo_target"
     },
     "contract_version": {
       "type": "string",
@@ -94,8 +95,9 @@
           "type": "string",
           "enum": [
             "supervisor",
+            "operator_console",
             "security_reviewer",
-            "operator_console"
+            "compliance_reviewer"
           ]
         },
         "produced_at": {
@@ -108,7 +110,11 @@
       "type": "string",
       "minLength": 1
     },
-    "reconciliation_slo_id": {
+    "connector_slo_target_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "slo_version": {
       "type": "string",
       "minLength": 1
     },
@@ -116,66 +122,89 @@
       "type": "string",
       "minLength": 1
     },
-    "provider_profile_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "connector_readiness_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "reconciliation_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "owner_ref": {
-      "type": "string",
-      "minLength": 1
-    },
-    "cadence_status": {
+    "provider_category": {
       "type": "string",
       "enum": [
-        "planned",
-        "current",
+        "email",
+        "calendar",
+        "file_storage",
+        "ticketing",
+        "crm",
+        "chat",
+        "phone_text",
+        "browser",
+        "rmm_it",
+        "cloud_provider",
+        "payment",
+        "legal_regulated",
+        "blocked_mvp"
+      ]
+    },
+    "owner_review_cadence_seconds_placeholder": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "revocation_propagation_seconds_placeholder": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "disable_switch_verification_seconds_placeholder": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "stale_owner_escalation_seconds_placeholder": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "reconciliation_cadence_seconds_placeholder": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "target_status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "approved_placeholder",
+        "active_placeholder",
         "stale",
         "missed",
         "failed_closed",
         "blocked_mvp"
       ]
     },
-    "cadence_seconds_placeholder": {
-      "type": "integer",
-      "minimum": 1
+    "owner_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
     },
-    "last_reconciled_at": {
-      "type": "string",
-      "format": "date-time"
+    "reviewer_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
     },
-    "next_due_at": {
-      "type": "string",
-      "format": "date-time"
-    },
-    "revocation_propagation_status": {
-      "type": "string",
-      "enum": [
-        "not_required",
-        "pending",
-        "propagated",
-        "missed",
-        "failed_closed",
-        "blocked_mvp"
+    "connector_defaults_ref": {
+      "type": [
+        "string",
+        "null"
       ]
     },
-    "disable_switch_verification_status": {
-      "type": "string",
-      "enum": [
-        "not_required",
-        "pending",
-        "verified_placeholder",
-        "missed",
-        "failed_closed",
-        "blocked_mvp"
+    "score_threshold_ref": {
+      "type": [
+        "string",
+        "null"
       ]
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
     },
     "reason_codes": {
       "type": "array",
@@ -218,109 +247,6 @@
         "blocked"
       ]
     },
-    "acceptance_score_ref": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "reconciliation_slo_ref": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "connector_ownership_ref": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "connector_defaults_ref": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "connector_slo_target_ref": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "score_threshold_ref": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "defaults_version": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "slo_version": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "scoring_version": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "connector_escalation_refs": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "uniqueItems": true
-    },
-    "ownership_status": {
-      "type": [
-        "string",
-        "null"
-      ],
-      "enum": [
-        "proposed",
-        "assigned",
-        "active",
-        "stale",
-        "transferred",
-        "revoked",
-        "blocked_mvp",
-        "failed_closed",
-        null
-      ]
-    },
-    "source_of_truth_status": {
-      "type": [
-        "string",
-        "null"
-      ],
-      "enum": [
-        "declared",
-        "verified_placeholder",
-        "stale",
-        "missing",
-        "conflicted",
-        "failed_closed",
-        "blocked_mvp",
-        null
-      ]
-    },
-    "evidence_refs": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "uniqueItems": true
-    },
     "created_at": {
       "type": "string",
       "format": "date-time"
@@ -328,13 +254,51 @@
     "updated_at": {
       "type": "string",
       "format": "date-time"
+    },
+    "reviewed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
     }
   },
   "allOf": [
     {
       "if": {
         "properties": {
-          "cadence_status": {
+          "target_status": {
+            "const": "active_placeholder"
+          }
+        },
+        "required": [
+          "target_status"
+        ]
+      },
+      "then": {
+        "required": [
+          "owner_ref",
+          "reviewer_ref"
+        ],
+        "properties": {
+          "owner_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reviewer_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "target_status": {
             "enum": [
               "stale",
               "missed",
@@ -343,7 +307,7 @@
           }
         },
         "required": [
-          "cadence_status"
+          "target_status"
         ]
       },
       "then": {
@@ -360,63 +324,32 @@
     {
       "if": {
         "properties": {
-          "revocation_propagation_status": {
+          "provider_category": {
             "enum": [
-              "propagated",
-              "failed_closed"
+              "browser",
+              "rmm_it",
+              "cloud_provider",
+              "payment",
+              "legal_regulated",
+              "blocked_mvp"
             ]
           }
         },
         "required": [
-          "revocation_propagation_status"
+          "provider_category"
         ]
       },
       "then": {
         "properties": {
-          "evidence_refs": {
-            "minItems": 1
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "disable_switch_verification_status": {
+          "target_status": {
             "enum": [
-              "verified_placeholder",
+              "blocked_mvp",
               "failed_closed"
             ]
-          }
-        },
-        "required": [
-          "disable_switch_verification_status"
-        ]
-      },
-      "then": {
-        "properties": {
-          "evidence_refs": {
-            "minItems": 1
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "cadence_status": {
-            "const": "blocked_mvp"
-          }
-        },
-        "required": [
-          "cadence_status"
-        ]
-      },
-      "then": {
-        "properties": {
+          },
           "reason_codes": {
             "contains": {
-              "const": "connector_acceptance_blocked_mvp"
+              "const": "connector_provider_category_blocked_mvp"
             }
           }
         }
@@ -438,9 +371,12 @@
       },
       "then": {
         "properties": {
-          "cadence_status": {
+          "target_status": {
             "not": {
-              "const": "current"
+              "enum": [
+                "active_placeholder",
+                "approved_placeholder"
+              ]
             }
           }
         }

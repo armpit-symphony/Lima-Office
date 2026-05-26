@@ -34,6 +34,8 @@ Design-only UX metadata spec. No UI implementation.
 - `reconciliation_slo_ref`, `cadence_status`
 - `connector_ownership_ref`, `ownership_status`, `source_of_truth_status`
 - `connector_escalation_refs`
+- `connector_defaults_ref`, `connector_slo_target_ref`, `score_threshold_ref`
+- `defaults_version`, `slo_version`, `scoring_version`
 - `token_rotation_placeholder_status`
 - `reason_codes`
 

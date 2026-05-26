@@ -115,6 +115,19 @@ The connector provider-risk lane adds these fail-closed connector codes:
 - `connector_accountability_failed_closed`
 - `connector_acceptance_blocked_mvp`
 
+Connector defaults and SLO target finalization adds:
+
+- `connector_defaults_missing`
+- `connector_defaults_stale`
+- `connector_defaults_override_review_required`
+- `connector_slo_target_missing`
+- `connector_slo_target_missed`
+- `connector_score_threshold_missing`
+- `connector_score_threshold_stale`
+- `connector_threshold_blocked_mvp`
+- `connector_default_outbound_blocked`
+- `connector_provider_category_blocked_mvp`
+
 Primary records: `connector.provider_profile`, `connector.revocation_drill`,
 `connector.readiness`, `connector.scope_review`, `console.alert`,
 `supervisor.health`. Runbook:
