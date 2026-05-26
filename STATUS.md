@@ -53,7 +53,8 @@ It is intentionally preserved in working tree and was not modified or deleted in
 
 Recommended conservative sequence:
 
-1. Independent audit result remains `PASS WITH WARNINGS` in `docs/audits/INDEPENDENT_BASELINE_AUDIT.md`.
-2. Keep Phase 1B implementation blocked until explicit separate implementation-gate approval.
-3. Resolve safety patch disposition (keep/archive/delete) with explicit decision record.
-4. Run independent gate audit on the frozen baseline tag before considering any tiny implementation slice.
+1. Independent baseline audit is `PASS WITH WARNINGS` in `docs/audits/INDEPENDENT_BASELINE_AUDIT.md`.
+2. Tag audit `docs/audits/PHASE_0_1B_PLANNING_BASELINE_TAG_AUDIT.md` is `PASS WITH WARNINGS`.
+3. Keep Phase 1B implementation blocked until explicit separate implementation-gate approval.
+4. Resolve safety patch disposition (keep/archive/delete) with explicit decision record.
+5. Consider only a tiny separately approved implementation slice after fresh gate review.

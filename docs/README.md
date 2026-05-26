@@ -57,6 +57,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Validation evidence](VALIDATION_EVIDENCE.md)
 - [Audit prep checklist](AUDIT_PREP_CHECKLIST.md)
 - [Independent baseline audit](audits/INDEPENDENT_BASELINE_AUDIT.md)
+- [Phase 0 to 1B planning baseline tag audit](audits/PHASE_0_1B_PLANNING_BASELINE_TAG_AUDIT.md)
 
 ## Deployment Docs
 
