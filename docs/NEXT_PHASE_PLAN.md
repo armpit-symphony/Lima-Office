@@ -25,7 +25,9 @@ worker lifecycle simulator only and task lifecycle simulator only
 
 Current baseline-freeze step adds annotated tag:
 `lima-office-phase-1b-simulator-baseline`.
-Next lane is an independent gate audit on that tag.
+Independent gate audit on that tag is now recorded in
+`docs/audits/PHASE_1B_SIMULATOR_BASELINE_TAG_AUDIT.md` (`PASS WITH WARNINGS`).
+Next lane remains explicit-approval-only for any additional tiny implementation slice.
 
 Any future tiny implementation slice requires separate explicit approval after:
 

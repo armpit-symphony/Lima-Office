@@ -59,6 +59,8 @@ git status
 - Task slice audit document: [TASK_LIFECYCLE_SIMULATOR_AUDIT.md](audits/TASK_LIFECYCLE_SIMULATOR_AUDIT.md)
 - Task slice audit result: `PASS WITH WARNINGS`
 - Frozen simulator baseline branch: `integration/phase-1b-simulator-baseline`
+- Baseline tag audit document: [PHASE_1B_SIMULATOR_BASELINE_TAG_AUDIT.md](audits/PHASE_1B_SIMULATOR_BASELINE_TAG_AUDIT.md)
+- Baseline tag audit result: `PASS WITH WARNINGS`
 
 ## Safety patch disposition
 

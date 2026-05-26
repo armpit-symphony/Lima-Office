@@ -11,6 +11,7 @@ Date: May 26, 2026
 - Main branch: `main` / `e4bb610` (unchanged in this lane)
 - Independent slice audit branch: `audit-worker-lifecycle-simulator-only`
 - Independent task slice audit branch: `audit-task-lifecycle-simulator-only`
+- Independent simulator baseline tag audit branch: `audit-phase-1b-simulator-baseline-tag`
 
 ## Baseline posture
 
@@ -68,5 +69,6 @@ Recommended conservative sequence:
 3. Worker lifecycle simulator slice audit is `PASS WITH WARNINGS` in `docs/audits/WORKER_LIFECYCLE_SIMULATOR_AUDIT.md`.
 4. Task lifecycle simulator slice audit is `PASS WITH WARNINGS` in `docs/audits/TASK_LIFECYCLE_SIMULATOR_AUDIT.md`.
 5. Tag `lima-office-phase-1b-simulator-baseline` should be used as the frozen baseline anchor for independent gate audit.
-6. Keep broader Phase 1B implementation blocked beyond these in-memory simulator slices.
-7. If expanding further, require separate explicit gate approval and fresh independent audit.
+6. Independent gate audit on tag baseline is recorded in `docs/audits/PHASE_1B_SIMULATOR_BASELINE_TAG_AUDIT.md` with result `PASS WITH WARNINGS`.
+7. Keep broader Phase 1B implementation blocked beyond these in-memory simulator slices.
+8. If expanding further, require separate explicit gate approval and fresh independent audit.

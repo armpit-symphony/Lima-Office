@@ -62,6 +62,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Phase 0 to 1B planning baseline tag audit](audits/PHASE_0_1B_PLANNING_BASELINE_TAG_AUDIT.md)
 - [Worker lifecycle simulator audit](audits/WORKER_LIFECYCLE_SIMULATOR_AUDIT.md)
 - [Task lifecycle simulator audit](audits/TASK_LIFECYCLE_SIMULATOR_AUDIT.md)
+- [Phase 1B simulator baseline tag audit](audits/PHASE_1B_SIMULATOR_BASELINE_TAG_AUDIT.md)
 - [Safety patch disposition](audits/SAFETY_PATCH_DISPOSITION.md)
 
 ## Deployment Docs
