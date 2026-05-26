@@ -15,6 +15,7 @@ Date: May 26, 2026
 - Phase 1C planning branch: `phase-1c-supervised-lab-orchestration-planning`
 - Phase 1C planning audit branch: `audit-phase-1c-supervised-lab-orchestration-planning`
 - Phase 1C evidence lifecycle implementation branch: `evidence-lifecycle-simulator-only`
+- Phase 1C evidence lifecycle audit branch: `audit-evidence-lifecycle-simulator-only`
 
 ## Baseline posture
 
@@ -89,7 +90,9 @@ Recommended conservative sequence:
     with result `PASS WITH WARNINGS`.
 11. Approved Phase 1C tiny implementation slice:
     `docs/PHASE_1C_EVIDENCE_LIFECYCLE_SIMULATOR.md`.
-12. This slice does not approve supervisor orchestration implementation or any
+12. Evidence lifecycle simulator slice audit is `PASS WITH WARNINGS` in
+    `docs/audits/EVIDENCE_LIFECYCLE_SIMULATOR_AUDIT.md`.
+13. This slice does not approve supervisor orchestration implementation or any
     broader Phase 1C runtime expansion.
-13. Next lane remains explicit approval + fresh independent audit before any
+14. Next lane remains explicit approval + fresh independent audit before any
     additional tiny implementation slice.

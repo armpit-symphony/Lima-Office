@@ -131,6 +131,9 @@ Latest command results on `evidence-lifecycle-simulator-only`:
 - Phase 1C planning audit document:
   [PHASE_1C_SUPERVISED_LAB_ORCHESTRATION_PLANNING_AUDIT.md](audits/PHASE_1C_SUPERVISED_LAB_ORCHESTRATION_PLANNING_AUDIT.md)
 - Phase 1C planning audit result: `PASS WITH WARNINGS`
+- Phase 1C evidence lifecycle simulator audit document:
+  [EVIDENCE_LIFECYCLE_SIMULATOR_AUDIT.md](audits/EVIDENCE_LIFECYCLE_SIMULATOR_AUDIT.md)
+- Phase 1C evidence lifecycle simulator audit result: `PASS WITH WARNINGS`
 
 ## Safety patch disposition
 
