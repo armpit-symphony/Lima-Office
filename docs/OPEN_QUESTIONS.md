@@ -77,9 +77,10 @@ These blockers remain open after the current Phase 0/1A hardening baseline. None
   Phase 1B implementation proposal?
 - Should `main` remain untouched through Phase 1B planning and first tiny slice
   evaluation?
-- If implementation is later approved, should the first tiny slice be worker
-  lifecycle simulator only, or task lifecycle transitions only?
-- Worker lifecycle simulator-only slice is now implemented; what exact
-  acceptance criteria are required before considering a second tiny slice?
+- Worker lifecycle simulator-only slice and task lifecycle simulator-only slice
+  are now implemented; what exact acceptance criteria are required before any
+  further tiny slice is considered?
+- Should the next lane be an independent audit specific to task lifecycle
+  simulator scope before any additional runtime planning/implementation?
 - Must durable storage/transaction planning be completed before any Phase 1B
   implementation slice?

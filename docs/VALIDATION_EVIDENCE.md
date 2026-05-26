@@ -3,13 +3,13 @@
 Date: May 26, 2026
 
 This file records the latest validation run for the narrow Phase 1B
-worker-lifecycle-simulator-only lane and its independent slice audit.
+worker-lifecycle and task-lifecycle simulator lanes.
 
 ## Scope
 
-- Branch: `audit-worker-lifecycle-simulator-only` (auditing `worker-lifecycle-simulator-only`)
+- Branch: `task-lifecycle-simulator-only`
 - Base branch: `safety-patch-disposition` / `e31e225`
-- Scope basis: explicit approved tiny Phase 1B slice (worker lifecycle simulator only)
+- Scope basis: explicit approved tiny Phase 1B slices (worker lifecycle simulator only, task lifecycle simulator only)
 - Main branch update: not performed in this lane
 
 ## Commands
@@ -40,13 +40,13 @@ git status
   - reason-code values scanned in schemas: `610`
   - reason-code values scanned in examples: `323`
 - `check-doc-links`: `PASS`
-  - markdown files scanned: `149`
-  - local links checked: `1071`
+  - markdown files scanned: `151`
+  - local links checked: `1076`
 - `unittest`: `PASS`
-  - `Ran 413 tests`
+  - `Ran 439 tests`
   - `OK`
 - `pytest`: `PASS`
-  - `413 passed, 1 warning, 244 subtests passed`
+  - `439 passed, 1 warning, 244 subtests passed`
 - `compileall`: `PASS`
 - `git diff --check`: `PASS` (after whitespace cleanup)
 - `git diff --cached --check`: `PASS`
@@ -55,6 +55,7 @@ git status
 
 - Audit document: [WORKER_LIFECYCLE_SIMULATOR_AUDIT.md](audits/WORKER_LIFECYCLE_SIMULATOR_AUDIT.md)
 - Audit result: `PASS WITH WARNINGS`
+- Task slice implementation document: [PHASE_1B_TASK_LIFECYCLE_SIMULATOR.md](PHASE_1B_TASK_LIFECYCLE_SIMULATOR.md)
 
 ## Safety patch disposition
 

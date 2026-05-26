@@ -29,6 +29,14 @@ class WorkerLifecycleTransitionError(WorkerStateError):
     """Raised when worker lifecycle transition safety checks fail."""
 
 
+class TaskLifecycleValidationError(LimaOfficeRuntimeError):
+    """Raised when task lifecycle metadata validation fails."""
+
+
+class TaskLifecycleTransitionError(LimaOfficeRuntimeError):
+    """Raised when task lifecycle transition safety checks fail."""
+
+
 class EvidenceRequiredError(LimaOfficeRuntimeError):
     """Raised when required evidence is missing before an action can proceed."""
 

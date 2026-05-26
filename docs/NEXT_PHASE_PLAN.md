@@ -6,7 +6,7 @@ Current checkpoint basis:
 
 - Latest hardening checkpoint: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
 - Review branch: `major-baseline-stabilization-next-phase-gate-review`
-- Integration refresh status: `integration/phase-0-1b-planning-baseline` frozen at `9fd479c`
+- Integration refresh status: `integration/phase-0-1b-planning-baseline` frozen at `b81dcb6`
 
 ## Phase 1B Planning-Only Update (May 26, 2026)
 
@@ -17,8 +17,9 @@ Current recommendation is Phase 1B planning-only, tracked in:
 - [runbooks/phase-1b-lab-runtime-drill.md](runbooks/phase-1b-lab-runtime-drill.md)
 
 This plan does not approve broad Phase 1B runtime implementation.
-One explicit narrow exception is now implemented on a dedicated branch:
-worker lifecycle simulator only (in-memory, non-persistent, non-networked).
+Two explicit narrow exceptions are now implemented on dedicated branches:
+worker lifecycle simulator only and task lifecycle simulator only
+(both in-memory, non-persistent, non-networked).
 
 Current baseline-freeze step adds annotated tag:
 `lima-office-phase-0-1b-planning-baseline`.
@@ -44,8 +45,9 @@ Blocked surfaces remain blocked:
 Current implemented narrow slice reference:
 
 - [PHASE_1B_WORKER_LIFECYCLE_SIMULATOR.md](PHASE_1B_WORKER_LIFECYCLE_SIMULATOR.md)
-- Scope is limited to in-memory worker lifecycle transition simulation and
-  fail-closed checks. It does not authorize broader runtime expansion.
+- [PHASE_1B_TASK_LIFECYCLE_SIMULATOR.md](PHASE_1B_TASK_LIFECYCLE_SIMULATOR.md)
+- Scope is limited to in-memory lifecycle transition simulation and fail-closed
+  checks. It does not authorize broader runtime expansion.
 
 ## Decision Matrix
 

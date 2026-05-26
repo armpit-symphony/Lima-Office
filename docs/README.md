@@ -52,6 +52,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Phase 1B lab runtime plan](PHASE_1B_LAB_RUNTIME_PLAN.md)
 - [Phase 1B implementation gate checklist](PHASE_1B_IMPLEMENTATION_GATE_CHECKLIST.md)
 - [Phase 1B worker lifecycle simulator](PHASE_1B_WORKER_LIFECYCLE_SIMULATOR.md)
+- [Phase 1B task lifecycle simulator](PHASE_1B_TASK_LIFECYCLE_SIMULATOR.md)
 - [Phase 0 / Phase 1A closeout](PHASE_0_1A_CLOSEOUT.md)
 - [Next phase plan](NEXT_PHASE_PLAN.md)
 - [Runtime boundaries](RUNTIME_BOUNDARIES.md)

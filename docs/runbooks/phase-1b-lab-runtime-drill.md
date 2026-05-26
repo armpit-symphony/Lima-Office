@@ -25,7 +25,7 @@ boundaries before any implementation approval.
 2. Run worker lifecycle simulator transitions (provisioned/enrolled/active/degraded/quarantined/reenrollment/revoked/retired) and record fail-closed outcomes.
 3. Validate `guardian.decision` and `guardian.replay` metadata paths.
 4. Validate approval request/result/token/verification/binding chain metadata.
-5. Validate task lifecycle transitions in mock-only mode.
+5. Run task lifecycle simulator transitions in mock-only mode and record fail-closed outcomes.
 6. Validate replay-store/transaction/evidence linkage metadata.
 7. Validate blocked-state metadata for connector/model/attestation paths.
 8. Confirm no execution path performs live IO or side effects.
