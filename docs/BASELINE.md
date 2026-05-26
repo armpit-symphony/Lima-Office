@@ -8,12 +8,15 @@ This baseline is a docs/contracts/tests/mock-hardening checkpoint. It is not pro
 
 - Latest baseline checkpoint branch: `connector-source-of-truth-values-slo-target-finalization`
 - Latest baseline checkpoint commit: `a92606a9cbb3bc3e4271fb8ccfdff0839c79de6e`
-- Integration baseline branch in repo: `integration/phase-0-1a-baseline` / `0d4188d85b0f6481447f993bf1b500b3b80d3f1c`
+- Frozen planning baseline branch in repo: `integration/phase-0-1b-planning-baseline` / `9fd479c80571563f07831ceeb61f71c84a649276`
+- Prior integration baseline branch: `integration/phase-0-1a-baseline` / `26d5789ff62318ede69abf3296139eea7eaac8f0`
 - Main branch: `main` / `e4bb6105a9d668ddffe21892da3aaff16a0d8ca0`
 
 ## Canonical checkpoint summary
 
-The repo contains a reachable hardening chain from Phase 0 through Phase 1A metadata hardening, ending at connector defaults/SLO/threshold finalization (`a92606a`).
+The repo contains a reachable hardening chain from Phase 0 through Phase 1A
+metadata hardening (`a92606a`) plus a Phase 1B planning-only freeze
+(`9fd479c`) with no runtime expansion.
 
 ## Important branches since `integration/phase-0-1a-baseline`
 
@@ -46,11 +49,20 @@ The repo contains a reachable hardening chain from Phase 0 through Phase 1A meta
 
 ## Integration branch status
 
-- `integration/phase-0-1a-baseline` has been refreshed to include the major baseline stabilization checkpoint (`0d4188d`).
+- `integration/phase-0-1b-planning-baseline` is the frozen planning baseline
+  for Phase 0 through Phase 1B planning-only state (`9fd479c`).
+- `integration/phase-0-1a-baseline` remains the prior refreshed integration
+  baseline (`26d5789`).
 - `main` remains untouched and must stay untouched unless explicitly approved.
 - `taxonomy-family-constraint-hardening` (`674f41d`) and
   `model-routing-defaults-health-taxonomy-refinement` (`ba534b2`) are not
   direct ancestors of this integration tip and remain separately tracked side branches.
+
+## Next gate
+
+- Create and review annotated baseline tag:
+  `lima-office-phase-0-1b-planning-baseline`.
+- Run independent gate audit on that tag before any implementation proposal.
 
 ## Must not be treated as production-ready
 

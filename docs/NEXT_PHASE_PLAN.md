@@ -6,7 +6,7 @@ Current checkpoint basis:
 
 - Latest hardening checkpoint: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
 - Review branch: `major-baseline-stabilization-next-phase-gate-review`
-- Integration refresh status: `integration/phase-0-1a-baseline` updated to `26d5789`
+- Integration refresh status: `integration/phase-0-1b-planning-baseline` frozen at `9fd479c`
 
 ## Phase 1B Planning-Only Update (May 26, 2026)
 
@@ -17,6 +17,10 @@ Current recommendation is Phase 1B planning-only, tracked in:
 - [runbooks/phase-1b-lab-runtime-drill.md](runbooks/phase-1b-lab-runtime-drill.md)
 
 This branch does not approve Phase 1B runtime implementation.
+
+Current baseline-freeze step adds annotated tag:
+`lima-office-phase-0-1b-planning-baseline`.
+Next lane is an independent gate audit on that tag.
 
 Any future tiny implementation slice requires separate explicit approval after:
 

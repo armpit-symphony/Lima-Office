@@ -2,12 +2,13 @@
 
 Date: May 26, 2026
 
-This file records the latest baseline validation run for the stabilization review lane.
+This file records the latest validation run for the frozen Phase 0 through
+Phase 1B planning-only baseline lane.
 
 ## Scope
 
-- Branch: `integration/phase-0-1a-baseline`
-- Integration tip: `0d4188d85b0f6481447f993bf1b500b3b80d3f1c`
+- Branch: `integration/phase-0-1b-planning-baseline`
+- Integration tip: `9fd479c80571563f07831ceeb61f71c84a649276`
 - Checkpoint basis: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
 - Main branch update: not performed in this lane
 
@@ -39,8 +40,8 @@ git status
   - reason-code values scanned in schemas: `610`
   - reason-code values scanned in examples: `323`
 - `check-doc-links`: `PASS`
-  - markdown files scanned: `142`
-  - local links checked: `1058`
+  - markdown files scanned: `146`
+  - local links checked: `1065`
 - `unittest`: `PASS`
   - `Ran 394 tests`
   - `OK`
@@ -53,8 +54,12 @@ git status
 ## Safety patch caveat
 
 The untracked safety patch `model-routing-health-taxonomy.partial.patch` remains intentionally uncommitted and unchanged in this lane.
-Current disposition: pending explicit archive/delete/keep decision during independent audit.
+Current disposition: pending explicit archive/delete/keep decision before any
+implementation lane.
 
 ## Interpretation boundary
 
-Passing these checks means docs/contracts/tests/mock metadata are internally consistent for this checkpoint. It does not approve runtime implementation, live connectors, provider wiring, token runtime, remediation execution, production operation, or compliance certification.
+Passing these checks means docs/contracts/tests/mock metadata are internally
+consistent for this checkpoint. It does not approve runtime implementation,
+live connectors, provider wiring, token runtime, remediation execution,
+production operation, or compliance certification.

@@ -71,6 +71,8 @@ These blockers remain open after the current Phase 0/1A hardening baseline. None
 
 - What is the exact first mock lab runner scope: supervisor+worker+task+replay
   bundle, or a narrower subset?
+- Should tag `lima-office-phase-0-1b-planning-baseline` be treated as the
+  required independent gate-audit anchor before any tiny implementation slice?
 - What is the final disposition for
   `model-routing-health-taxonomy.partial.patch` before any implementation lane?
 - Should the refreshed integration baseline be tagged/refrozen before any tiny
