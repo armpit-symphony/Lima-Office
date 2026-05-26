@@ -21,6 +21,14 @@ class WorkerStateError(LimaOfficeRuntimeError):
     """Raised when worker state blocks a runtime operation."""
 
 
+class WorkerLifecycleValidationError(WorkerStateError):
+    """Raised when worker lifecycle metadata validation fails."""
+
+
+class WorkerLifecycleTransitionError(WorkerStateError):
+    """Raised when worker lifecycle transition safety checks fail."""
+
+
 class EvidenceRequiredError(LimaOfficeRuntimeError):
     """Raised when required evidence is missing before an action can proceed."""
 

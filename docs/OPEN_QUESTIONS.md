@@ -60,12 +60,10 @@ These blockers remain open after the current Phase 0/1A hardening baseline. None
 
 ## Safety patch cleanup
 
-- Untracked file `model-routing-health-taxonomy.partial.patch` is intentionally preserved.
-- Decide whether to:
-  1. Promote it through a reviewed branch and commit, or
-  2. Archive/discard with documented traceability.
-- Do not silently merge or delete it without explicit instruction.
-- Recommended immediate lane: independent audit decision on this artifact before any Phase 1B implementation discussion.
+- `model-routing-health-taxonomy.partial.patch` was archived outside repo with
+  documented disposition in `docs/audits/SAFETY_PATCH_DISPOSITION.md`.
+- Open follow-up: who owns forensic retention window and eventual archive
+  deletion policy for out-of-repo artifacts?
 
 ## Phase 1B planning gate
 
@@ -81,5 +79,7 @@ These blockers remain open after the current Phase 0/1A hardening baseline. None
   evaluation?
 - If implementation is later approved, should the first tiny slice be worker
   lifecycle simulator only, or task lifecycle transitions only?
+- Worker lifecycle simulator-only slice is now implemented; what exact
+  acceptance criteria are required before considering a second tiny slice?
 - Must durable storage/transaction planning be completed before any Phase 1B
   implementation slice?

@@ -2,14 +2,14 @@
 
 Date: May 26, 2026
 
-This file records the latest validation run for the frozen Phase 0 through
-Phase 1B planning-only baseline lane.
+This file records the latest validation run for the narrow Phase 1B
+worker-lifecycle-simulator-only lane.
 
 ## Scope
 
-- Branch: `integration/phase-0-1b-planning-baseline`
-- Integration tip: `9fd479c80571563f07831ceeb61f71c84a649276`
-- Checkpoint basis: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
+- Branch: `worker-lifecycle-simulator-only`
+- Base branch: `safety-patch-disposition` / `e31e225`
+- Scope basis: explicit approved tiny Phase 1B slice (worker lifecycle simulator only)
 - Main branch update: not performed in this lane
 
 ## Commands
@@ -40,29 +40,26 @@ git status
   - reason-code values scanned in schemas: `610`
   - reason-code values scanned in examples: `323`
 - `check-doc-links`: `PASS`
-  - markdown files scanned: `146`
-  - local links checked: `1065`
+  - markdown files scanned: `149`
+  - local links checked: `1071`
 - `unittest`: `PASS`
-  - `Ran 394 tests`
+  - `Ran 413 tests`
   - `OK`
 - `pytest`: `PASS`
-  - `394 passed, 1 warning, 244 subtests passed`
+  - `413 passed, 1 warning, 244 subtests passed`
 - `compileall`: `PASS`
 - `git diff --check`: `PASS` (after whitespace cleanup)
 - `git diff --cached --check`: `PASS`
 
-## Safety patch caveat
+## Safety patch disposition
 
-Safety patch disposition: `model-routing-health-taxonomy.partial.patch` has been
-archived to `C:\Users\limap\Lima-Office-safety-archive\model-routing-health-taxonomy.partial.patch`
-with SHA-256:
-`F74947FF1869A66D0D813DC5E8C2EA9EBAC540CE835ED6D2DCB8388848ACDDAE`.
-Original patch file has been removed from the repo root after hash verification.
-Disposition record: [SAFETY_PATCH_DISPOSITION.md](audits/SAFETY_PATCH_DISPOSITION.md).
+Safety patch `model-routing-health-taxonomy.partial.patch` remains archived
+outside repo and removed from repo root per:
+[SAFETY_PATCH_DISPOSITION.md](audits/SAFETY_PATCH_DISPOSITION.md).
 
 ## Interpretation boundary
 
-Passing these checks means docs/contracts/tests/mock metadata are internally
-consistent for this checkpoint. It does not approve runtime implementation,
+Passing these checks means docs/contracts/tests/runtime-mock code are internally
+consistent for this narrow slice. It does not approve broader runtime expansion,
 live connectors, provider wiring, token runtime, remediation execution,
 production operation, or compliance certification.

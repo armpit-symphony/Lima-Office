@@ -55,11 +55,11 @@ Results:
 
 ## Unsafe-claim scan summary
 
-Scanned for unsafe positive enablement claims:
+Scanned for unsafe positive enablement wording:
 
-- production-ready/compliance-certified claims
-- live connector enabled claims
-- OAuth/token/storage/remediation/browser/runtime-authorization enabled claims
+- production enablement claims
+- live connector activation claims
+- OAuth/token/storage/remediation/browser/runtime-authorization activation claims
 
 Findings:
 
@@ -68,7 +68,7 @@ Findings:
 
 ## Secret/material scan summary
 
-Scanned for likely secret indicators (API keys, bearer tokens, private keys, OAuth/refresh tokens, password material, certificate/private-key markers, token literals, raw TPM quote markers, URL material in examples).
+Scanned for likely secret indicators (API keys, bearer tokens, private keys, OAuth/refresh tokens, credential material, certificate/private-key markers, token literals, raw TPM quote markers, URL material in examples).
 
 Findings:
 

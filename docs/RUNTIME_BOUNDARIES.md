@@ -6,6 +6,8 @@ to represent and what remains blocked.
 ## Phase 1A Runtime State
 
 Phase 1A runtime is mock/in-memory only.
+Approved Phase 1B narrow addition is also mock/in-memory only:
+worker lifecycle simulator metadata transitions.
 
 It contains contract loading, contract validation, a default-deny Guardian
 policy stub, in-memory worker registry, heartbeat validation, in-memory task
@@ -33,6 +35,8 @@ external services, production operations, or customer-system mutation.
 - No unrestricted browser, file, network, shell, connector, or tool access.
 - No cross-tenant memory sharing.
 - No hidden background actions.
+
+The worker lifecycle simulator does not add any exception to these blocks.
 
 ## Safe Runtime Uses
 

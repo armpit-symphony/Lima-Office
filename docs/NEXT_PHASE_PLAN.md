@@ -16,7 +16,9 @@ Current recommendation is Phase 1B planning-only, tracked in:
 - [PHASE_1B_IMPLEMENTATION_GATE_CHECKLIST.md](PHASE_1B_IMPLEMENTATION_GATE_CHECKLIST.md)
 - [runbooks/phase-1b-lab-runtime-drill.md](runbooks/phase-1b-lab-runtime-drill.md)
 
-This branch does not approve Phase 1B runtime implementation.
+This plan does not approve broad Phase 1B runtime implementation.
+One explicit narrow exception is now implemented on a dedicated branch:
+worker lifecycle simulator only (in-memory, non-persistent, non-networked).
 
 Current baseline-freeze step adds annotated tag:
 `lima-office-phase-0-1b-planning-baseline`.
@@ -38,6 +40,12 @@ Blocked surfaces remain blocked:
 - real attestation/verifier/signing runtime
 - real export/delete runtime
 - remediation execution
+
+Current implemented narrow slice reference:
+
+- [PHASE_1B_WORKER_LIFECYCLE_SIMULATOR.md](PHASE_1B_WORKER_LIFECYCLE_SIMULATOR.md)
+- Scope is limited to in-memory worker lifecycle transition simulation and
+  fail-closed checks. It does not authorize broader runtime expansion.
 
 ## Decision Matrix
 
