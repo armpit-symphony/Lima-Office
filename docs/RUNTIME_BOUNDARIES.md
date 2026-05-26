@@ -9,6 +9,8 @@ Phase 1A runtime is mock/in-memory only.
 Approved Phase 1B narrow addition is also mock/in-memory only:
 worker lifecycle simulator metadata transitions.
 Task lifecycle simulator metadata transitions.
+Approved Phase 1C narrow addition is also mock/in-memory only:
+evidence lifecycle simulator metadata transitions.
 
 It contains contract loading, contract validation, a default-deny Guardian
 policy stub, in-memory worker registry, heartbeat validation, in-memory task
@@ -39,6 +41,7 @@ external services, production operations, or customer-system mutation.
 
 The worker lifecycle simulator does not add any exception to these blocks.
 The task lifecycle simulator does not add any exception to these blocks.
+The evidence lifecycle simulator does not add any exception to these blocks.
 
 ## Safe Runtime Uses
 

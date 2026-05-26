@@ -45,6 +45,14 @@ class EvidenceWriteError(LimaOfficeRuntimeError):
     """Raised when the mock evidence writer cannot record an in-memory artifact."""
 
 
+class EvidenceLifecycleValidationError(LimaOfficeRuntimeError):
+    """Raised when evidence lifecycle metadata validation fails."""
+
+
+class EvidenceLifecycleTransitionError(LimaOfficeRuntimeError):
+    """Raised when evidence lifecycle transition safety checks fail."""
+
+
 class UnsafeRuntimeActionError(LimaOfficeRuntimeError):
     """Raised when scaffolding is asked to perform out-of-scope runtime work."""
 

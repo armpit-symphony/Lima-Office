@@ -4,8 +4,8 @@ Date: May 26, 2026
 
 ## Current checkpoint
 
-- Current branch: `integration/phase-1b-simulator-baseline`
-- Current HEAD: frozen Phase 1B simulator baseline (worker + task simulator slices with independent audits)
+- Current branch: `evidence-lifecycle-simulator-only`
+- Current HEAD: Phase 1C evidence lifecycle simulator slice (in-memory only)
 - Latest checkpoint branch: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
 - Canonical integration branch in repo: `integration/phase-1b-simulator-baseline`
 - Main branch: `main` / `e4bb610` (unchanged in this lane)
@@ -14,6 +14,7 @@ Date: May 26, 2026
 - Independent simulator baseline tag audit branch: `audit-phase-1b-simulator-baseline-tag`
 - Phase 1C planning branch: `phase-1c-supervised-lab-orchestration-planning`
 - Phase 1C planning audit branch: `audit-phase-1c-supervised-lab-orchestration-planning`
+- Phase 1C evidence lifecycle implementation branch: `evidence-lifecycle-simulator-only`
 
 ## Baseline posture
 
@@ -23,6 +24,8 @@ Date: May 26, 2026
 - Phase 1B narrow slices implemented: worker lifecycle simulator and task lifecycle simulator (both in-memory).
 - Phase 1B simulator slices are now frozen in `integration/phase-1b-simulator-baseline`.
 - Phase 1C planning lane is open as docs/runbook/gate planning only.
+- Phase 1C approved narrow slice is now implemented:
+  evidence lifecycle simulator (in-memory, metadata-only, fail-closed).
 - Broader runtime expansion remains blocked pending separate gates.
 
 ## Latest validation snapshot (this branch)
@@ -31,17 +34,19 @@ Counts and results are recorded in [Validation Evidence](docs/VALIDATION_EVIDENC
 
 - Schemas parsed: `65`
 - Examples parsed: `208`
-- Unit tests: `439 passed`
-- Pytest: `439 passed, 1 warning, 244 subtests passed`
+- Unit tests: `463 passed`
+- Pytest: `463 passed, 1 warning, 244 subtests passed`
 - Reason-code gate: `PASS` (`610` schema reason-code values, `323` example values)
-- Doc-link check: `PASS` (`152` markdown files, `1078` local links checked)
+- Doc-link check: `PASS` (`158` markdown files, `1087` local links checked)
 
 ## Current safety boundaries
 
 - No runtime features beyond mock/in-memory scaffolding.
 - Worker lifecycle simulator is in-memory only and metadata-only.
 - Task lifecycle simulator is in-memory only and metadata-only.
+- Evidence lifecycle simulator is in-memory only and metadata-only.
 - No task execution engine or tool-invocation runtime behavior.
+- No evidence storage/export/delete runtime behavior.
 - No live connectors.
 - No OAuth/OIDC/SAML/provider wiring.
 - No token runtime storage/rotation.
@@ -82,3 +87,9 @@ Recommended conservative sequence:
 10. Phase 1C planning audit is recorded in
     `docs/audits/PHASE_1C_SUPERVISED_LAB_ORCHESTRATION_PLANNING_AUDIT.md`
     with result `PASS WITH WARNINGS`.
+11. Approved Phase 1C tiny implementation slice:
+    `docs/PHASE_1C_EVIDENCE_LIFECYCLE_SIMULATOR.md`.
+12. This slice does not approve supervisor orchestration implementation or any
+    broader Phase 1C runtime expansion.
+13. Next lane remains explicit approval + fresh independent audit before any
+    additional tiny implementation slice.

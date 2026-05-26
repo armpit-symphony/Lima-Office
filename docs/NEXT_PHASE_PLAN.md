@@ -74,8 +74,8 @@ This section is planning-only and does not approve implementation by itself.
 - Risk level:
   medium.
 - Recommendation:
-  preferred first implementation candidate if one tiny Phase 1C slice is
-  approved.
+  implemented in `evidence-lifecycle-simulator-only` as in-memory metadata-only
+  simulation. This does not approve any additional implementation slice.
 
 ### Option 3: Guardian Replay Drill Simulator Only
 
@@ -110,8 +110,9 @@ This section is planning-only and does not approve implementation by itself.
 ### Phase 1C Recommendation
 
 - Default: Option 4 (pause/merge/audit only).
-- If one tiny implementation slice is explicitly approved:
-  Option 2 (evidence lifecycle simulator only) before Option 1.
+- Evidence lifecycle simulator is now implemented as the approved tiny slice.
+- Any next tiny implementation slice remains blocked until explicit approval and
+  fresh independent audit.
 - Any implementation still requires explicit approval, full validation pass,
   and a fresh independent audit.
 
@@ -130,6 +131,7 @@ Current implemented narrow slice reference:
 
 - [PHASE_1B_WORKER_LIFECYCLE_SIMULATOR.md](PHASE_1B_WORKER_LIFECYCLE_SIMULATOR.md)
 - [PHASE_1B_TASK_LIFECYCLE_SIMULATOR.md](PHASE_1B_TASK_LIFECYCLE_SIMULATOR.md)
+- [PHASE_1C_EVIDENCE_LIFECYCLE_SIMULATOR.md](PHASE_1C_EVIDENCE_LIFECYCLE_SIMULATOR.md)
 - Scope is limited to in-memory lifecycle transition simulation and fail-closed
   checks. It does not authorize broader runtime expansion.
 

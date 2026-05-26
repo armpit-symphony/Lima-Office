@@ -10,6 +10,8 @@ without introducing runtime dispatch or side effects.
 - Before requesting approval for a Phase 1C tiny implementation slice.
 - After any Phase 1C planning update that changes gates or assumptions.
 - Before independent audit sign-off for a future Phase 1C implementation branch.
+- After evidence lifecycle simulator updates, before considering any next
+  simulator slice.
 
 ## Prerequisites
 
@@ -39,6 +41,7 @@ without introducing runtime dispatch or side effects.
 - Missing/invalid Guardian or approval linkage blocks executable intent.
 - Missing evidence refs on evidence-required transitions blocks completion intent.
 - Any blocked-MVP task class/action remains blocked.
+- Evidence export/delete runtime behavior remains blocked.
 
 ## Evidence To Capture
 
