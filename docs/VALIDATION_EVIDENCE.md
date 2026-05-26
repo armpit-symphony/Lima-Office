@@ -6,7 +6,8 @@ This file records the latest baseline validation run for the stabilization revie
 
 ## Scope
 
-- Branch: `major-baseline-stabilization-next-phase-gate-review`
+- Branch: `integration/phase-0-1a-baseline`
+- Integration tip: `0d4188d85b0f6481447f993bf1b500b3b80d3f1c`
 - Checkpoint basis: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
 - Main branch update: not performed in this lane
 
@@ -52,6 +53,7 @@ git status
 ## Safety patch caveat
 
 The untracked safety patch `model-routing-health-taxonomy.partial.patch` remains intentionally uncommitted and unchanged in this lane.
+Current disposition: pending explicit archive/delete/keep decision during independent audit.
 
 ## Interpretation boundary
 

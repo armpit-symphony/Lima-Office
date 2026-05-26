@@ -8,7 +8,7 @@ This baseline is a docs/contracts/tests/mock-hardening checkpoint. It is not pro
 
 - Latest baseline checkpoint branch: `connector-source-of-truth-values-slo-target-finalization`
 - Latest baseline checkpoint commit: `a92606a9cbb3bc3e4271fb8ccfdff0839c79de6e`
-- Integration baseline branch in repo: `integration/phase-0-1a-baseline` / `f64d3a0447a76b24a5213487ce8836cb21511882`
+- Integration baseline branch in repo: `integration/phase-0-1a-baseline` / `0d4188d85b0f6481447f993bf1b500b3b80d3f1c`
 - Main branch: `main` / `e4bb6105a9d668ddffe21892da3aaff16a0d8ca0`
 
 ## Canonical checkpoint summary
@@ -44,10 +44,13 @@ The repo contains a reachable hardening chain from Phase 0 through Phase 1A meta
 | `connector-source-of-truth-ownership-escalation-accountability` | `5d9590e` | Ownership/escalation accountability posture. |
 | `connector-source-of-truth-values-slo-target-finalization` | `a92606a` | Connector defaults, SLO targets, threshold posture finalization. |
 
-## Integration branch recommendation
+## Integration branch status
 
-- `integration/phase-0-1a-baseline` should be refreshed to the latest checkpoint after this stabilization review and full validation evidence refresh.
-- `main` should remain untouched unless explicitly approved for update.
+- `integration/phase-0-1a-baseline` has been refreshed to include the major baseline stabilization checkpoint (`0d4188d`).
+- `main` remains untouched and must stay untouched unless explicitly approved.
+- `taxonomy-family-constraint-hardening` (`674f41d`) and
+  `model-routing-defaults-health-taxonomy-refinement` (`ba534b2`) are not
+  direct ancestors of this integration tip and remain separately tracked side branches.
 
 ## Must not be treated as production-ready
 

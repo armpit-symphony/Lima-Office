@@ -4,10 +4,10 @@ Date: May 26, 2026
 
 ## Current checkpoint
 
-- Current branch: `major-baseline-stabilization-next-phase-gate-review`
-- Current HEAD: `a92606a9cbb3bc3e4271fb8ccfdff0839c79de6e` (baseline source checkpoint before this review lane)
+- Current branch: `integration/phase-0-1a-baseline`
+- Current HEAD: `0d4188d85b0f6481447f993bf1b500b3b80d3f1c` (integration refreshed to major baseline gate review)
 - Latest checkpoint branch: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
-- Canonical integration branch in repo: `integration/phase-0-1a-baseline` / `f64d3a0`
+- Canonical integration branch in repo: `integration/phase-0-1a-baseline` / `0d4188d`
 - Main branch: `main` / `e4bb610` (unchanged in this lane)
 
 ## Baseline posture
@@ -53,6 +53,6 @@ It is intentionally preserved in working tree and was not modified or deleted in
 
 Recommended conservative sequence:
 
-1. Refresh integration baseline branch from latest checkpoint with validation evidence synchronized.
-2. Run independent audit gate.
+1. Run independent audit gate on refreshed integration branch.
+2. Confirm safety patch disposition (keep/archive/delete) with explicit decision record.
 3. Only then consider Phase 1B lab runtime planning only (no implementation).

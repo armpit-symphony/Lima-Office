@@ -65,3 +65,4 @@ These blockers remain open after the current Phase 0/1A hardening baseline. None
   1. Promote it through a reviewed branch and commit, or
   2. Archive/discard with documented traceability.
 - Do not silently merge or delete it without explicit instruction.
+- Recommended immediate lane: independent audit decision on this artifact before any Phase 1B implementation discussion.

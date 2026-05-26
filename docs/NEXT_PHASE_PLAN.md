@@ -6,6 +6,7 @@ Current checkpoint basis:
 
 - Latest hardening checkpoint: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
 - Review branch: `major-baseline-stabilization-next-phase-gate-review`
+- Integration refresh status: `integration/phase-0-1a-baseline` updated to `0d4188d`
 
 ## Decision Matrix
 
@@ -73,9 +74,9 @@ Current checkpoint basis:
 
 Recommended sequence:
 
-1. Option A (refresh integration baseline branch).
-2. Option F (independent audit / pause).
-3. Option B (Phase 1B lab runtime planning only).
+1. Option F (independent audit / pause).
+2. Option B (Phase 1B lab runtime planning only).
+3. Option D (storage/transaction implementation planning only), if audit findings permit.
 
 Explicit non-recommendations for this gate:
 
