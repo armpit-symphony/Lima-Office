@@ -10,6 +10,7 @@ Date: May 26, 2026
 - Canonical integration branch in repo: `integration/phase-0-1b-planning-baseline` / `b81dcb6`
 - Main branch: `main` / `e4bb610` (unchanged in this lane)
 - Independent slice audit branch: `audit-worker-lifecycle-simulator-only` (previous lane)
+- Independent task slice audit branch: `audit-task-lifecycle-simulator-only` (current lane)
 
 ## Baseline posture
 
@@ -64,5 +65,6 @@ Recommended conservative sequence:
 1. Independent baseline audit is `PASS WITH WARNINGS` in `docs/audits/INDEPENDENT_BASELINE_AUDIT.md`.
 2. Tag audit `docs/audits/PHASE_0_1B_PLANNING_BASELINE_TAG_AUDIT.md` is `PASS WITH WARNINGS`.
 3. Worker lifecycle simulator slice audit is `PASS WITH WARNINGS` in `docs/audits/WORKER_LIFECYCLE_SIMULATOR_AUDIT.md`.
-4. Keep broader Phase 1B implementation blocked beyond these in-memory simulator slices.
-5. If expanding further, require separate explicit gate approval and fresh independent audit.
+4. Task lifecycle simulator slice audit is `PASS WITH WARNINGS` in `docs/audits/TASK_LIFECYCLE_SIMULATOR_AUDIT.md`.
+5. Keep broader Phase 1B implementation blocked beyond these in-memory simulator slices.
+6. If expanding further, require separate explicit gate approval and fresh independent audit.
