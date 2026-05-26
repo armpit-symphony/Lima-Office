@@ -6,6 +6,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 
 - [Current status](../STATUS.md)
 - [Canonical baseline](BASELINE.md)
+- [Major baseline stabilization review](MAJOR_BASELINE_STABILIZATION_REVIEW.md)
 - [Architecture](ARCHITECTURE.md)
 - [MVP scope](MVP_SCOPE.md)
 - [Roadmap](ROADMAP.md)
@@ -52,6 +53,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Next phase plan](NEXT_PHASE_PLAN.md)
 - [Runtime boundaries](RUNTIME_BOUNDARIES.md)
 - [Validation evidence](VALIDATION_EVIDENCE.md)
+- [Audit prep checklist](AUDIT_PREP_CHECKLIST.md)
 
 ## Deployment Docs
 

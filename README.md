@@ -66,6 +66,7 @@ No remediation runtime, endpoint control, production server change, or network c
 
 - [Current status](STATUS.md)
 - [Canonical baseline](docs/BASELINE.md)
+- [Major baseline stabilization review](docs/MAJOR_BASELINE_STABILIZATION_REVIEW.md)
 - [Docs index](docs/README.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [MVP scope](docs/MVP_SCOPE.md)
@@ -84,6 +85,7 @@ No remediation runtime, endpoint control, production server change, or network c
 - [Phase 0 / Phase 1A closeout](docs/PHASE_0_1A_CLOSEOUT.md)
 - [Next phase plan](docs/NEXT_PHASE_PLAN.md)
 - [Runtime boundaries](docs/RUNTIME_BOUNDARIES.md)
+- [Validation evidence](docs/VALIDATION_EVIDENCE.md)
 - [Worker deployment blueprint](docs/deployment/WORKER_DEPLOYMENT_BLUEPRINT.md)
 - [Governance policy details](docs/governance/README.md)
 - [Operator console UX spec](docs/ux/OPERATOR_CONSOLE_SPEC.md)
