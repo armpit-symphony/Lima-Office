@@ -54,6 +54,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Runtime boundaries](RUNTIME_BOUNDARIES.md)
 - [Validation evidence](VALIDATION_EVIDENCE.md)
 - [Audit prep checklist](AUDIT_PREP_CHECKLIST.md)
+- [Independent baseline audit](audits/INDEPENDENT_BASELINE_AUDIT.md)
 
 ## Deployment Docs
 

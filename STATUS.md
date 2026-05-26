@@ -4,10 +4,10 @@ Date: May 26, 2026
 
 ## Current checkpoint
 
-- Current branch: `integration/phase-0-1a-baseline`
-- Current HEAD: `0d4188d85b0f6481447f993bf1b500b3b80d3f1c` (integration refreshed to major baseline gate review)
+- Current branch: `audit-independent-baseline-review`
+- Current HEAD: independent-audit lane based on `integration/phase-0-1a-baseline` @ `26d5789ff62318ede69abf3296139eea7eaac8f0`
 - Latest checkpoint branch: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
-- Canonical integration branch in repo: `integration/phase-0-1a-baseline` / `0d4188d`
+- Canonical integration branch in repo: `integration/phase-0-1a-baseline` / `26d5789`
 - Main branch: `main` / `e4bb610` (unchanged in this lane)
 
 ## Baseline posture
@@ -53,6 +53,6 @@ It is intentionally preserved in working tree and was not modified or deleted in
 
 Recommended conservative sequence:
 
-1. Run independent audit gate on refreshed integration branch.
+1. Review independent audit result: `PASS WITH WARNINGS` in `docs/audits/INDEPENDENT_BASELINE_AUDIT.md`.
 2. Confirm safety patch disposition (keep/archive/delete) with explicit decision record.
-3. Only then consider Phase 1B lab runtime planning only (no implementation).
+3. Continue with Phase 1B planning-only lane (no implementation).
