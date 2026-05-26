@@ -53,9 +53,12 @@ git status
 
 ## Safety patch caveat
 
-The untracked safety patch `model-routing-health-taxonomy.partial.patch` remains intentionally uncommitted and unchanged in this lane.
-Current disposition: pending explicit archive/delete/keep decision before any
-implementation lane.
+Safety patch disposition: `model-routing-health-taxonomy.partial.patch` has been
+archived to `C:\Users\limap\Lima-Office-safety-archive\model-routing-health-taxonomy.partial.patch`
+with SHA-256:
+`F74947FF1869A66D0D813DC5E8C2EA9EBAC540CE835ED6D2DCB8388848ACDDAE`.
+Original patch file has been removed from the repo root after hash verification.
+Disposition record: [SAFETY_PATCH_DISPOSITION.md](audits/SAFETY_PATCH_DISPOSITION.md).
 
 ## Interpretation boundary
 

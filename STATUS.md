@@ -43,9 +43,14 @@ Counts and results are recorded in [Validation Evidence](docs/VALIDATION_EVIDENC
 
 ## Safety patch note
 
-Untracked safety patch file remains present and uncommitted by design:
+Safety patch disposition completed:
 
-- `model-routing-health-taxonomy.partial.patch`
+- `model-routing-health-taxonomy.partial.patch` was archived to:
+  `C:\Users\limap\Lima-Office-safety-archive\model-routing-health-taxonomy.partial.patch`
+- SHA-256 verified: `F74947FF1869A66D0D813DC5E8C2EA9EBAC540CE835ED6D2DCB8388848ACDDAE`
+- File removed from repo root after archive hash verification.
+- Patch was not committed and remains out-of-repo for forensic reference only.
+- Disposition record: [docs/audits/SAFETY_PATCH_DISPOSITION.md](docs/audits/SAFETY_PATCH_DISPOSITION.md)
 
 It is intentionally preserved in working tree and was not modified or deleted in this lane.
 
