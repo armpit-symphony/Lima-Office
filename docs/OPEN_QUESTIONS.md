@@ -71,8 +71,9 @@ These blockers remain open after the current Phase 0/1A hardening baseline. None
   bundle, or a narrower subset?
 - Should tag `lima-office-phase-0-1b-planning-baseline` be treated as the
   required independent gate-audit anchor before any tiny implementation slice?
-- What is the final disposition for
-  `model-routing-health-taxonomy.partial.patch` before any implementation lane?
+- Should `lima-office-phase-1b-simulator-baseline` be treated as the required
+  independent gate-audit anchor before any additional tiny implementation
+  slice?
 - Should the refreshed integration baseline be tagged/refrozen before any tiny
   Phase 1B implementation proposal?
 - Should `main` remain untouched through Phase 1B planning and first tiny slice
@@ -82,5 +83,7 @@ These blockers remain open after the current Phase 0/1A hardening baseline. None
   further tiny slice is considered?
 - Should the next lane be an independent audit specific to task lifecycle
   simulator scope before any additional runtime planning/implementation?
+- Which single additional tiny slice, if any, is eligible next after
+  independent gate-audit sign-off on the simulator baseline tag?
 - Must durable storage/transaction planning be completed before any Phase 1B
   implementation slice?

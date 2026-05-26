@@ -8,15 +8,22 @@ This baseline is a docs/contracts/tests/mock-hardening checkpoint. It is not pro
 
 - Latest baseline checkpoint branch: `connector-source-of-truth-values-slo-target-finalization`
 - Latest baseline checkpoint commit: `a92606a9cbb3bc3e4271fb8ccfdff0839c79de6e`
-- Frozen planning baseline branch in repo: `integration/phase-0-1b-planning-baseline` / `9fd479c80571563f07831ceeb61f71c84a649276`
+- Frozen planning baseline branch in repo: `integration/phase-0-1b-planning-baseline` / `b81dcb6e1e947c4f59ec19d9222e219b4a7600a8`
+- Frozen simulator baseline branch in repo: `integration/phase-1b-simulator-baseline` (current branch tip)
 - Prior integration baseline branch: `integration/phase-0-1a-baseline` / `26d5789ff62318ede69abf3296139eea7eaac8f0`
 - Main branch: `main` / `e4bb6105a9d668ddffe21892da3aaff16a0d8ca0`
 
 ## Canonical checkpoint summary
 
 The repo contains a reachable hardening chain from Phase 0 through Phase 1A
-metadata hardening (`a92606a`) plus a Phase 1B planning-only freeze
-(`9fd479c`) with no runtime expansion.
+metadata hardening (`a92606a`) plus:
+
+- Phase 1B planning-only freeze (`b81dcb6`), and
+- Phase 1B simulator freeze (`integration/phase-1b-simulator-baseline`) that
+  includes worker lifecycle simulator + audit and task lifecycle simulator + audit.
+
+Both freezes remain mock/in-memory posture and do not approve broader runtime
+expansion.
 
 ## Important branches since `integration/phase-0-1a-baseline`
 
@@ -50,7 +57,9 @@ metadata hardening (`a92606a`) plus a Phase 1B planning-only freeze
 ## Integration branch status
 
 - `integration/phase-0-1b-planning-baseline` is the frozen planning baseline
-  for Phase 0 through Phase 1B planning-only state (`9fd479c`).
+  for Phase 0 through Phase 1B planning-only state (`b81dcb6`).
+- `integration/phase-1b-simulator-baseline` is the frozen simulator baseline
+  for approved Phase 1B worker/task lifecycle simulator slices and their audits.
 - `integration/phase-0-1a-baseline` remains the prior refreshed integration
   baseline (`26d5789`).
 - `main` remains untouched and must stay untouched unless explicitly approved.
@@ -61,8 +70,8 @@ metadata hardening (`a92606a`) plus a Phase 1B planning-only freeze
 ## Next gate
 
 - Create and review annotated baseline tag:
-  `lima-office-phase-0-1b-planning-baseline`.
-- Run independent gate audit on that tag before any implementation proposal.
+  `lima-office-phase-1b-simulator-baseline`.
+- Run independent gate audit on that tag before any additional implementation proposal.
 
 ## Must not be treated as production-ready
 

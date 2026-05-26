@@ -6,7 +6,9 @@ Current checkpoint basis:
 
 - Latest hardening checkpoint: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
 - Review branch: `major-baseline-stabilization-next-phase-gate-review`
-- Integration refresh status: `integration/phase-0-1b-planning-baseline` frozen at `b81dcb6`
+- Integration refresh status:
+  - `integration/phase-0-1b-planning-baseline` frozen at `b81dcb6`
+  - `integration/phase-1b-simulator-baseline` frozen at current branch tip (worker/task simulator slices + audits)
 
 ## Phase 1B Planning-Only Update (May 26, 2026)
 
@@ -22,7 +24,7 @@ worker lifecycle simulator only and task lifecycle simulator only
 (both in-memory, non-persistent, non-networked).
 
 Current baseline-freeze step adds annotated tag:
-`lima-office-phase-0-1b-planning-baseline`.
+`lima-office-phase-1b-simulator-baseline`.
 Next lane is an independent gate audit on that tag.
 
 Any future tiny implementation slice requires separate explicit approval after:
@@ -30,6 +32,9 @@ Any future tiny implementation slice requires separate explicit approval after:
 1. implementation-gate checklist pass,
 2. safety patch disposition completion,
 3. fresh validation and audit confirmation.
+
+This branch does not approve any additional implementation slice beyond the
+already audited worker/task lifecycle simulators.
 
 Blocked surfaces remain blocked:
 

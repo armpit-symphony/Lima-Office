@@ -7,7 +7,7 @@ worker-lifecycle and task-lifecycle simulator lanes.
 
 ## Scope
 
-- Branch: `task-lifecycle-simulator-only`
+- Branch: `integration/phase-1b-simulator-baseline`
 - Base branch: `safety-patch-disposition` / `e31e225`
 - Scope basis: explicit approved tiny Phase 1B slices (worker lifecycle simulator only, task lifecycle simulator only)
 - Main branch update: not performed in this lane
@@ -40,8 +40,8 @@ git status
   - reason-code values scanned in schemas: `610`
   - reason-code values scanned in examples: `323`
 - `check-doc-links`: `PASS`
-  - markdown files scanned: `151`
-  - local links checked: `1076`
+  - markdown files scanned: `152`
+  - local links checked: `1078`
 - `unittest`: `PASS`
   - `Ran 439 tests`
   - `OK`
@@ -58,6 +58,7 @@ git status
 - Task slice implementation document: [PHASE_1B_TASK_LIFECYCLE_SIMULATOR.md](PHASE_1B_TASK_LIFECYCLE_SIMULATOR.md)
 - Task slice audit document: [TASK_LIFECYCLE_SIMULATOR_AUDIT.md](audits/TASK_LIFECYCLE_SIMULATOR_AUDIT.md)
 - Task slice audit result: `PASS WITH WARNINGS`
+- Frozen simulator baseline branch: `integration/phase-1b-simulator-baseline`
 
 ## Safety patch disposition
 
