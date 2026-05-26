@@ -3,11 +3,11 @@
 Date: May 26, 2026
 
 This file records the latest validation run for the narrow Phase 1B
-worker-lifecycle-simulator-only lane.
+worker-lifecycle-simulator-only lane and its independent slice audit.
 
 ## Scope
 
-- Branch: `worker-lifecycle-simulator-only`
+- Branch: `audit-worker-lifecycle-simulator-only` (auditing `worker-lifecycle-simulator-only`)
 - Base branch: `safety-patch-disposition` / `e31e225`
 - Scope basis: explicit approved tiny Phase 1B slice (worker lifecycle simulator only)
 - Main branch update: not performed in this lane
@@ -50,6 +50,11 @@ git status
 - `compileall`: `PASS`
 - `git diff --check`: `PASS` (after whitespace cleanup)
 - `git diff --cached --check`: `PASS`
+
+## Independent audit note
+
+- Audit document: [WORKER_LIFECYCLE_SIMULATOR_AUDIT.md](audits/WORKER_LIFECYCLE_SIMULATOR_AUDIT.md)
+- Audit result: `PASS WITH WARNINGS`
 
 ## Safety patch disposition
 

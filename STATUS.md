@@ -4,11 +4,12 @@ Date: May 26, 2026
 
 ## Current checkpoint
 
-- Current branch: `worker-lifecycle-simulator-only`
+- Current branch: `audit-worker-lifecycle-simulator-only`
 - Current HEAD: narrow Phase 1B worker-lifecycle simulator slice from `safety-patch-disposition`
 - Latest checkpoint branch: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
 - Canonical integration branch in repo: `integration/phase-0-1b-planning-baseline` / `9fd479c`
 - Main branch: `main` / `e4bb610` (unchanged in this lane)
+- Independent slice audit branch: `audit-worker-lifecycle-simulator-only` (this lane)
 
 ## Baseline posture
 
@@ -60,6 +61,6 @@ Recommended conservative sequence:
 
 1. Independent baseline audit is `PASS WITH WARNINGS` in `docs/audits/INDEPENDENT_BASELINE_AUDIT.md`.
 2. Tag audit `docs/audits/PHASE_0_1B_PLANNING_BASELINE_TAG_AUDIT.md` is `PASS WITH WARNINGS`.
-3. Keep broader Phase 1B implementation blocked beyond this worker-lifecycle-only slice.
-4. Resolve safety patch disposition (keep/archive/delete) with explicit decision record.
+3. Worker lifecycle simulator slice audit is `PASS WITH WARNINGS` in `docs/audits/WORKER_LIFECYCLE_SIMULATOR_AUDIT.md`.
+4. Keep broader Phase 1B implementation blocked beyond this worker-lifecycle-only slice.
 5. If expanding further, require separate explicit gate approval and fresh independent audit.
