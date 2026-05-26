@@ -94,6 +94,9 @@ Latest command results on `phase-1c-supervised-lab-orchestration-planning`:
 - Frozen simulator baseline branch: `integration/phase-1b-simulator-baseline`
 - Baseline tag audit document: [PHASE_1B_SIMULATOR_BASELINE_TAG_AUDIT.md](audits/PHASE_1B_SIMULATOR_BASELINE_TAG_AUDIT.md)
 - Baseline tag audit result: `PASS WITH WARNINGS`
+- Phase 1C planning audit document:
+  [PHASE_1C_SUPERVISED_LAB_ORCHESTRATION_PLANNING_AUDIT.md](audits/PHASE_1C_SUPERVISED_LAB_ORCHESTRATION_PLANNING_AUDIT.md)
+- Phase 1C planning audit result: `PASS WITH WARNINGS`
 
 ## Safety patch disposition
 
