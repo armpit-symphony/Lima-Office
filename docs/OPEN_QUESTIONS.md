@@ -110,3 +110,9 @@ These blockers remain open after the current Phase 0/1A hardening baseline. None
   planning?
 - What mandatory post-implementation audit checklist should apply to every
   future tiny Phase 1C slice?
+- Should duplicate nonce reservation be blocked pre-consumption as a required
+  hardening gate before any additional slice?
+- Should first-use replay validation require bound `approval.binding` and
+  `token.verification` payloads whenever decision metadata is bound?
+- Should mismatch-denial logic move from message-marker matching to fully
+  structured mismatch assertions before supervisor orchestration coupling?
