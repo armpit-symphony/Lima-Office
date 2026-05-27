@@ -118,11 +118,15 @@ class GuardianReplayDrillSimulator:
         self._current: dict[str, dict[str, Any]] = {}
         self._history: dict[str, list[GuardianReplayDrillTransition]] = {}
         self._decision_by_id: dict[str, dict[str, Any]] = {}
-        self._consumed_nonces: set[str] = set()
+        self._reserved_nonces_by_tenant: dict[str, set[str]] = {}
+        self._consumed_nonces_by_tenant: dict[str, set[str]] = {}
 
     @property
     def consumed_nonces(self) -> frozenset[str]:
-        return frozenset(self._consumed_nonces)
+        aggregate: set[str] = set()
+        for values in self._consumed_nonces_by_tenant.values():
+            aggregate.update(values)
+        return frozenset(aggregate)
 
     def register(
         self,
@@ -349,6 +353,7 @@ class GuardianReplayDrillSimulator:
             approval_binding=approval_binding,
             token_verification=token_verification,
             requested_action=requested_action,
+            allow_action_mismatch=(to_state == "mismatch_denied"),
         )
 
     def _enforce_transition_specific_rules(
@@ -375,31 +380,51 @@ class GuardianReplayDrillSimulator:
             raise GuardianReplayDrillTransitionError("guardian decision must be registered before replay drill transitions")
 
         if to_state == "nonce_reserved":
+            tenant_reserved = self._tenant_reserved_nonces(payload["tenant_id"])
+            tenant_consumed = self._tenant_consumed_nonces(payload["tenant_id"])
             if payload.get("nonce_status") != "reserved":
                 raise GuardianReplayDrillTransitionError("nonce_reserved requires replay.store.record nonce_status reserved")
             if payload.get("atomicity_status") != "pending":
                 raise GuardianReplayDrillTransitionError("nonce_reserved requires replay.store.record atomicity_status pending")
-            if decision_nonce in self._consumed_nonces:
+            if decision_nonce in tenant_reserved:
                 raise GuardianReplayDrillTransitionError("duplicate nonce reservation is blocked")
+            if decision_nonce in tenant_consumed:
+                raise GuardianReplayDrillTransitionError("duplicate nonce reservation is blocked")
+            tenant_reserved.add(decision_nonce)
             return
 
         if to_state == "first_use_validated":
+            self._require_bound_first_use_inputs(
+                decision_payload,
+                approval_binding=approval_binding,
+                token_verification=token_verification,
+            )
             requested = requested_action if requested_action is not None else self._requested_action_from_replay_payload(payload)
-            self._assert_decision_is_usable(decision_payload, requested_action=requested, consume_nonce=False)
+            self._assert_decision_is_usable(
+                decision_payload,
+                requested_action=requested,
+                consume_nonce=False,
+                tenant_id=payload["tenant_id"],
+            )
             if payload.get("replay_check_result") != "valid_first_use":
                 raise GuardianReplayDrillTransitionError("first_use_validated requires guardian.replay valid_first_use result")
             return
 
         if to_state == "nonce_consumed":
+            tenant_reserved = self._tenant_reserved_nonces(payload["tenant_id"])
+            tenant_consumed = self._tenant_consumed_nonces(payload["tenant_id"])
             if payload.get("nonce_status") != "consumed":
                 raise GuardianReplayDrillTransitionError("nonce_consumed requires replay.store.record nonce_status consumed")
-            if decision_nonce in self._consumed_nonces:
+            if decision_nonce in tenant_consumed:
                 raise GuardianReplayDrillTransitionError("duplicate nonce consumption is blocked")
-            self._consumed_nonces.add(decision_nonce)
+            if decision_nonce not in tenant_reserved:
+                raise GuardianReplayDrillTransitionError("nonce_consumed requires prior nonce reservation")
+            tenant_reserved.remove(decision_nonce)
+            tenant_consumed.add(decision_nonce)
             return
 
         if to_state == "replay_denied":
-            if decision_nonce not in self._consumed_nonces:
+            if decision_nonce not in self._tenant_consumed_nonces(payload["tenant_id"]):
                 raise GuardianReplayDrillTransitionError("replay_denied requires consumed nonce")
             self._require_denial_evidence(payload)
             return
@@ -415,7 +440,24 @@ class GuardianReplayDrillSimulator:
             return
 
         if to_state == "mismatch_denied":
-            self._assert_decision_denial_condition(decision_payload, requested_action, expected="mismatch")
+            mismatch_categories = self._assert_decision_denial_condition(
+                decision_payload,
+                requested_action,
+                expected="mismatch",
+                approval_binding=approval_binding,
+                token_verification=token_verification,
+            )
+            declared_reasons = payload.get("mismatch_reasons")
+            if not isinstance(declared_reasons, list) or not declared_reasons:
+                raise GuardianReplayDrillTransitionError("mismatch_denied requires mismatch_reasons")
+            declared = {item for item in declared_reasons if isinstance(item, str) and item}
+            if not declared:
+                raise GuardianReplayDrillTransitionError("mismatch_denied requires non-empty mismatch_reasons")
+            if declared.isdisjoint(mismatch_categories):
+                expected = ", ".join(sorted(mismatch_categories))
+                raise GuardianReplayDrillTransitionError(
+                    f"mismatch_denied mismatch_reasons do not match structured mismatch categories: {expected}"
+                )
             self._require_denial_evidence(payload)
             return
 
@@ -432,6 +474,7 @@ class GuardianReplayDrillSimulator:
             evidence_refs = payload.get("evidence_refs")
             if not isinstance(evidence_refs, list) or not evidence_refs:
                 raise EvidenceRequiredError("failed_closed_recorded requires evidence_refs")
+            self._assert_evidence_ref_list(evidence_refs, field_name="evidence_refs")
             return
 
     def _assert_guardian_decision_payload_valid(self, payload: dict[str, Any]) -> None:
@@ -446,8 +489,16 @@ class GuardianReplayDrillSimulator:
     def _assert_guardian_replay_payload_valid(self, payload: dict[str, Any], *, expected_state: str) -> None:
         replay_result = payload.get("replay_check_result")
         expected = "valid_first_use" if expected_state == "first_use_validated" else None
-        if expected_state in DENIAL_RESULT_TO_STATE.values():
-            expected = {v: k for k, v in DENIAL_RESULT_TO_STATE.items()}[expected_state]
+        if expected_state == "replay_denied":
+            expected = "replay_denied"
+        elif expected_state == "expired_denied":
+            expected = "expired"
+        elif expected_state == "stale_denied":
+            expected = "stale"
+        elif expected_state == "mismatch_denied":
+            expected = "scope_mismatch"
+        elif expected_state == "blocked_mvp_denied":
+            expected = "blocked_mvp"
         if expected and replay_result != expected:
             raise GuardianReplayDrillTransitionError(
                 f"guardian.replay result mismatch for {expected_state}: expected {expected}, got {replay_result}"
@@ -482,13 +533,14 @@ class GuardianReplayDrillSimulator:
         *,
         requested_action: dict[str, Any],
         consume_nonce: bool,
+        tenant_id: str,
     ) -> None:
         try:
             assert_guardian_decision_replay_safe(
                 copy.deepcopy(decision),
                 copy.deepcopy(requested_action),
                 reference_time=self.reference_time,
-                consumed_nonces=self._consumed_nonces,
+                consumed_nonces=self._tenant_consumed_nonces(tenant_id),
                 consume_nonce=consume_nonce,
             )
         except (PolicyDenyError, EvidenceRequiredError) as exc:
@@ -500,50 +552,54 @@ class GuardianReplayDrillSimulator:
         requested_action: dict[str, Any] | None,
         *,
         expected: str,
-    ) -> None:
+        approval_binding: dict[str, Any] | None = None,
+        token_verification: dict[str, Any] | None = None,
+    ) -> set[str]:
         if expected == "expired" and not self._is_decision_expired(decision):
             raise GuardianReplayDrillTransitionError("expired_denied requires expired guardian decision metadata")
+        if expected == "expired":
+            return {"expired"}
         if expected == "stale" and not self._is_decision_stale(decision):
             raise GuardianReplayDrillTransitionError("stale_denied requires stale guardian decision metadata")
+        if expected == "stale":
+            return {"stale"}
         if expected == "blocked_mvp" and not self._is_blocked_mvp_decision(decision):
             raise GuardianReplayDrillTransitionError("blocked_mvp_denied requires blocked-mvp guardian decision metadata")
+        if expected == "blocked_mvp":
+            return {"blocked_mvp"}
         if expected == "mismatch":
             action = requested_action
             if action is None:
                 raise GuardianReplayDrillTransitionError("mismatch_denied requires requested_action mismatch metadata")
-            try:
-                assert_guardian_decision_replay_safe(
-                    copy.deepcopy(decision),
-                    copy.deepcopy(action),
-                    reference_time=self.reference_time,
-                    consumed_nonces=self._consumed_nonces,
-                    consume_nonce=False,
-                )
-            except (PolicyDenyError, EvidenceRequiredError) as exc:
-                message = str(exc)
-                mismatch_markers = (
-                    "mismatch",
-                    "required",
-                    "scope",
-                    "tenant",
-                    "worker",
-                    "task",
-                    "token verification",
-                    "approval binding",
-                )
-                if any(marker in message for marker in mismatch_markers):
-                    return
-                raise GuardianReplayDrillTransitionError("mismatch_denied requires binding/scope/action mismatch metadata") from exc
-            raise GuardianReplayDrillTransitionError("mismatch_denied requires replay validation failure")
+            mismatch_categories = self._collect_mismatch_categories(
+                decision,
+                action,
+                approval_binding=approval_binding,
+                token_verification=token_verification,
+            )
+            if not mismatch_categories:
+                raise GuardianReplayDrillTransitionError("mismatch_denied requires structured mismatch metadata")
+            return mismatch_categories
+        return set()
 
     @staticmethod
     def _require_denial_evidence(payload: dict[str, Any]) -> None:
         denial_ref = payload.get("denial_evidence_ref")
         pre_action_refs = payload.get("pre_action_evidence_refs")
+        evidence_refs = payload.get("evidence_refs")
         if not isinstance(denial_ref, str) or not denial_ref:
             raise EvidenceRequiredError("denial replay drill states require denial_evidence_ref")
         if not isinstance(pre_action_refs, list) or not pre_action_refs:
             raise EvidenceRequiredError("denial replay drill states require pre_action_evidence_refs")
+        if not isinstance(evidence_refs, list) or not evidence_refs:
+            raise EvidenceRequiredError("denial replay drill states require evidence_refs")
+        GuardianReplayDrillSimulator._assert_evidence_ref_format(denial_ref)
+        GuardianReplayDrillSimulator._assert_evidence_ref_list(pre_action_refs, field_name="pre_action_evidence_refs")
+        GuardianReplayDrillSimulator._assert_evidence_ref_list(evidence_refs, field_name="evidence_refs")
+        if denial_ref not in pre_action_refs:
+            raise EvidenceRequiredError("denial_evidence_ref must appear in pre_action_evidence_refs")
+        if denial_ref not in evidence_refs:
+            raise EvidenceRequiredError("denial_evidence_ref must appear in evidence_refs")
 
     def _assert_optional_binding_token_consistency(
         self,
@@ -554,6 +610,7 @@ class GuardianReplayDrillSimulator:
         approval_binding: dict[str, Any] | None,
         token_verification: dict[str, Any] | None,
         requested_action: dict[str, Any] | None,
+        allow_action_mismatch: bool = False,
     ) -> None:
         decision_id = self._extract_guardian_decision_id(payload, contract_name=contract_name)
         decision = self._decision_by_id.get(decision_id)
@@ -586,7 +643,7 @@ class GuardianReplayDrillSimulator:
             if validated_binding.get("token_verification_id") != validated_token.get("token_verification_id"):
                 raise GuardianReplayDrillTransitionError("approval binding/token verification mismatch")
 
-        if requested_action is not None and decision is not None:
+        if requested_action is not None and decision is not None and not allow_action_mismatch:
             self._assert_requested_action_matches_decision(decision, requested_action)
             action_binding_id = requested_action.get("approval_binding_id") or requested_action.get("binding_id")
             if validated_binding is not None and action_binding_id is not None and validated_binding.get("binding_id") != action_binding_id:
@@ -594,6 +651,20 @@ class GuardianReplayDrillSimulator:
             action_token_id = requested_action.get("token_verification_id")
             if validated_token is not None and action_token_id is not None and validated_token.get("token_verification_id") != action_token_id:
                 raise GuardianReplayDrillTransitionError("requested action token verification mismatch")
+
+    @staticmethod
+    def _require_bound_first_use_inputs(
+        decision: dict[str, Any],
+        *,
+        approval_binding: dict[str, Any] | None,
+        token_verification: dict[str, Any] | None,
+    ) -> None:
+        required_binding_id = decision.get("approval_binding_id")
+        if isinstance(required_binding_id, str) and required_binding_id and approval_binding is None:
+            raise GuardianReplayDrillTransitionError("first_use_validated requires approval.binding payload for bound decision")
+        required_token_id = decision.get("token_verification_id")
+        if isinstance(required_token_id, str) and required_token_id and token_verification is None:
+            raise GuardianReplayDrillTransitionError("first_use_validated requires token.verification payload for bound decision")
 
     @staticmethod
     def _assert_requested_action_matches_decision(decision: dict[str, Any], requested_action: dict[str, Any]) -> None:
@@ -620,6 +691,59 @@ class GuardianReplayDrillSimulator:
             raise GuardianReplayDrillTransitionError("requested action tool_scope mismatch")
 
     @staticmethod
+    def _collect_requested_action_mismatch_categories(
+        decision: dict[str, Any], requested_action: dict[str, Any]
+    ) -> set[str]:
+        categories: set[str] = set()
+        if decision.get("bound_tenant_id") is not None and requested_action.get("tenant_id") is not None:
+            if decision.get("bound_tenant_id") != requested_action.get("tenant_id"):
+                categories.add("tenant_mismatch")
+        if decision.get("bound_task_id") is not None and requested_action.get("task_id") is not None:
+            if decision.get("bound_task_id") != requested_action.get("task_id"):
+                categories.add("task_mismatch")
+        if decision.get("bound_worker_id") is not None and requested_action.get("worker_id") is not None:
+            if decision.get("bound_worker_id") != requested_action.get("worker_id"):
+                categories.add("worker_mismatch")
+        if decision.get("bound_action_type") is not None and requested_action.get("action_type") is not None:
+            if decision.get("bound_action_type") != requested_action.get("action_type"):
+                categories.add("action_type_mismatch")
+        if decision.get("decision_scope_hash") is not None and requested_action.get("decision_scope_hash") is not None:
+            if decision.get("decision_scope_hash") != requested_action.get("decision_scope_hash"):
+                categories.add("decision_scope_hash_mismatch")
+        if decision.get("bound_tool_scope") is not None and requested_action.get("tool_scope") is not None:
+            if decision.get("bound_tool_scope") != requested_action.get("tool_scope"):
+                categories.add("tool_scope_mismatch")
+        if decision.get("approval_binding_id") is not None:
+            action_binding = requested_action.get("approval_binding_id") or requested_action.get("binding_id")
+            if action_binding is not None and action_binding != decision.get("approval_binding_id"):
+                categories.add("approval_binding_mismatch")
+        if decision.get("token_verification_id") is not None and requested_action.get("token_verification_id") is not None:
+            if requested_action.get("token_verification_id") != decision.get("token_verification_id"):
+                categories.add("token_verification_mismatch")
+        return categories
+
+    def _collect_mismatch_categories(
+        self,
+        decision: dict[str, Any],
+        requested_action: dict[str, Any],
+        *,
+        approval_binding: dict[str, Any] | None,
+        token_verification: dict[str, Any] | None,
+    ) -> set[str]:
+        categories = self._collect_requested_action_mismatch_categories(decision, requested_action)
+        if approval_binding is not None:
+            validated_binding = self._validate_contract(approval_binding, "approval.binding")
+            required_binding_id = decision.get("approval_binding_id")
+            if isinstance(required_binding_id, str) and required_binding_id and validated_binding.get("binding_id") != required_binding_id:
+                categories.add("approval_binding_mismatch")
+        if token_verification is not None:
+            validated_token = self._validate_contract(token_verification, "token.verification")
+            required_token_id = decision.get("token_verification_id")
+            if isinstance(required_token_id, str) and required_token_id and validated_token.get("token_verification_id") != required_token_id:
+                categories.add("token_verification_mismatch")
+        return categories
+
+    @staticmethod
     def _extract_guardian_decision_id(payload: dict[str, Any], *, contract_name: str) -> str:
         field = DECISION_ID_FIELD_BY_CONTRACT[contract_name]
         decision_id = payload.get(field)
@@ -638,6 +762,24 @@ class GuardianReplayDrillSimulator:
         if isinstance(nonce, str) and nonce:
             return nonce
         return None
+
+    @staticmethod
+    def _assert_evidence_ref_format(ref: str) -> None:
+        if not ref.startswith("ev-"):
+            raise EvidenceRequiredError("evidence refs must use ev- prefix in replay drill simulator")
+
+    @classmethod
+    def _assert_evidence_ref_list(cls, refs: list[Any], *, field_name: str) -> None:
+        for value in refs:
+            if not isinstance(value, str) or not value:
+                raise EvidenceRequiredError(f"{field_name} contains invalid evidence ref")
+            cls._assert_evidence_ref_format(value)
+
+    def _tenant_reserved_nonces(self, tenant_id: str) -> set[str]:
+        return self._reserved_nonces_by_tenant.setdefault(tenant_id, set())
+
+    def _tenant_consumed_nonces(self, tenant_id: str) -> set[str]:
+        return self._consumed_nonces_by_tenant.setdefault(tenant_id, set())
 
     def _is_decision_expired(self, decision: dict[str, Any]) -> bool:
         reference = self._reference_datetime()

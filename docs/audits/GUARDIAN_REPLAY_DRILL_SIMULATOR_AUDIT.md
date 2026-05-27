@@ -116,6 +116,19 @@ in-memory slice, but they should be hardened before broader orchestration work.
 - No blocking defects identified for this narrow slice.
 - Warnings listed above remain open for follow-up hardening.
 
+### Follow-Up Hardening Note
+
+Warnings in this audit are addressed in follow-up branch
+`guardian-replay-drill-simulator-audit-hardening`:
+
+- explicit planned-only registration test
+- explicit same-state transition test
+- explicit execute-tools block test
+- mandatory bound first-use approval/token payload requirement
+- duplicate nonce reservation blocking pre-consumption
+- structured mismatch category checks
+- stronger denial/failed-closed evidence-ref semantics
+
 ## Safe to Keep or Merge
 
 **Safe to keep/merge with warnings** for the approved narrow scope.

@@ -28,6 +28,10 @@ Guardian replay drill simulator only.
   - tenant mismatches
   - blocked-MVP decisions
   - missing denial/fail-closed evidence on required paths
+- Planned-only registration enforcement
+- Same-state transition rejection
+- Duplicate nonce reservation blocking before consumption
+- Structured mismatch category enforcement for `mismatch_denied`
 - In-memory-only transition history
 
 ## What Was Not Implemented
@@ -74,10 +78,13 @@ Blocked:
 
 ## Approval/Token/Evidence Boundaries
 
-- Optional approval binding and token verification payloads are validated when supplied.
+- For `first_use_validated`, bound decisions require corresponding
+  `approval.binding` and `token.verification` payloads.
 - Binding/token mismatches against decision/requested action fail closed.
 - Denial and failed-closed paths require evidence linkage metadata.
 - Missing required evidence on denial/fail-closed paths fails closed.
+- Denial and failed-closed evidence refs are format-checked (`ev-` prefix)
+  and fail closed when malformed.
 
 ## Non-Goals
 
@@ -96,6 +103,8 @@ Blocked:
 - tenant/binding/token/scope/worker mismatch failures
 - blocked-MVP denial posture
 - denial/fail-closed evidence requirements
+- planned-only registration and same-state transition rejection
+- execute-tools and authorization hard-block behavior
 - no file/network/persistence/authorization behavior
 
 ## Remaining Blockers
@@ -103,3 +112,9 @@ Blocked:
 - Durable replay store and atomic nonce consumption remain blocked.
 - Supervisor orchestration runtime implementation remains blocked.
 - Live connector/model/auth/runtime expansion remains blocked.
+
+## Hardening Follow-Up
+
+Audit warnings from `docs/audits/GUARDIAN_REPLAY_DRILL_SIMULATOR_AUDIT.md`
+were addressed in branch `guardian-replay-drill-simulator-audit-hardening`
+without adding runtime scope beyond this simulator.

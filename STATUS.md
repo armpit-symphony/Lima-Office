@@ -4,8 +4,8 @@ Date: May 26, 2026
 
 ## Current checkpoint
 
-- Current branch: `audit-guardian-replay-drill-simulator-only`
-- Current HEAD: Independent audit of Phase 1C Guardian replay drill simulator slice
+- Current branch: `guardian-replay-drill-simulator-audit-hardening`
+- Current HEAD: Phase 1C Guardian replay drill simulator warning hardening
 - Latest checkpoint branch: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
 - Canonical integration branch in repo: `integration/phase-1b-simulator-baseline`
 - Main branch: `main` / `e4bb610` (unchanged in this lane)
@@ -24,6 +24,8 @@ Date: May 26, 2026
   `guardian-replay-drill-simulator-only`
 - Phase 1C Guardian replay drill audit branch:
   `audit-guardian-replay-drill-simulator-only`
+- Phase 1C Guardian replay drill hardening branch:
+  `guardian-replay-drill-simulator-audit-hardening`
 
 ## Baseline posture
 
@@ -45,10 +47,10 @@ Counts and results are recorded in [Validation Evidence](docs/VALIDATION_EVIDENC
 
 - Schemas parsed: `65`
 - Examples parsed: `208`
-- Unit tests: `490 passed`
-- Pytest: `490 passed, 1 warning, 244 subtests passed`
+- Unit tests: `502 passed`
+- Pytest: `502 passed, 1 warning, 244 subtests passed`
 - Reason-code gate: `PASS` (`610` schema reason-code values, `323` example values)
-- Doc-link check: `PASS` (`161` markdown files, `1093` local links checked)
+- Doc-link check: `PASS` (`162` markdown files, `1094` local links checked)
 
 ## Current safety boundaries
 
@@ -125,3 +127,6 @@ Recommended conservative sequence:
 19. Independent audit result for this slice is recorded in
     `docs/audits/GUARDIAN_REPLAY_DRILL_SIMULATOR_AUDIT.md` with
     `PASS WITH WARNINGS`.
+20. Follow-up warning hardening for this slice is in
+    `guardian-replay-drill-simulator-audit-hardening` and remains
+    simulator-only.

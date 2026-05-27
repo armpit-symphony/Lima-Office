@@ -150,6 +150,14 @@ def reserved_record_payload() -> dict:
     return payload
 
 
+def reserved_record_payload_for_tenant(*, tenant_id: str, guardian_decision_id: str, replay_record_id: str) -> dict:
+    payload = reserved_record_payload()
+    payload["tenant_id"] = tenant_id
+    payload["guardian_decision_id"] = guardian_decision_id
+    payload["replay_record_id"] = replay_record_id
+    return payload
+
+
 def consumed_record_payload() -> dict:
     payload = copy.deepcopy(example("replay.store.record.consumed.example.json"))
     payload["replay_record_id"] = "rr-replay-drill-001"
@@ -241,6 +249,16 @@ class GuardianReplayDrillSimulatorTests(unittest.TestCase):
         self.simulator.register(decision_payload_data)
         self.simulator.transition("gd-replay-drill-001", "decision_registered", decision_payload_data)
         self.simulator.transition("gd-replay-drill-001", "nonce_reserved", reserved_record_payload())
+
+    @staticmethod
+    def _decision_for_tenant(*, tenant_id: str, decision_id: str, request_id: str) -> dict:
+        payload = decision_payload()
+        payload["tenant_id"] = tenant_id
+        payload["bound_tenant_id"] = tenant_id
+        payload["decision_id"] = decision_id
+        payload["guardian_decision_id"] = decision_id
+        payload["request_id"] = request_id
+        return payload
 
     def test_valid_guardian_replay_examples_validate(self):
         self.validator.validate(example("guardian.decision.allowed-one-time.example.json"), "guardian.decision")
@@ -336,6 +354,18 @@ class GuardianReplayDrillSimulatorTests(unittest.TestCase):
         with self.assertRaises(GuardianReplayDrillValidationError):
             self.simulator.register(decision)
 
+    def test_non_planned_registration_fails(self):
+        with self.assertRaises(GuardianReplayDrillTransitionError):
+            self.simulator.register(decision_payload(), initial_state="nonce_reserved")
+
+    def test_same_state_transition_rejected_without_mutation(self):
+        self.simulator.register(decision_payload())
+        history_before = self.simulator.history("gd-replay-drill-001")
+        with self.assertRaises(GuardianReplayDrillTransitionError):
+            self.simulator.transition("gd-replay-drill-001", "planned", decision_payload())
+        history_after = self.simulator.history("gd-replay-drill-001")
+        self.assertEqual(len(history_before), len(history_after))
+
     def test_duplicate_nonce_consumption_fails(self):
         self._register_and_reserve()
         self.simulator.transition(
@@ -343,6 +373,8 @@ class GuardianReplayDrillSimulatorTests(unittest.TestCase):
             "first_use_validated",
             replay_valid_payload(),
             requested_action=requested_action_payload(),
+            approval_binding=approval_binding_payload(),
+            token_verification=token_verification_payload(),
         )
         self.simulator.transition("gd-replay-drill-001", "nonce_consumed", consumed_record_payload())
 
@@ -355,12 +387,76 @@ class GuardianReplayDrillSimulatorTests(unittest.TestCase):
         with self.assertRaises(GuardianReplayDrillTransitionError):
             self.simulator.transition("gd-replay-drill-duplicate-001", "nonce_reserved", reserved_record_payload())
 
+    def test_duplicate_nonce_reservation_before_consume_fails(self):
+        self._register_and_reserve()
+        duplicate = decision_payload()
+        duplicate["decision_id"] = "gd-replay-drill-duplicate-preconsume-001"
+        duplicate["guardian_decision_id"] = "gd-replay-drill-duplicate-preconsume-001"
+        duplicate["request_id"] = "req-replay-drill-duplicate-preconsume-001"
+        self.simulator.register(duplicate)
+        self.simulator.transition("gd-replay-drill-duplicate-preconsume-001", "decision_registered", duplicate)
+        with self.assertRaises(GuardianReplayDrillTransitionError):
+            self.simulator.transition(
+                "gd-replay-drill-duplicate-preconsume-001",
+                "nonce_reserved",
+                reserved_record_payload(),
+            )
+
+    def test_nonce_reservation_is_tenant_isolated(self):
+        self._register_and_reserve()
+        other = self._decision_for_tenant(
+            tenant_id="tenant-lab-002",
+            decision_id="gd-replay-drill-tenant2-001",
+            request_id="req-replay-drill-tenant2-001",
+        )
+        self.simulator.register(other)
+        self.simulator.transition("gd-replay-drill-tenant2-001", "decision_registered", other)
+        result = self.simulator.transition(
+            "gd-replay-drill-tenant2-001",
+            "nonce_reserved",
+            reserved_record_payload_for_tenant(
+                tenant_id="tenant-lab-002",
+                guardian_decision_id="gd-replay-drill-tenant2-001",
+                replay_record_id="rr-replay-drill-tenant2-001",
+            ),
+        )
+        self.assertEqual("nonce_reserved", result["drill_state"])
+
     def test_cross_tenant_replay_fails(self):
         self._register_and_reserve()
         replay = replay_valid_payload()
         replay["tenant_id"] = "tenant-other"
         with self.assertRaises(GuardianReplayDrillTransitionError):
-            self.simulator.transition("gd-replay-drill-001", "first_use_validated", replay, requested_action=requested_action_payload())
+            self.simulator.transition(
+                "gd-replay-drill-001",
+                "first_use_validated",
+                replay,
+                requested_action=requested_action_payload(),
+                approval_binding=approval_binding_payload(),
+                token_verification=token_verification_payload(),
+            )
+
+    def test_bound_first_use_requires_approval_binding_payload(self):
+        self._register_and_reserve()
+        with self.assertRaises(GuardianReplayDrillTransitionError):
+            self.simulator.transition(
+                "gd-replay-drill-001",
+                "first_use_validated",
+                replay_valid_payload(),
+                requested_action=requested_action_payload(),
+                token_verification=token_verification_payload(),
+            )
+
+    def test_bound_first_use_requires_token_verification_payload(self):
+        self._register_and_reserve()
+        with self.assertRaises(GuardianReplayDrillTransitionError):
+            self.simulator.transition(
+                "gd-replay-drill-001",
+                "first_use_validated",
+                replay_valid_payload(),
+                requested_action=requested_action_payload(),
+                approval_binding=approval_binding_payload(),
+            )
 
     def test_approval_binding_mismatch_fails(self):
         self._register_and_reserve()
@@ -399,6 +495,8 @@ class GuardianReplayDrillSimulatorTests(unittest.TestCase):
                 "first_use_validated",
                 replay_valid_payload(),
                 requested_action=mismatched,
+                approval_binding=approval_binding_payload(),
+                token_verification=token_verification_payload(),
             )
 
     def test_worker_mismatch_fails(self):
@@ -410,6 +508,46 @@ class GuardianReplayDrillSimulatorTests(unittest.TestCase):
                 "gd-replay-drill-001",
                 "first_use_validated",
                 replay_valid_payload(),
+                requested_action=mismatched,
+                approval_binding=approval_binding_payload(),
+                token_verification=token_verification_payload(),
+            )
+
+    def test_mismatch_denied_requires_structured_mismatch(self):
+        self._register_and_reserve()
+        with self.assertRaisesRegex(GuardianReplayDrillTransitionError, "structured mismatch"):
+            self.simulator.transition(
+                "gd-replay-drill-001",
+                "mismatch_denied",
+                replay_mismatch_payload(),
+                requested_action=requested_action_payload(),
+            )
+
+    def test_mismatch_denied_with_structured_mismatch_passes(self):
+        self._register_and_reserve()
+        mismatched = requested_action_payload()
+        mismatched["worker_id"] = "arc-other"
+        replay = replay_mismatch_payload()
+        replay["mismatch_reasons"] = ["worker_mismatch"]
+        result = self.simulator.transition(
+            "gd-replay-drill-001",
+            "mismatch_denied",
+            replay,
+            requested_action=mismatched,
+        )
+        self.assertEqual("mismatch_denied", result["drill_state"])
+
+    def test_mismatch_denied_requires_matching_structured_mismatch_reason(self):
+        self._register_and_reserve()
+        mismatched = requested_action_payload()
+        mismatched["worker_id"] = "arc-other"
+        replay = replay_mismatch_payload()
+        replay["mismatch_reasons"] = ["tenant_mismatch"]
+        with self.assertRaisesRegex(GuardianReplayDrillTransitionError, "structured mismatch categories"):
+            self.simulator.transition(
+                "gd-replay-drill-001",
+                "mismatch_denied",
+                replay,
                 requested_action=mismatched,
             )
 
@@ -426,6 +564,8 @@ class GuardianReplayDrillSimulatorTests(unittest.TestCase):
             "first_use_validated",
             replay_valid_payload(),
             requested_action=requested_action_payload(),
+            approval_binding=approval_binding_payload(),
+            token_verification=token_verification_payload(),
         )
         self.simulator.transition("gd-replay-drill-001", "nonce_consumed", consumed_record_payload())
         denied = replay_denied_payload()
@@ -434,10 +574,35 @@ class GuardianReplayDrillSimulatorTests(unittest.TestCase):
         with self.assertRaises((GuardianReplayDrillTransitionError, GuardianReplayDrillValidationError)):
             self.simulator.transition("gd-replay-drill-001", "replay_denied", denied)
 
+    def test_replay_denied_invalid_evidence_ref_format_fails(self):
+        self._register_and_reserve()
+        self.simulator.transition(
+            "gd-replay-drill-001",
+            "first_use_validated",
+            replay_valid_payload(),
+            requested_action=requested_action_payload(),
+            approval_binding=approval_binding_payload(),
+            token_verification=token_verification_payload(),
+        )
+        self.simulator.transition("gd-replay-drill-001", "nonce_consumed", consumed_record_payload())
+        denied = replay_denied_payload()
+        denied["denial_evidence_ref"] = "placeholder-ref"
+        denied["pre_action_evidence_refs"] = ["placeholder-ref"]
+        denied["evidence_refs"] = ["placeholder-ref"]
+        with self.assertRaises((GuardianReplayDrillTransitionError, GuardianReplayDrillValidationError)):
+            self.simulator.transition("gd-replay-drill-001", "replay_denied", denied)
+
     def test_failed_closed_without_required_evidence_fails(self):
         self._register_and_reserve()
         failed = failed_closed_record_payload()
         failed["evidence_refs"] = []
+        with self.assertRaises((GuardianReplayDrillTransitionError, GuardianReplayDrillValidationError)):
+            self.simulator.transition("gd-replay-drill-001", "failed_closed_recorded", failed)
+
+    def test_failed_closed_invalid_evidence_ref_format_fails(self):
+        self._register_and_reserve()
+        failed = failed_closed_record_payload()
+        failed["evidence_refs"] = ["placeholder-ref"]
         with self.assertRaises((GuardianReplayDrillTransitionError, GuardianReplayDrillValidationError)):
             self.simulator.transition("gd-replay-drill-001", "failed_closed_recorded", failed)
 
@@ -457,6 +622,8 @@ class GuardianReplayDrillSimulatorTests(unittest.TestCase):
                     "first_use_validated",
                     replay_valid_payload(),
                     requested_action=requested_action_payload(),
+                    approval_binding=approval_binding_payload(),
+                    token_verification=token_verification_payload(),
                 )
 
     def test_simulator_never_calls_network(self):
@@ -467,6 +634,8 @@ class GuardianReplayDrillSimulatorTests(unittest.TestCase):
                 "first_use_validated",
                 replay_valid_payload(),
                 requested_action=requested_action_payload(),
+                approval_binding=approval_binding_payload(),
+                token_verification=token_verification_payload(),
             )
 
     def test_simulator_never_persists_nonce_state(self):
@@ -476,6 +645,10 @@ class GuardianReplayDrillSimulatorTests(unittest.TestCase):
     def test_simulator_never_authorizes_real_action(self):
         with self.assertRaises(UnsafeRuntimeActionError):
             self.simulator.authorize_real_action("task-001")
+
+    def test_simulator_never_executes_tools(self):
+        with self.assertRaises(UnsafeRuntimeActionError):
+            self.simulator.execute_tools("task-001")
 
 
 if __name__ == "__main__":

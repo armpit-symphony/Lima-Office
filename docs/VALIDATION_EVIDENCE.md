@@ -11,6 +11,8 @@ Phase 1C evidence lifecycle warning hardening validation is also recorded below.
 Phase 1C Guardian replay drill simulator slice validation is also recorded below.
 Phase 1C Guardian replay drill simulator independent audit validation is also
 recorded below.
+Phase 1C Guardian replay drill simulator warning hardening validation is also
+recorded below.
 
 ## Scope
 
@@ -33,6 +35,10 @@ recorded below.
   `audit-evidence-lifecycle-simulator-hardening` / `72da9cb`
 - Phase 1C Guardian replay drill simulator audit branch:
   `audit-guardian-replay-drill-simulator-only`
+- Phase 1C Guardian replay drill simulator warning hardening branch:
+  `guardian-replay-drill-simulator-audit-hardening`
+- Phase 1C Guardian replay drill simulator warning hardening base branch:
+  `audit-guardian-replay-drill-simulator-only` / `eac554f`
 
 ## Commands
 
@@ -218,6 +224,36 @@ Latest command results on `guardian-replay-drill-simulator-only`:
   - `OK`
 - `pytest`: `PASS`
   - `490 passed, 1 warning, 244 subtests passed`
+- `compileall`: `PASS`
+- `git diff --check`: `PASS`
+- `git diff --cached --check`: `PASS`
+
+## Phase 1C Guardian Replay Drill Simulator Warning-Hardening Update
+
+Hardening lane: warning-closure for Guardian replay drill simulator only.
+No runtime IO/storage/background/network/durable replay-store expansion added.
+
+Latest command results on `guardian-replay-drill-simulator-audit-hardening`:
+
+- `validate-contracts`: `PASS`
+  - schemas parsed: `65`
+  - examples parsed: `208`
+  - mapped examples: `208`
+  - schemas with examples: `65`
+- `check-reason-codes`: `PASS`
+  - schemas scanned: `65`
+  - examples scanned: `208`
+  - known canonical/alias codes: `227`
+  - reason-code values scanned in schemas: `610`
+  - reason-code values scanned in examples: `323`
+- `check-doc-links`: `PASS`
+  - markdown files scanned: `162`
+  - local links checked: `1094`
+- `unittest`: `PASS`
+  - `Ran 502 tests`
+  - `OK`
+- `pytest`: `PASS`
+  - `502 passed, 1 warning, 244 subtests passed`
 - `compileall`: `PASS`
 - `git diff --check`: `PASS`
 - `git diff --cached --check`: `PASS`
