@@ -13,6 +13,8 @@ Phase 1C Guardian replay drill simulator independent audit validation is also
 recorded below.
 Phase 1C Guardian replay drill simulator warning hardening validation is also
 recorded below.
+Phase 1C Guardian replay drill simulator hardening audit validation is also
+recorded below.
 
 ## Scope
 
@@ -39,6 +41,10 @@ recorded below.
   `guardian-replay-drill-simulator-audit-hardening`
 - Phase 1C Guardian replay drill simulator warning hardening base branch:
   `audit-guardian-replay-drill-simulator-only` / `eac554f`
+- Phase 1C Guardian replay drill simulator hardening audit branch:
+  `audit-guardian-replay-drill-simulator-hardening`
+- Phase 1C Guardian replay drill simulator hardening audit base branch:
+  `guardian-replay-drill-simulator-audit-hardening` / `a4f9661`
 
 ## Commands
 
@@ -257,6 +263,35 @@ Latest command results on `guardian-replay-drill-simulator-audit-hardening`:
 - `compileall`: `PASS`
 - `git diff --check`: `PASS`
 - `git diff --cached --check`: `PASS`
+
+## Phase 1C Guardian Replay Drill Simulator Hardening Audit Update
+
+Audit lane: docs-only independent review for Guardian replay drill simulator
+warning-hardening branch. No runtime expansion was added in this audit branch.
+
+Latest command results on `audit-guardian-replay-drill-simulator-hardening`:
+
+- `validate-contracts`: `PASS`
+  - schemas parsed: `65`
+  - examples parsed: `208`
+  - mapped examples: `208`
+  - schemas with examples: `65`
+- `check-reason-codes`: `PASS`
+  - schemas scanned: `65`
+  - examples scanned: `208`
+  - known canonical/alias codes: `227`
+  - reason-code values scanned in schemas: `610`
+  - reason-code values scanned in examples: `323`
+- `check-doc-links`: `PASS`
+  - markdown files scanned: `162`
+  - local links checked: `1094`
+- `unittest`: `PASS`
+  - `Ran 502 tests`
+  - `OK`
+- `pytest`: `PASS`
+  - `502 passed, 1 warning, 244 subtests passed`
+- `compileall`: `PASS`
+- `git diff --check`: `PASS`
 
 ## Independent audit note
 

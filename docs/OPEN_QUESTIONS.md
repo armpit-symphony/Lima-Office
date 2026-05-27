@@ -114,3 +114,7 @@ These blockers remain open after the current Phase 0/1A hardening baseline. None
   duplicate nonce reservation pre-consumption blocking, bound first-use
   approval/token payload requirements, and structured mismatch assertion
   hardening.
+- Verified by independent audit in
+  `docs/audits/GUARDIAN_REPLAY_DRILL_SIMULATOR_HARDENING_AUDIT.md` with
+  `PASS WITH WARNINGS`; remaining warning is limited to future durable
+  replay-store semantics outside current simulator scope.

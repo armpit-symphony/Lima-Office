@@ -4,8 +4,8 @@ Date: May 26, 2026
 
 ## Current checkpoint
 
-- Current branch: `guardian-replay-drill-simulator-audit-hardening`
-- Current HEAD: Phase 1C Guardian replay drill simulator warning hardening
+- Current branch: `audit-guardian-replay-drill-simulator-hardening`
+- Current HEAD: Phase 1C Guardian replay drill simulator hardening independent audit
 - Latest checkpoint branch: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
 - Canonical integration branch in repo: `integration/phase-1b-simulator-baseline`
 - Main branch: `main` / `e4bb610` (unchanged in this lane)
@@ -26,6 +26,8 @@ Date: May 26, 2026
   `audit-guardian-replay-drill-simulator-only`
 - Phase 1C Guardian replay drill hardening branch:
   `guardian-replay-drill-simulator-audit-hardening`
+- Phase 1C Guardian replay drill hardening audit branch:
+  `audit-guardian-replay-drill-simulator-hardening`
 
 ## Baseline posture
 
@@ -130,3 +132,8 @@ Recommended conservative sequence:
 20. Follow-up warning hardening for this slice is in
     `guardian-replay-drill-simulator-audit-hardening` and remains
     simulator-only.
+21. Independent hardening audit is recorded in
+    `docs/audits/GUARDIAN_REPLAY_DRILL_SIMULATOR_HARDENING_AUDIT.md` with
+    `PASS WITH WARNINGS`.
+22. Next lane can refreeze the Phase 1C simulator baseline after review/merge
+    of this audit branch; broader runtime expansion remains blocked.

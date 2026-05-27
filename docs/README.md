@@ -71,6 +71,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Evidence lifecycle simulator audit](audits/EVIDENCE_LIFECYCLE_SIMULATOR_AUDIT.md)
 - [Evidence lifecycle hardening audit](audits/EVIDENCE_LIFECYCLE_SIMULATOR_HARDENING_AUDIT.md)
 - [Guardian replay drill simulator audit](audits/GUARDIAN_REPLAY_DRILL_SIMULATOR_AUDIT.md)
+- [Guardian replay drill simulator hardening audit](audits/GUARDIAN_REPLAY_DRILL_SIMULATOR_HARDENING_AUDIT.md)
 - [Safety patch disposition](audits/SAFETY_PATCH_DISPOSITION.md)
 
 ## Deployment Docs
