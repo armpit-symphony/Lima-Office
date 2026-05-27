@@ -18,6 +18,7 @@ without introducing runtime dispatch or side effects.
 - Current audited baseline is confirmed.
 - Phase 1C plan and gate checklist are reviewed.
 - Worker/task simulator audit findings are reviewed.
+- Evidence lifecycle and Guardian replay simulator findings are reviewed.
 - Required contracts remain validated.
 - Validation suite is green on branch under review.
 
@@ -39,6 +40,7 @@ without introducing runtime dispatch or side effects.
 - Unknown or mismatched tenant metadata blocks orchestration outcome.
 - Quarantined/revoked/retired worker posture blocks assignment-compatible states.
 - Missing/invalid Guardian or approval linkage blocks executable intent.
+- Replay-denied/expired/stale/blocked-MVP Guardian outcomes block executable intent.
 - Missing evidence refs on evidence-required transitions blocks completion intent.
 - Any blocked-MVP task class/action remains blocked.
 - Evidence export/delete runtime behavior remains blocked.

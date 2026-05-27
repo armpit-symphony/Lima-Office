@@ -90,7 +90,9 @@ This section is planning-only and does not approve implementation by itself.
 - Risk level:
   medium-low.
 - Recommendation:
-  viable as a narrow alternative to Option 2.
+  implemented in `guardian-replay-drill-simulator-only` as in-memory
+  metadata-only simulation. This does not approve any additional
+  implementation slice.
 
 ### Option 4: Pause / Merge / Audit Only
 
@@ -132,6 +134,7 @@ Current implemented narrow slice reference:
 - [PHASE_1B_WORKER_LIFECYCLE_SIMULATOR.md](PHASE_1B_WORKER_LIFECYCLE_SIMULATOR.md)
 - [PHASE_1B_TASK_LIFECYCLE_SIMULATOR.md](PHASE_1B_TASK_LIFECYCLE_SIMULATOR.md)
 - [PHASE_1C_EVIDENCE_LIFECYCLE_SIMULATOR.md](PHASE_1C_EVIDENCE_LIFECYCLE_SIMULATOR.md)
+- [PHASE_1C_GUARDIAN_REPLAY_DRILL_SIMULATOR.md](PHASE_1C_GUARDIAN_REPLAY_DRILL_SIMULATOR.md)
 - Scope is limited to in-memory lifecycle transition simulation and fail-closed
   checks. It does not authorize broader runtime expansion.
 

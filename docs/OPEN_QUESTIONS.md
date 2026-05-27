@@ -93,8 +93,11 @@ These blockers remain open after the current Phase 0/1A hardening baseline. None
 - Evidence lifecycle simulator-only slice is now implemented in-memory; what
   independent audit acceptance threshold is required before any additional
   Phase 1C slice?
+- Guardian replay drill simulator-only slice is now implemented in-memory;
+  what independent audit acceptance threshold is required before any additional
+  Phase 1C slice?
 - Which single next simulator slice should be approved next, if any:
-  supervisor orchestration simulator or Guardian replay drill simulator?
+  supervisor orchestration simulator or pause/audit-only?
 - What is the exact orchestrator metadata boundary so "decision envelope"
   behavior cannot drift into dispatch semantics?
 - Are worker/task simulator APIs stable enough for read-only orchestration

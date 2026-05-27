@@ -4,8 +4,8 @@ Date: May 26, 2026
 
 ## Current checkpoint
 
-- Current branch: `evidence-lifecycle-simulator-audit-hardening`
-- Current HEAD: Phase 1C evidence lifecycle simulator warning hardening (in-memory only)
+- Current branch: `guardian-replay-drill-simulator-only`
+- Current HEAD: Phase 1C Guardian replay drill simulator slice (in-memory only)
 - Latest checkpoint branch: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
 - Canonical integration branch in repo: `integration/phase-1b-simulator-baseline`
 - Main branch: `main` / `e4bb610` (unchanged in this lane)
@@ -20,6 +20,8 @@ Date: May 26, 2026
   `evidence-lifecycle-simulator-audit-hardening`
 - Phase 1C evidence lifecycle hardening audit branch:
   `audit-evidence-lifecycle-simulator-hardening`
+- Phase 1C Guardian replay drill implementation branch:
+  `guardian-replay-drill-simulator-only`
 
 ## Baseline posture
 
@@ -31,6 +33,8 @@ Date: May 26, 2026
 - Phase 1C planning lane is open as docs/runbook/gate planning only.
 - Phase 1C approved narrow slice is now implemented:
   evidence lifecycle simulator (in-memory, metadata-only, fail-closed).
+- Phase 1C approved narrow slice is now implemented:
+  Guardian replay drill simulator (in-memory, metadata-only, fail-closed).
 - Broader runtime expansion remains blocked pending separate gates.
 
 ## Latest validation snapshot (this branch)
@@ -39,10 +43,10 @@ Counts and results are recorded in [Validation Evidence](docs/VALIDATION_EVIDENC
 
 - Schemas parsed: `65`
 - Examples parsed: `208`
-- Unit tests: `468 passed`
-- Pytest: `468 passed, 1 warning, 244 subtests passed`
+- Unit tests: `490 passed`
+- Pytest: `490 passed, 1 warning, 244 subtests passed`
 - Reason-code gate: `PASS` (`610` schema reason-code values, `323` example values)
-- Doc-link check: `PASS` (`159` markdown files, `1089` local links checked)
+- Doc-link check: `PASS` (`161` markdown files, `1093` local links checked)
 
 ## Current safety boundaries
 
@@ -50,6 +54,7 @@ Counts and results are recorded in [Validation Evidence](docs/VALIDATION_EVIDENC
 - Worker lifecycle simulator is in-memory only and metadata-only.
 - Task lifecycle simulator is in-memory only and metadata-only.
 - Evidence lifecycle simulator is in-memory only and metadata-only.
+- Guardian replay drill simulator is in-memory only and metadata-only.
 - Evidence lifecycle audit hardening enforces planned-only registration,
   same-state transition rejection, required known-ref checks, and state/contract
   intent mapping.
@@ -57,6 +62,7 @@ Counts and results are recorded in [Validation Evidence](docs/VALIDATION_EVIDENC
   `docs/audits/EVIDENCE_LIFECYCLE_SIMULATOR_HARDENING_AUDIT.md` (`PASS`).
 - No task execution engine or tool-invocation runtime behavior.
 - No evidence storage/export/delete runtime behavior.
+- No durable replay store runtime behavior.
 - No live connectors.
 - No OAuth/OIDC/SAML/provider wiring.
 - No token runtime storage/rotation.
@@ -108,5 +114,9 @@ Recommended conservative sequence:
 15. Hardening closure audit is recorded in
     `docs/audits/EVIDENCE_LIFECYCLE_SIMULATOR_HARDENING_AUDIT.md` with result
     `PASS`.
-16. Next lane remains explicit approval + fresh independent audit before any
+16. Approved Phase 1C tiny implementation slice:
+    `docs/PHASE_1C_GUARDIAN_REPLAY_DRILL_SIMULATOR.md`.
+17. This slice does not approve supervisor orchestration implementation or any
+    broader Phase 1C runtime expansion.
+18. Next lane remains explicit approval + fresh independent audit before any
     additional tiny implementation slice.

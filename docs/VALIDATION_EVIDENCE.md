@@ -8,6 +8,7 @@ worker-lifecycle and task-lifecycle simulator lanes.
 Phase 1C planning branch validation is also recorded below.
 Phase 1C evidence lifecycle simulator slice validation is also recorded below.
 Phase 1C evidence lifecycle warning hardening validation is also recorded below.
+Phase 1C Guardian replay drill simulator slice validation is also recorded below.
 
 ## Scope
 
@@ -24,6 +25,10 @@ Phase 1C evidence lifecycle warning hardening validation is also recorded below.
   `evidence-lifecycle-simulator-audit-hardening`
 - Phase 1C evidence lifecycle warning hardening base branch:
   `audit-evidence-lifecycle-simulator-only` / `ede4580`
+- Phase 1C Guardian replay drill simulator branch:
+  `guardian-replay-drill-simulator-only`
+- Phase 1C Guardian replay drill simulator base branch:
+  `audit-evidence-lifecycle-simulator-hardening` / `72da9cb`
 
 ## Commands
 
@@ -142,13 +147,43 @@ Latest command results on `evidence-lifecycle-simulator-audit-hardening`:
   - reason-code values scanned in schemas: `610`
   - reason-code values scanned in examples: `323`
 - `check-doc-links`: `PASS`
-  - markdown files scanned: `159`
-  - local links checked: `1089`
+  - markdown files scanned: `161`
+  - local links checked: `1093`
 - `unittest`: `PASS`
-  - `Ran 468 tests`
+  - `Ran 490 tests`
   - `OK`
 - `pytest`: `PASS`
-  - `468 passed, 1 warning, 244 subtests passed`
+  - `490 passed, 1 warning, 244 subtests passed`
+- `compileall`: `PASS`
+- `git diff --check`: `PASS`
+- `git diff --cached --check`: `PASS`
+
+## Phase 1C Guardian Replay Drill Simulator Slice Update
+
+Implementation lane: in-memory Guardian replay drill simulator only.
+No runtime IO/storage/background/network/durable replay-store expansion added.
+
+Latest command results on `guardian-replay-drill-simulator-only`:
+
+- `validate-contracts`: `PASS`
+  - schemas parsed: `65`
+  - examples parsed: `208`
+  - mapped examples: `208`
+  - schemas with examples: `65`
+- `check-reason-codes`: `PASS`
+  - schemas scanned: `65`
+  - examples scanned: `208`
+  - known canonical/alias codes: `227`
+  - reason-code values scanned in schemas: `610`
+  - reason-code values scanned in examples: `323`
+- `check-doc-links`: `PASS`
+  - markdown files scanned: `161`
+  - local links checked: `1093`
+- `unittest`: `PASS`
+  - `Ran 490 tests`
+  - `OK`
+- `pytest`: `PASS`
+  - `490 passed, 1 warning, 244 subtests passed`
 - `compileall`: `PASS`
 - `git diff --check`: `PASS`
 - `git diff --cached --check`: `PASS`

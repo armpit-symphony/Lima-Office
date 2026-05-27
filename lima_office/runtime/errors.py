@@ -53,6 +53,14 @@ class EvidenceLifecycleTransitionError(LimaOfficeRuntimeError):
     """Raised when evidence lifecycle transition safety checks fail."""
 
 
+class GuardianReplayDrillValidationError(LimaOfficeRuntimeError):
+    """Raised when Guardian replay drill metadata validation fails."""
+
+
+class GuardianReplayDrillTransitionError(LimaOfficeRuntimeError):
+    """Raised when Guardian replay drill transition safety checks fail."""
+
+
 class UnsafeRuntimeActionError(LimaOfficeRuntimeError):
     """Raised when scaffolding is asked to perform out-of-scope runtime work."""
 
