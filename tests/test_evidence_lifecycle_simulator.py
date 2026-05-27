@@ -44,8 +44,8 @@ def failed_closed_payload(*, failure_id: str) -> dict:
     payload["evidence_failure_id"] = failure_id
     payload["correlation_id"] = f"corr-{failure_id}"
     payload["idempotency_key"] = f"idem-{failure_id}"
-    payload["denial_evidence_ref"] = f"ev-{failure_id}"
-    payload["pre_action_evidence_refs"] = [f"ev-{failure_id}"]
+    payload["denial_evidence_ref"] = failure_id
+    payload["pre_action_evidence_refs"] = [failure_id]
     payload["failure_reason"] = "mock failed-closed evidence posture"
     return payload
 
@@ -53,9 +53,11 @@ def failed_closed_payload(*, failure_id: str) -> dict:
 def ledger_payload(*, ledger_entry_id: str, entry_type: str = "post_action") -> dict:
     payload = copy.deepcopy(example("evidence.ledger.entry.pre-action.example.json"))
     payload["ledger_entry_id"] = ledger_entry_id
+    payload["evidence_id"] = ledger_entry_id
     payload["entry_type"] = entry_type
     payload["correlation_id"] = f"corr-{ledger_entry_id}"
     payload["idempotency_key"] = f"idem-{ledger_entry_id}"
+    payload["related_evidence_artifact_ids"] = [ledger_entry_id]
     if entry_type == "replay_denial":
         payload["parent_entry_ids"] = ["ledger-entry-pre-action-parent-001"]
         payload["previous_hash"] = "hash-entry-pre-action-parent-001"
@@ -71,6 +73,11 @@ def export_manifest_payload(*, export_manifest_id: str, exported: bool = False) 
     payload["export_manifest_id"] = export_manifest_id
     payload["correlation_id"] = f"corr-{export_manifest_id}"
     payload["idempotency_key"] = f"idem-{export_manifest_id}"
+    payload["included_evidence_refs"] = [export_manifest_id]
+    payload["excluded_evidence_refs"] = []
+    payload["evidence_refs"] = [export_manifest_id]
+    payload["conflict_evidence_refs"] = []
+    payload["related_evidence_artifact_ids"] = [export_manifest_id]
     return payload
 
 
@@ -176,6 +183,11 @@ class EvidenceLifecycleSimulatorTests(unittest.TestCase):
             "evidence.export_manifest",
         )
 
+    def test_registration_must_start_from_planned(self):
+        evidence_id = "ev-lifecycle-start-001"
+        with self.assertRaises(EvidenceLifecycleTransitionError):
+            self.simulator.register(artifact_payload(artifact_id=evidence_id), initial_state="ledger_linked")
+
     def test_planned_pre_post_ledger_path_passes(self):
         evidence_id = "ev-lifecycle-pre-post-001"
         task_id = "task-evidence-pre-post-001"
@@ -248,6 +260,16 @@ class EvidenceLifecycleSimulatorTests(unittest.TestCase):
         with self.assertRaises(EvidenceLifecycleTransitionError):
             self.simulator.transition(evidence_id, "post_action_recorded", artifact_payload(artifact_id=evidence_id))
 
+    def test_same_state_transition_is_rejected_and_does_not_mutate_history(self):
+        evidence_id = "ev-lifecycle-same-state-001"
+        self.simulator.register(artifact_payload(artifact_id=evidence_id), initial_state="planned")
+        before = self.simulator.history(evidence_id)
+        with self.assertRaises(EvidenceLifecycleTransitionError):
+            self.simulator.transition(evidence_id, "planned", artifact_payload(artifact_id=evidence_id))
+        after = self.simulator.history(evidence_id)
+        self.assertEqual(before, after)
+        self.assertEqual(1, len(after))
+
     def test_exported_runtime_state_fails(self):
         evidence_id = "ev-lifecycle-exported-001"
         self.simulator.register(artifact_payload(artifact_id=evidence_id), initial_state="planned")
@@ -303,6 +325,15 @@ class EvidenceLifecycleSimulatorTests(unittest.TestCase):
         with self.assertRaises(EvidenceLifecycleTransitionError):
             self.simulator.register(child, initial_state="planned")
 
+    def test_unknown_required_denial_ref_fails_closed(self):
+        evidence_id = "ev-lifecycle-unknown-denial-ref-001"
+        self.simulator.register(artifact_payload(artifact_id=evidence_id), initial_state="planned")
+        bad = denial_payload(artifact_id=evidence_id)
+        bad["denial_evidence_ref"] = "ev-unknown-denial-001"
+        bad["pre_action_evidence_refs"] = ["ev-unknown-denial-001"]
+        with self.assertRaises(EvidenceLifecycleTransitionError):
+            self.simulator.transition(evidence_id, "denial_recorded", bad)
+
     def test_evidence_required_completion_without_evidence_refs_fails(self):
         evidence_id = "ev-lifecycle-evidence-required-001"
         task_id = "task-evidence-required-001"
@@ -331,6 +362,40 @@ class EvidenceLifecycleSimulatorTests(unittest.TestCase):
         bad["denial_evidence_ref"] = "not-an-evidence-ref"
         with self.assertRaises(EvidenceLifecycleValidationError):
             self.simulator.transition(evidence_id, "denial_recorded", bad)
+
+    def test_state_contract_intent_mismatch_fails(self):
+        evidence_id = "ev-lifecycle-state-contract-mismatch-001"
+        self.simulator.register(artifact_payload(artifact_id=evidence_id), initial_state="planned")
+        self.simulator.transition(
+            evidence_id,
+            "pre_action_recorded",
+            artifact_payload(artifact_id=evidence_id),
+            task_execution=task_payload("task-state-contract-mismatch", status="in_progress"),
+            guardian_decision=guardian_allow("task-state-contract-mismatch"),
+        )
+        self.simulator.transition(
+            evidence_id,
+            "post_action_recorded",
+            artifact_payload(artifact_id=evidence_id),
+            task_execution=task_payload("task-state-contract-mismatch", status="completed_mock"),
+            guardian_decision=guardian_allow("task-state-contract-mismatch"),
+        )
+        with self.assertRaises(EvidenceLifecycleTransitionError):
+            self.simulator.transition(
+                evidence_id,
+                "ledger_linked",
+                artifact_payload(artifact_id=evidence_id),
+            )
+
+    def test_external_placeholder_refs_fail_closed(self):
+        evidence_id = "ev-lifecycle-placeholder-001"
+        self.simulator.register(artifact_payload(artifact_id=evidence_id), initial_state="planned")
+        self.simulator.transition(evidence_id, "denial_recorded", denial_payload(artifact_id=evidence_id))
+        self.simulator.transition(evidence_id, "ledger_linked", ledger_payload(ledger_entry_id=evidence_id, entry_type="denial"))
+        manifest = export_manifest_payload(export_manifest_id=evidence_id)
+        manifest["excluded_evidence_refs"] = ["ev-placeholder-third-party-001"]
+        with self.assertRaises(EvidenceLifecycleTransitionError):
+            self.simulator.transition(evidence_id, "export_manifest_planned", manifest)
 
     def test_register_can_generate_metadata_only_record_id_when_supplied(self):
         payload = artifact_payload(artifact_id="ev-temp-generated-001")

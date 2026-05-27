@@ -27,6 +27,12 @@ simulator only.
 - In-memory current-state and transition-history tracking only.
 - Explicit blocked runtime methods for export, delete, tool execution, and real
   authorization.
+- Registration hardening: new evidence records must start from `planned`.
+- Transition hardening: same-state transitions are rejected fail-closed.
+- State/contract intent hardening: lifecycle states enforce explicit evidence
+  contract intent mapping.
+- Reference semantics hardening: required lifecycle refs must be known
+  in-simulator refs; unknown required refs fail closed.
 
 ## What Was Not Implemented
 
@@ -67,9 +73,14 @@ Blocked:
 
 - Reject unknown evidence IDs, unknown states, tenant mismatch, and invalid
   transitions.
+- Reject non-`planned` initial registration states.
+- Reject same-state transitions.
 - Reject `raw_content_included: true` and `secret_material_included: true`.
 - Reject malformed evidence refs and cross-tenant parent/child evidence chain
   linkage.
+- Reject unknown required evidence linkage refs (denial/pre-action, chain,
+  ledger-linked evidence refs).
+- Enforce explicit state-to-contract pairing for lifecycle intent.
 - Pre/post-action evidence states require valid task + Guardian metadata, and
   approval binding/token verification when task metadata is approval-required.
 - Completion-class task metadata without evidence refs is blocked.
@@ -107,6 +118,8 @@ Blocked:
 ## Remaining Blockers
 
 - Supervisor orchestrator runtime remains blocked.
+- Guardian replay drill simulator implementation remains blocked unless
+  explicitly approved in a new slice.
 - Evidence storage/export/delete runtime remains blocked.
 - Durable transaction/replay/evidence storage remains blocked.
 - Live connectors, OAuth/provider wiring, model calls, and remediation remain

@@ -7,6 +7,7 @@ worker-lifecycle and task-lifecycle simulator lanes.
 
 Phase 1C planning branch validation is also recorded below.
 Phase 1C evidence lifecycle simulator slice validation is also recorded below.
+Phase 1C evidence lifecycle warning hardening validation is also recorded below.
 
 ## Scope
 
@@ -19,6 +20,10 @@ Phase 1C evidence lifecycle simulator slice validation is also recorded below.
 - Phase 1C evidence lifecycle branch: `evidence-lifecycle-simulator-only`
 - Phase 1C evidence lifecycle base branch:
   `audit-phase-1c-supervised-lab-orchestration-planning` / `d7b5d49`
+- Phase 1C evidence lifecycle warning hardening branch:
+  `evidence-lifecycle-simulator-audit-hardening`
+- Phase 1C evidence lifecycle warning hardening base branch:
+  `audit-evidence-lifecycle-simulator-only` / `ede4580`
 
 ## Commands
 
@@ -118,6 +123,36 @@ Latest command results on `evidence-lifecycle-simulator-only`:
 - `git diff --check`: `PASS`
 - `git diff --cached --check`: `PASS`
 
+## Phase 1C Evidence Lifecycle Warning-Hardening Update
+
+Hardening lane: warning-closure for evidence lifecycle simulator only.
+No runtime IO/storage/background/network/export-delete expansion added.
+
+Latest command results on `evidence-lifecycle-simulator-audit-hardening`:
+
+- `validate-contracts`: `PASS`
+  - schemas parsed: `65`
+  - examples parsed: `208`
+  - mapped examples: `208`
+  - schemas with examples: `65`
+- `check-reason-codes`: `PASS`
+  - schemas scanned: `65`
+  - examples scanned: `208`
+  - known canonical/alias codes: `227`
+  - reason-code values scanned in schemas: `610`
+  - reason-code values scanned in examples: `323`
+- `check-doc-links`: `PASS`
+  - markdown files scanned: `159`
+  - local links checked: `1089`
+- `unittest`: `PASS`
+  - `Ran 468 tests`
+  - `OK`
+- `pytest`: `PASS`
+  - `468 passed, 1 warning, 244 subtests passed`
+- `compileall`: `PASS`
+- `git diff --check`: `PASS`
+- `git diff --cached --check`: `PASS`
+
 ## Independent audit note
 
 - Audit document: [WORKER_LIFECYCLE_SIMULATOR_AUDIT.md](audits/WORKER_LIFECYCLE_SIMULATOR_AUDIT.md)
@@ -134,6 +169,8 @@ Latest command results on `evidence-lifecycle-simulator-only`:
 - Phase 1C evidence lifecycle simulator audit document:
   [EVIDENCE_LIFECYCLE_SIMULATOR_AUDIT.md](audits/EVIDENCE_LIFECYCLE_SIMULATOR_AUDIT.md)
 - Phase 1C evidence lifecycle simulator audit result: `PASS WITH WARNINGS`
+- Evidence lifecycle warning-hardening branch:
+  `evidence-lifecycle-simulator-audit-hardening`
 
 ## Safety patch disposition
 

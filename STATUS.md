@@ -4,8 +4,8 @@ Date: May 26, 2026
 
 ## Current checkpoint
 
-- Current branch: `evidence-lifecycle-simulator-only`
-- Current HEAD: Phase 1C evidence lifecycle simulator slice (in-memory only)
+- Current branch: `evidence-lifecycle-simulator-audit-hardening`
+- Current HEAD: Phase 1C evidence lifecycle simulator warning hardening (in-memory only)
 - Latest checkpoint branch: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
 - Canonical integration branch in repo: `integration/phase-1b-simulator-baseline`
 - Main branch: `main` / `e4bb610` (unchanged in this lane)
@@ -16,6 +16,8 @@ Date: May 26, 2026
 - Phase 1C planning audit branch: `audit-phase-1c-supervised-lab-orchestration-planning`
 - Phase 1C evidence lifecycle implementation branch: `evidence-lifecycle-simulator-only`
 - Phase 1C evidence lifecycle audit branch: `audit-evidence-lifecycle-simulator-only`
+- Phase 1C evidence lifecycle warning-hardening branch:
+  `evidence-lifecycle-simulator-audit-hardening`
 
 ## Baseline posture
 
@@ -35,10 +37,10 @@ Counts and results are recorded in [Validation Evidence](docs/VALIDATION_EVIDENC
 
 - Schemas parsed: `65`
 - Examples parsed: `208`
-- Unit tests: `463 passed`
-- Pytest: `463 passed, 1 warning, 244 subtests passed`
+- Unit tests: `468 passed`
+- Pytest: `468 passed, 1 warning, 244 subtests passed`
 - Reason-code gate: `PASS` (`610` schema reason-code values, `323` example values)
-- Doc-link check: `PASS` (`158` markdown files, `1087` local links checked)
+- Doc-link check: `PASS` (`159` markdown files, `1089` local links checked)
 
 ## Current safety boundaries
 
@@ -46,6 +48,9 @@ Counts and results are recorded in [Validation Evidence](docs/VALIDATION_EVIDENC
 - Worker lifecycle simulator is in-memory only and metadata-only.
 - Task lifecycle simulator is in-memory only and metadata-only.
 - Evidence lifecycle simulator is in-memory only and metadata-only.
+- Evidence lifecycle audit hardening enforces planned-only registration,
+  same-state transition rejection, required known-ref checks, and state/contract
+  intent mapping.
 - No task execution engine or tool-invocation runtime behavior.
 - No evidence storage/export/delete runtime behavior.
 - No live connectors.
@@ -92,7 +97,9 @@ Recommended conservative sequence:
     `docs/PHASE_1C_EVIDENCE_LIFECYCLE_SIMULATOR.md`.
 12. Evidence lifecycle simulator slice audit is `PASS WITH WARNINGS` in
     `docs/audits/EVIDENCE_LIFECYCLE_SIMULATOR_AUDIT.md`.
-13. This slice does not approve supervisor orchestration implementation or any
+13. Follow-up warning hardening is in
+    `evidence-lifecycle-simulator-audit-hardening` and remains simulator-only.
+14. This slice does not approve supervisor orchestration implementation or any
     broader Phase 1C runtime expansion.
-14. Next lane remains explicit approval + fresh independent audit before any
+15. Next lane remains explicit approval + fresh independent audit before any
     additional tiny implementation slice.

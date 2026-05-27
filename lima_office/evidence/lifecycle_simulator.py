@@ -37,6 +37,8 @@ EVIDENCE_STATES = frozenset(
     }
 )
 
+REGISTER_ALLOWED_INITIAL_STATE = "planned"
+
 ALLOWED_TRANSITIONS = {
     "planned": frozenset(
         {
@@ -57,6 +59,19 @@ ALLOWED_TRANSITIONS = {
     "export_manifest_planned": frozenset(),
     "blocked": frozenset(),
     "rejected": frozenset(),
+}
+
+STATE_CONTRACT_MAP = {
+    "planned": frozenset({"evidence.artifact"}),
+    "pre_action_recorded": frozenset({"evidence.artifact"}),
+    "post_action_recorded": frozenset({"evidence.artifact"}),
+    "denial_recorded": frozenset({"evidence.artifact"}),
+    "replay_denial_recorded": frozenset({"evidence.artifact"}),
+    "failed_closed_recorded": frozenset({"evidence.failure"}),
+    "ledger_linked": frozenset({"evidence.ledger.entry"}),
+    "export_manifest_planned": frozenset({"evidence.export_manifest"}),
+    "blocked": frozenset({"evidence.artifact", "evidence.failure"}),
+    "rejected": frozenset({"evidence.artifact", "evidence.failure"}),
 }
 
 CONTRACT_TO_SCHEMA = {
@@ -84,6 +99,8 @@ EVIDENCE_REF_FIELDS = (
     "excluded_evidence_refs",
     "conflict_evidence_refs",
 )
+
+EXTERNAL_PLACEHOLDER_PREFIXES = ("ev-placeholder-", "ev-external-")
 
 COMPLETION_TASK_STATES = frozenset({"completed_mock", "evidence_recorded"})
 
@@ -127,6 +144,9 @@ class EvidenceLifecycleSimulator:
             raise EvidenceLifecycleTransitionError(f"evidence already registered in simulator: {record_id}")
 
         self._ensure_known_state(initial_state)
+        if initial_state != REGISTER_ALLOWED_INITIAL_STATE:
+            raise EvidenceLifecycleTransitionError("new evidence lifecycle registration must start from planned")
+        self._assert_state_contract_compatibility(initial_state, contract_name=contract_name)
         self._enforce_fail_closed_rules(
             validated,
             tenant_id=tenant_id,
@@ -184,10 +204,12 @@ class EvidenceLifecycleSimulator:
         from_state = current["state"]
         self._ensure_known_state(from_state)
         self._ensure_known_state(to_state)
-        if from_state != to_state:
-            allowed = ALLOWED_TRANSITIONS.get(from_state, frozenset())
-            if to_state not in allowed:
-                raise EvidenceLifecycleTransitionError(f"invalid evidence transition: {from_state} -> {to_state}")
+        if from_state == to_state:
+            raise EvidenceLifecycleTransitionError("same-state evidence transitions are not allowed")
+        allowed = ALLOWED_TRANSITIONS.get(from_state, frozenset())
+        if to_state not in allowed:
+            raise EvidenceLifecycleTransitionError(f"invalid evidence transition: {from_state} -> {to_state}")
+        self._assert_state_contract_compatibility(to_state, contract_name=contract_name)
 
         self._enforce_fail_closed_rules(
             validated,
@@ -303,6 +325,7 @@ class EvidenceLifecycleSimulator:
         self._reject_raw_or_secret(payload)
         self._reject_runtime_export_delete_claims(payload)
         self._assert_evidence_refs_well_formed(payload)
+        self._assert_ref_semantics(payload, tenant_id=tenant_id, to_state=to_state)
         self._assert_ref_tenant_consistency(payload, tenant_id=tenant_id)
         self._assert_contract_specific_invariants(payload, tenant_id=tenant_id)
 
@@ -408,21 +431,24 @@ class EvidenceLifecycleSimulator:
 
     def _assert_contract_specific_invariants(self, payload: dict[str, Any], *, tenant_id: str) -> None:
         contract_name = payload.get("contract_name")
-        if contract_name == "evidence.artifact":
-            checked = assert_evidence_artifact_chain_consistent(
-                payload,
-                expected_tenant_id=tenant_id,
-                evidence_by_id=self._artifacts_by_id,
-            )
-            if checked.get("linkage_status") == "mismatched_tenant":
-                raise EvidenceLifecycleTransitionError("cross-tenant evidence chain linkage is blocked")
-        elif contract_name == "evidence.export_manifest":
-            assert_evidence_export_manifest_consistent(payload)
-            if payload.get("linkage_status") == "mismatched_tenant":
-                raise EvidenceLifecycleTransitionError("cross-tenant evidence export linkage is blocked")
-        elif contract_name == "evidence.ledger.entry":
-            if payload.get("linkage_status") == "mismatched_tenant":
-                raise EvidenceLifecycleTransitionError("cross-tenant ledger linkage is blocked")
+        try:
+            if contract_name == "evidence.artifact":
+                checked = assert_evidence_artifact_chain_consistent(
+                    payload,
+                    expected_tenant_id=tenant_id,
+                    evidence_by_id=self._artifacts_by_id,
+                )
+                if checked.get("linkage_status") == "mismatched_tenant":
+                    raise EvidenceLifecycleTransitionError("cross-tenant evidence chain linkage is blocked")
+            elif contract_name == "evidence.export_manifest":
+                assert_evidence_export_manifest_consistent(payload, evidence_by_id=self._artifacts_by_id)
+                if payload.get("linkage_status") == "mismatched_tenant":
+                    raise EvidenceLifecycleTransitionError("cross-tenant evidence export linkage is blocked")
+            elif contract_name == "evidence.ledger.entry":
+                if payload.get("linkage_status") == "mismatched_tenant":
+                    raise EvidenceLifecycleTransitionError("cross-tenant ledger linkage is blocked")
+        except PolicyDenyError as exc:
+            raise EvidenceLifecycleTransitionError(str(exc)) from exc
 
     @staticmethod
     def _reject_raw_or_secret(payload: dict[str, Any]) -> None:
@@ -477,6 +503,54 @@ class EvidenceLifecycleSimulator:
                 if existing_tenant is not None and existing_tenant != tenant_id:
                     raise EvidenceLifecycleTransitionError("cross-tenant evidence chain linkage is blocked")
 
+    def _assert_ref_semantics(self, payload: dict[str, Any], *, tenant_id: str, to_state: str) -> None:
+        contract_name = payload.get("contract_name")
+
+        # Required-known refs fail closed.
+        if to_state in {"denial_recorded", "replay_denial_recorded"}:
+            self._assert_required_known_ref(payload.get("denial_evidence_ref"), tenant_id=tenant_id, field="denial_evidence_ref")
+            for ref in payload.get("pre_action_evidence_refs") or []:
+                self._assert_required_known_ref(ref, tenant_id=tenant_id, field="pre_action_evidence_refs")
+        if to_state == "failed_closed_recorded":
+            denial_ref = payload.get("denial_evidence_ref")
+            evidence_refs = payload.get("evidence_refs") or []
+            if isinstance(denial_ref, str) and denial_ref:
+                self._assert_required_known_ref(denial_ref, tenant_id=tenant_id, field="denial_evidence_ref")
+            for ref in evidence_refs:
+                self._assert_required_known_ref(ref, tenant_id=tenant_id, field="evidence_refs")
+        if contract_name == "evidence.artifact":
+            chain_position = payload.get("chain_position")
+            if isinstance(chain_position, int) and chain_position >= 2:
+                for ref in payload.get("parent_evidence_refs") or []:
+                    self._assert_required_known_ref(ref, tenant_id=tenant_id, field="parent_evidence_refs")
+                previous_id = payload.get("previous_artifact_id")
+                if isinstance(previous_id, str) and previous_id:
+                    self._assert_required_known_ref(previous_id, tenant_id=tenant_id, field="previous_artifact_id")
+        if contract_name == "evidence.ledger.entry" and to_state == "ledger_linked":
+            self._assert_required_known_ref(payload.get("evidence_id"), tenant_id=tenant_id, field="evidence_id")
+            for ref in payload.get("related_evidence_artifact_ids") or []:
+                self._assert_required_known_ref(ref, tenant_id=tenant_id, field="related_evidence_artifact_ids")
+
+        # Non-required refs may remain unresolved metadata placeholders and are
+        # never treated as runtime authorization grants by this simulator.
+
+    def _classify_evidence_ref(self, evidence_ref: str, *, tenant_id: str) -> str:
+        known_tenant = self._tenant_by_evidence_ref.get(evidence_ref)
+        if known_tenant is not None:
+            if known_tenant != tenant_id:
+                return "known_mismatched_tenant"
+            return "known"
+        if evidence_ref.startswith(EXTERNAL_PLACEHOLDER_PREFIXES):
+            return "external_placeholder"
+        return "unknown"
+
+    def _assert_required_known_ref(self, evidence_ref: Any, *, tenant_id: str, field: str) -> None:
+        if not isinstance(evidence_ref, str) or not evidence_ref:
+            raise EvidenceLifecycleTransitionError(f"{field} requires a non-empty evidence reference")
+        classification = self._classify_evidence_ref(evidence_ref, tenant_id=tenant_id)
+        if classification != "known":
+            raise EvidenceLifecycleTransitionError(f"{field} requires known in-simulator evidence reference: {evidence_ref}")
+
     def _track_refs(self, payload: dict[str, Any], *, tenant_id: str) -> None:
         contract_name = payload.get("contract_name")
         if contract_name == "evidence.artifact":
@@ -484,16 +558,6 @@ class EvidenceLifecycleSimulator:
             if isinstance(artifact_id, str) and artifact_id:
                 self._tenant_by_evidence_ref[artifact_id] = tenant_id
                 self._artifacts_by_id[artifact_id] = copy.deepcopy(payload)
-        for field in EVIDENCE_REF_FIELDS:
-            value = payload.get(field)
-            if value is None:
-                continue
-            refs = [value] if isinstance(value, str) else value
-            if not isinstance(refs, list):
-                continue
-            for evidence_ref in refs:
-                if isinstance(evidence_ref, str) and evidence_ref.startswith("ev-"):
-                    self._tenant_by_evidence_ref.setdefault(evidence_ref, tenant_id)
 
     def _validate_contract(self, payload: dict[str, Any], schema_ref: str) -> dict[str, Any]:
         try:
@@ -505,6 +569,17 @@ class EvidenceLifecycleSimulator:
     def _ensure_known_state(state: str) -> None:
         if state not in EVIDENCE_STATES:
             raise EvidenceLifecycleTransitionError(f"unknown evidence lifecycle state: {state}")
+
+    @staticmethod
+    def _assert_state_contract_compatibility(state: str, *, contract_name: str) -> None:
+        allowed = STATE_CONTRACT_MAP.get(state)
+        if allowed is None:
+            raise EvidenceLifecycleTransitionError(f"unsupported evidence lifecycle state for contract mapping: {state}")
+        if contract_name not in allowed:
+            allowed_list = ", ".join(sorted(allowed))
+            raise EvidenceLifecycleTransitionError(
+                f"state '{state}' requires contract intent in [{allowed_list}], got '{contract_name}'"
+            )
 
     @staticmethod
     def _updated_at(payload: dict[str, Any]) -> str:

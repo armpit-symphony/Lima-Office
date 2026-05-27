@@ -146,3 +146,18 @@ Assessment: safe to keep/merge for approved scope.
 - **Merge/keep** this evidence lifecycle simulator slice.
 - Next tiny slice may be considered only with explicit approval and fresh independent audit.
 - Conservative next option: Guardian replay drill simulator planning first, then implementation only if separately approved.
+
+## Follow-Up Hardening Note
+
+A targeted follow-up hardening branch was opened after this audit:
+`evidence-lifecycle-simulator-audit-hardening`.
+
+The follow-up branch specifically addresses the non-blocking warnings about:
+
+- same-state transition mutability
+- reference pre-existence strictness for required lifecycle refs
+- contract/state coupling clarity
+- registration starting from non-`planned` states
+
+This follow-up remains simulator-only and does not approve broader Phase 1C
+runtime expansion.
