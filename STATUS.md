@@ -18,6 +18,8 @@ Date: May 26, 2026
 - Phase 1C evidence lifecycle audit branch: `audit-evidence-lifecycle-simulator-only`
 - Phase 1C evidence lifecycle warning-hardening branch:
   `evidence-lifecycle-simulator-audit-hardening`
+- Phase 1C evidence lifecycle hardening audit branch:
+  `audit-evidence-lifecycle-simulator-hardening`
 
 ## Baseline posture
 
@@ -51,6 +53,8 @@ Counts and results are recorded in [Validation Evidence](docs/VALIDATION_EVIDENC
 - Evidence lifecycle audit hardening enforces planned-only registration,
   same-state transition rejection, required known-ref checks, and state/contract
   intent mapping.
+- Independent hardening audit confirms warning closure in:
+  `docs/audits/EVIDENCE_LIFECYCLE_SIMULATOR_HARDENING_AUDIT.md` (`PASS`).
 - No task execution engine or tool-invocation runtime behavior.
 - No evidence storage/export/delete runtime behavior.
 - No live connectors.
@@ -101,5 +105,8 @@ Recommended conservative sequence:
     `evidence-lifecycle-simulator-audit-hardening` and remains simulator-only.
 14. This slice does not approve supervisor orchestration implementation or any
     broader Phase 1C runtime expansion.
-15. Next lane remains explicit approval + fresh independent audit before any
+15. Hardening closure audit is recorded in
+    `docs/audits/EVIDENCE_LIFECYCLE_SIMULATOR_HARDENING_AUDIT.md` with result
+    `PASS`.
+16. Next lane remains explicit approval + fresh independent audit before any
     additional tiny implementation slice.

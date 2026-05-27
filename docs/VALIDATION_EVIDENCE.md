@@ -171,6 +171,9 @@ Latest command results on `evidence-lifecycle-simulator-audit-hardening`:
 - Phase 1C evidence lifecycle simulator audit result: `PASS WITH WARNINGS`
 - Evidence lifecycle warning-hardening branch:
   `evidence-lifecycle-simulator-audit-hardening`
+- Evidence lifecycle hardening audit document:
+  [EVIDENCE_LIFECYCLE_SIMULATOR_HARDENING_AUDIT.md](audits/EVIDENCE_LIFECYCLE_SIMULATOR_HARDENING_AUDIT.md)
+- Evidence lifecycle hardening audit result: `PASS`
 
 ## Safety patch disposition
 

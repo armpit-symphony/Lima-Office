@@ -101,8 +101,9 @@ These blockers remain open after the current Phase 0/1A hardening baseline. None
   compatibility checks?
 - Should monotonic timestamp and idempotency hardening be completed before
   any orchestration simulator slice?
-- Evidence lifecycle simulator hardening is now in
-  `evidence-lifecycle-simulator-audit-hardening`; are any additional
-  fail-closed constraints required before orchestration-coupling planning?
+- Evidence lifecycle simulator hardening audit is now `PASS` in
+  `docs/audits/EVIDENCE_LIFECYCLE_SIMULATOR_HARDENING_AUDIT.md`; are any
+  additional fail-closed constraints required before orchestration-coupling
+  planning?
 - What mandatory post-implementation audit checklist should apply to every
   future tiny Phase 1C slice?
