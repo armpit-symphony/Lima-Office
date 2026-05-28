@@ -10,6 +10,7 @@ This baseline is a docs/contracts/tests/mock-hardening checkpoint. It is not pro
 - Latest baseline checkpoint commit: `a92606a9cbb3bc3e4271fb8ccfdff0839c79de6e`
 - Frozen planning baseline branch in repo: `integration/phase-0-1b-planning-baseline` / `b81dcb6e1e947c4f59ec19d9222e219b4a7600a8`
 - Frozen simulator baseline branch in repo: `integration/phase-1b-simulator-baseline` (current branch tip)
+- Frozen simulator baseline branch in repo for Phase 1C: `integration/phase-1c-simulator-baseline`
 - Prior integration baseline branch: `integration/phase-0-1a-baseline` / `26d5789ff62318ede69abf3296139eea7eaac8f0`
 - Main branch: `main` / `e4bb6105a9d668ddffe21892da3aaff16a0d8ca0`
 
@@ -21,6 +22,9 @@ metadata hardening (`a92606a`) plus:
 - Phase 1B planning-only freeze (`b81dcb6`), and
 - Phase 1B simulator freeze (`integration/phase-1b-simulator-baseline`) that
   includes worker lifecycle simulator + audit and task lifecycle simulator + audit.
+- Phase 1C simulator freeze (`integration/phase-1c-simulator-baseline`) that
+  includes evidence lifecycle simulator + audit/hardening and Guardian replay drill
+  simulator + audit/hardening.
 
 Both freezes remain mock/in-memory posture and do not approve broader runtime
 expansion.
@@ -60,6 +64,9 @@ expansion.
   for Phase 0 through Phase 1B planning-only state (`b81dcb6`).
 - `integration/phase-1b-simulator-baseline` is the frozen simulator baseline
   for approved Phase 1B worker/task lifecycle simulator slices and their audits.
+- `integration/phase-1c-simulator-baseline` is the frozen simulator baseline
+  for approved Phase 1C evidence lifecycle and Guardian replay drill simulator
+  slices and their warning-hardening/audit chains.
 - `integration/phase-0-1a-baseline` remains the prior refreshed integration
   baseline (`26d5789`).
 - `main` remains untouched and must stay untouched unless explicitly approved.
@@ -69,8 +76,10 @@ expansion.
 
 ## Next gate
 
-- Create and review annotated baseline tag:
-  `lima-office-phase-1b-simulator-baseline`.
+- Use annotated provenance tag:
+  `lima-office-phase-1c-simulator-baseline-annotated` (supersedes lightweight
+  `lima-office-phase-1c-simulator-baseline`) for current Phase 1C baseline
+  traceability.
 - Run independent gate audit on that tag before any additional implementation proposal.
 
 ## Must not be treated as production-ready

@@ -154,8 +154,14 @@ Note:
 
 ## Warnings
 
-- Phase 1C baseline tag is currently lightweight, not annotated (governance/provenance warning).
-- This audit artifact is required for Phase 1C traceability parity and is now provided in this branch.
+- `lima-office-phase-1c-simulator-baseline` is still lightweight and retained
+  for historical continuity.
+- A superseding annotated provenance tag was created:
+  `lima-office-phase-1c-simulator-baseline-annotated`.
+- Both tags point to the same baseline commit:
+  `8232970eb5e18e1c5db29e78f673b42f15b07ccc`.
+- This audit artifact is required for Phase 1C traceability parity and is now
+  recorded with the provenance fix in this branch.
 
 ## Recommendation
 

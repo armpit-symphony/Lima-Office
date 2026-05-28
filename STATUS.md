@@ -4,10 +4,11 @@ Date: May 26, 2026
 
 ## Current checkpoint
 
-- Current branch: `audit-guardian-replay-drill-simulator-hardening`
-- Current HEAD: Phase 1C Guardian replay drill simulator hardening independent audit
+- Current branch: `phase-1c-annotated-tag-provenance-fix`
+- Current HEAD: Phase 1C simulator baseline provenance tag audit-note update
 - Latest checkpoint branch: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
 - Canonical integration branch in repo: `integration/phase-1b-simulator-baseline`
+- Phase 1C simulator integration branch in repo: `integration/phase-1c-simulator-baseline` / `8232970`
 - Main branch: `main` / `e4bb610` (unchanged in this lane)
 - Independent slice audit branch: `audit-worker-lifecycle-simulator-only`
 - Independent task slice audit branch: `audit-task-lifecycle-simulator-only`
@@ -42,6 +43,12 @@ Date: May 26, 2026
 - Phase 1C approved narrow slice is now implemented:
   Guardian replay drill simulator (in-memory, metadata-only, fail-closed).
 - Broader runtime expansion remains blocked pending separate gates.
+- Phase 1C baseline provenance tag status:
+  - Original lightweight tag `lima-office-phase-1c-simulator-baseline` remains for
+    historical continuity.
+  - New annotated tag
+    `lima-office-phase-1c-simulator-baseline-annotated` supersedes it for
+    provenance and points to commit `8232970`.
 
 ## Latest validation snapshot (this branch)
 
@@ -135,5 +142,5 @@ Recommended conservative sequence:
 21. Independent hardening audit is recorded in
     `docs/audits/GUARDIAN_REPLAY_DRILL_SIMULATOR_HARDENING_AUDIT.md` with
     `PASS WITH WARNINGS`.
-22. Next lane can refreeze the Phase 1C simulator baseline after review/merge
-    of this audit branch; broader runtime expansion remains blocked.
+22. Next lane can continue with the annotated Phase 1C simulator baseline tag after
+    explicit approval and fresh independent audit; broader runtime expansion remains blocked.

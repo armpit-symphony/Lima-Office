@@ -15,10 +15,12 @@ Phase 1C Guardian replay drill simulator warning hardening validation is also
 recorded below.
 Phase 1C Guardian replay drill simulator hardening audit validation is also
 recorded below.
+Phase 1C simulator baseline tag provenance fix validation is also recorded
+below.
 
 ## Scope
 
-- Branch: `integration/phase-1b-simulator-baseline`
+- Branch: `phase-1c-annotated-tag-provenance-fix`
 - Base branch: `safety-patch-disposition` / `e31e225`
 - Scope basis: explicit approved tiny Phase 1B slices (worker lifecycle simulator only, task lifecycle simulator only)
 - Main branch update: not performed in this lane
@@ -45,6 +47,22 @@ recorded below.
   `audit-guardian-replay-drill-simulator-hardening`
 - Phase 1C Guardian replay drill simulator hardening audit base branch:
   `guardian-replay-drill-simulator-audit-hardening` / `a4f9661`
+- Phase 1C simulator provenance branch: `phase-1c-annotated-tag-provenance-fix`
+- Phase 1C annotated provenance tag:
+  `lima-office-phase-1c-simulator-baseline-annotated`
+- Original lightweight tag retained for history:
+  `lima-office-phase-1c-simulator-baseline`
+
+## Phase 1C Simulator Baseline Tag Provenance Fix Update
+
+Audit lane: docs-only provenance correction for baseline tag object type.
+No implementation changes were made.
+
+Latest command results on `phase-1c-annotated-tag-provenance-fix`:
+
+- `check-doc-links`: `PASS`
+- `git diff --check`: `PASS`
+- `git status --short --branch`: clean with expected branch tracking
 
 ## Commands
 
