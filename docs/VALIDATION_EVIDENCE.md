@@ -20,8 +20,8 @@ below.
 
 ## Scope
 
-- Branch: `phase-1c-annotated-tag-provenance-fix`
-- Base branch: `safety-patch-disposition` / `e31e225`
+- Branch: `phase-1c-closeout-status-archive`
+- Base branch: `phase-1c-annotated-tag-provenance-fix` / `2a36006`
 - Scope basis: explicit approved tiny Phase 1B slices (worker lifecycle simulator only, task lifecycle simulator only)
 - Main branch update: not performed in this lane
 - Phase 1C planning branch: `phase-1c-supervised-lab-orchestration-planning`
@@ -64,6 +64,31 @@ Latest command results on `phase-1c-annotated-tag-provenance-fix`:
 - `git diff --check`: `PASS`
 - `git status --short --branch`: clean with expected branch tracking
 
+## Phase 1C Closeout Archive Update
+
+Closeout branch: `phase-1c-closeout-status-archive`
+
+Canonical baseline/provenance status:
+
+- Integration baseline branch:
+  `integration/phase-1c-simulator-baseline` ->
+  `8232970eb5e18e1c5db29e78f673b42f15b07ccc`
+- Canonical annotated tag:
+  `lima-office-phase-1c-simulator-baseline-annotated` (tag object type)
+- Annotated tag target:
+  `8232970eb5e18e1c5db29e78f673b42f15b07ccc`
+- Original lightweight tag retained for continuity:
+  `lima-office-phase-1c-simulator-baseline` (commit object type)
+- `origin/main` unchanged anchor:
+  `e4bb6105a9d668ddffe21892da3aaff16a0d8ca0`
+
+Closeout guidance:
+
+- Baseline remains simulator-only and fail-closed.
+- Broader implementation remains blocked by default.
+- Any next tiny implementation slice still requires explicit approval and fresh
+  independent audit.
+
 ## Commands
 
 ```powershell
@@ -92,13 +117,13 @@ git status
   - reason-code values scanned in schemas: `610`
   - reason-code values scanned in examples: `323`
 - `check-doc-links`: `PASS`
-  - markdown files scanned: `152`
-  - local links checked: `1078`
+  - markdown files scanned: `165`
+  - local links checked: `1099`
 - `unittest`: `PASS`
-  - `Ran 439 tests`
+  - `Ran 502 tests`
   - `OK`
 - `pytest`: `PASS`
-  - `439 passed, 1 warning, 244 subtests passed`
+  - `502 passed, 1 warning, 244 subtests passed`
 - `compileall`: `PASS`
 - `git diff --check`: `PASS` (after whitespace cleanup)
 - `git diff --cached --check`: `PASS`

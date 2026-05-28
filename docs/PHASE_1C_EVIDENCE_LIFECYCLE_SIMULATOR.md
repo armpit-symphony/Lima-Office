@@ -7,6 +7,11 @@ Date: May 26, 2026
 Implement the explicitly approved narrow Phase 1C slice: evidence lifecycle
 simulator only.
 
+Snapshot note:
+This document reflects the evidence-slice implementation lane at branch date.
+For canonical Phase 1C baseline closeout posture, see
+`docs/PHASE_1C_CLOSEOUT.md`.
+
 ## Explicit Approval Scope
 
 - In-memory Python simulation only.
@@ -118,8 +123,8 @@ Blocked:
 ## Remaining Blockers
 
 - Supervisor orchestrator runtime remains blocked.
-- Guardian replay drill simulator implementation remains blocked unless
-  explicitly approved in a new slice.
+- Guardian replay drill simulator is implemented in a separate approved Phase 1C
+  slice; broader runtime expansion remains blocked.
 - Evidence storage/export/delete runtime remains blocked.
 - Durable transaction/replay/evidence storage remains blocked.
 - Live connectors, OAuth/provider wiring, model calls, and remediation remain

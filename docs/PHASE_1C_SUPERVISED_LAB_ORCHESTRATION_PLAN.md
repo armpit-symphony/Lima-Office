@@ -8,6 +8,11 @@ Define the next planning lane after the frozen Phase 1B worker/task simulator
 baseline, without implementing a supervisor orchestrator or widening runtime
 behavior.
 
+Snapshot note:
+This planning document reflects pre-closeout planning posture at branch date.
+Canonical Phase 1C baseline closeout and provenance posture is recorded in
+`docs/PHASE_1C_CLOSEOUT.md`.
+
 ## Status
 
 Planning-only. This document is not implementation approval.

@@ -57,6 +57,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Phase 1C Guardian replay drill simulator](PHASE_1C_GUARDIAN_REPLAY_DRILL_SIMULATOR.md)
 - [Phase 1C supervised lab orchestration plan](PHASE_1C_SUPERVISED_LAB_ORCHESTRATION_PLAN.md)
 - [Phase 1C supervisor lab orchestrator gate](PHASE_1C_SUPERVISOR_LAB_ORCHESTRATOR_GATE.md)
+- [Phase 1C closeout archive](PHASE_1C_CLOSEOUT.md)
 - [Phase 0 / Phase 1A closeout](PHASE_0_1A_CLOSEOUT.md)
 - [Next phase plan](NEXT_PHASE_PLAN.md)
 - [Runtime boundaries](RUNTIME_BOUNDARIES.md)
@@ -72,6 +73,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Evidence lifecycle hardening audit](audits/EVIDENCE_LIFECYCLE_SIMULATOR_HARDENING_AUDIT.md)
 - [Guardian replay drill simulator audit](audits/GUARDIAN_REPLAY_DRILL_SIMULATOR_AUDIT.md)
 - [Guardian replay drill simulator hardening audit](audits/GUARDIAN_REPLAY_DRILL_SIMULATOR_HARDENING_AUDIT.md)
+- [Phase 1C simulator baseline tag audit](audits/PHASE_1C_SIMULATOR_BASELINE_TAG_AUDIT.md)
 - [Safety patch disposition](audits/SAFETY_PATCH_DISPOSITION.md)
 
 ## Deployment Docs

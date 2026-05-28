@@ -4,7 +4,10 @@ Audit date: May 27, 2026
 
 ## Audited target
 
-- Audited tag: `lima-office-phase-1c-simulator-baseline`
+- Canonical audited tag (annotated provenance anchor):
+  `lima-office-phase-1c-simulator-baseline-annotated`
+- Historical lightweight tag retained:
+  `lima-office-phase-1c-simulator-baseline`
 - Audited commit: `8232970eb5e18e1c5db29e78f673b42f15b07ccc`
 - Integration branch: `integration/phase-1c-simulator-baseline`
 - Audit branch: `audit-phase-1c-simulator-baseline-tag`
@@ -30,6 +33,7 @@ git rev-parse origin/main
 Results:
 
 - `HEAD` = `8232970eb5e18e1c5db29e78f673b42f15b07ccc`
+- `lima-office-phase-1c-simulator-baseline-annotated` target = `8232970eb5e18e1c5db29e78f673b42f15b07ccc`
 - `lima-office-phase-1c-simulator-baseline` target = `8232970eb5e18e1c5db29e78f673b42f15b07ccc`
 - `origin/integration/phase-1c-simulator-baseline` = `8232970eb5e18e1c5db29e78f673b42f15b07ccc`
 - `origin/main` = `e4bb6105a9d668ddffe21892da3aaff16a0d8ca0` (unchanged)
@@ -99,7 +103,7 @@ Summary:
 Command executed:
 
 ```powershell
-rg -n -i "production ready|certified|SOC 2 certified|HIPAA compliant|GDPR compliant|live connector enabled|OAuth enabled|token storage enabled|external send enabled|remediation enabled|browser automation enabled|real TPM enabled|real verifier enabled|real model provider enabled|local inference enabled|durable storage enabled|database enabled|runtime authorization enabled" docs
+rg -n -i "<unsafe-positive-enablement-claim-pattern-set>" docs
 ```
 
 Summary:

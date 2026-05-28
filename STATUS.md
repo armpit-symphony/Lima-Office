@@ -4,8 +4,10 @@ Date: May 26, 2026
 
 ## Current checkpoint
 
-- Current branch: `phase-1c-annotated-tag-provenance-fix`
-- Current HEAD: Phase 1C simulator baseline provenance tag audit-note update
+- Current branch: `phase-1c-closeout-status-archive`
+- Current HEAD: Phase 1C simulator baseline closeout/status archive (docs-only lane)
+- Phase 1C closeout archive branch: `phase-1c-closeout-status-archive`
+- Phase 1C closeout archive base commit: `2a36006067d4bffcda8e11f12f8a5b9adcd92f8d`
 - Latest checkpoint branch: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
 - Canonical integration branch in repo: `integration/phase-1b-simulator-baseline`
 - Phase 1C simulator integration branch in repo: `integration/phase-1c-simulator-baseline` / `8232970`
@@ -49,8 +51,12 @@ Date: May 26, 2026
   - New annotated tag
     `lima-office-phase-1c-simulator-baseline-annotated` supersedes it for
     provenance and points to commit `8232970`.
+- Canonical Phase 1C provenance anchor is the annotated tag
+  `lima-office-phase-1c-simulator-baseline-annotated`.
+- Phase 1C implementation remains blocked by default pending explicit approval
+  and fresh independent audit for any next tiny slice.
 
-## Latest validation snapshot (this branch)
+## Latest validation snapshot (Phase 1C audited chain)
 
 Counts and results are recorded in [Validation Evidence](docs/VALIDATION_EVIDENCE.md).
 
@@ -59,7 +65,11 @@ Counts and results are recorded in [Validation Evidence](docs/VALIDATION_EVIDENC
 - Unit tests: `502 passed`
 - Pytest: `502 passed, 1 warning, 244 subtests passed`
 - Reason-code gate: `PASS` (`610` schema reason-code values, `323` example values)
-- Doc-link check: `PASS` (`162` markdown files, `1094` local links checked)
+- Doc-link check: `PASS` (`165` markdown files, `1099` local links checked)
+- Canonical baseline anchor:
+  `integration/phase-1c-simulator-baseline` / `8232970`
+- Main unchanged confirmation:
+  `origin/main = e4bb6105a9d668ddffe21892da3aaff16a0d8ca0`
 
 ## Current safety boundaries
 
@@ -144,3 +154,5 @@ Recommended conservative sequence:
     `PASS WITH WARNINGS`.
 22. Next lane can continue with the annotated Phase 1C simulator baseline tag after
     explicit approval and fresh independent audit; broader runtime expansion remains blocked.
+23. Phase 1C closeout archive is recorded in
+    `docs/PHASE_1C_CLOSEOUT.md` and preserves canonical provenance/tag posture.

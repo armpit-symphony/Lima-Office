@@ -4,6 +4,49 @@ Date: May 26, 2026
 
 These blockers remain open after the current Phase 0/1A hardening baseline. None of these items approve runtime expansion.
 
+## Phase 1C Closeout Organized Questions
+
+### Next simulator slice selection
+
+- Should the next lane remain pause/audit-only by default, or should one tiny
+  simulator slice be explicitly approved?
+- If a slice is approved, which single slice has lowest dispatch-creep risk?
+
+### Supervisor orchestration boundary
+
+- What exact metadata-only boundary text prevents orchestrator semantics from
+  drifting into runtime dispatch?
+- What fail-closed compatibility checks must be mandatory before any
+  orchestrator-simulator proposal?
+
+### Durable replay/evidence storage
+
+- What durable replay/evidence storage model is required before any storage
+  implementation gate opens?
+- What audit/export/delete retention controls are mandatory before durable
+  evidence semantics are allowed?
+
+### Real connector/auth/model/attestation/export/delete/remediation implementation
+
+- Which prerequisite contracts and governance gates must close before any live
+  connector/auth/model implementation?
+- Which attestation/export/delete/remediation runtime controls are mandatory
+  before implementation approval?
+
+### Mainline merge strategy
+
+- Should closeout artifacts merge first and implementation remain blocked until
+  a separate approval lane is opened?
+- What branch ancestry and tag-provenance checks are mandatory before any merge
+  proposal touching implementation lanes?
+
+### Production/compliance posture
+
+- What evidence threshold is required before any production-readiness wording
+  can be considered?
+- What governance mapping updates are still required while keeping explicit
+  non-certification language?
+
 ## Runtime authorization
 
 - What final runtime authorization architecture enforces Guardian + approval + evidence for side-effecting paths?

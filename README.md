@@ -83,9 +83,11 @@ No remediation runtime, endpoint control, production server change, or network c
 - [Open questions](docs/OPEN_QUESTIONS.md)
 - [Phase 1A runtime scaffolding](docs/PHASE_1A_RUNTIME_SCAFFOLDING.md)
 - [Phase 0 / Phase 1A closeout](docs/PHASE_0_1A_CLOSEOUT.md)
+- [Phase 1C closeout archive](docs/PHASE_1C_CLOSEOUT.md)
 - [Next phase plan](docs/NEXT_PHASE_PLAN.md)
 - [Runtime boundaries](docs/RUNTIME_BOUNDARIES.md)
 - [Validation evidence](docs/VALIDATION_EVIDENCE.md)
+- [Phase 1C simulator baseline tag audit](docs/audits/PHASE_1C_SIMULATOR_BASELINE_TAG_AUDIT.md)
 - [Worker deployment blueprint](docs/deployment/WORKER_DEPLOYMENT_BLUEPRINT.md)
 - [Governance policy details](docs/governance/README.md)
 - [Operator console UX spec](docs/ux/OPERATOR_CONSOLE_SPEC.md)
@@ -107,3 +109,14 @@ deployment and UX specs, plus Phase 1A mock runtime scaffolding only:
 - No live runtime behavior beyond the tiny in-memory scaffold.
 - No external sends, external model APIs, browser automation, OAuth/provider wiring, or remediation execution.
 - No marketing, pricing, financial projections, TAM, investor content, or sales copy.
+
+## Phase 1C Canonical Baseline Anchor
+
+- Integration baseline branch:
+  `integration/phase-1c-simulator-baseline`
+- Canonical provenance tag (annotated):
+  `lima-office-phase-1c-simulator-baseline-annotated`
+- Historical lightweight tag retained:
+  `lima-office-phase-1c-simulator-baseline`
+- Both tags resolve to baseline commit:
+  `8232970eb5e18e1c5db29e78f673b42f15b07ccc`

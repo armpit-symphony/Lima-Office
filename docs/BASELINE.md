@@ -67,6 +67,13 @@ expansion.
 - `integration/phase-1c-simulator-baseline` is the frozen simulator baseline
   for approved Phase 1C evidence lifecycle and Guardian replay drill simulator
   slices and their warning-hardening/audit chains.
+- Canonical Phase 1C provenance anchor tag is
+  `lima-office-phase-1c-simulator-baseline-annotated` and targets
+  `8232970eb5e18e1c5db29e78f673b42f15b07ccc`.
+- Original lightweight tag
+  `lima-office-phase-1c-simulator-baseline` is retained for historical
+  continuity and points to the same commit.
+- Provenance fix branch: `phase-1c-annotated-tag-provenance-fix`.
 - `integration/phase-0-1a-baseline` remains the prior refreshed integration
   baseline (`26d5789`).
 - `main` remains untouched and must stay untouched unless explicitly approved.

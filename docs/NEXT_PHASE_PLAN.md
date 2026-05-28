@@ -5,10 +5,14 @@ This plan is a gate decision document. It does not approve runtime implementatio
 Current checkpoint basis:
 
 - Latest hardening checkpoint: `connector-source-of-truth-values-slo-target-finalization` / `a92606a`
-- Review branch: `major-baseline-stabilization-next-phase-gate-review`
+- Closeout review branch: `phase-1c-closeout-status-archive`
 - Integration refresh status:
   - `integration/phase-0-1b-planning-baseline` frozen at `b81dcb6`
   - `integration/phase-1b-simulator-baseline` frozen at current branch tip (worker/task simulator slices + audits)
+  - `integration/phase-1c-simulator-baseline` frozen at
+    `8232970eb5e18e1c5db29e78f673b42f15b07ccc`
+  - Canonical provenance tag:
+    `lima-office-phase-1c-simulator-baseline-annotated`
 
 ## Phase 1B Planning-Only Update (May 26, 2026)
 
@@ -137,6 +141,102 @@ Current implemented narrow slice reference:
 - [PHASE_1C_GUARDIAN_REPLAY_DRILL_SIMULATOR.md](PHASE_1C_GUARDIAN_REPLAY_DRILL_SIMULATOR.md)
 - Scope is limited to in-memory lifecycle transition simulation and fail-closed
   checks. It does not authorize broader runtime expansion.
+
+## Phase 1C Closeout Decision Options
+
+### Option A: Pause / Archive / Documentation Only
+
+- Purpose:
+  preserve the audited Phase 1C simulator baseline and provenance state.
+- Allowed work:
+  docs/status/archive updates, audits, runbook clarification, merge hygiene.
+- Blocked work:
+  any new implementation slice or runtime behavior expansion.
+- Risk level:
+  low.
+- Acceptance gate:
+  baseline anchors and tag provenance remain consistent across `STATUS`,
+  `BASELINE`, `VALIDATION_EVIDENCE`, and audit docs.
+
+### Option B: Independent External-Style Audit
+
+- Purpose:
+  re-validate baseline integrity and documentation traceability with a separate
+  audit pass.
+- Allowed work:
+  audit checklist execution, evidence review, docs-only corrective updates.
+- Blocked work:
+  runtime implementation while audit is active.
+- Risk level:
+  low.
+- Acceptance gate:
+  audit result recorded with explicit blocker posture unchanged.
+
+### Option C: Merge Strategy Review
+
+- Purpose:
+  define conservative branch/merge order for Phase 1C closeout artifacts.
+- Allowed work:
+  docs-only merge strategy, ancestry/provenance mapping, lane sequencing.
+- Blocked work:
+  runtime feature implementation or surface expansion.
+- Risk level:
+  low to medium.
+- Acceptance gate:
+  `main` remains untouched and merge path is documented with no scope broadening.
+
+### Option D: One Next Tiny Simulator Slice (Explicit Approval Required)
+
+- Purpose:
+  allow one narrowly scoped metadata-only simulator increment if explicitly
+  approved.
+- Allowed work:
+  one approved in-memory simulator-only slice with fail-closed tests and
+  independent audit.
+- Blocked work:
+  dispatch/tool execution, storage/network/background behavior, connector/auth/model
+  runtime, remediation, UI/frontend.
+- Risk level:
+  medium to high.
+- Acceptance gate:
+  explicit approval + full validation pass + fresh independent audit.
+
+### Option E: Supervisor Lab Orchestrator Planning Revision
+
+- Purpose:
+  refine planning boundaries for future orchestrator simulation without
+  implementation.
+- Allowed work:
+  docs/contracts/runbook planning updates only.
+- Blocked work:
+  supervisor orchestrator implementation, dispatch semantics, live behavior.
+- Risk level:
+  low to medium.
+- Acceptance gate:
+  no implementation change and explicit no-dispatch/no-execution boundary text.
+
+### Option F: Supervisor Lab Orchestrator Simulator Only
+
+- Purpose:
+  metadata-only orchestrator simulation concept lane, kept gated and separate.
+- Allowed work:
+  only if explicitly approved after another gate and scoped as in-memory
+  compatibility checks.
+- Blocked work:
+  real dispatch, tool execution, connectors, model/provider calls, persistence,
+  background services.
+- Risk level:
+  high.
+- Acceptance gate:
+  explicit approval, strict fail-closed boundary tests, and fresh independent
+  audit.
+
+### Phase 1C Closeout Recommendation
+
+- Pause by default.
+- Do not approve broader runtime expansion.
+- Approve only one next tiny simulator slice with explicit approval and a fresh
+  independent audit.
 
 ## Decision Matrix
 
