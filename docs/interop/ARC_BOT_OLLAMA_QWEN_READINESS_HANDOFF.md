@@ -40,7 +40,7 @@ runtime interface.
 | approved model family | `model.route.local_model_bundle_ref`, `worker.deployment.model_bundle_ref`, `worker.deployment.model_bundle_hash_ref` | Required as packet label | `qwen` | Label only, not a live inference promise. |
 | approved model alias / tag | `model.route.local_model_bundle_ref`, `worker.deployment.model_bundle_ref`, `worker.attestation.model_bundle_hash` | Required as packet label | `qwen2.5:7b` | Alias only; never a call target. |
 | localhost endpoint label or route ID | `model.route.provider_ref.placeholder_ref`, `model.route.local_model_bundle_ref.bundle_ref`, `worker.deployment.supervisor_endpoint_ref` | Required as packet label | `route-label-ollama-qwen-local-001` | Label or route ID only. No live endpoint claim. |
-| model-route status values | `model.route.route_status`, `model.route.route_mode`, `docs/architecture/MODEL_ROUTING_DEFAULTS.md` | Required | `selected`, `degraded`, `denied`, `blocked_mvp`, `unavailable` | `blocked_mvp` cannot be treated as selected. |
+| model-route status values | `model.route.route_status`, `model.route.route_mode`, `docs/architecture/MODEL_ROUTING_DEFAULTS.md` | Required | Arc-local `ready`, `setup_required`, `blocked`, `degraded`; canonical LIMA Office `selected`, `degraded`, `denied`, `blocked_mvp`, `unavailable` | `blocked_mvp` cannot be treated as selected. |
 | Ollama install attestation | `worker.attestation.attestation_id`, `worker.attestation.evidence_refs`, `attestation.result`, `governance.device_trust.attestation_refs` | Required if claimed | Opaque attestation ref | Operator-attested snapshot only, no probe. |
 | Ollama service reachable attestation | `worker.attestation.evidence_refs`, `attestation.result`, `governance.device_trust.attestation_refs` | Required if claimed | Opaque attestation ref | Must not be a socket probe or reachability proof. |
 | Qwen model present attestation | `worker.deployment.model_bundle_ref`, `worker.deployment.model_bundle_hash_ref`, `worker.attestation.model_bundle_hash`, `attestation.result.reference_value_refs` | Required if claimed | Opaque attestation ref | No live inference and no provider fallback. |
@@ -75,6 +75,26 @@ runtime interface.
   of this readiness packet.
 - `fallback_allowed` should remain false for this packet; if it is true, the
   packet is no longer safe for local-only readiness consumption.
+
+## Arc-Local Status Translation
+
+Arc Bot may keep its own presentation labels for the local readiness surface:
+
+- `ready`
+- `setup_required`
+- `blocked`
+- `degraded`
+
+Those labels are presentation-only. When translating into LIMA Office
+canonical posture, use the existing route states:
+
+- `ready` maps only to a fully satisfied, operator-attested selected posture.
+- `setup_required` maps to setup or degraded posture until required refs are
+  present.
+- `blocked` maps to `blocked_mvp` or `denied`, depending on the reason code.
+- `degraded` maps to `degraded`.
+
+Arc Bot must not treat its local labels as a second source of truth.
 
 ## Worker Readiness Semantics
 

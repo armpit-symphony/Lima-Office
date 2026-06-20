@@ -8,6 +8,9 @@ Arc Bot can consume a read-only readiness packet with these safe fields:
 - `route_mode` limited to `mock_only` or `local_planned` for this packet
 - `route_status` using the current schema values:
   `selected`, `degraded`, `denied`, `blocked_mvp`, or `unavailable`
+- Arc-local presentation labels `ready`, `setup_required`, `blocked`, and
+  `degraded` may still be shown, but they must map onto the canonical LIMA
+  Office route states above and must not become a second source of truth.
 - `approved_runtime_family: ollama`
 - `approved_model_family: qwen`
 - `approved_model_alias` or tag
