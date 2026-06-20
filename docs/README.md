@@ -156,6 +156,12 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Prompt injection response](runbooks/prompt-injection-response.md)
 - [LIMA IT handoff](runbooks/lima-it-handoff.md)
 
+## Interop / Handoffs
+
+- [Arc Bot Ollama/Qwen readiness handoff](interop/ARC_BOT_OLLAMA_QWEN_READINESS_HANDOFF.md)
+- [Arc Bot Ollama/Qwen readiness response](interop/ARC_BOT_OLLAMA_QWEN_READINESS_RESPONSE.md)
+- [Arc Bot Ollama/Qwen readiness packet example](interop/examples/arc-bot-ollama-qwen-readiness.packet.example.json)
+
 ## Policies
 
 - [Policy index](policies/README.md)

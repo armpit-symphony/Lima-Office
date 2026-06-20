@@ -39,6 +39,11 @@ These blockers remain open after the current Phase 0/1A hardening baseline. None
 - Which model roles can ever route to local vs subscription providers after implementation gates?
 - What tenant override model is acceptable for model-route policy after implementation?
 - What provider safety, audit, and evidence criteria are required before any live model route?
+- Should `supervisor_attachment_status`, `approved_runtime_family`,
+  `approved_model_family`, and `approved_model_alias` remain packet labels only,
+  or become dedicated schema fields in a later contract version?
+- Should there be a separate seat-readiness runbook for Ollama/Qwen local model
+  checks, distinct from worker deployment and worker attestation review?
 
 ## Export/delete implementation
 

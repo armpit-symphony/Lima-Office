@@ -129,6 +129,12 @@ Blocked surfaces remain blocked:
 - real export/delete runtime
 - remediation execution
 
+Docs-only interop note:
+
+- The Arc Bot Ollama/Qwen readiness handoff is a metadata-only packet and does
+  not widen runtime gates, authorize live model calls, or approve provider
+  fallback.
+
 Current implemented narrow slice reference:
 
 - [PHASE_1B_WORKER_LIFECYCLE_SIMULATOR.md](PHASE_1B_WORKER_LIFECYCLE_SIMULATOR.md)

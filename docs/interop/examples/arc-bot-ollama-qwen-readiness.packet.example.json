@@ -1,0 +1,51 @@
+{
+  "contract_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "worker_id": "worker-arc-ollama-qwen-001",
+  "supervisor_attachment_status": "operator_attested_no_probe",
+  "model_route_ref": "model.route:mr-arc-ollama-qwen-readiness-001",
+  "route_mode": "local_planned",
+  "route_status": "degraded",
+  "approved_runtime_family": "ollama",
+  "approved_model_family": "qwen",
+  "approved_model_alias": "qwen2.5:7b",
+  "localhost_endpoint_label_or_route_id": "route-label-ollama-qwen-local-001",
+  "hardware_profile_ref": "worker.deployment:deploy-arc-worker-001#hardware_profile",
+  "attestation_refs": {
+    "ollama_install": "evidence:artifact:ollama-install-attestation-001",
+    "ollama_service_reachable": "evidence:artifact:ollama-service-reachable-attestation-001",
+    "qwen_model_present": "evidence:artifact:qwen-model-present-attestation-001"
+  },
+  "guardian_decision_refs": [
+    "guardian.decision:gd-arc-ollama-qwen-readiness-001"
+  ],
+  "evidence_refs": [
+    "evidence:artifact:arc-ollama-qwen-readiness-001",
+    "evidence:artifact:worker-attestation-001",
+    "evidence:artifact:model-route-001"
+  ],
+  "policy_refs": {
+    "local_model_only": [
+      "policy.model_routing_defaults.phase1a",
+      "policy.worker_attestation.phase0"
+    ],
+    "no_cloud_fallback": [
+      "policy.model_routing_defaults.phase1a"
+    ],
+    "no_provider_token": [
+      "policy.approval_token_lifecycle.phase0"
+    ]
+  },
+  "blocked_capabilities": [
+    "cloud_fallback",
+    "provider_token",
+    "live_connector",
+    "external_send",
+    "remediation"
+  ],
+  "readiness_status": "operator_attested_no_probe",
+  "reason_codes": [
+    "health_degraded",
+    "model_route_fallback_denied"
+  ]
+}

@@ -99,7 +99,7 @@ Summary:
 Command executed:
 
 ```powershell
-rg -n -i "production ready|certified|SOC 2 certified|HIPAA compliant|GDPR compliant|live connector enabled|OAuth enabled|token storage enabled|external send enabled|remediation enabled|browser automation enabled|real TPM enabled|real verifier enabled|real model provider enabled|local inference enabled|durable storage enabled|database enabled|runtime authorization enabled" docs
+rg -n -i "production[- ]ready|certif[iy]ed|SOC 2 certif[iy]ed|HIPAA compl[iy]ant|GDPR compl[iy]ant|live connector (enabled)|OAuth (enabled)|token storage (enabled)|external send (enabled)|remediation (enabled)|browser automation (enabled)|real TPM (enabled)|real verifier (enabled)|real model provider (enabled)|local inference (enabled)|durable storage (enabled)|database (enabled)|runtime authorization (enabled)" docs
 ```
 
 Summary:

@@ -85,6 +85,8 @@ Counts and results are recorded in [Validation Evidence](docs/VALIDATION_EVIDENC
 - No durable production storage/services.
 - No UI/frontend runtime implementation.
 - No production-readiness or compliance-certification claim.
+- No Arc Bot Ollama/Qwen runtime integration; the readiness handoff is docs-only
+  and metadata-only.
 
 ## Safety patch note
 
@@ -144,3 +146,7 @@ Recommended conservative sequence:
     `PASS WITH WARNINGS`.
 22. Next lane can continue with the annotated Phase 1C simulator baseline tag after
     explicit approval and fresh independent audit; broader runtime expansion remains blocked.
+23. Arc Bot Ollama/Qwen readiness handoff response is documented in
+    `docs/interop/ARC_BOT_OLLAMA_QWEN_READINESS_HANDOFF.md` and remains
+    metadata-only, with no runtime execution, connector, or provider-token
+    authority.
