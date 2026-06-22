@@ -33,6 +33,9 @@ provider credentials, or treat the endpoint label as connectivity proof.
 LIMA Office will not provide runtime execution, live model calls, connector
 behavior, or provider-token wiring in this handoff. This is metadata only.
 
+For the seven external Guardian/LIMA Office completion-gate answers, use
+[Arc Bot Guardian / LIMA Office External Answers](ARC_BOT_GUARDIAN_LIMA_EXTERNAL_ANSWERS.md).
+
 Next handshake recommendation: keep this as a docs-only, operator-attested
 projection and open a separate later-phase review only if a dedicated schema is
 needed for attachment status or model-alias labels.

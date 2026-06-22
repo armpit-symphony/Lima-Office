@@ -87,6 +87,9 @@ Counts and results are recorded in [Validation Evidence](docs/VALIDATION_EVIDENC
 - No production-readiness or compliance-certification claim.
 - No Arc Bot Ollama/Qwen runtime integration; the readiness handoff is docs-only
   and metadata-only.
+- No Arc Bot Guardian/LIMA external-answer runtime integration; the seven
+  completion-gate answers are docs/contracts ownership guidance only and leave
+  runtime dependencies blocked.
 
 ## Safety patch note
 
@@ -150,3 +153,6 @@ Recommended conservative sequence:
     `docs/interop/ARC_BOT_OLLAMA_QWEN_READINESS_HANDOFF.md` and remains
     metadata-only, with no runtime execution, connector, or provider-token
     authority.
+24. Arc Bot Guardian/LIMA external completion-gate answers are documented in
+    `docs/interop/ARC_BOT_GUARDIAN_LIMA_EXTERNAL_ANSWERS.md`; they confirm
+    canonical refs and ownership only, with runtime dependencies still blocked.

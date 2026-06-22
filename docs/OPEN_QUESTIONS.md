@@ -9,12 +9,22 @@ These blockers remain open after the current Phase 0/1A hardening baseline. None
 - What final runtime authorization architecture enforces Guardian + approval + evidence for side-effecting paths?
 - What durable atomic consumption model is required for approval tokens and Guardian one-time decisions?
 - Which runtime invariants must be enforced synchronously vs asynchronously?
+- Should `RuntimeStateSnapshot` become a first-class contract for Arc Bot and
+  operator-console consumers, or remain a read-only projection over
+  `supervisor.health`, worker state, model-route, Guardian, evidence, and
+  console refs?
+- Should typed approval refs such as `approval.token:<approval_token_id>` be
+  formalized across all contracts, or remain an interop convention for generic
+  refs arrays?
 
 ## Durable storage/transactions
 
 - What storage engine and transaction model will back replay/evidence/transaction contracts?
 - What idempotency, ordering, and recovery guarantees are mandatory before runtime implementation?
 - What backup/restore and corruption recovery runbooks are required before runtime broadening?
+- Which implementation lane owns the durable evidence writer and audit-Spine:
+  storage/transaction planning, supervised lab orchestration, or a dedicated
+  evidence-runtime lane?
 
 ## Real connector implementation
 
@@ -39,6 +49,8 @@ These blockers remain open after the current Phase 0/1A hardening baseline. None
 - Which model roles can ever route to local vs subscription providers after implementation gates?
 - What tenant override model is acceptable for model-route policy after implementation?
 - What provider safety, audit, and evidence criteria are required before any live model route?
+- What exact Guardian-owned local-model executor contract is required before
+  Ollama/Qwen execution can be represented?
 - Should `supervisor_attachment_status`, `approved_runtime_family`,
   `approved_model_family`, and `approved_model_alias` remain packet labels only,
   or become dedicated schema fields in a later contract version?

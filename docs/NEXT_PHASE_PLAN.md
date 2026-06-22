@@ -134,6 +134,11 @@ Docs-only interop note:
 - The Arc Bot Ollama/Qwen readiness handoff is a metadata-only packet and does
   not widen runtime gates, authorize live model calls, or approve provider
   fallback.
+- The Arc Bot Guardian/LIMA external-answer handoff confirms canonical
+  approval refs, binding fields, ownership, state projections, evidence/console
+  boundaries, and local-model executor ownership without changing runtime
+  gates. Arc Bot `mvp_complete` should remain false for runtime-dependent
+  criteria until separate implementation lanes are explicitly approved.
 
 Current implemented narrow slice reference:
 
