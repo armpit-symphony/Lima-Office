@@ -1,0 +1,83 @@
+{
+  "contract_name": "tool.invocation",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-tainted-tool-deny-001",
+  "causation_id": "taint-email-injection-001",
+  "idempotency_key": "idem-tainted-tool-deny-001",
+  "tool_invocation_id": "tool-tainted-send-deny-001",
+  "task_id": "task-email-draft-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T21:38:00Z"
+  },
+  "actor": {
+    "actor_type": "worker",
+    "actor_id": "arc-admin-01"
+  },
+  "requested_tool": {
+    "tool_type": "connector",
+    "tool_name": "mock.email.send",
+    "tool_version": "contract-only"
+  },
+  "execution_mode": "blocked_mvp",
+  "dry_run": true,
+  "side_effect_class": "blocked_mvp",
+  "sandbox_profile": "blocked",
+  "capability_lease_id": "cap-lease-admin-001",
+  "tool_scope": {
+    "resource_refs": [
+      "draft-message-ref-customer-reply-001"
+    ],
+    "allowed_operations": [],
+    "prohibited_operations": [
+      "send_external_message",
+      "use_tainted_content_as_tool_instruction",
+      "live_connector_write"
+    ],
+    "file_scope": "none",
+    "network_scope": "none",
+    "connector_scope": "approval_required_future_live"
+  },
+  "risk_tier": "high",
+  "data_classification": "customer_confidential",
+  "policy_result": "deny",
+  "policy_version": "policy-phase0-v1",
+  "guardian_decision_id": "gd-tainted-tool-deny-001",
+  "approval_required": false,
+  "approval_token_id": null,
+  "evidence_required": true,
+  "evidence_artifact_ids": [
+    "ev-tainted-tool-deny-001"
+  ],
+  "input_artifact_refs": [
+    "message-ref-external-email-001"
+  ],
+  "output_artifact_refs": [],
+  "timeout_seconds": 30,
+  "rollback_available": false,
+  "status": "denied",
+  "denial_reason": "Tainted email content cannot directly trigger external message tooling.",
+  "denial_code": "tainted_input",
+  "failure_code": null,
+  "operator_message": "Review the taint evidence before drafting any safe response.",
+  "taint_ref_ids": [
+    "taint-email-injection-001"
+  ],
+  "input_taint_status": "suspected",
+  "approval_result_id": null,
+  "token_verification_id": null,
+  "connector_readiness_ref": "connector-readiness-rmm-001",
+  "connector_scope_review_ref": "connector-scope-review-ref-003",
+  "connector_consent_ref": "connector-consent-ref-003",
+  "provider_profile_ref": "provider-profile-rmm-001",
+  "connector_revocation_drill_ref": "connector-revocation-drill-004",
+  "evidence_failure_id": null,
+  "incident_id": null,
+  "requested_at": "2026-05-18T21:38:00Z",
+  "completed_at": null
+}

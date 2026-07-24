@@ -1,0 +1,88 @@
+{
+  "contract_name": "evidence.export_manifest",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "dry_run",
+  "correlation_id": "corr-evidence-export-prepared-001",
+  "causation_id": "gov-audit-export-req-001",
+  "idempotency_key": "idem-evidence-export-prepared-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:50:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "export_manifest_id": "exp-manifest-001",
+  "export_request_id": "gov-audit-export-req-001",
+  "requested_by_ref": "operator:operator-lab-001",
+  "approved_by_ref": "compliance:reviewer-lab-001",
+  "export_status": "prepared",
+  "export_review_status": "prepared",
+  "delete_review_status": "not_requested",
+  "redaction_status": "applied",
+  "preservation_hold_status": "none",
+  "included_evidence_refs": [
+    "ev-guardian-email-draft-001",
+    "ev-guardian-replay-valid-001",
+    "ev-approval-result-email-001"
+  ],
+  "excluded_evidence_refs": [
+    "ev-sensitive-payload-ref-001"
+  ],
+  "redaction_profile_ref": "metadata_only",
+  "retention_policy_refs": [
+    "retention-rule-phase0-evidence",
+    "retention-rule-phase0-export-placeholder"
+  ],
+  "delete_conflict_refs": [],
+  "hash_manifest_ref": "hash-ref-export-manifest-001",
+  "related_transaction_id": "txn-export-manifest-prepare-001",
+  "related_coordinator_event_ids": [
+    "coord-ev-export-004",
+    "coord-ev-export-005"
+  ],
+  "related_replay_record_ids": [],
+  "related_ledger_entry_ids": [
+    "ledger-entry-export-manifest-001"
+  ],
+  "related_evidence_artifact_ids": [
+    "ev-export-review-001",
+    "ev-export-prepare-001"
+  ],
+  "related_export_manifest_ids": [
+    "exp-manifest-001"
+  ],
+  "linkage_status": "linked",
+  "linkage_failure_reasons": [],
+  "canonical_tenant_id": "tenant-lab-001",
+  "canonical_correlation_id": "corr-evidence-export-prepared-001",
+  "canonical_idempotency_key": "idem-evidence-export-prepared-001",
+  "canonical_decision_nonce": null,
+  "canonical_action_type": "export_manifest_prepare",
+  "canonical_tool_scope": null,
+  "canonical_worker_id": null,
+  "canonical_task_id": "task-export-prepare-001",
+  "reason_codes": [
+    "export_manifest_redaction_required"
+  ],
+  "reconciliation_reason_codes": [],
+  "evidence_reason_codes": [],
+  "export_delete_conflict_codes": [],
+  "delete_proof_refs": [],
+  "export_package_refs": [],
+  "conflict_evidence_refs": [],
+  "created_at": "2026-05-18T21:48:00Z",
+  "prepared_at": "2026-05-18T21:50:00Z",
+  "exported_at": null,
+  "evidence_refs": [
+    "ev-guardian-email-draft-001",
+    "ev-guardian-replay-valid-001",
+    "ev-approval-result-email-001",
+    "ev-export-review-001",
+    "ev-export-prepare-001"
+  ],
+  "raw_content_included": false,
+  "secret_material_included": false
+}

@@ -1,0 +1,51 @@
+{
+  "contract_name": "governance.export_delete_review",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "dry_run",
+  "correlation_id": "corr-export-delete-review-export-approved-001",
+  "causation_id": "gov-audit-export-req-001",
+  "idempotency_key": "idem-export-delete-review-export-approved-001",
+  "producer": {
+    "component": "compliance_reviewer",
+    "produced_at": "2026-05-24T18:05:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "review_id": "review-export-delete-001",
+  "request_type": "export",
+  "requester_ref": "operator:operator-lab-001",
+  "reviewer_ref": "compliance:reviewer-lab-001",
+  "target_refs": [
+    "task-scope-export-window-001"
+  ],
+  "data_classes": [
+    "customer_confidential"
+  ],
+  "retention_policy_refs": [
+    "retention-rule-phase0-evidence"
+  ],
+  "redaction_profile_ref": "export_redacted",
+  "preservation_hold_status": "none",
+  "export_review_status": "exported",
+  "delete_review_status": "not_requested",
+  "conflict_codes": [],
+  "decision": "approved",
+  "reason_codes": [
+    "export_delete_review_required"
+  ],
+  "evidence_refs": [
+    "ev-export-review-approved-001"
+  ],
+  "conflict_evidence_refs": [],
+  "delete_proof_refs": [],
+  "export_manifest_refs": [
+    "exp-manifest-exported-redacted-001"
+  ],
+  "created_at": "2026-05-24T18:00:00Z",
+  "reviewed_at": "2026-05-24T18:05:00Z",
+  "raw_content_included": false,
+  "secret_material_included": false
+}

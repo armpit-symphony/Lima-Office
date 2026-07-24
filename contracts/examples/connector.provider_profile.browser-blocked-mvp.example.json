@@ -1,0 +1,48 @@
+{
+  "contract_name": "connector.provider_profile",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-provider-profile-browser-001",
+  "causation_id": null,
+  "idempotency_key": "idem-provider-profile-browser-001",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-25T21:03:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "provider_profile_id": "provider-profile-browser-001",
+  "connector_type": "browser",
+  "provider_ref": "provider-ref-browser-placeholder-001",
+  "provider_status": "blocked_mvp",
+  "risk_level": "blocked_mvp",
+  "data_classes": [
+    "customer_confidential"
+  ],
+  "outbound_capabilities": [
+    "external_send",
+    "form_submit"
+  ],
+  "object_authorization_status": "blocked_mvp",
+  "property_authorization_status": "blocked_mvp",
+  "token_sensitivity": "blocked_mvp",
+  "revocation_method_status": "blocked_mvp",
+  "disable_switch_status": "blocked_mvp",
+  "rate_limit_status": "blocked_mvp",
+  "prompt_injection_exposure": "blocked_mvp",
+  "export_delete_impact_status": "blocked_mvp",
+  "policy_refs": [
+    "policy.connector_consent_scope_revocation.phase0"
+  ],
+  "evidence_refs": [
+    "ev-provider-profile-browser-001"
+  ],
+  "reason_codes": [
+    "connector_live_blocked_mvp"
+  ],
+  "created_at": "2026-05-25T21:03:00Z",
+  "updated_at": "2026-05-25T21:03:00Z"
+}

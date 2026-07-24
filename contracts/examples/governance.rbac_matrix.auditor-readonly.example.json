@@ -1,0 +1,69 @@
+{
+  "contract_name": "governance.rbac_matrix",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-rbac-auditor-readonly-001",
+  "causation_id": null,
+  "idempotency_key": "idem-rbac-auditor-readonly-001",
+  "producer": {
+    "component": "compliance_reviewer",
+    "produced_at": "2026-05-24T14:05:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "matrix_id": "rbac-matrix-auditor-001",
+  "role": "auditor_readonly",
+  "permissions": [
+    {
+      "action": "view_supervisor_health",
+      "level": "view"
+    },
+    {
+      "action": "view_worker_fleet",
+      "level": "view"
+    },
+    {
+      "action": "view_task_queue",
+      "level": "view"
+    },
+    {
+      "action": "view_guardian_decisions",
+      "level": "view"
+    },
+    {
+      "action": "view_evidence_metadata",
+      "level": "view"
+    },
+    {
+      "action": "export_evidence_metadata",
+      "level": "none"
+    }
+  ],
+  "permission_scope": "governance_review_only",
+  "assurance_requirements": {
+    "identity_assurance": "ial1_or_equivalent",
+    "authenticator_assurance": "aal1_or_equivalent",
+    "federation_assurance": "not_applicable",
+    "fresh_intent_required": false
+  },
+  "mfa_requirement": "no_mfa_blocked",
+  "session_requirement": "session_ttl_placeholder",
+  "device_trust_requirement": "untrusted_device_readonly_or_blocked",
+  "separation_of_duties_required": false,
+  "blocked_mvp_actions": [
+    "approve_privileged_task",
+    "breakglass_request_review"
+  ],
+  "evidence_refs": [
+    "ev-rbac-auditor-readonly-001"
+  ],
+  "reason_codes": [
+    "device_untrusted",
+    "role_not_permitted"
+  ],
+  "created_at": "2026-05-24T14:05:00Z",
+  "updated_at": "2026-05-24T14:05:00Z"
+}

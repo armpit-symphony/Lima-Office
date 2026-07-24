@@ -1,0 +1,53 @@
+{
+  "contract_name": "attestation.reconciliation",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant_acme",
+  "customer_context_id": "cust_acme_primary",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-att-recon-reconciled-001",
+  "causation_id": "lineage-worker-001-current",
+  "idempotency_key": "idem-att-recon-reconciled-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-25T14:10:00Z"
+  },
+  "policy_version": "policy.attestation.reconciliation.phase1a.v1",
+  "reconciliation_id": "recon-attestation-001",
+  "lineage_id": "lineage-worker-001-current",
+  "attestation_result_id": "attres-worker-001",
+  "authority_refs": [
+    "attestation.authority:authority-verifier-owner-001"
+  ],
+  "reference_value_refs": [
+    "attestation.reference_value:refv-runtime-2026-05-24"
+  ],
+  "endorsement_refs": [
+    "attestation.endorsement:endorsement-worker-node-001"
+  ],
+  "appraisal_policy_id": "apol-worker-default-v1",
+  "worker_id": "arc_worker_01",
+  "deployment_id": "deploy-worker-001",
+  "worker_lifecycle_ref": "worker.lifecycle:wle-worker-001-active",
+  "device_trust_ref": "governance.device_trust:dtrust-worker-001",
+  "model_route_refs": [
+    "model.route:route-worker-001-01"
+  ],
+  "transaction_refs": [
+    "transaction.boundary:txn-attestation-worker-001"
+  ],
+  "ledger_entry_refs": [
+    "evidence.ledger.entry:ledger-attestation-worker-001"
+  ],
+  "reconciliation_status": "reconciled",
+  "drift_classes": [],
+  "reason_codes": [
+    "approved"
+  ],
+  "evidence_refs": [
+    "ev-attestation-reconciliation-reconciled-001"
+  ],
+  "created_at": "2026-05-25T14:10:00Z",
+  "resolved_at": "2026-05-25T14:10:00Z"
+}

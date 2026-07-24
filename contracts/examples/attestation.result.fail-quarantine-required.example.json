@@ -1,0 +1,42 @@
+{
+  "contract_name": "attestation.result",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant_acme",
+  "customer_context_id": "cust_acme_primary",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-attestation-result-fail-001",
+  "causation_id": "attestation-worker-002",
+  "idempotency_key": "idem-attestation-result-fail-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-24T19:10:00Z"
+  },
+  "attestation_result_id": "attres-worker-002",
+  "worker_id": "arc_worker_02",
+  "deployment_id": "deploy-worker-002",
+  "appraisal_policy_id": "apol-worker-default-v1",
+  "reference_value_refs": [
+    "refv-model-2026-05-24"
+  ],
+  "endorsement_refs": [
+    "endorsement-worker-node-001"
+  ],
+  "attestation_evidence_refs": [
+    "evidence:artifact:worker-attestation-002"
+  ],
+  "appraisal_result": "fail",
+  "trust_effect": "quarantine_required",
+  "reason_codes": [
+    "reference_value_revoked",
+    "appraisal_failed",
+    "attestation_quarantine_required"
+  ],
+  "evidence_refs": [
+    "evidence:artifact:attestation-result-fail-001"
+  ],
+  "policy_version": "policy.attestation.appraisal.phase1a.v1",
+  "created_at": "2026-05-24T19:10:00Z",
+  "expires_at": "2026-05-24T20:10:00Z"
+}

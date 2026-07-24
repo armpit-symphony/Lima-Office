@@ -1,0 +1,34 @@
+{
+  "contract_name": "connector.escalation",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-connector-escalation-002",
+  "causation_id": "corr-connector-revocation-drill-rmm-001",
+  "idempotency_key": "idem-connector-escalation-002",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-26T03:20:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "connector_escalation_id": "connector-escalation-002",
+  "connector_id": "connector-rmm-metadata-001",
+  "ownership_ref": "connector-ownership-002",
+  "escalation_type": "revocation_overdue",
+  "escalation_status": "failed_closed",
+  "escalation_owner_ref": "actor.security-reviewer.001",
+  "due_at_placeholder": "2026-05-26T03:30:00Z",
+  "evidence_refs": [
+    "ev-connector-escalation-002"
+  ],
+  "reason_codes": [
+    "connector_escalation_overdue",
+    "connector_accountability_failed_closed"
+  ],
+  "created_at": "2026-05-26T03:20:00Z",
+  "acknowledged_at": "2026-05-26T03:25:00Z",
+  "resolved_at": null
+}

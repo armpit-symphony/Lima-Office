@@ -1,0 +1,63 @@
+{
+  "contract_name": "console.alert",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-alert-attestation-appraisal-failed-001",
+  "causation_id": "attres-worker-002",
+  "idempotency_key": "idem-alert-attestation-appraisal-failed-001",
+  "alert_id": "alert-attestation-appraisal-failed-001",
+  "actor_ref": "operator-security-reviewer-001",
+  "role": "security_reviewer",
+  "health_domain": "worker",
+  "alert_type": "appraisal_failed",
+  "health_reason_codes": [
+    "appraisal_failed",
+    "reference_value_revoked",
+    "attestation_quarantine_required",
+    "health_blocked"
+  ],
+  "severity": "blocked",
+  "related_contract_refs": [
+    "attestation.result:attres-worker-002",
+    "attestation.reference_value:refv-model-2026-05-24",
+    "worker.lifecycle:wle-worker-002-quarantine"
+  ],
+  "policy_refs": [
+    "policy.attestation.appraisal.phase1a",
+    "policy.worker_quarantine_reenrollment.phase0"
+  ],
+  "risk_tier": "blocked",
+  "status": "blocked",
+  "runbook_ref": "runbook.attestation-verifier-review",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-25T17:00:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "reason_codes": [
+    "appraisal_failed",
+    "reference_value_revoked",
+    "attestation_quarantine_required"
+  ],
+  "reason_code_registry_refs": [
+    "reason.code.registry:appraisal_failed",
+    "reason.code.registry:reference_value_revoked",
+    "reason.code.registry:attestation_quarantine_required"
+  ],
+  "unknown_reason_code_policy": "fail_closed",
+  "deprecated_reason_code_policy": "allow_with_warning",
+  "reason_code_status": "active",
+  "evidence_refs": [
+    "ev-alert-attestation-appraisal-failed-001"
+  ],
+  "blocked_reason": "Attestation appraisal failed against revoked model reference value.",
+  "model_route_id": null,
+  "route_mode": null,
+  "route_status": null,
+  "operator_visible": true,
+  "created_at": "2026-05-25T17:00:00Z"
+}

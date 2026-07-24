@@ -1,0 +1,41 @@
+{
+  "contract_name": "connector.reconciliation",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-connector-reconcile-005",
+  "causation_id": "corr-connector-reconcile-001",
+  "idempotency_key": "idem-connector-reconcile-005",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-25T22:40:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "connector_reconciliation_id": "connector-reconcile-005",
+  "connector_id": "connector-email-metadata-001",
+  "provider_profile_id": "provider-profile-email-tenant-b-001",
+  "connector_readiness_id": "connector-readiness-email-001",
+  "scope_review_id": "connector-scope-review-001",
+  "connector_trust_id": "connector-trust-email-001",
+  "connector_consent_id": "connector-consent-email-001",
+  "revocation_drill_id": "connector-revocation-drill-001",
+  "tool_invocation_id": "tool-invocation-connector-read-001",
+  "approval_binding_id": "approval-binding-connector-read-001",
+  "guardian_decision_id": "gd-connector-read-001",
+  "reconciliation_status": "failed_closed",
+  "drift_classes": [
+    "connector_cross_tenant_linkage"
+  ],
+  "reason_codes": [
+    "connector_reconciliation_drift",
+    "connector_cross_tenant_linkage"
+  ],
+  "evidence_refs": [
+    "ev-connector-reconcile-005"
+  ],
+  "created_at": "2026-05-25T22:40:00Z",
+  "resolved_at": null
+}

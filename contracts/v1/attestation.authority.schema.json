@@ -1,0 +1,381 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/attestation.authority.schema.json",
+  "title": "Attestation Authority Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "authority_id",
+    "authority_type",
+    "authority_status",
+    "actor_ref",
+    "role_ref",
+    "assurance_refs",
+    "mfa_requirement",
+    "device_trust_requirement",
+    "separation_of_duties_required",
+    "allowed_authority_actions",
+    "blocked_authority_actions",
+    "evidence_refs",
+    "reason_codes",
+    "policy_version",
+    "created_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "attestation.authority"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "operator_console",
+            "supervisor",
+            "security_reviewer",
+            "field_it_reviewer"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "authority_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authority_type": {
+      "type": "string",
+      "enum": [
+        "verifier_owner",
+        "relying_party_owner",
+        "reference_value_approver",
+        "endorsement_reviewer",
+        "device_trust_reviewer",
+        "blocked_mvp"
+      ]
+    },
+    "authority_status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "active",
+        "suspended",
+        "revoked",
+        "expired",
+        "blocked_mvp"
+      ]
+    },
+    "actor_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "role_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "assurance_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "mfa_requirement": {
+      "type": "string",
+      "enum": [
+        "no_mfa_blocked",
+        "phishing_resistant_preferred",
+        "step_up_required_for_privileged",
+        "breakglass_requires_post_review"
+      ]
+    },
+    "device_trust_requirement": {
+      "type": "string",
+      "enum": [
+        "managed_device_placeholder",
+        "attested_worker_placeholder",
+        "device_posture_required_for_privileged",
+        "untrusted_device_readonly_or_blocked",
+        "blocked_mvp"
+      ]
+    },
+    "separation_of_duties_required": {
+      "type": "boolean"
+    },
+    "allowed_authority_actions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "approve_reference_value",
+          "revoke_reference_value",
+          "approve_appraisal_policy",
+          "revoke_appraisal_policy",
+          "review_endorsement",
+          "review_device_trust",
+          "accept_attestation_result",
+          "clear_worker_quarantine"
+        ]
+      }
+    },
+    "blocked_authority_actions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "approve_reference_value",
+          "revoke_reference_value",
+          "approve_appraisal_policy",
+          "revoke_appraisal_policy",
+          "review_endorsement",
+          "review_device_trust",
+          "accept_attestation_result",
+          "clear_worker_quarantine"
+        ]
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "approved_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "revoked_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "authority_status": {
+            "const": "active"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "approved_at",
+          "assurance_refs",
+          "evidence_refs",
+          "mfa_requirement",
+          "device_trust_requirement"
+        ],
+        "properties": {
+          "approved_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "assurance_refs": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "authority_status": {
+            "enum": [
+              "revoked",
+              "expired",
+              "suspended"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "reason_codes": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "authority_status": {
+            "const": "revoked"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "revoked_at"
+        ],
+        "properties": {
+          "revoked_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "authority_status": {
+            "const": "blocked_mvp"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "allowed_authority_actions": {
+            "maxItems": 0
+          },
+          "authority_type": {
+            "const": "blocked_mvp"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "authority_type": {
+            "const": "blocked_mvp"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "authority_status": {
+            "enum": [
+              "blocked_mvp",
+              "proposed"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "allowed_authority_actions": {
+            "contains": {
+              "const": "clear_worker_quarantine"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "separation_of_duties_required": {
+            "const": true
+          }
+        }
+      }
+    }
+  ]
+}

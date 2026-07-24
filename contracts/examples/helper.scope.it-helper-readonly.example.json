@@ -1,0 +1,79 @@
+{
+  "contract_name": "helper.scope",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-helper-it-001",
+  "causation_id": "task-it-health-001",
+  "idempotency_key": "idem-helper-it-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:30:00Z"
+  },
+  "helper_scope_id": "hs-it-helper-readonly-001",
+  "helper_agent_id": "helper-it-diagnostics-01",
+  "helper_role": "it_helper_readonly",
+  "parent_supervisor_id": "supervisor-lab-001",
+  "delegated_by_actor": {
+    "actor_type": "supervisor",
+    "actor_id": "supervisor-lab-001"
+  },
+  "supervisor_side_only": true,
+  "independent_worker": false,
+  "allowed_task_classes": [
+    "it_health_check",
+    "diagnostic_gathering"
+  ],
+  "allowed_tool_packs": [
+    "it_diagnostics_read_only"
+  ],
+  "blocked_tool_packs": [
+    "unrestricted_browser",
+    "unrestricted_filesystem",
+    "unrestricted_network",
+    "live_connector_write",
+    "production_remediation",
+    "payment_or_regulated_system"
+  ],
+  "data_classifications_allowed": [
+    "internal"
+  ],
+  "connector_access": "none",
+  "network_scope": "local_supervisor_only",
+  "file_scope": "read_only",
+  "memory_scope": {
+    "tenant_namespace": "tenant-lab-001",
+    "read_allowed": false,
+    "write_summary_allowed": false,
+    "delete_or_export_allowed": false,
+    "raw_content_allowed": false
+  },
+  "may_request_approval_token": false,
+  "approval_required_capabilities": [
+    "remediation_request_review"
+  ],
+  "blocked_capabilities": [
+    "external_send",
+    "file_delete",
+    "file_overwrite",
+    "customer_record_update",
+    "software_install_update",
+    "production_remediation",
+    "production_server_touch",
+    "payment_or_regulated_system",
+    "cross_tenant_memory",
+    "unrestricted_tool_execution"
+  ],
+  "status": "active",
+  "lease_expires_at": "2026-05-18T22:30:00Z",
+  "revoked_at": null,
+  "revocation_reason": null,
+  "guardian_decision_id": "gd-helper-it-001",
+  "policy_version": "policy-phase0-v1",
+  "evidence_artifact_ids": [
+    "ev-helper-it-001"
+  ],
+  "created_at": "2026-05-18T21:32:00Z"
+}

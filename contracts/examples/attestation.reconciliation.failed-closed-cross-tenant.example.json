@@ -1,0 +1,58 @@
+{
+  "contract_name": "attestation.reconciliation",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant_acme",
+  "customer_context_id": "cust_acme_primary",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-att-recon-cross-tenant-001",
+  "causation_id": "lineage-worker-008-current",
+  "idempotency_key": "idem-att-recon-cross-tenant-001",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-25T14:40:00Z"
+  },
+  "policy_version": "policy.attestation.reconciliation.phase1a.v1",
+  "reconciliation_id": "recon-attestation-008",
+  "lineage_id": "lineage-worker-008-current",
+  "attestation_result_id": "attres-worker-008",
+  "authority_refs": [
+    "attestation.authority:authority-verifier-owner-tenant-zeta"
+  ],
+  "reference_value_refs": [
+    "attestation.reference_value:refv-runtime-tenant-zeta"
+  ],
+  "endorsement_refs": [
+    "attestation.endorsement:endorsement-worker-node-tenant-zeta"
+  ],
+  "appraisal_policy_id": "apol-worker-default-v1",
+  "worker_id": "arc_worker_08",
+  "deployment_id": "deploy-worker-008",
+  "worker_lifecycle_ref": "worker.lifecycle:wle-worker-008-quarantine",
+  "device_trust_ref": "governance.device_trust:dtrust-worker-008",
+  "model_route_refs": [
+    "model.route:route-worker-008-privileged"
+  ],
+  "transaction_refs": [
+    "transaction.boundary:txn-attestation-worker-008"
+  ],
+  "ledger_entry_refs": [
+    "evidence.ledger.entry:ledger-attestation-worker-008"
+  ],
+  "reconciliation_status": "failed_closed",
+  "drift_classes": [
+    "cross_tenant_attestation_linkage",
+    "model_route_selected_with_untrusted_lineage"
+  ],
+  "reason_codes": [
+    "attestation_cross_tenant_linkage",
+    "attestation_reconciliation_drift",
+    "model_route_selected_with_untrusted_lineage"
+  ],
+  "evidence_refs": [
+    "ev-attestation-reconciliation-cross-tenant-001"
+  ],
+  "created_at": "2026-05-25T14:40:00Z",
+  "resolved_at": null
+}

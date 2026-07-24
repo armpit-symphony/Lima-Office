@@ -1,0 +1,46 @@
+{
+  "contract_name": "attestation.authority",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant_acme",
+  "customer_context_id": "cust_acme_primary",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-att-authority-verifier-owner-001",
+  "causation_id": null,
+  "idempotency_key": "idem-att-authority-verifier-owner-001",
+  "producer": {
+    "component": "operator_console",
+    "produced_at": "2026-05-24T20:30:00Z"
+  },
+  "authority_id": "authority-verifier-owner-001",
+  "authority_type": "verifier_owner",
+  "authority_status": "active",
+  "actor_ref": "operator-security-reviewer-001",
+  "role_ref": "security_reviewer",
+  "assurance_refs": [
+    "governance.identity:identity-security-reviewer-001",
+    "governance.session_policy:session-policy-security-reviewer"
+  ],
+  "mfa_requirement": "step_up_required_for_privileged",
+  "device_trust_requirement": "device_posture_required_for_privileged",
+  "separation_of_duties_required": true,
+  "allowed_authority_actions": [
+    "approve_appraisal_policy",
+    "accept_attestation_result"
+  ],
+  "blocked_authority_actions": [
+    "clear_worker_quarantine"
+  ],
+  "evidence_refs": [
+    "evidence:artifact:attestation-authority-verifier-owner-001"
+  ],
+  "reason_codes": [
+    "approved"
+  ],
+  "policy_version": "policy.attestation.authority.phase1a.v1",
+  "created_at": "2026-05-24T20:30:00Z",
+  "approved_at": "2026-05-24T20:35:00Z",
+  "expires_at": "2026-08-24T20:35:00Z",
+  "revoked_at": null
+}

@@ -1,0 +1,92 @@
+{
+  "contract_name": "supervisor.health",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-supervisor-health-attestation-appraisal-degraded-001",
+  "causation_id": "attres-worker-003",
+  "idempotency_key": "idem-supervisor-health-attestation-appraisal-degraded-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-25T17:10:00Z"
+  },
+  "supervisor_id": "supervisor-lab-001",
+  "generated_at": "2026-05-25T17:10:00Z",
+  "mode": "mock",
+  "worker_count": 4,
+  "worker_state_counts": {
+    "healthy": 2,
+    "degraded": 2
+  },
+  "task_state_counts": {
+    "draft_ready": 3,
+    "blocked": 1
+  },
+  "guardian_decision_counts": {
+    "allowed": 4,
+    "denied": 2
+  },
+  "evidence_status_counts": {
+    "healthy": 5,
+    "degraded": 2
+  },
+  "stale_heartbeat_count": 1,
+  "quarantined_worker_count": 0,
+  "revoked_worker_count": 0,
+  "blocked_task_count": 1,
+  "denied_action_count": 2,
+  "degraded_component_count": 3,
+  "health_status": "degraded",
+  "reasons": [
+    "appraisal_inconclusive",
+    "reference_value_stale",
+    "health_degraded"
+  ],
+  "health_domain": "supervisor",
+  "health_reason_codes": [
+    "appraisal_inconclusive",
+    "reference_value_stale",
+    "health_degraded"
+  ],
+  "route_health_counts": {
+    "degraded": 2,
+    "blocked_mvp": 1
+  },
+  "model_route_status_counts": {
+    "selected": 3,
+    "degraded": 2,
+    "blocked_mvp": 1
+  },
+  "operator_visible": true,
+  "evidence_refs": [
+    "ev-supervisor-health-attestation-appraisal-degraded-001"
+  ],
+  "policy_refs": [
+    "policy.attestation.appraisal.phase1a",
+    "policy.worker_attestation.phase0"
+  ],
+  "related_contract_refs": [
+    "attestation.result:attres-worker-003",
+    "attestation.reference_value:refv-runtime-2026-05-24",
+    "worker.heartbeat:hb-arc-003-0202"
+  ],
+  "data_classification": "internal",
+  "redaction_level": "metadata_only",
+  "raw_customer_content_present": false,
+  "secret_material_present": false,
+  "policy_version": "policy-phase1a-v1",
+  "reason_codes": [
+    "appraisal_inconclusive",
+    "reference_value_stale"
+  ],
+  "reason_code_registry_refs": [
+    "reason.code.registry:appraisal_inconclusive",
+    "reason.code.registry:reference_value_stale"
+  ],
+  "unknown_reason_code_policy": "fail_closed",
+  "deprecated_reason_code_policy": "allow_with_warning",
+  "reason_code_status": "active"
+}

@@ -1,0 +1,51 @@
+{
+  "contract_name": "approval.chain",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "dry_run",
+  "correlation_id": "corr-email-draft-001",
+  "causation_id": "task-email-draft-001",
+  "idempotency_key": "idem-chain-valid-one-time-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:43:10Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "approval_chain_id": "chain-email-draft-001",
+  "chain_status": "valid_one_time",
+  "expected_runtime_result": "allow_mock_once",
+  "approval_binding_ref": "bind-email-draft-001",
+  "records": [
+    {
+      "contract_name": "approval.request",
+      "record_id": "apr-email-draft-001",
+      "schema_ref": "approval.request",
+      "summary": "Request binds the tenant, task, requester, Guardian decision, and requested scope."
+    },
+    {
+      "contract_name": "approval.result",
+      "record_id": "apres-email-draft-001",
+      "schema_ref": "approval.result",
+      "summary": "Result approves only dry-run draft review with separated approver metadata."
+    },
+    {
+      "contract_name": "approval.binding",
+      "record_id": "bind-email-draft-001",
+      "schema_ref": "approval.binding",
+      "summary": "Binding allows one mock review once and blocks live external send."
+    }
+  ],
+  "blocked_work": [
+    "external_send",
+    "live_connector",
+    "real_remediation"
+  ],
+  "evidence_refs": [
+    "ev-approval-email-draft-001",
+    "ev-token-verify-valid-001"
+  ],
+  "created_at": "2026-05-18T21:43:10Z"
+}

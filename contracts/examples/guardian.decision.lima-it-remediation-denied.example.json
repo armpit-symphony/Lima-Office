@@ -1,0 +1,113 @@
+{
+  "contract_name": "guardian.decision",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-lima-it-remediation-denied-001",
+  "causation_id": "lima-it-handoff-remediation-001",
+  "idempotency_key": "idem-guardian-lima-it-remediation-denied-001",
+  "decision_id": "gd-lima-it-remediation-denied-001",
+  "request_id": "req-lima-it-remediation-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T21:43:20Z"
+  },
+  "requested_by": {
+    "actor_type": "supervisor",
+    "actor_id": "supervisor-lab-001"
+  },
+  "subject": {
+    "subject_type": "lima_it_handoff",
+    "subject_id": "lima-it-handoff-remediation-001"
+  },
+  "action_class": "lima_it_remediation",
+  "resource_ref": {
+    "resource_type": "lima_it_system",
+    "resource_id": "lima-it-system-placeholder-001",
+    "resource_scope": "blocked_mvp"
+  },
+  "data_classification": "customer_confidential",
+  "risk_tier": "blocked",
+  "policy_refs": [
+    "mvp:block-lima-it-remediation",
+    "policy.guardian-expiry-replay.phase1a"
+  ],
+  "policy_version": "policy-phase0-v1",
+  "policy_snapshot_hash": "policy-snapshot-hash-phase0-lima-it-001",
+  "valid_for_action_ref": "hash-ref-lima-it-remediation-blocked-001",
+  "decision": "block_mvp",
+  "approval_required": false,
+  "approval_request_id": null,
+  "approval_chain_id": null,
+  "binding_id": null,
+  "approval_token_id": null,
+  "token_verification_id": null,
+  "denial_reason": "LIMA IT remediation execution is blocked in MVP.",
+  "redaction_level": "metadata_only",
+  "evidence_required": true,
+  "evidence_artifact_id": "ev-lima-it-remediation-denied-001",
+  "evidence_artifact_ids": [
+    "ev-lima-it-remediation-denied-001"
+  ],
+  "guardian_decision_id": "gd-lima-it-remediation-denied-001",
+  "decision_nonce": null,
+  "issued_at": "2026-05-18T21:43:20Z",
+  "effective_at": "2026-05-18T21:43:20Z",
+  "max_age_seconds": 300,
+  "clock_skew_allowance_seconds": 30,
+  "replay_policy": "blocked_mvp",
+  "decision_scope_hash": "hash-ref-lima-it-remediation-blocked-001",
+  "bound_tenant_id": "tenant-lab-001",
+  "bound_task_id": null,
+  "bound_worker_id": null,
+  "bound_action_type": "lima_it_remediation",
+  "bound_tool_scope": {
+    "resource_refs": [
+      "lima-it-system-placeholder-001"
+    ],
+    "allowed_operations": [
+      "none"
+    ],
+    "prohibited_operations": [
+      "run_remediation",
+      "install_update_software",
+      "touch_production_server"
+    ]
+  },
+  "approval_binding_id": null,
+  "replay_record_id": "rr-lima-it-remediation-denied-001",
+  "replay_artifact_id": "ev-lima-it-remediation-denied-001",
+  "denial_evidence_ref": "ev-lima-it-remediation-denied-001",
+  "pre_action_evidence_refs": [
+    "ev-lima-it-remediation-denied-001"
+  ],
+  "post_action_evidence_refs": [],
+  "export_manifest_refs": [],
+  "redaction_profile_ref": "metadata_only",
+  "hash_algorithm": "sha256",
+  "content_hash": "hash-ref-lima-it-remediation-denied-001",
+  "parent_evidence_refs": [],
+  "chain_position": 1,
+  "raw_content_included": false,
+  "secret_material_included": false,
+  "evidence_refs": [
+    "ev-lima-it-remediation-denied-001"
+  ],
+  "replay_status": "blocked_mvp",
+  "consumed_at": null,
+  "revoked_at": null,
+  "revocation_reason": null,
+  "prompt_injection": {
+    "untrusted_input_refs": [],
+    "content_origin": "operator",
+    "instruction_boundary": "operator_instruction",
+    "injection_suspected": false,
+    "injection_signals": [],
+    "containment_action": "none"
+  },
+  "created_at": "2026-05-18T21:43:20Z",
+  "expires_at": "2026-05-18T21:48:20Z"
+}

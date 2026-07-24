@@ -1,0 +1,451 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/attestation.reconciliation.schema.json",
+  "title": "Attestation Reconciliation Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "policy_version",
+    "reconciliation_id",
+    "lineage_id",
+    "attestation_result_id",
+    "authority_refs",
+    "reference_value_refs",
+    "endorsement_refs",
+    "appraisal_policy_id",
+    "worker_id",
+    "deployment_id",
+    "device_trust_ref",
+    "model_route_refs",
+    "transaction_refs",
+    "ledger_entry_refs",
+    "reconciliation_status",
+    "drift_classes",
+    "reason_codes",
+    "evidence_refs",
+    "created_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "attestation.reconciliation"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "security_reviewer",
+            "field_it_reviewer",
+            "operator_console"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reconciliation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lineage_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "attestation_result_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authority_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reference_value_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "endorsement_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "appraisal_policy_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "worker_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "deployment_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "worker_lifecycle_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "device_trust_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "model_route_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "transaction_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "ledger_entry_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reconciliation_status": {
+      "type": "string",
+      "enum": [
+        "reconciled",
+        "drift_detected",
+        "revocation_pending",
+        "quarantine_required",
+        "failed_closed",
+        "blocked_mvp"
+      ]
+    },
+    "drift_classes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "reference_value_revoked_but_lineage_current",
+          "endorsement_revoked_but_result_trusted",
+          "appraisal_policy_revoked_but_route_selected",
+          "attestation_result_expired_but_worker_active",
+          "revocation_pending_but_privileged_route_selected",
+          "quarantine_required_but_worker_active",
+          "model_route_selected_with_untrusted_lineage",
+          "transaction_committed_with_revoked_attestation",
+          "evidence_missing_for_revocation",
+          "cross_tenant_attestation_linkage",
+          "verifier_authority_revoked_but_appraisal_active"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "resolved_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "const": "reconciled"
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "authority_refs": {
+            "minItems": 1
+          },
+          "reference_value_refs": {
+            "minItems": 1
+          },
+          "endorsement_refs": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          },
+          "drift_classes": {
+            "maxItems": 0
+          },
+          "reason_codes": {
+            "contains": {
+              "const": "approved"
+            }
+          }
+        },
+        "required": [
+          "authority_refs",
+          "reference_value_refs",
+          "endorsement_refs",
+          "appraisal_policy_id",
+          "attestation_result_id",
+          "evidence_refs"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "const": "drift_detected"
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "drift_classes": {
+            "minItems": 1
+          },
+          "reason_codes": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "const": "revocation_pending"
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason_codes": {
+            "minItems": 1,
+            "contains": {
+              "const": "attestation_revocation_pending"
+            }
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "const": "quarantine_required"
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "worker_id": {
+            "minLength": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          },
+          "reason_codes": {
+            "minItems": 1
+          }
+        },
+        "anyOf": [
+          {
+            "properties": {
+              "device_trust_ref": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "device_trust_ref"
+            ]
+          },
+          {
+            "properties": {
+              "worker_lifecycle_ref": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "worker_lifecycle_ref"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "const": "failed_closed"
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason_codes": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          },
+          "drift_classes": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "const": "blocked_mvp"
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason_codes": {
+            "contains": {
+              "const": "blocked_mvp_authorization_attempt"
+            }
+          },
+          "drift_classes": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
+}

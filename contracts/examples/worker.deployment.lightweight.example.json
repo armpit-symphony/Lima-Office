@@ -1,0 +1,92 @@
+{
+  "contract_name": "worker.deployment",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-deploy-light-001",
+  "causation_id": null,
+  "idempotency_key": "idem-deploy-light-001",
+  "deployment_id": "deploy-arc-file-01",
+  "worker_id": "arc-file-01",
+  "role": "file_clerk_worker",
+  "producer": {
+    "component": "field_it_reviewer",
+    "produced_at": "2026-05-22T20:00:00Z"
+  },
+  "hardware_profile": {
+    "hardware_class": "lightweight_worker",
+    "cpu_class": "4-core-mini-pc",
+    "ram_gb": 16,
+    "storage_gb": 256,
+    "network_adapter": "wired_ethernet",
+    "tpm_present": true,
+    "secure_boot_present": true,
+    "asset_ref": "asset-ref-arc-file-01",
+    "location_ref": "site-main-office"
+  },
+  "os_profile": {
+    "os_family": "windows",
+    "os_version_ref": "os-ref-worker-lab-current",
+    "dedicated_account": true,
+    "local_admin_required": false,
+    "disk_encryption_available": true,
+    "patch_posture": "recorded_current"
+  },
+  "network_profile": {
+    "network_mode": "lab_local",
+    "hostname_ref": "arc-file-lab-01",
+    "dns_mode": "local_dns",
+    "ip_assignment": "dhcp_reserved",
+    "time_sync_ref": "time-ref-local-lan",
+    "supervisor_reachability": "verified",
+    "public_inbound_exposure": false,
+    "cross_worker_trust": false,
+    "internet_egress": "blocked"
+  },
+  "supervisor_endpoint_ref": "supervisor-endpoint-ref-lab-01",
+  "policy_bundle_ref": "policy-bundle-ref-phase0-worker",
+  "policy_bundle_hash_ref": "hash-ref-policy-worker-001",
+  "model_bundle_ref": null,
+  "model_bundle_hash_ref": null,
+  "install_state": "preflight_ready",
+  "lifecycle_state": "provisioned",
+  "encryption_status": "enabled",
+  "attestation_status": "not_required_phase0",
+  "trust_root_status": "software_only_placeholder",
+  "update_channel": {
+    "policy_bundle": "manual_review",
+    "worker_runtime": "blocked",
+    "model_bundle": "none",
+    "config": "manual_review",
+    "automatic_update_enabled": false
+  },
+  "rollback_state": {
+    "known_good_ref": "rollback-ref-none-preinstall",
+    "rollback_available": false,
+    "rollback_tested": false,
+    "rollback_reason": null
+  },
+  "data_classification": "internal",
+  "risk_tier": "low",
+  "approval_required": true,
+  "approval_request_id": "approval-request-worker-enroll-001",
+  "approval_token_id": null,
+  "guardian_decision_id": "gd-worker-deploy-light-001",
+  "privileged_task_metadata_allowed": false,
+  "policy_version": "policy-phase0-v1",
+  "evidence_refs": [
+    "ev-worker-preflight-light-001"
+  ],
+  "reason_codes": [],
+  "support_owner_ref": "operator-lab-001",
+  "field_it_reviewer_ref": "field-it-reviewer-001",
+  "security_reviewer_ref": null,
+  "blocked_reason": null,
+  "worker_attestation_ref": null,
+  "update_rollback_refs": [],
+  "created_at": "2026-05-22T20:00:00Z",
+  "updated_at": "2026-05-22T20:00:00Z"
+}

@@ -1,0 +1,38 @@
+{
+  "contract_name": "approval.result",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "dry_run",
+  "correlation_id": "corr-email-draft-001",
+  "causation_id": "apr-email-draft-001",
+  "idempotency_key": "idem-approval-result-email-001",
+  "approval_result_id": "apres-email-draft-001",
+  "approval_request_id": "apr-email-draft-001",
+  "task_id": "task-email-draft-001",
+  "guardian_decision_id": "gd-email-send-requires-approval-001",
+  "producer": {
+    "component": "operator_console",
+    "produced_at": "2026-05-18T21:42:00Z"
+  },
+  "result": "approved",
+  "result_reason_code": "approved",
+  "approver_operator_id": "operator-lab-001",
+  "approver_role_ref": "approver",
+  "action_class": "external_message_send",
+  "risk_tier": "high",
+  "data_classification": "customer_confidential",
+  "requested_scope_hash": "hash-ref-approval-scope-email-001",
+  "approved_scope_hash": "hash-ref-approved-scope-email-001",
+  "approval_token_id": "apt-email-draft-001",
+  "blocked_mvp_action": false,
+  "denial_reason": null,
+  "fresh_operator_intent_ref": "operator-intent-review-email-draft-001",
+  "policy_version": "policy-phase0-v1",
+  "evidence_artifact_ids": [
+    "ev-approval-result-email-001"
+  ],
+  "decided_at": "2026-05-18T21:42:00Z"
+}

@@ -1,0 +1,56 @@
+{
+  "contract_name": "connector.acceptance_score",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-connector-score-001",
+  "causation_id": "corr-connector-reconcile-001",
+  "idempotency_key": "idem-connector-score-001",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-26T01:00:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "acceptance_score_id": "connector-score-001",
+  "connector_id": "connector-email-meta-001",
+  "provider_profile_id": "provider-profile-email-001",
+  "connector_readiness_id": "connector-readiness-email-001",
+  "scope_review_id": "connector-scope-review-email-001",
+  "connector_consent_id": "connector-consent-email-001",
+  "revocation_drill_id": "connector-revocation-drill-email-001",
+  "reconciliation_id": "connector-reconcile-001",
+  "scoring_version": "connector-score-v1",
+  "score_status": "approved_for_lab",
+  "overall_score": 92,
+  "max_score": 100,
+  "dimension_scores": {
+    "consent_completeness": 10,
+    "scope_least_privilege": 10,
+    "object_authorization": 8,
+    "property_authorization": 8,
+    "revocation_method": 8,
+    "disable_switch": 8,
+    "token_rotation_placeholder": 6,
+    "prompt_injection_exposure": 6,
+    "outbound_action_exposure": 6,
+    "rate_limit_controls": 6,
+    "export_delete_impact_mapping": 6,
+    "audit_evidence_completeness": 6,
+    "tenant_isolation": 8,
+    "provider_risk_level": 4,
+    "reconciliation_drift_status": 2
+  },
+  "failed_dimensions": [],
+  "required_improvements": [
+    "token_rotation_placeholder_followup"
+  ],
+  "reason_codes": [],
+  "evidence_refs": [
+    "ev-connector-score-001"
+  ],
+  "created_at": "2026-05-26T01:00:00Z",
+  "updated_at": "2026-05-26T01:00:00Z"
+}

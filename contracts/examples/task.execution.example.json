@@ -1,0 +1,71 @@
+{
+  "contract_name": "task.execution",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-it-health-001",
+  "causation_id": null,
+  "idempotency_key": "idem-task-it-health-001",
+  "task_id": "task-it-health-001",
+  "task_class": "it_health_check",
+  "status": "completed_mock",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:20:00Z"
+  },
+  "requested_by": {
+    "actor_type": "operator",
+    "actor_id": "operator-lab-001"
+  },
+  "assigned_worker_id": "arc-it-helper-01",
+  "data_classification": "internal",
+  "risk_tier": "medium",
+  "execution_mode": "mock_only",
+  "task_scope": {
+    "description": "Gather read-only lab health posture from the supervisor and Arc worker fleet.",
+    "external_effect": "none",
+    "allowed_actions": [
+      "read_health_status",
+      "summarize_diagnostics"
+    ],
+    "blocked_actions": [
+      "run_remediation",
+      "install_update_software",
+      "touch_production_server"
+    ],
+    "target_resource_refs": [
+      "supervisor-health-ref",
+      "worker-fleet-health-ref"
+    ]
+  },
+  "required_tool_packs": [
+    "it_diagnostics_read_only"
+  ],
+  "model_route_id": "mr-it-health-001",
+  "policy_version": "policy-phase0-v1",
+  "guardian_decision_id": "gd-it-health-001",
+  "approval_required": false,
+  "approval_request_id": null,
+  "approval_token_id": null,
+  "evidence_artifact_ids": [
+    "ev-task-it-health-001"
+  ],
+  "retry_policy": {
+    "max_attempts": 1,
+    "retry_on_worker_offline": true,
+    "retry_on_model_unavailable": false
+  },
+  "timeout_at": "2026-05-18T21:50:00Z",
+  "failure_behavior": {
+    "on_approval_timeout": "block_task",
+    "on_worker_offline": "requeue",
+    "on_evidence_failure": "block_task"
+  },
+  "result_summary": "Read-only lab health check completed with no remediation executed.",
+  "failure_reason": null,
+  "created_at": "2026-05-18T21:19:00Z",
+  "updated_at": "2026-05-18T21:20:00Z"
+}

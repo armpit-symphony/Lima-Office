@@ -1,0 +1,879 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/model.route.schema.json",
+  "title": "Model Route Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "model_route_id",
+    "task_id",
+    "producer",
+    "requested_by",
+    "route_policy_version",
+    "route_mode",
+    "model_role",
+    "route_status",
+    "route_reason_codes",
+    "taint_status",
+    "data_class",
+    "risk_tier",
+    "approval_required",
+    "rbac_context_ref",
+    "session_policy_ref",
+    "device_trust_ref",
+    "worker_attestation_ref",
+    "attestation_result_ref",
+    "appraisal_policy_ref",
+    "update_rollback_ref",
+    "worker_capability_refs",
+    "fallback_allowed",
+    "policy_version",
+    "evidence_refs",
+    "policy_refs",
+    "created_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "model.route"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "taxonomy_version": {
+      "type": "string"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model_route_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "worker",
+            "helper_agent",
+            "guardian"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "requested_by": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor_type",
+        "actor_id"
+      ],
+      "properties": {
+        "actor_type": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "worker",
+            "helper_agent",
+            "sparkpit_operator",
+            "customer_admin"
+          ]
+        },
+        "actor_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "route_policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "route_mode": {
+      "type": "string",
+      "enum": [
+        "mock_only",
+        "local_planned",
+        "subscription_planned",
+        "blocked_mvp"
+      ]
+    },
+    "model_role": {
+      "type": "string",
+      "enum": [
+        "supervisor_reasoning",
+        "worker_draft",
+        "worker_classification",
+        "it_diagnostic_summary",
+        "file_memory_helper",
+        "governance_review"
+      ]
+    },
+    "route_status": {
+      "type": "string",
+      "enum": [
+        "selected",
+        "degraded",
+        "denied",
+        "blocked_mvp",
+        "unavailable"
+      ]
+    },
+    "route_reason_codes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "model_route_unavailable",
+          "model_route_blocked_mvp",
+          "model_route_tainted_input_denied",
+          "model_route_privileged_requires_approval",
+          "model_route_provider_blocked_mvp",
+          "model_route_local_execution_blocked_mvp",
+          "model_route_rbac_blocked",
+          "model_route_device_untrusted",
+          "model_route_fallback_denied",
+          "attestation_required",
+          "attestation_failed",
+          "attestation_expired",
+          "trust_root_unknown",
+          "trust_root_failed",
+          "reference_value_missing",
+          "reference_value_stale",
+          "reference_value_revoked",
+          "endorsement_missing",
+          "endorsement_revoked",
+          "endorsement_expired",
+          "appraisal_policy_missing",
+          "appraisal_policy_revoked",
+          "appraisal_failed",
+          "appraisal_inconclusive",
+          "attestation_result_expired",
+          "attestation_quarantine_required",
+          "attestation_reference_mismatch",
+          "attestation_lineage_stale",
+          "attestation_lineage_revoked",
+          "attestation_lineage_conflicted",
+          "attestation_result_trust_conflict",
+          "attestation_reconciliation_drift",
+          "attestation_revocation_pending",
+          "attestation_revocation_not_propagated",
+          "attestation_quarantine_mismatch",
+          "attestation_cross_tenant_linkage",
+          "verifier_authority_conflict",
+          "appraisal_policy_revoked_but_active",
+          "trusted_result_with_revoked_endorsement",
+          "trusted_result_with_revoked_reference",
+          "model_route_selected_with_untrusted_lineage",
+          "transaction_committed_with_revoked_attestation",
+          "revocation_propagation_pending",
+          "revocation_propagation_failed",
+          "verifier_authority_missing",
+          "verifier_authority_revoked",
+          "reference_authority_missing",
+          "endorsement_authority_missing",
+          "quarantine_clearance_sod_required",
+          "update_signature_missing",
+          "update_signature_invalid",
+          "update_provenance_missing",
+          "update_rollback_required",
+          "update_blocked_mvp",
+          "model_bundle_untrusted",
+          "policy_bundle_untrusted",
+          "runtime_bundle_untrusted",
+          "health_unknown",
+          "health_degraded",
+          "health_blocked"
+        ]
+      }
+    },
+    "taint_status": {
+      "type": "string",
+      "enum": [
+        "clean",
+        "tainted",
+        "suspected"
+      ]
+    },
+    "data_class": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "customer_confidential",
+        "sensitive_hr",
+        "sensitive_finance",
+        "sensitive_legal",
+        "sensitive_medical"
+      ]
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "blocked"
+      ]
+    },
+    "approval_required": {
+      "type": "boolean"
+    },
+    "rbac_context_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "session_policy_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "device_trust_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "worker_attestation_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "attestation_result_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "appraisal_policy_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "update_rollback_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "lineage_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "authority_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "revocation_propagation_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "worker_capability_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "fallback_allowed": {
+      "type": "boolean"
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fallback_policy": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "fallback_reason_codes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "model_route_fallback_denied",
+          "model_route_unavailable",
+          "model_route_provider_blocked_mvp",
+          "model_route_local_execution_blocked_mvp",
+          "update_signature_missing",
+          "update_signature_invalid",
+          "update_provenance_missing",
+          "update_rollback_required",
+          "model_bundle_untrusted",
+          "policy_bundle_untrusted",
+          "runtime_bundle_untrusted",
+          "health_degraded",
+          "health_blocked"
+        ]
+      }
+    },
+    "provider_ref": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "provider_ref_type",
+        "placeholder_ref",
+        "live_call"
+      ],
+      "properties": {
+        "provider_ref_type": {
+          "type": "string",
+          "enum": [
+            "none",
+            "mock_only",
+            "subscription_planned"
+          ]
+        },
+        "placeholder_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "live_call": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "local_model_bundle_ref": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "bundle_ref",
+        "execution_enabled"
+      ],
+      "properties": {
+        "bundle_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "execution_enabled": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "policy_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "route_mode": {
+            "const": "blocked_mvp"
+          }
+        },
+        "required": [
+          "route_mode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "route_status": {
+            "not": {
+              "const": "selected"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "taint_status": {
+            "enum": [
+              "tainted",
+              "suspected"
+            ]
+          },
+          "risk_tier": {
+            "const": "high"
+          }
+        },
+        "required": [
+          "taint_status",
+          "risk_tier"
+        ]
+      },
+      "then": {
+        "properties": {
+          "route_status": {
+            "enum": [
+              "denied",
+              "blocked_mvp"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "route_mode": {
+            "const": "subscription_planned"
+          }
+        },
+        "required": [
+          "route_mode"
+        ]
+      },
+      "then": {
+        "required": [
+          "provider_ref"
+        ],
+        "properties": {
+          "provider_ref": {
+            "type": "object",
+            "properties": {
+              "provider_ref_type": {
+                "const": "subscription_planned"
+              },
+              "live_call": {
+                "const": false
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "route_mode": {
+            "const": "local_planned"
+          }
+        },
+        "required": [
+          "route_mode"
+        ]
+      },
+      "then": {
+        "required": [
+          "local_model_bundle_ref"
+        ],
+        "properties": {
+          "local_model_bundle_ref": {
+            "type": "object",
+            "properties": {
+              "execution_enabled": {
+                "const": false
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "route_status": {
+            "const": "selected"
+          }
+        },
+        "required": [
+          "route_status"
+        ]
+      },
+      "then": {
+        "required": [
+          "evidence_refs",
+          "policy_refs"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "fallback_allowed": {
+            "const": true
+          }
+        },
+        "required": [
+          "fallback_allowed"
+        ]
+      },
+      "then": {
+        "properties": {
+          "fallback_policy": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fallback_reason_codes": {
+            "type": "array",
+            "minItems": 1
+          }
+        },
+        "required": [
+          "fallback_policy",
+          "fallback_reason_codes"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "risk_tier": {
+            "const": "high"
+          }
+        },
+        "required": [
+          "risk_tier"
+        ]
+      },
+      "then": {
+        "anyOf": [
+          {
+            "properties": {
+              "approval_required": {
+                "const": true
+              }
+            },
+            "required": [
+              "approval_required"
+            ]
+          },
+          {
+            "properties": {
+              "route_status": {
+                "enum": [
+                  "blocked_mvp",
+                  "denied"
+                ]
+              }
+            },
+            "required": [
+              "route_status"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "risk_tier": {
+            "const": "high"
+          },
+          "route_status": {
+            "const": "selected"
+          }
+        },
+        "required": [
+          "risk_tier",
+          "route_status"
+        ]
+      },
+      "then": {
+        "required": [
+          "rbac_context_ref",
+          "session_policy_ref",
+          "device_trust_ref",
+          "worker_attestation_ref",
+          "attestation_result_ref",
+          "appraisal_policy_ref",
+          "update_rollback_ref"
+        ],
+        "properties": {
+          "rbac_context_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "session_policy_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "device_trust_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "worker_attestation_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "attestation_result_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "appraisal_policy_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "update_rollback_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "route_reason_codes": {
+            "contains": {
+              "enum": [
+                "model_route_device_untrusted",
+                "model_route_rbac_blocked"
+              ]
+            }
+          },
+          "risk_tier": {
+            "const": "high"
+          }
+        },
+        "required": [
+          "route_reason_codes",
+          "risk_tier"
+        ]
+      },
+      "then": {
+        "properties": {
+          "route_status": {
+            "enum": [
+              "denied",
+              "blocked_mvp"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "route_reason_codes": {
+            "contains": {
+              "enum": [
+                "attestation_failed",
+                "attestation_expired",
+                "trust_root_unknown",
+                "trust_root_failed",
+                "reference_value_missing",
+                "reference_value_stale",
+                "reference_value_revoked",
+                "endorsement_missing",
+                "endorsement_revoked",
+                "endorsement_expired",
+                "appraisal_policy_missing",
+                "appraisal_policy_revoked",
+                "appraisal_failed",
+                "appraisal_inconclusive",
+                "attestation_result_expired",
+                "attestation_quarantine_required",
+                "attestation_reference_mismatch",
+                "attestation_lineage_stale",
+                "attestation_lineage_revoked",
+                "attestation_lineage_conflicted",
+                "attestation_result_trust_conflict",
+                "attestation_reconciliation_drift",
+                "attestation_revocation_pending",
+                "attestation_revocation_not_propagated",
+                "attestation_quarantine_mismatch",
+                "attestation_cross_tenant_linkage",
+                "verifier_authority_conflict",
+                "appraisal_policy_revoked_but_active",
+                "trusted_result_with_revoked_endorsement",
+                "trusted_result_with_revoked_reference",
+                "model_route_selected_with_untrusted_lineage",
+                "transaction_committed_with_revoked_attestation",
+                "revocation_propagation_pending",
+                "revocation_propagation_failed",
+                "verifier_authority_missing",
+                "verifier_authority_revoked",
+                "reference_authority_missing",
+                "endorsement_authority_missing",
+                "quarantine_clearance_sod_required",
+                "update_signature_invalid",
+                "update_signature_missing",
+                "update_provenance_missing",
+                "model_bundle_untrusted",
+                "policy_bundle_untrusted",
+                "runtime_bundle_untrusted"
+              ]
+            }
+          }
+        },
+        "required": [
+          "route_reason_codes"
+        ]
+      },
+      "then": {
+        "properties": {
+          "route_status": {
+            "enum": [
+              "denied",
+              "blocked_mvp",
+              "unavailable"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "route_mode": {
+            "const": "local_planned"
+          },
+          "route_status": {
+            "const": "selected"
+          }
+        },
+        "required": [
+          "route_mode",
+          "route_status"
+        ]
+      },
+      "then": {
+        "required": [
+          "local_model_bundle_ref",
+          "worker_attestation_ref"
+        ],
+        "properties": {
+          "worker_attestation_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "provider_endpoint"
+            ]
+          },
+          {
+            "required": [
+              "provider_api_key"
+            ]
+          },
+          {
+            "required": [
+              "api_key"
+            ]
+          },
+          {
+            "required": [
+              "provider_token"
+            ]
+          },
+          {
+            "required": [
+              "endpoint_url"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,906 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/worker.lifecycle.schema.json",
+  "title": "Worker Lifecycle Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "lifecycle_event_id",
+    "worker_id",
+    "worker_role",
+    "lifecycle_state",
+    "lifecycle_event",
+    "producer",
+    "device_identity_ref",
+    "channel_identity_ref",
+    "identity_verification",
+    "attestation_status",
+    "capability_lease_id",
+    "capability_manifest_version",
+    "capability_manifest_hash_ref",
+    "tool_pack_scope",
+    "model_options",
+    "data_classification",
+    "risk_tier",
+    "health_state",
+    "approval_state",
+    "quarantine_state",
+    "revocation_generation",
+    "active_task_disposition",
+    "approval_tokens_revoked",
+    "capability_lease_revoked",
+    "heartbeat_interval_seconds",
+    "missed_heartbeat_count",
+    "policy_version",
+    "guardian_decision_id",
+    "evidence_artifact_ids",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "worker.lifecycle"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lifecycle_event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "worker_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "worker_role": {
+      "type": "string",
+      "enum": [
+        "admin_arc_worker",
+        "file_clerk_arc_worker",
+        "it_helper_arc_worker",
+        "general_office_arc_worker"
+      ]
+    },
+    "lifecycle_state": {
+      "type": "string",
+      "enum": [
+        "pending_registration",
+        "pending_operator_approval",
+        "registered",
+        "healthy",
+        "degraded",
+        "offline",
+        "quarantined",
+        "revoked",
+        "replaced"
+      ]
+    },
+    "lifecycle_event": {
+      "type": "string",
+      "enum": [
+        "registration_requested",
+        "registration_approved",
+        "heartbeat_state_changed",
+        "capability_changed",
+        "quarantine_requested",
+        "quarantine_applied",
+        "revoke_requested",
+        "revoked",
+        "replacement_declared",
+        "recovered",
+        "release_requested",
+        "released",
+        "reenrollment_requested",
+        "reenrollment_approved",
+        "capability_lease_rotated",
+        "local_cache_purged"
+      ]
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "worker",
+            "guardian",
+            "operator_console",
+            "helper_agent",
+            "lima_it_bridge"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "device_identity_ref": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Reference to a device identity record. This is not a private key or credential value."
+    },
+    "channel_identity_ref": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Reference to the authenticated supervisor-worker channel identity."
+    },
+    "identity_verification": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "verified",
+        "failed"
+      ]
+    },
+    "attestation_status": {
+      "type": "string",
+      "enum": [
+        "not_required_phase0",
+        "manual_review_only",
+        "pending",
+        "verified",
+        "failed",
+        "expired",
+        "revoked",
+        "blocked_mvp"
+      ]
+    },
+    "trust_root_status": {
+      "type": "string",
+      "enum": [
+        "unknown",
+        "hardware_root_placeholder",
+        "software_only_placeholder",
+        "verified_placeholder",
+        "failed",
+        "blocked_mvp"
+      ]
+    },
+    "worker_attestation_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "attestation_result_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "appraisal_policy_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "attestation_expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "update_rollback_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "capability_lease_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "capability_manifest_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "capability_manifest_hash_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tool_pack_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope_version",
+        "allowed_tool_packs",
+        "blocked_tool_packs",
+        "file_access",
+        "network_access",
+        "connector_access",
+        "max_concurrent_tasks"
+      ],
+      "properties": {
+        "scope_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "allowed_tool_packs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "document_read",
+              "draft_workspace",
+              "ticket_triage",
+              "file_organize",
+              "it_diagnostics_read_only",
+              "mock_connector_readiness"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "blocked_tool_packs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "unrestricted_browser",
+              "unrestricted_filesystem",
+              "unrestricted_network",
+              "live_connector_write",
+              "production_remediation",
+              "payment_or_regulated_system"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "file_access": {
+          "type": "string",
+          "enum": [
+            "none",
+            "read_only",
+            "draft_workspace",
+            "approval_required_mutation"
+          ]
+        },
+        "network_access": {
+          "type": "string",
+          "enum": [
+            "none",
+            "local_supervisor_only",
+            "guardian_approved_allowlist"
+          ]
+        },
+        "connector_access": {
+          "type": "string",
+          "enum": [
+            "none",
+            "mock_readiness_only"
+          ]
+        },
+        "max_concurrent_tasks": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        }
+      }
+    },
+    "model_options": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed_routes",
+        "blocked_routes",
+        "local_model_status"
+      ],
+      "properties": {
+        "allowed_routes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "local_model",
+              "subscription_cloud_model"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "blocked_routes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "unknown_provider",
+              "unreviewed_provider",
+              "provider_with_secret_in_prompt"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "local_model_status": {
+          "type": "string",
+          "enum": [
+            "not_available",
+            "available",
+            "degraded"
+          ]
+        }
+      }
+    },
+    "model_route_posture": {
+      "type": "string",
+      "enum": [
+        "mock_only",
+        "local_planned",
+        "subscription_planned",
+        "blocked_mvp"
+      ]
+    },
+    "data_classification": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "customer_confidential",
+        "sensitive_hr",
+        "sensitive_finance",
+        "sensitive_legal",
+        "sensitive_medical",
+        "secret"
+      ]
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "blocked"
+      ]
+    },
+    "health_state": {
+      "type": "string",
+      "enum": [
+        "unknown",
+        "healthy",
+        "degraded",
+        "offline",
+        "quarantined",
+        "revoked"
+      ]
+    },
+    "quarantine_state": {
+      "type": "string",
+      "enum": [
+        "not_quarantined",
+        "quarantine_requested",
+        "quarantined",
+        "release_requested",
+        "released"
+      ]
+    },
+    "quarantine_reason_code": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "identity_verification_failed",
+        "capability_mismatch",
+        "heartbeat_missed",
+        "suspicious_tool_request",
+        "prompt_injection_suspected",
+        "evidence_writer_failed",
+        "operator_containment",
+        "update_verification_failed",
+        null
+      ]
+    },
+    "quarantined_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "quarantined_by": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "release_required_by_role": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "operator",
+        "supervisor_admin",
+        "security_reviewer",
+        "field_it_reviewer",
+        null
+      ]
+    },
+    "released_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "revocation_generation": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "active_task_disposition": {
+      "type": "string",
+      "enum": [
+        "none",
+        "allow_read_only_finish",
+        "cancel_and_requeue",
+        "cancel_and_block"
+      ]
+    },
+    "approval_tokens_revoked": {
+      "type": "boolean"
+    },
+    "capability_lease_revoked": {
+      "type": "boolean"
+    },
+    "approval_state": {
+      "type": "string",
+      "enum": [
+        "not_required",
+        "operator_approval_required",
+        "approved",
+        "denied",
+        "expired"
+      ]
+    },
+    "heartbeat_interval_seconds": {
+      "type": "integer",
+      "minimum": 10,
+      "maximum": 3600
+    },
+    "missed_heartbeat_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_artifact_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "registered_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "approved_by_operator_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "last_heartbeat_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "quarantine_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "revoked_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "replacement_worker_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "failure_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reenrollment_request_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "identity_recheck_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "cache_purge_evidence_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "identity_verification": {
+            "const": "failed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "lifecycle_state": {
+            "enum": [
+              "quarantined",
+              "revoked"
+            ]
+          },
+          "health_state": {
+            "enum": [
+              "quarantined",
+              "revoked"
+            ]
+          },
+          "quarantine_state": {
+            "const": "quarantined"
+          },
+          "capability_lease_revoked": {
+            "const": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "attestation_status": {
+            "const": "verified"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "worker_attestation_ref",
+          "attestation_result_ref",
+          "appraisal_policy_ref"
+        ],
+        "properties": {
+          "worker_attestation_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "attestation_result_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "appraisal_policy_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "attestation_status": {
+            "const": "failed"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "attestation_result_ref"
+        ],
+        "properties": {
+          "lifecycle_state": {
+            "enum": [
+              "quarantined",
+              "revoked"
+            ]
+          },
+          "health_state": {
+            "enum": [
+              "quarantined",
+              "revoked"
+            ]
+          },
+          "quarantine_state": {
+            "const": "quarantined"
+          },
+          "capability_lease_revoked": {
+            "const": true
+          },
+          "trust_root_status": {
+            "enum": [
+              "failed",
+              "unknown",
+              "blocked_mvp"
+            ]
+          },
+          "attestation_result_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "attestation_status": {
+            "const": "expired"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "attestation_expires_at"
+        ],
+        "properties": {
+          "health_state": {
+            "not": {
+              "const": "healthy"
+            }
+          },
+          "attestation_expires_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "const": "quarantined"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "quarantine_reason_code",
+          "quarantined_at",
+          "quarantined_by"
+        ],
+        "properties": {
+          "health_state": {
+            "const": "quarantined"
+          },
+          "quarantine_state": {
+            "const": "quarantined"
+          },
+          "quarantine_reason_code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "quarantined_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "quarantined_by": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approval_tokens_revoked": {
+            "const": true
+          },
+          "capability_lease_revoked": {
+            "const": true
+          },
+          "active_task_disposition": {
+            "enum": [
+              "cancel_and_requeue",
+              "cancel_and_block"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "const": "revoked"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "revoked_at"
+        ],
+        "properties": {
+          "health_state": {
+            "const": "revoked"
+          },
+          "revoked_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "approval_tokens_revoked": {
+            "const": true
+          },
+          "capability_lease_revoked": {
+            "const": true
+          },
+          "active_task_disposition": {
+            "enum": [
+              "cancel_and_requeue",
+              "cancel_and_block"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "const": "healthy"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "identity_verification": {
+            "const": "verified"
+          },
+          "quarantine_state": {
+            "const": "not_quarantined"
+          },
+          "approval_tokens_revoked": {
+            "const": false
+          },
+          "capability_lease_revoked": {
+            "const": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_event": {
+            "enum": [
+              "reenrollment_requested",
+              "reenrollment_approved",
+              "released"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "reenrollment_request_id",
+          "identity_recheck_artifact_id"
+        ],
+        "properties": {
+          "approval_state": {
+            "enum": [
+              "operator_approval_required",
+              "approved"
+            ]
+          },
+          "reenrollment_request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "identity_recheck_artifact_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "model_route_posture": {
+            "const": "blocked_mvp"
+          }
+        },
+        "required": [
+          "model_route_posture"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lifecycle_state": {
+            "not": {
+              "const": "healthy"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

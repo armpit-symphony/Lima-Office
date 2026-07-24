@@ -1,0 +1,115 @@
+{
+  "contract_name": "guardian.decision",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-file-delete-deny-001",
+  "causation_id": "tool-file-delete-001",
+  "idempotency_key": "idem-guardian-file-delete-001",
+  "decision_id": "gd-file-delete-deny-001",
+  "request_id": "req-file-delete-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T21:25:00Z"
+  },
+  "requested_by": {
+    "actor_type": "worker",
+    "actor_id": "arc-file-clerk-01"
+  },
+  "subject": {
+    "subject_type": "tool",
+    "subject_id": "tool-file-delete-001"
+  },
+  "action_class": "file_delete",
+  "resource_ref": {
+    "resource_type": "file",
+    "resource_id": "file-ref-archive-candidate-001",
+    "resource_scope": "tenant_scoped"
+  },
+  "data_classification": "customer_confidential",
+  "risk_tier": "blocked",
+  "policy_refs": [
+    "autonomy-boundary:file-delete-approval-required",
+    "mvp:block-unapproved-file-mutation"
+  ],
+  "policy_version": "policy-phase0-v1",
+  "policy_snapshot_hash": "hash-ref-policy-snapshot-001",
+  "valid_for_action_ref": "action-hash-file-delete-001",
+  "decision": "deny",
+  "approval_required": false,
+  "approval_request_id": null,
+  "approval_token_id": null,
+  "denial_reason": "File deletion requested without a matching approval request and scoped approval token.",
+  "redaction_level": "metadata_only",
+  "evidence_required": true,
+  "evidence_artifact_id": "ev-file-delete-deny-001",
+  "evidence_artifact_ids": [
+    "ev-file-delete-deny-001"
+  ],
+  "guardian_decision_id": "gd-file-delete-deny-001",
+  "decision_nonce": "decision-nonce-file-delete-deny-001",
+  "issued_at": "2026-05-18T21:25:00Z",
+  "effective_at": "2026-05-18T21:25:00Z",
+  "max_age_seconds": 300,
+  "clock_skew_allowance_seconds": 30,
+  "replay_policy": "deny_replay",
+  "decision_scope_hash": "action-hash-file-delete-001",
+  "bound_tenant_id": "tenant-lab-001",
+  "bound_task_id": null,
+  "bound_worker_id": "arc-file-clerk-01",
+  "bound_action_type": "file_delete",
+  "bound_tool_scope": {
+    "resource_refs": [
+      "file-ref-archive-candidate-001"
+    ],
+    "allowed_operations": [
+      "delete_file"
+    ],
+    "prohibited_operations": [
+      "send_external_message",
+      "live_connector_write",
+      "run_remediation"
+    ]
+  },
+  "approval_binding_id": null,
+  "token_verification_id": null,
+  "replay_record_id": "rr-file-delete-deny-001",
+  "replay_artifact_id": "ev-file-delete-deny-001",
+  "denial_evidence_ref": "ev-file-delete-deny-001",
+  "pre_action_evidence_refs": [
+    "ev-file-delete-deny-001"
+  ],
+  "post_action_evidence_refs": [],
+  "export_manifest_refs": [],
+  "redaction_profile_ref": "metadata_only",
+  "hash_algorithm": "sha256",
+  "content_hash": "hash-ref-file-delete-deny-001",
+  "parent_evidence_refs": [],
+  "chain_position": 1,
+  "raw_content_included": false,
+  "secret_material_included": false,
+  "evidence_refs": [
+    "ev-file-delete-deny-001"
+  ],
+  "replay_status": "unused",
+  "consumed_at": null,
+  "revoked_at": null,
+  "revocation_reason": null,
+  "prompt_injection": {
+    "untrusted_input_refs": [
+      "doc-ref-untrusted-cleanup-note-001"
+    ],
+    "content_origin": "document",
+    "instruction_boundary": "untrusted_content_as_data",
+    "injection_suspected": true,
+    "injection_signals": [
+      "request_unapproved_tool"
+    ],
+    "containment_action": "deny_action"
+  },
+  "created_at": "2026-05-18T21:25:00Z",
+  "expires_at": "2026-05-18T21:30:00Z"
+}

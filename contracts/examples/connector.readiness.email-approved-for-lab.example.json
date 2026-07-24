@@ -1,0 +1,73 @@
+{
+  "contract_name": "connector.readiness",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-connector-readiness-email-001",
+  "causation_id": null,
+  "idempotency_key": "idem-connector-readiness-email-001",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-25T20:00:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "connector_readiness_id": "connector-readiness-email-001",
+  "connector_id": "connector-email-metadata-001",
+  "connector_type": "email",
+  "provider_profile_ref": "provider-profile-email-001",
+  "lifecycle_state": "approved_for_lab",
+  "readiness_status": "approved_for_lab",
+  "connector_owner_ref": "connector-owner-ref-001",
+  "consent_ref": "connector-consent-ref-001",
+  "scope_refs": [
+    "connector-scope-review-ref-001"
+  ],
+  "secrets_ref": "secret-ref-placeholder-email-001",
+  "data_classes": [
+    "internal",
+    "customer_confidential"
+  ],
+  "allowed_actions": [
+    "metadata_read",
+    "draft_create",
+    "scope_review",
+    "consent_review"
+  ],
+  "blocked_actions": [
+    "external_send",
+    "form_submit",
+    "customer_record_mutation",
+    "connector_admin",
+    "production_remediation",
+    "live_execution"
+  ],
+  "outbound_action_policy_ref": "policy.connector.outbound.phase0",
+  "rate_limit_policy_ref": "policy.connector.rate_limit.phase0",
+  "prompt_injection_policy_refs": [
+    "policy.prompt_injection_handling.phase0"
+  ],
+  "approval_policy_refs": [
+    "policy.approval_token_lifecycle.phase0"
+  ],
+  "evidence_refs": [
+    "ev-connector-readiness-email-001"
+  ],
+  "revocation_refs": [
+    "connector-revocation-runbook-ref-001"
+  ],
+  "revocation_drill_refs": [
+    "connector-revocation-drill-001"
+  ],
+  "token_rotation_placeholder_status": "required_before_live",
+  "export_delete_impact_refs": [
+    "governance-audit-export-impact-ref-001"
+  ],
+  "reason_codes": [
+    "approved"
+  ],
+  "created_at": "2026-05-25T20:00:00Z",
+  "updated_at": "2026-05-25T20:00:00Z"
+}

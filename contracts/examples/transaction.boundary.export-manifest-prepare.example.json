@@ -1,0 +1,75 @@
+{
+  "contract_name": "transaction.boundary",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "dry_run",
+  "correlation_id": "corr-export-prepare-001",
+  "causation_id": "cause-export-request-001",
+  "idempotency_key": "idem-export-prepare-001",
+  "producer": {
+    "component": "operator_console",
+    "produced_at": "2026-05-24T14:07:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "transaction_id": "txn-export-manifest-prepare-001",
+  "transaction_type": "export_manifest_prepare",
+  "participants": [
+    "operator_console",
+    "supervisor",
+    "redaction_processor_placeholder",
+    "export_manifest_builder",
+    "evidence_ledger"
+  ],
+  "required_operations": [
+    "resolve_evidence_scope",
+    "apply_redaction_placeholder",
+    "build_refs_only_manifest",
+    "append_export_manifest_ledger_entry"
+  ],
+  "transaction_status": "committed",
+  "preconditions": [
+    "requester_authorized_for_tenant_scope",
+    "redaction_profile_selected",
+    "retention_placeholders_present"
+  ],
+  "postconditions": [
+    "manifest_prepared_refs_only",
+    "excluded_refs_recorded",
+    "hash_manifest_ref_recorded"
+  ],
+  "related_transaction_id": "txn-export-manifest-prepare-001",
+  "related_coordinator_event_ids": [
+    "coord-ev-export-001",
+    "coord-ev-export-005"
+  ],
+  "related_replay_record_ids": [],
+  "related_ledger_entry_ids": [
+    "ledger-entry-export-manifest-001"
+  ],
+  "related_evidence_artifact_ids": [
+    "ev-export-prepare-001"
+  ],
+  "related_export_manifest_ids": [
+    "exp-manifest-001"
+  ],
+  "linkage_status": "linked",
+  "linkage_failure_reasons": [],
+  "canonical_tenant_id": "tenant-lab-001",
+  "canonical_correlation_id": "corr-export-prepare-001",
+  "canonical_idempotency_key": "idem-export-prepare-001",
+  "canonical_decision_nonce": null,
+  "canonical_action_type": "export_manifest_prepare",
+  "canonical_tool_scope": null,
+  "canonical_worker_id": null,
+  "canonical_task_id": "task-export-prepare-001",
+  "evidence_refs": [
+    "ev-export-prepare-001"
+  ],
+  "failure_reason": null,
+  "created_at": "2026-05-24T14:07:00Z",
+  "committed_at": "2026-05-24T14:07:03Z",
+  "rolled_back_at": null
+}

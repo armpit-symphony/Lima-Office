@@ -1,0 +1,69 @@
+{
+  "contract_name": "guardian.replay",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-guardian-live-connector-blocked-001",
+  "causation_id": "gd-live-connector-blocked-001",
+  "idempotency_key": "idem-replay-live-connector-blocked-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T21:44:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "replay_check_id": "gr-live-connector-blocked-001",
+  "replay_record_id": "rr-live-connector-blocked-001",
+  "guardian_decision_id": "gd-live-connector-blocked-001",
+  "decision_nonce": null,
+  "approval_binding_id": null,
+  "token_verification_id": null,
+  "task_id": null,
+  "worker_id": null,
+  "action_type": "live_connector_access",
+  "tool_scope": {
+    "resource_refs": [
+      "connector-ref-crm-placeholder-001"
+    ],
+    "allowed_operations": [
+      "none"
+    ],
+    "prohibited_operations": [
+      "live_connector_write",
+      "connector_read_live",
+      "connector_write_live"
+    ]
+  },
+  "decision_scope_hash": "hash-ref-live-connector-blocked-001",
+  "policy_snapshot_hash": "policy-snapshot-hash-phase0-connector-001",
+  "expires_at": "2026-05-18T21:48:20Z",
+  "replay_check_result": "blocked_mvp",
+  "checked_at": "2026-05-18T21:44:00Z",
+  "evidence_refs": [
+    "ev-guardian-live-connector-blocked-001"
+  ],
+  "mismatch_reasons": [
+    "blocked_mvp"
+  ],
+  "denial_evidence_ref": "ev-guardian-live-connector-blocked-001",
+  "pre_action_evidence_refs": [
+    "ev-guardian-live-connector-blocked-001"
+  ],
+  "post_action_evidence_refs": [],
+  "replay_artifact_id": "ev-guardian-live-connector-blocked-001",
+  "redaction_profile_ref": "metadata_only",
+  "hash_algorithm": "sha256",
+  "content_hash": "hash-ref-guardian-live-connector-blocked-001",
+  "parent_evidence_refs": [],
+  "chain_position": 1,
+  "export_manifest_refs": [],
+  "raw_content_included": false,
+  "secret_material_included": false,
+  "data_classification": "customer_confidential",
+  "redaction_level": "metadata_only",
+  "retention_class": "evidence_retained_placeholder",
+  "export_eligible": true,
+  "delete_policy_ref": "policy.audit_export_customer_exit.placeholder"
+}

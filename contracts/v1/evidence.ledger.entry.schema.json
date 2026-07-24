@@ -1,0 +1,938 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/evidence.ledger.entry.schema.json",
+  "title": "Evidence Ledger Entry Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "policy_version",
+    "ledger_entry_id",
+    "evidence_id",
+    "parent_entry_ids",
+    "entry_type",
+    "content_hash",
+    "hash_algorithm",
+    "previous_hash",
+    "entry_hash",
+    "chain_position",
+    "related_transaction_id",
+    "related_coordinator_event_ids",
+    "related_replay_record_ids",
+    "related_ledger_entry_ids",
+    "related_evidence_artifact_ids",
+    "related_export_manifest_ids",
+    "linkage_status",
+    "linkage_failure_reasons",
+    "canonical_tenant_id",
+    "canonical_correlation_id",
+    "canonical_idempotency_key",
+    "canonical_decision_nonce",
+    "canonical_action_type",
+    "canonical_tool_scope",
+    "canonical_worker_id",
+    "canonical_task_id",
+    "redaction_profile_ref",
+    "retention_policy_refs",
+    "export_manifest_refs",
+    "raw_content_included",
+    "secret_material_included",
+    "created_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "evidence.ledger.entry"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "guardian",
+            "operator_console",
+            "worker"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ledger_entry_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_id": {
+      "type": "string",
+      "pattern": "^ev-[A-Za-z0-9._:-]+$"
+    },
+    "parent_entry_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "entry_type": {
+      "type": "string",
+      "enum": [
+        "pre_action",
+        "post_action",
+        "denial",
+        "replay_denial",
+        "export_manifest",
+        "delete_review",
+        "rollback"
+      ]
+    },
+    "content_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hash_algorithm": {
+      "type": "string",
+      "enum": [
+        "sha256",
+        "sha512"
+      ]
+    },
+    "previous_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "entry_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "chain_position": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "related_transaction_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "related_coordinator_event_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "related_replay_record_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "related_ledger_entry_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "related_evidence_artifact_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "related_export_manifest_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "linkage_status": {
+      "type": "string",
+      "enum": [
+        "linked",
+        "missing_ref",
+        "mismatched_tenant",
+        "mismatched_scope",
+        "mismatched_nonce",
+        "drift_detected",
+        "blocked_mvp"
+      ]
+    },
+    "linkage_failure_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "canonical_tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_decision_nonce": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_action_type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_tool_scope": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "resource_refs",
+        "allowed_operations",
+        "prohibited_operations"
+      ],
+      "properties": {
+        "resource_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "allowed_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prohibited_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "canonical_worker_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_task_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reason_code_registry_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "unknown_reason_code_policy": {
+      "type": "string",
+      "enum": [
+        "fail_closed",
+        "display_unknown",
+        "blocked_mvp"
+      ]
+    },
+    "deprecated_reason_code_policy": {
+      "type": "string",
+      "enum": [
+        "allow_with_warning",
+        "fail_closed",
+        "blocked_mvp"
+      ]
+    },
+    "reason_code_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "deprecated",
+        "unknown",
+        "blocked"
+      ]
+    },
+    "evidence_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reconciliation_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_delete_conflict_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "prepared",
+        "exported",
+        "failed_closed",
+        "blocked_mvp"
+      ]
+    },
+    "delete_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "conflict_detected",
+        "blocked_mvp"
+      ]
+    },
+    "preservation_hold_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "required",
+        "active",
+        "conflict_with_delete",
+        "released",
+        "blocked_mvp"
+      ]
+    },
+    "reconciliation_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "reconciled",
+        "missing_ref",
+        "mismatched_binding",
+        "stale_decision",
+        "replay_mismatch",
+        "evidence_missing",
+        "coordinator_mismatch",
+        "cross_tenant_blocked",
+        "blocked_mvp",
+        null
+      ]
+    },
+    "reconciliation_failure_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reconciliation_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "canonical_approval_chain_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_approval_binding_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_guardian_decision_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_token_verification_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_replay_record_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_transaction_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "redaction_profile_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "retention_policy_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_manifest_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "raw_content_included": {
+      "type": "boolean",
+      "const": false
+    },
+    "secret_material_included": {
+      "type": "boolean",
+      "const": false
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "chain_position": {
+            "minimum": 2
+          }
+        },
+        "required": [
+          "chain_position"
+        ]
+      },
+      "then": {
+        "properties": {
+          "previous_hash": {
+            "type": "string",
+            "minLength": 1
+          },
+          "parent_entry_ids": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "entry_type": {
+            "const": "export_manifest"
+          }
+        },
+        "required": [
+          "entry_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "export_manifest_refs": {
+            "minItems": 1
+          },
+          "related_export_manifest_ids": {
+            "minItems": 1
+          },
+          "export_review_status": {
+            "enum": [
+              "prepared",
+              "exported",
+              "denied",
+              "blocked_mvp",
+              "failed_closed"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "entry_type": {
+            "const": "delete_review"
+          }
+        },
+        "required": [
+          "entry_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "related_export_manifest_ids": {
+            "minItems": 1
+          },
+          "reason_codes": {
+            "minItems": 1
+          },
+          "delete_review_status": {
+            "enum": [
+              "review_required",
+              "denied",
+              "conflict_detected",
+              "blocked_mvp",
+              "approved"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "entry_type": {
+            "enum": [
+              "replay_denial",
+              "rollback"
+            ]
+          }
+        },
+        "required": [
+          "entry_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "parent_entry_ids": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "entry_type": {
+            "enum": [
+              "pre_action",
+              "post_action",
+              "export_manifest",
+              "delete_review",
+              "rollback"
+            ]
+          }
+        },
+        "required": [
+          "entry_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "related_evidence_artifact_ids": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "entry_type": {
+            "const": "denial"
+          }
+        },
+        "required": [
+          "entry_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "related_evidence_artifact_ids": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "entry_type": {
+            "const": "replay_denial"
+          }
+        },
+        "required": [
+          "entry_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "related_replay_record_ids": {
+            "minItems": 1
+          },
+          "reason_codes": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "entry_type": {
+            "enum": [
+              "denial",
+              "replay_denial",
+              "rollback"
+            ]
+          }
+        },
+        "required": [
+          "entry_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence_reason_codes": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "const": "reconciled"
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reconciliation_failure_reasons": {
+            "maxItems": 0
+          },
+          "reconciliation_evidence_refs": {
+            "minItems": 1
+          },
+          "canonical_approval_binding_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonical_guardian_decision_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonical_token_verification_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonical_replay_record_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonical_transaction_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "linkage_status": {
+            "const": "linked"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "enum": [
+              "missing_ref",
+              "mismatched_binding",
+              "stale_decision",
+              "replay_mismatch",
+              "evidence_missing",
+              "coordinator_mismatch",
+              "cross_tenant_blocked",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reconciliation_failure_reasons": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "enum": [
+              "cross_tenant_blocked",
+              "blocked_mvp",
+              "stale_decision"
+            ]
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "linkage_status": {
+            "not": {
+              "const": "linked"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "linkage_status": {
+            "const": "linked"
+          }
+        },
+        "required": [
+          "linkage_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "linkage_failure_reasons": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "linkage_status": {
+            "enum": [
+              "missing_ref",
+              "mismatched_tenant",
+              "mismatched_scope",
+              "mismatched_nonce",
+              "drift_detected",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "linkage_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "linkage_failure_reasons": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "canonical_decision_nonce": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "canonical_decision_nonce"
+        ]
+      },
+      "then": {
+        "properties": {
+          "related_replay_record_ids": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reason_code_status": {
+            "enum": [
+              "unknown",
+              "blocked"
+            ]
+          }
+        },
+        "required": [
+          "reason_code_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "linkage_status": {
+            "not": {
+              "const": "linked"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reason_code_status": {
+            "const": "deprecated"
+          },
+          "deprecated_reason_code_policy": {
+            "enum": [
+              "fail_closed",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "reason_code_status",
+          "deprecated_reason_code_policy"
+        ]
+      },
+      "then": {
+        "properties": {
+          "linkage_status": {
+            "not": {
+              "const": "linked"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

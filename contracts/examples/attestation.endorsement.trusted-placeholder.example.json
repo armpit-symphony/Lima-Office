@@ -1,0 +1,35 @@
+{
+  "contract_name": "attestation.endorsement",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant_acme",
+  "customer_context_id": "cust_acme_primary",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-endorsement-trusted-001",
+  "causation_id": "evt-endorsement-collected-001",
+  "idempotency_key": "idem-endorsement-trusted-001",
+  "producer": {
+    "component": "field_it_reviewer",
+    "produced_at": "2026-05-24T18:20:00Z"
+  },
+  "endorsement_id": "endorsement-worker-node-001",
+  "endorsement_type": "sparkpit_operator_placeholder",
+  "endorsement_status": "trusted_placeholder",
+  "subject_ref": "worker:arc_worker_01",
+  "issuer_ref": "identity:security_reviewer_01",
+  "valid_from": "2026-05-24T18:00:00Z",
+  "valid_until": "2026-08-24T18:00:00Z",
+  "policy_refs": [
+    "policy.attestation.endorsement.phase1a"
+  ],
+  "authority_refs": [
+    "attestation.authority:authority-reference-approver-001"
+  ],
+  "evidence_refs": [
+    "evidence:artifact:attestation-endorsement-trusted-001"
+  ],
+  "reason_codes": [],
+  "policy_version": "policy.attestation.endorsement.phase1a.v1",
+  "created_at": "2026-05-24T18:20:00Z"
+}

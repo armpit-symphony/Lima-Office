@@ -1,0 +1,43 @@
+{
+  "contract_name": "update.rollback",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "dry_run",
+  "correlation_id": "corr-update-runtime-rollback-001",
+  "causation_id": "governance-update-record-rollback-001",
+  "idempotency_key": "idem-update-runtime-rollback-001",
+  "producer": {
+    "component": "field_it_reviewer",
+    "produced_at": "2026-05-25T15:30:00Z"
+  },
+  "update_id": "ur-runtime-rollback-001",
+  "worker_id": "worker-arc-003",
+  "deployment_id": "wd-003",
+  "artifact_type": "arc_runtime_bundle",
+  "update_status": "rolled_back",
+  "update_channel": "staged_planned",
+  "policy_version": "policy-phase1a-v1",
+  "artifact_hash": "sha256:runtime-bundle-rollback-001",
+  "signer_ref": "signer-placeholder-runtime-001",
+  "signing_key_ref": "signing-key-placeholder-runtime-001",
+  "provenance_ref": "provenance-placeholder-runtime-001",
+  "transparency_log_ref": "transparency-log-placeholder-runtime-001",
+  "rollback_target_ref": "runtime-bundle-known-good-0009",
+  "rollback_reason_codes": [
+    "update_rollback_required",
+    "runtime_bundle_untrusted"
+  ],
+  "verification_reason_codes": [],
+  "model_route_policy_refs": [],
+  "evidence_refs": [
+    "ev-update-runtime-rollback-001",
+    "ev-worker-health-post-rollback-001"
+  ],
+  "created_at": "2026-05-25T15:30:00Z",
+  "verified_at": "2026-05-25T15:30:30Z",
+  "applied_at": null,
+  "rolled_back_at": "2026-05-25T15:33:00Z"
+}

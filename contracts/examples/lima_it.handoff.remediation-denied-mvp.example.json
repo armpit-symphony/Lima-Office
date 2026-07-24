@@ -1,0 +1,67 @@
+{
+  "contract_name": "lima_it.handoff",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-lima-it-remediation-deny-001",
+  "causation_id": "task-remediation-request-001",
+  "idempotency_key": "idem-lima-it-remediation-deny-001",
+  "handoff_id": "lih-remediation-denied-001",
+  "task_id": "task-remediation-request-001",
+  "incident_id": "inc-remediation-misuse-001",
+  "handoff_type": "remediation_request",
+  "status": "denied",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:46:00Z"
+  },
+  "requested_by": {
+    "actor_type": "operator",
+    "actor_id": "operator-lab-001"
+  },
+  "operator_owner": "operator-lab-001",
+  "handoff_owner_role": "field_it_reviewer",
+  "target_system_ref": "target-system-ref-lab-server-001",
+  "data_classification": "internal",
+  "risk_tier": "blocked",
+  "read_only_diagnostic": false,
+  "diagnostic_scope": {
+    "mode": "not_requested",
+    "allowed_read_only_checks": [],
+    "prohibited_actions": [
+      "restart_service",
+      "modify_configuration",
+      "touch_production_server"
+    ]
+  },
+  "remediation_authorized": false,
+  "remediation_request_authorized": false,
+  "remediation_execution_authorized": false,
+  "remediation_scope": {
+    "requested": true,
+    "requested_actions": [
+      "restart_service"
+    ],
+    "approval_required": true,
+    "production_system_touch": "blocked_mvp"
+  },
+  "policy_version": "policy-phase0-v1",
+  "guardian_decision_id": "gd-lima-it-remediation-deny-001",
+  "approval_required": true,
+  "approval_request_id": "apr-lima-it-remediation-001",
+  "approval_token_id": null,
+  "denial_reason": "Remediation execution and production touch are blocked for Phase 0 MVP.",
+  "failure_reason": null,
+  "failure_code": null,
+  "operator_message": "Record the request and keep remediation non-executing.",
+  "rollback_plan_ref": "rollback-plan-placeholder-remediation-001",
+  "runbook_ref": "docs/runbooks/lima-it-handoff.md",
+  "evidence_artifact_ids": [
+    "ev-lima-it-remediation-denied-001"
+  ],
+  "created_at": "2026-05-18T21:46:00Z",
+  "updated_at": "2026-05-18T21:46:00Z"
+}

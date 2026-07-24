@@ -1,0 +1,57 @@
+{
+  "contract_name": "connector.defaults",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-connector-defaults-browser-001",
+  "causation_id": null,
+  "idempotency_key": "idem-connector-defaults-browser-001",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-26T11:20:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "connector_defaults_id": "connector-defaults-browser-001",
+  "defaults_version": "defaults-v1",
+  "provider_category": "browser",
+  "default_lifecycle_state": "blocked_mvp",
+  "default_readiness_status": "blocked_mvp",
+  "default_acceptance_status": "blocked_mvp",
+  "default_risk_level": "blocked_mvp",
+  "default_owner_required": true,
+  "default_reviewer_required": true,
+  "default_approver_required": false,
+  "default_revocation_required": true,
+  "default_disable_switch_required": true,
+  "default_outbound_action_policy": "blocked_mvp",
+  "default_blocked_actions": [
+    "external_send",
+    "form_submit",
+    "record_mutation",
+    "live_api_call",
+    "oauth_token_exchange",
+    "browser_automation"
+  ],
+  "default_allowed_actions": [],
+  "default_evidence_requirements": [
+    "owner_assignment",
+    "reviewer_assignment",
+    "revocation_posture",
+    "disable_switch_posture"
+  ],
+  "tenant_override_status": "blocked_mvp",
+  "policy_refs": [
+    "policy.connector_defaults.phase1a"
+  ],
+  "evidence_refs": [
+    "ev-connector-defaults-browser-001"
+  ],
+  "reason_codes": [
+    "connector_provider_category_blocked_mvp"
+  ],
+  "created_at": "2026-05-26T11:20:00Z",
+  "updated_at": "2026-05-26T11:20:00Z"
+}

@@ -1,0 +1,43 @@
+{
+  "contract_name": "console.alert",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-console-alert-stale-001",
+  "causation_id": null,
+  "idempotency_key": "idem-console-alert-stale-001",
+  "alert_id": "console-alert-worker-stale-001",
+  "actor_ref": "field-it-ref-001",
+  "role": "field_it",
+  "health_domain": "worker",
+  "alert_type": "worker_stale",
+  "health_reason_codes": [
+    "worker_stale"
+  ],
+  "severity": "high",
+  "related_contract_refs": [
+    "worker.heartbeat:hb-file-001",
+    "worker.lifecycle:wle-file-registered-001"
+  ],
+  "policy_refs": [
+    "policy.console_ux.phase0",
+    "policy.worker_quarantine_reenrollment.phase0"
+  ],
+  "risk_tier": "high",
+  "status": "active",
+  "runbook_ref": "docs/runbooks/health-checks.md",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-22T22:05:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "evidence_refs": [
+    "ev-console-alert-worker-stale-001"
+  ],
+  "operator_visible": true,
+  "blocked_reason": null,
+  "created_at": "2026-05-22T22:05:00Z"
+}

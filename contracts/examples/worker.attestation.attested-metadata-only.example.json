@@ -1,0 +1,53 @@
+{
+  "contract_name": "worker.attestation",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-worker-attestation-attested-001",
+  "causation_id": "worker-deployment-001",
+  "idempotency_key": "idem-worker-attestation-attested-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-25T15:00:00Z"
+  },
+  "attestation_id": "wa-attested-001",
+  "worker_id": "worker-arc-001",
+  "deployment_id": "wd-001",
+  "supervisor_id": "supervisor-lab-001",
+  "attestation_status": "attested",
+  "trust_root_status": "verified_placeholder",
+  "evidence_type": "metadata_only",
+  "os_image_hash": "sha256:attested-os-image-001",
+  "runtime_hash": "sha256:attested-runtime-001",
+  "policy_bundle_hash": "sha256:attested-policy-001",
+  "model_bundle_hash": "sha256:attested-model-001",
+  "config_hash": "sha256:attested-config-001",
+  "reference_value_refs": [
+    "refvals-worker-arc-001-v1"
+  ],
+  "endorsement_refs": [],
+  "appraisal_policy_refs": [
+    "policy.worker_attestation.phase0"
+  ],
+  "attestation_result_ref": "attres-worker-001",
+  "device_trust_ref": "device-trust-worker-arc-001",
+  "lineage_refs": [
+    "attestation.result.lineage:lineage-worker-001-current"
+  ],
+  "authority_refs": [
+    "attestation.authority:authority-verifier-owner-001"
+  ],
+  "revocation_propagation_refs": [
+    "evidence.ledger.entry:ledger-propagation-worker-001"
+  ],
+  "evidence_refs": [
+    "ev-worker-attestation-attested-001"
+  ],
+  "reason_codes": [],
+  "policy_version": "policy-phase1a-v1",
+  "created_at": "2026-05-25T15:00:00Z",
+  "expires_at": "2026-05-26T15:00:00Z"
+}

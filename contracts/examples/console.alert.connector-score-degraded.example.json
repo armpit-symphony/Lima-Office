@@ -1,0 +1,46 @@
+{
+  "contract_name": "console.alert",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-console-alert-connector-score-001",
+  "causation_id": "corr-connector-score-004",
+  "idempotency_key": "idem-console-alert-connector-score-001",
+  "alert_id": "alert-connector-score-001",
+  "actor_ref": "security-reviewer-ref-001",
+  "role": "security_reviewer",
+  "health_domain": "connector",
+  "alert_type": "connector_score_degraded",
+  "health_reason_codes": [
+    "connector_score_degraded",
+    "connector_slo_missed"
+  ],
+  "severity": "high",
+  "related_contract_refs": [
+    "connector.acceptance_score:connector-score-004",
+    "connector.reconciliation_slo:connector-slo-003"
+  ],
+  "policy_refs": [
+    "policy.connector_acceptance_score.phase0"
+  ],
+  "risk_tier": "high",
+  "status": "active",
+  "runbook_ref": "runbook.connector-acceptance-score-review.phase1a",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-26T01:35:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "evidence_refs": [
+    "ev-console-alert-connector-score-001"
+  ],
+  "blocked_reason": null,
+  "model_route_id": null,
+  "route_mode": null,
+  "route_status": null,
+  "operator_visible": true,
+  "created_at": "2026-05-26T01:35:00Z"
+}

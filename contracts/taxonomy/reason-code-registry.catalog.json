@@ -1,0 +1,630 @@
+{
+  "taxonomy_version": "taxonomy-reason-v1",
+  "catalog_version": "phase1a-connector-defaults-slo-target-v1",
+  "entries": [
+    {
+      "reason_code": "connector_consent_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_scope_overbroad",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_scope_denied",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_revoked",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_revocation_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_object_auth_missing",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_property_auth_missing",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_outbound_action_blocked",
+      "category": "guardian",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_live_blocked_mvp",
+      "category": "blocked_mvp",
+      "status": "blocked"
+    },
+    {
+      "reason_code": "connector_prompt_injection_risk",
+      "category": "guardian",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_rate_limit_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_secret_policy_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_export_delete_impact_unknown",
+      "category": "export_delete",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_provider_high_risk",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_provider_critical_risk",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_disable_switch_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_disable_switch_failed",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_revocation_unverified",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_revocation_drill_failed",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_token_rotation_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_outbound_capability_blocked",
+      "category": "guardian",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_prompt_injection_blocked",
+      "category": "guardian",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_cross_tenant_blocked",
+      "category": "tenant_isolation",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_reconciliation_drift",
+      "category": "reconciliation",
+      "status": "active"
+    },
+    {
+      "reason_code": "consent_revoked_but_ready",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "scope_overbroad_but_invocation_requested",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "provider_critical_but_ready",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "revocation_drill_failed_but_enabled",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "disable_switch_missing_but_ready",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "outbound_missing_approval",
+      "category": "guardian",
+      "status": "active"
+    },
+    {
+      "reason_code": "tainted_connector_payload_blocked",
+      "category": "guardian",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_cross_tenant_linkage",
+      "category": "tenant_isolation",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_evidence_missing",
+      "category": "evidence",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_trust_revoked_but_allowed",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_score_below_threshold",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_score_failed_closed",
+      "category": "reconciliation",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_score_degraded",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_slo_missed",
+      "category": "reconciliation",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_slo_stale",
+      "category": "reconciliation",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_reconciliation_stale",
+      "category": "reconciliation",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_revocation_propagation_pending",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_revocation_propagation_missed",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_disable_verification_missed",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_source_of_truth_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_source_of_truth_conflict",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_owner_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_owner_stale",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_owner_conflict",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_sod_violation",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_escalation_overdue",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_revocation_owner_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_disable_owner_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_accountability_failed_closed",
+      "category": "reconciliation",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_acceptance_blocked_mvp",
+      "category": "blocked_mvp",
+      "status": "blocked"
+    },
+    {
+      "reason_code": "connector_defaults_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_defaults_stale",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_defaults_override_review_required",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_slo_target_missing",
+      "category": "reconciliation",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_slo_target_missed",
+      "category": "reconciliation",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_score_threshold_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_score_threshold_stale",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_threshold_blocked_mvp",
+      "category": "blocked_mvp",
+      "status": "blocked"
+    },
+    {
+      "reason_code": "connector_default_outbound_blocked",
+      "category": "guardian",
+      "status": "active"
+    },
+    {
+      "reason_code": "connector_provider_category_blocked_mvp",
+      "category": "blocked_mvp",
+      "status": "blocked"
+    },
+    {
+      "reason_code": "model_route_unavailable",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "model_route_blocked_mvp",
+      "category": "blocked_mvp",
+      "status": "blocked"
+    },
+    {
+      "reason_code": "model_route_tainted_input_denied",
+      "category": "guardian",
+      "status": "active"
+    },
+    {
+      "reason_code": "model_route_privileged_requires_approval",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "model_route_provider_blocked_mvp",
+      "category": "blocked_mvp",
+      "status": "blocked"
+    },
+    {
+      "reason_code": "model_route_local_execution_blocked_mvp",
+      "category": "blocked_mvp",
+      "status": "blocked"
+    },
+    {
+      "reason_code": "model_route_rbac_blocked",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "model_route_device_untrusted",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "model_route_fallback_denied",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "health_unknown",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "health_degraded",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "health_blocked",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_required",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_failed",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_expired",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "trust_root_unknown",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "trust_root_failed",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "update_signature_missing",
+      "category": "transaction",
+      "status": "active"
+    },
+    {
+      "reason_code": "update_signature_invalid",
+      "category": "transaction",
+      "status": "active"
+    },
+    {
+      "reason_code": "update_provenance_missing",
+      "category": "transaction",
+      "status": "active"
+    },
+    {
+      "reason_code": "update_rollback_required",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "update_blocked_mvp",
+      "category": "blocked_mvp",
+      "status": "blocked"
+    },
+    {
+      "reason_code": "model_bundle_untrusted",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "policy_bundle_untrusted",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "runtime_bundle_untrusted",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "reference_value_missing",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "reference_value_stale",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "reference_value_revoked",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "endorsement_missing",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "endorsement_revoked",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "endorsement_expired",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "appraisal_policy_missing",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "appraisal_policy_revoked",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "appraisal_failed",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "appraisal_inconclusive",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_result_expired",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_quarantine_required",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_reference_mismatch",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_lineage_stale",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_lineage_revoked",
+      "category": "health",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_lineage_conflicted",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "revocation_propagation_pending",
+      "category": "transaction",
+      "status": "active"
+    },
+    {
+      "reason_code": "revocation_propagation_failed",
+      "category": "transaction",
+      "status": "active"
+    },
+    {
+      "reason_code": "verifier_authority_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "verifier_authority_revoked",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "reference_authority_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "endorsement_authority_missing",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "quarantine_clearance_sod_required",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_result_trust_conflict",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_reconciliation_drift",
+      "category": "reconciliation",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_revocation_pending",
+      "category": "transaction",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_revocation_not_propagated",
+      "category": "transaction",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_quarantine_mismatch",
+      "category": "reconciliation",
+      "status": "active"
+    },
+    {
+      "reason_code": "attestation_cross_tenant_linkage",
+      "category": "tenant_isolation",
+      "status": "active"
+    },
+    {
+      "reason_code": "verifier_authority_conflict",
+      "category": "governance",
+      "status": "active"
+    },
+    {
+      "reason_code": "appraisal_policy_revoked_but_active",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "trusted_result_with_revoked_endorsement",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "trusted_result_with_revoked_reference",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "model_route_selected_with_untrusted_lineage",
+      "category": "linkage",
+      "status": "active"
+    },
+    {
+      "reason_code": "transaction_committed_with_revoked_attestation",
+      "category": "transaction",
+      "status": "active"
+    }
+  ],
+  "notes": [
+    "Catalog is metadata-only for docs/contracts/test posture.",
+    "No runtime authorization, model execution, or provider connectivity is implemented."
+  ]
+}

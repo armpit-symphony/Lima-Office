@@ -1,0 +1,1742 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/guardian.decision.schema.json",
+  "title": "Guardian Decision Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "decision_id",
+    "request_id",
+    "producer",
+    "requested_by",
+    "subject",
+    "action_class",
+    "resource_ref",
+    "data_classification",
+    "risk_tier",
+    "policy_refs",
+    "policy_version",
+    "policy_snapshot_hash",
+    "valid_for_action_ref",
+    "decision",
+    "approval_required",
+    "approval_request_id",
+    "approval_token_id",
+    "denial_reason",
+    "redaction_level",
+    "evidence_required",
+    "evidence_artifact_id",
+    "evidence_artifact_ids",
+    "guardian_decision_id",
+    "decision_nonce",
+    "issued_at",
+    "effective_at",
+    "max_age_seconds",
+    "clock_skew_allowance_seconds",
+    "replay_policy",
+    "decision_scope_hash",
+    "bound_tenant_id",
+    "bound_task_id",
+    "bound_worker_id",
+    "bound_action_type",
+    "bound_tool_scope",
+    "approval_binding_id",
+    "token_verification_id",
+    "replay_record_id",
+    "replay_artifact_id",
+    "denial_evidence_ref",
+    "pre_action_evidence_refs",
+    "post_action_evidence_refs",
+    "export_manifest_refs",
+    "redaction_profile_ref",
+    "hash_algorithm",
+    "content_hash",
+    "parent_evidence_refs",
+    "chain_position",
+    "raw_content_included",
+    "secret_material_included",
+    "evidence_refs",
+    "replay_status",
+    "consumed_at",
+    "revoked_at",
+    "revocation_reason",
+    "prompt_injection",
+    "created_at",
+    "expires_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "guardian.decision"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "const": "guardian"
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "requested_by": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor_type",
+        "actor_id"
+      ],
+      "properties": {
+        "actor_type": {
+          "type": "string",
+          "enum": [
+            "operator",
+            "supervisor",
+            "worker",
+            "helper_agent",
+            "connector"
+          ]
+        },
+        "actor_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject_type",
+        "subject_id"
+      ],
+      "properties": {
+        "subject_type": {
+          "type": "string",
+          "enum": [
+            "task",
+            "worker",
+            "helper_agent",
+            "tool",
+            "connector",
+            "model_route",
+            "memory_access",
+            "lima_it_handoff"
+          ]
+        },
+        "subject_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "action_class": {
+      "type": "string",
+      "enum": [
+        "model_route",
+        "tool_invocation",
+        "file_read",
+        "file_write",
+        "file_delete",
+        "network_access",
+        "connector_access",
+        "outbound_message",
+        "scheduled_action",
+        "privileged_operation",
+        "memory_access",
+        "worker_lifecycle",
+        "lima_it_diagnostic",
+        "lima_it_remediation"
+      ]
+    },
+    "resource_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resource_type",
+        "resource_id",
+        "resource_scope"
+      ],
+      "properties": {
+        "resource_type": {
+          "type": "string",
+          "enum": [
+            "file",
+            "folder",
+            "connector",
+            "model_provider_class",
+            "memory_namespace",
+            "worker",
+            "supervisor",
+            "lima_it_system",
+            "draft_message",
+            "unknown"
+          ]
+        },
+        "resource_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resource_scope": {
+          "type": "string",
+          "enum": [
+            "tenant_scoped",
+            "task_scoped",
+            "worker_scoped",
+            "operator_scoped",
+            "blocked_mvp"
+          ]
+        }
+      }
+    },
+    "data_classification": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "customer_confidential",
+        "sensitive_hr",
+        "sensitive_finance",
+        "sensitive_legal",
+        "sensitive_medical",
+        "secret"
+      ]
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "blocked"
+      ]
+    },
+    "policy_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_snapshot_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "valid_for_action_ref": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Opaque request/action binding reference. A decision cannot be reused for a different tenant, task, resource, action, or input set."
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "allow",
+        "allow_with_evidence",
+        "requires_approval",
+        "deny",
+        "block_mvp",
+        "quarantine_subject"
+      ]
+    },
+    "approval_required": {
+      "type": "boolean"
+    },
+    "approval_request_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_chain_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "binding_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_token_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "token_verification_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "denial_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "redaction_level": {
+      "type": "string",
+      "enum": [
+        "none",
+        "metadata_only",
+        "payload_redacted",
+        "secret_redacted"
+      ]
+    },
+    "evidence_required": {
+      "type": "boolean"
+    },
+    "evidence_artifact_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_artifact_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Canonical Guardian decision reference. It is expected to match decision_id in runtime checks."
+    },
+    "decision_nonce": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Opaque replay-protection reference. Do not store nonce secret material."
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "effective_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "max_age_seconds": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3600
+    },
+    "clock_skew_allowance_seconds": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 300
+    },
+    "replay_policy": {
+      "type": "string",
+      "enum": [
+        "one_time",
+        "bounded_window",
+        "deny_replay",
+        "blocked_mvp"
+      ]
+    },
+    "decision_scope_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_tenant_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_task_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_worker_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_action_type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "model_route_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "route_mode": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "mock_only",
+        "local_planned",
+        "subscription_planned",
+        "blocked_mvp",
+        null
+      ]
+    },
+    "route_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "selected",
+        "degraded",
+        "denied",
+        "blocked_mvp",
+        "unavailable",
+        null
+      ]
+    },
+    "route_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "model_route_unavailable",
+          "model_route_blocked_mvp",
+          "model_route_tainted_input_denied",
+          "model_route_privileged_requires_approval",
+          "model_route_provider_blocked_mvp",
+          "model_route_local_execution_blocked_mvp",
+          "model_route_rbac_blocked",
+          "model_route_device_untrusted",
+          "model_route_fallback_denied"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "bound_tool_scope": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "resource_refs",
+        "allowed_operations",
+        "prohibited_operations"
+      ],
+      "properties": {
+        "resource_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "allowed_operations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prohibited_operations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "approval_binding_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_readiness_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_scope_review_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_consent_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "provider_profile_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_revocation_drill_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "replay_record_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "related_transaction_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "related_coordinator_event_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "related_replay_record_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "related_ledger_entry_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "related_evidence_artifact_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "related_export_manifest_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "linkage_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "linked",
+        "missing_ref",
+        "mismatched_tenant",
+        "mismatched_scope",
+        "mismatched_nonce",
+        "drift_detected",
+        "blocked_mvp",
+        null
+      ]
+    },
+    "linkage_failure_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "canonical_tenant_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_correlation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_idempotency_key": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_decision_nonce": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_action_type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_tool_scope": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "resource_refs",
+        "allowed_operations",
+        "prohibited_operations"
+      ],
+      "properties": {
+        "resource_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "allowed_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prohibited_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "canonical_worker_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_task_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reconciliation_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "reconciled",
+        "missing_ref",
+        "mismatched_binding",
+        "stale_decision",
+        "replay_mismatch",
+        "evidence_missing",
+        "coordinator_mismatch",
+        "cross_tenant_blocked",
+        "blocked_mvp",
+        null
+      ]
+    },
+    "reconciliation_failure_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reconciliation_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "canonical_approval_chain_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_approval_binding_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_guardian_decision_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_token_verification_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_replay_record_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_transaction_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "replay_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "denial_evidence_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^ev-[A-Za-z0-9._:-]+$"
+    },
+    "pre_action_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "post_action_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "export_manifest_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "redaction_profile_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "hash_algorithm": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "sha256",
+        "sha512",
+        null
+      ]
+    },
+    "content_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "parent_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "chain_position": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "raw_content_included": {
+      "type": "boolean",
+      "const": false
+    },
+    "secret_material_included": {
+      "type": "boolean",
+      "const": false
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "replay_status": {
+      "type": "string",
+      "enum": [
+        "unused",
+        "consumed",
+        "replay_denied",
+        "expired",
+        "revoked",
+        "stale",
+        "blocked_mvp"
+      ]
+    },
+    "consumed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "revoked_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "revocation_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "prompt_injection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "untrusted_input_refs",
+        "content_origin",
+        "instruction_boundary",
+        "injection_suspected",
+        "injection_signals",
+        "containment_action"
+      ],
+      "properties": {
+        "untrusted_input_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "content_origin": {
+          "type": "string",
+          "enum": [
+            "operator",
+            "worker_telemetry",
+            "email",
+            "document",
+            "browser",
+            "ticket",
+            "connector",
+            "memory",
+            "unknown"
+          ]
+        },
+        "instruction_boundary": {
+          "type": "string",
+          "enum": [
+            "trusted_system_instruction_only",
+            "operator_instruction",
+            "untrusted_content_as_data"
+          ]
+        },
+        "injection_suspected": {
+          "type": "boolean"
+        },
+        "injection_signals": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "ignore_prior_instructions",
+              "request_secret",
+              "request_unapproved_tool",
+              "request_external_send",
+              "encoded_instruction",
+              "none"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "containment_action": {
+          "type": "string",
+          "enum": [
+            "none",
+            "treat_as_untrusted_data",
+            "deny_action",
+            "require_approval",
+            "quarantine_subject"
+          ]
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "evidence_required": {
+          "const": true
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "requires_approval"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "approval_required": {
+            "const": true
+          },
+          "approval_request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "denial_evidence_ref": {
+            "const": null
+          },
+          "denial_reason": {
+            "const": null
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "decision_nonce": {
+            "type": "string",
+            "minLength": 1
+          },
+          "replay_policy": {
+            "const": "one_time"
+          },
+          "replay_status": {
+            "const": "unused"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "enum": [
+              "deny",
+              "block_mvp",
+              "quarantine_subject"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "approval_required": {
+            "const": false
+          },
+          "approval_request_id": {
+            "const": null
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "denial_evidence_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pre_action_evidence_refs": {
+            "minItems": 1
+          },
+          "denial_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "replay_policy": {
+            "enum": [
+              "deny_replay",
+              "blocked_mvp"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "allow"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "approval_required": {
+            "const": false
+          },
+          "approval_request_id": {
+            "const": null
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "denial_evidence_ref": {
+            "const": null
+          },
+          "denial_reason": {
+            "const": null
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "decision_nonce": {
+            "type": "string",
+            "minLength": 1
+          },
+          "replay_policy": {
+            "const": "one_time"
+          },
+          "replay_status": {
+            "const": "unused"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "allow_with_evidence"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "approval_required": {
+            "const": false
+          },
+          "approval_request_id": {
+            "const": null
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "denial_evidence_ref": {
+            "const": null
+          },
+          "denial_reason": {
+            "const": null
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "decision_nonce": {
+            "type": "string",
+            "minLength": 1
+          },
+          "replay_policy": {
+            "enum": [
+              "one_time",
+              "bounded_window"
+            ]
+          },
+          "replay_status": {
+            "const": "unused"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "risk_tier": {
+            "const": "blocked"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "enum": [
+              "deny",
+              "block_mvp",
+              "quarantine_subject"
+            ]
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "denial_evidence_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pre_action_evidence_refs": {
+            "minItems": 1
+          },
+          "denial_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "replay_policy": {
+            "enum": [
+              "deny_replay",
+              "blocked_mvp"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "prompt_injection": {
+            "properties": {
+              "injection_suspected": {
+                "const": true
+              }
+            },
+            "required": [
+              "injection_suspected"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "enum": [
+              "requires_approval",
+              "deny",
+              "block_mvp",
+              "quarantine_subject"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_policy": {
+            "const": "one_time"
+          }
+        },
+        "required": [
+          "replay_policy"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decision_nonce": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_status": {
+            "const": "consumed"
+          }
+        },
+        "required": [
+          "replay_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "consumed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "denial_evidence_ref": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_status": {
+            "enum": [
+              "expired",
+              "revoked",
+              "stale",
+              "replay_denied",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "replay_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "not": {
+              "enum": [
+                "allow",
+                "allow_with_evidence"
+              ]
+            }
+          },
+          "denial_evidence_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pre_action_evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "token_verification_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "token_verification_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "approval_binding_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "binding_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "approval_binding_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "approval_binding_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "binding_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action_class": {
+            "enum": [
+              "connector_access",
+              "file_delete",
+              "file_write",
+              "network_access",
+              "outbound_message",
+              "privileged_operation",
+              "scheduled_action",
+              "lima_it_remediation"
+            ]
+          }
+        },
+        "required": [
+          "action_class"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "enum": [
+              "deny",
+              "block_mvp"
+            ]
+          },
+          "replay_policy": {
+            "enum": [
+              "deny_replay",
+              "blocked_mvp"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action_class": {
+            "const": "connector_access"
+          }
+        },
+        "required": [
+          "action_class"
+        ]
+      },
+      "then": {
+        "properties": {
+          "connector_readiness_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "connector_scope_review_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "connector_consent_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provider_profile_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "connector_revocation_drill_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "decision": {
+            "enum": [
+              "deny",
+              "block_mvp"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action_class": {
+            "const": "model_route"
+          },
+          "route_mode": {
+            "const": "blocked_mvp"
+          }
+        },
+        "required": [
+          "action_class",
+          "route_mode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "not": {
+              "enum": [
+                "allow",
+                "allow_with_evidence"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "route_reason_codes": {
+            "contains": {
+              "enum": [
+                "model_route_tainted_input_denied",
+                "model_route_rbac_blocked",
+                "model_route_device_untrusted"
+              ]
+            }
+          }
+        },
+        "required": [
+          "route_reason_codes"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "not": {
+              "enum": [
+                "allow",
+                "allow_with_evidence"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_record_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "replay_record_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "replay_artifact_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "hash_algorithm": {
+            "type": "string",
+            "minLength": 1
+          },
+          "content_hash": {
+            "type": "string",
+            "minLength": 1
+          },
+          "chain_position": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "linkage_status": {
+            "const": "linked"
+          }
+        },
+        "required": [
+          "linkage_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "linkage_failure_reasons": {
+            "maxItems": 0
+          },
+          "related_transaction_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "related_coordinator_event_ids": {
+            "minItems": 1
+          },
+          "related_replay_record_ids": {
+            "minItems": 1
+          },
+          "related_evidence_artifact_ids": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "linkage_status": {
+            "enum": [
+              "missing_ref",
+              "mismatched_tenant",
+              "mismatched_scope",
+              "mismatched_nonce",
+              "drift_detected",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "linkage_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "linkage_failure_reasons": {
+            "minItems": 1
+          },
+          "denial_evidence_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "decision": {
+            "not": {
+              "enum": [
+                "allow",
+                "allow_with_evidence"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_record_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "replay_record_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "related_replay_record_ids": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "const": "reconciled"
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reconciliation_failure_reasons": {
+            "maxItems": 0
+          },
+          "reconciliation_evidence_refs": {
+            "minItems": 1
+          },
+          "canonical_approval_chain_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonical_approval_binding_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonical_guardian_decision_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonical_token_verification_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "enum": [
+              "missing_ref",
+              "mismatched_binding",
+              "stale_decision",
+              "replay_mismatch",
+              "evidence_missing",
+              "coordinator_mismatch",
+              "cross_tenant_blocked",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reconciliation_failure_reasons": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "enum": [
+              "cross_tenant_blocked",
+              "blocked_mvp",
+              "stale_decision"
+            ]
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "not": {
+              "enum": [
+                "allow",
+                "allow_with_evidence"
+              ]
+            }
+          },
+          "replay_status": {
+            "not": {
+              "const": "unused"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

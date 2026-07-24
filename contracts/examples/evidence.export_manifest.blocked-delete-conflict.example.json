@@ -1,0 +1,90 @@
+{
+  "contract_name": "evidence.export_manifest",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-evidence-export-blocked-conflict-001",
+  "causation_id": "gov-audit-export-delete-req-002",
+  "idempotency_key": "idem-evidence-export-blocked-conflict-001",
+  "producer": {
+    "component": "operator_console",
+    "produced_at": "2026-05-24T18:40:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "export_manifest_id": "exp-manifest-blocked-conflict-001",
+  "export_request_id": "gov-audit-export-delete-req-002",
+  "requested_by_ref": "operator:operator-lab-001",
+  "approved_by_ref": "compliance:reviewer-lab-001",
+  "export_status": "blocked_mvp",
+  "export_review_status": "blocked_mvp",
+  "delete_review_status": "blocked_mvp",
+  "redaction_status": "blocked_mvp",
+  "preservation_hold_status": "blocked_mvp",
+  "included_evidence_refs": [],
+  "excluded_evidence_refs": [
+    "ev-incident-open-002"
+  ],
+  "redaction_profile_ref": null,
+  "retention_policy_refs": [
+    "retention-rule-phase0-evidence"
+  ],
+  "delete_conflict_refs": [
+    "conflict-open-incident-hold-002"
+  ],
+  "hash_manifest_ref": null,
+  "related_transaction_id": "txn-export-delete-blocked-001",
+  "related_coordinator_event_ids": [
+    "coord-ev-export-conflict-010"
+  ],
+  "related_replay_record_ids": [],
+  "related_ledger_entry_ids": [
+    "ledger-entry-export-conflict-010"
+  ],
+  "related_evidence_artifact_ids": [
+    "ev-export-blocked-delete-conflict-001"
+  ],
+  "related_export_manifest_ids": [
+    "exp-manifest-blocked-conflict-001"
+  ],
+  "linkage_status": "blocked_mvp",
+  "linkage_failure_reasons": [
+    "export_delete_conflict_active"
+  ],
+  "canonical_tenant_id": "tenant-lab-001",
+  "canonical_correlation_id": "corr-evidence-export-blocked-conflict-001",
+  "canonical_idempotency_key": "idem-evidence-export-blocked-conflict-001",
+  "canonical_decision_nonce": null,
+  "canonical_action_type": "export_manifest_prepare",
+  "canonical_tool_scope": null,
+  "canonical_worker_id": null,
+  "canonical_task_id": "task-export-delete-review-002",
+  "reason_codes": [
+    "export_delete_conflict_active",
+    "blocked_mvp_authorization_attempt"
+  ],
+  "reconciliation_reason_codes": [],
+  "evidence_reason_codes": [
+    "evidence_ref_missing"
+  ],
+  "export_delete_conflict_codes": [
+    "export_delete_conflict_active",
+    "export_delete_blocked_mvp"
+  ],
+  "delete_proof_refs": [],
+  "export_package_refs": [],
+  "conflict_evidence_refs": [
+    "ev-export-blocked-delete-conflict-001"
+  ],
+  "created_at": "2026-05-24T18:39:00Z",
+  "prepared_at": null,
+  "exported_at": null,
+  "evidence_refs": [
+    "ev-export-blocked-delete-conflict-001"
+  ],
+  "raw_content_included": false,
+  "secret_material_included": false
+}
+

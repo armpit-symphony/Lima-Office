@@ -1,0 +1,41 @@
+{
+  "contract_name": "connector.slo_target",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-connector-slo-target-missed-001",
+  "causation_id": "corr-connector-reconcile-007",
+  "idempotency_key": "idem-connector-slo-target-missed-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-26T12:00:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "connector_slo_target_id": "connector-slo-target-missed-001",
+  "slo_version": "slo-v1",
+  "connector_id": "connector-email-placeholder-001",
+  "provider_category": "email",
+  "owner_review_cadence_seconds_placeholder": 86400,
+  "revocation_propagation_seconds_placeholder": 900,
+  "disable_switch_verification_seconds_placeholder": 900,
+  "stale_owner_escalation_seconds_placeholder": 172800,
+  "reconciliation_cadence_seconds_placeholder": 3600,
+  "target_status": "failed_closed",
+  "owner_ref": "connector-owner-ref-001",
+  "reviewer_ref": "security-reviewer-ref-001",
+  "connector_defaults_ref": "connector.defaults:connector-defaults-email-001",
+  "score_threshold_ref": "connector.score_threshold:connector-score-threshold-default-001",
+  "evidence_refs": [
+    "ev-connector-slo-target-missed-001"
+  ],
+  "reason_codes": [
+    "connector_slo_target_missed",
+    "connector_slo_target_missing"
+  ],
+  "created_at": "2026-05-26T12:00:00Z",
+  "updated_at": "2026-05-26T12:00:00Z",
+  "reviewed_at": "2026-05-26T12:00:00Z"
+}

@@ -1,0 +1,62 @@
+{
+  "contract_name": "model.route",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-model-route-subscription-blocked-001",
+  "causation_id": "task-provider-planned-001",
+  "idempotency_key": "idem-model-route-subscription-blocked-001",
+  "model_route_id": "mr-subscription-blocked-001",
+  "task_id": "task-provider-planned-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-24T22:31:00Z"
+  },
+  "requested_by": {
+    "actor_type": "sparkpit_operator",
+    "actor_id": "operator-lab-001"
+  },
+  "route_policy_version": "route-policy-phase1a-v1",
+  "route_mode": "subscription_planned",
+  "model_role": "supervisor_reasoning",
+  "route_status": "blocked_mvp",
+  "route_reason_codes": [
+    "model_route_provider_blocked_mvp",
+    "model_route_blocked_mvp"
+  ],
+  "taint_status": "clean",
+  "data_class": "internal",
+  "risk_tier": "high",
+  "approval_required": false,
+  "rbac_context_ref": "rbac-context-ref-subscription-001",
+  "session_policy_ref": "session-policy-ref-subscription-001",
+  "device_trust_ref": "device-trust-ref-subscription-001",
+  "worker_attestation_ref": "worker-attestation-ref-subscription-001",
+  "attestation_result_ref": "attestation-result-ref-subscription-001",
+  "appraisal_policy_ref": "appraisal-policy-ref-subscription-001",
+  "update_rollback_ref": "update-rollback-ref-subscription-001",
+  "worker_capability_refs": [
+    "capability-ref-supervisor-reasoning-001"
+  ],
+  "fallback_allowed": false,
+  "policy_version": "policy-phase1a-v1",
+  "fallback_policy": null,
+  "fallback_reason_codes": [],
+  "provider_ref": {
+    "provider_ref_type": "subscription_planned",
+    "placeholder_ref": "provider-placeholder-subscription-001",
+    "live_call": false
+  },
+  "local_model_bundle_ref": null,
+  "evidence_refs": [
+    "ev-model-route-subscription-blocked-001"
+  ],
+  "policy_refs": [
+    "policy.model_routing_defaults.phase1a",
+    "policy.runtime_boundaries.phase1a"
+  ],
+  "created_at": "2026-05-24T22:31:00Z"
+}
