@@ -21,6 +21,10 @@ class WorkerStateError(LimaOfficeRuntimeError):
     """Raised when worker state blocks a runtime operation."""
 
 
+class WorkerChannelAuthenticationError(WorkerStateError):
+    """Raised when an authenticated worker channel fails closed."""
+
+
 class WorkerLifecycleValidationError(WorkerStateError):
     """Raised when worker lifecycle metadata validation fails."""
 

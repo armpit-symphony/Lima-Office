@@ -4,6 +4,13 @@ These are Phase 0 planning contracts. They are field-level schemas and examples 
 
 The schema source of truth is [contracts/README.md](../contracts/README.md) and [contracts/v1](../contracts/v1). Example JSON objects are in [contracts/examples](../contracts/examples).
 
+The approved Arc lab path uses `worker.channel.envelope` to bind tenant,
+worker, message type, short expiry, nonce, payload hash, and HMAC signature.
+`worker.registration` carries only worker identity, version, and bounded
+capabilities. Registration, heartbeat, and assignment payloads remain
+non-executing. The shared channel key is never a contract field or evidence
+member.
+
 Phase 0 policies are pre-runtime requirements and are indexed in [docs/policies/README.md](policies/README.md). A contract record is not enough to authorize runtime behavior; Guardian must also link the relevant policy refs, approval state, and evidence.
 
 ## Contract Rules

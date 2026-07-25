@@ -324,6 +324,38 @@ class ArcGovernedControlPlaneTests(unittest.TestCase):
         self.assertEqual(self.endpoint.received_previews, [])
         self.assertFalse(result["execution_allowed"])
 
+    def test_operational_path_rejects_mock_worker_without_authenticated_registration(
+        self,
+    ) -> None:
+        control_plane = SupervisorControlPlane(
+            tenant_id="tenant-lab-001",
+            customer_context_id="customer-context-main",
+            authenticated_actors={"operator-lab-001": "operator"},
+            validator=self.validator,
+            registry=self.registry,
+            evidence_store=self.store,
+            guardian_authority=GuardianCoreAuthority(
+                self.validator,
+                decider=self.guardian_decider,
+            ),
+            lima_runner=self.lima_runner,
+            worker_endpoints={"arc-worker-001": self.endpoint},
+            require_authenticated_workers=True,
+            clock=lambda: FIXED_TIME,
+        )
+
+        result = control_plane.submit(
+            self._request(
+                request_id="request-unauthenticated-worker",
+                idempotency_key="idem-unauthenticated-worker",
+            )
+        )
+
+        self.assertEqual("blocked", result["status"])
+        self.assertEqual([], self.endpoint.received_previews)
+        self.assertTrue(result["runtime_authority_blocked"])
+        self.assertFalse(result["execution_allowed"])
+
     def test_supervisor_scales_same_non_executing_path_to_two_and_eight_workers(self) -> None:
         registry = WorkerRegistry(max_workers=8)
         endpoints: dict[str, LocalArcWorkerPreviewEndpoint] = {}
