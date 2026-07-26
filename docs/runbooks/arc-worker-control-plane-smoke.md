@@ -15,9 +15,10 @@ operator command
 ```
 
 It also performs authenticated Arc registration and heartbeat before routing.
-The worker endpoint is explicit and foreground-only. The smoke uses a
-process-local ephemeral channel key, stores only its opaque key identifier, and
-deletes its temporary SQLite databases on exit.
+The worker endpoint runs in a separate, explicit foreground process. The smoke
+passes a process-local ephemeral channel key to that process once over stdin,
+stores only its opaque key identifier, restarts the worker and Supervisor
+evidence store, and deletes its temporary SQLite databases on exit.
 
 ## Prerequisites
 
@@ -45,6 +46,9 @@ python scripts/arc-worker-control-plane-smoke.py `
 - Arc acknowledges one `document_read` assignment preview.
 - Evidence contains request, Guardian, LIMA, assignment, and acknowledgement
   events.
+- The Arc worker process restarts with a new boot ID and returns to `healthy`.
+- The reopened Supervisor SQLite store retains the complete evidence chain and
+  worker record.
 - `runtime_authority_blocked=true`.
 - `executable=false`.
 - `execution_allowed=false`.
