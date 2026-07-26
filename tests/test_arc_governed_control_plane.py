@@ -444,6 +444,20 @@ class ArcGovernedControlPlaneTests(unittest.TestCase):
         self.assertEqual(replay["evidence"][-1]["event_type"], "replay_rejected")
         self.assertEqual(len(self.endpoint.received_previews), 1)
 
+    def test_repeated_action_with_fresh_request_identity_is_not_a_replay(self) -> None:
+        control_plane = self._control_plane()
+        first = control_plane.submit(self._request())
+        second = control_plane.submit(
+            self._request(
+                request_id="request-safe-read-002",
+                idempotency_key="idem-safe-read-002",
+            )
+        )
+
+        self.assertEqual(first["status"], "acknowledged")
+        self.assertEqual(second["status"], "acknowledged")
+        self.assertEqual(len(self.endpoint.received_previews), 2)
+
     def test_evidence_failure_blocks_before_guardian_lima_and_arc(self) -> None:
         failing_path = Path(self.temporary.name) / "failing.db"
         failing_store = SQLiteEvidenceStore(

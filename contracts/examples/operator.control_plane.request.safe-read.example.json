@@ -1,0 +1,27 @@
+{
+  "contract_name": "operator.control_plane.request",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr:operator-request-001",
+  "causation_id": null,
+  "idempotency_key": "idem-operator-request-001",
+  "producer": {
+    "component": "operator_client",
+    "produced_at": "2026-07-26T01:00:00Z"
+  },
+  "policy_version": "guardian-policy-lab-v1",
+  "request_id": "operator-request-001",
+  "actor_id": "operator-lab-001",
+  "action": "safe_read",
+  "resource_type": "worker_status",
+  "resource_id": "arc-worker-001",
+  "worker_id": "arc-worker-001",
+  "runtime_authority_blocked": true,
+  "executable": false,
+  "execution_allowed": false,
+  "side_effects_allowed": false
+}

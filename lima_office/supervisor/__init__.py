@@ -1,9 +1,14 @@
-"""Mock supervisor-side runtime scaffolding."""
+"""Supervisor-side scaffolding and approved non-executing lab boundaries."""
 
 from .arc_worker import ArcWorkerPreviewEndpoint, LocalArcWorkerPreviewEndpoint
 from .control_plane import SupervisorControlPlane, load_lima_runner
 from .heartbeat import HeartbeatService
 from .health import SupervisorHealthReporter
+from .operator_channel import OperatorChannel
+from .operator_service import (
+    OperatorControlPlaneService,
+    build_supervisor_operator_server,
+)
 from .task_lifecycle_simulator import TaskLifecycleSimulator
 from .task_queue import TaskQueue
 from .worker_lifecycle_simulator import WorkerLifecycleSimulator
@@ -18,6 +23,8 @@ __all__ = [
     "AuthenticatedWorkerLifecycleService",
     "HeartbeatService",
     "LocalArcWorkerPreviewEndpoint",
+    "OperatorChannel",
+    "OperatorControlPlaneService",
     "SupervisorControlPlane",
     "SupervisorHealthReporter",
     "TaskLifecycleSimulator",
@@ -26,5 +33,6 @@ __all__ = [
     "WorkerChannel",
     "WorkerRecord",
     "WorkerRegistry",
+    "build_supervisor_operator_server",
     "load_lima_runner",
 ]

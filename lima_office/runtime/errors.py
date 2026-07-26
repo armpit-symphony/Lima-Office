@@ -25,6 +25,10 @@ class WorkerChannelAuthenticationError(WorkerStateError):
     """Raised when an authenticated worker channel fails closed."""
 
 
+class OperatorChannelAuthenticationError(PolicyDenyError):
+    """Raised when an authenticated operator channel fails closed."""
+
+
 class WorkerLifecycleValidationError(WorkerStateError):
     """Raised when worker lifecycle metadata validation fails."""
 

@@ -1,0 +1,60 @@
+{
+  "contract_name": "operator.control_plane.response",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr:operator-request-001",
+  "causation_id": "operator-request-001",
+  "idempotency_key": "response:idem-operator-request-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-07-26T01:00:01Z"
+  },
+  "policy_version": "guardian-policy-lab-v1",
+  "request_id": "operator-request-001",
+  "actor_id": "operator-lab-001",
+  "worker_id": "arc-worker-001",
+  "status": "acknowledged",
+  "classification_authority": "supervisor_server_derived",
+  "action_category": "informational",
+  "guardian": {
+    "decision_id": "guardian-decision-001",
+    "decision": "allow_with_evidence",
+    "approval_required": false,
+    "policy_version": "guardian-policy-lab-v1",
+    "policy_snapshot_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "request_binding": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "expires_at": "2026-07-26T01:05:00Z"
+  },
+  "lima": {
+    "decision_id": "lima-decision-001",
+    "status": "allowed_dry_run",
+    "allowed": true,
+    "requires_approval": false,
+    "risk_level": "low",
+    "reason_codes": [],
+    "source_policy": "guardian_core.policy",
+    "executable": false,
+    "execution_allowed": false,
+    "side_effects_allowed": false
+  },
+  "assignment_id": "assignment-001",
+  "assignment_status": "acknowledged",
+  "evidence": [
+    {
+      "event_id": "event-001",
+      "event_type": "request_received",
+      "outcome": "received",
+      "reason_codes": [],
+      "created_at": "2026-07-26T01:00:00Z"
+    }
+  ],
+  "reason_codes": [],
+  "runtime_authority_blocked": true,
+  "executable": false,
+  "execution_allowed": false,
+  "side_effects_allowed": false
+}
