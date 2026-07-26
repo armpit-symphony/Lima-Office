@@ -94,8 +94,8 @@ class AuthenticatedWorkerLifecycleService:
             )
         if worker.channel_identity_ref != client.channel.key_id:
             raise WorkerStateError("heartbeat channel identity mismatch")
-        self.heartbeat_service.accept(heartbeat)
         try:
+            self.heartbeat_service.accept(heartbeat)
             self._persist_record(worker)
             self.evidence_store.append_event(
                 self._event(
@@ -107,6 +107,34 @@ class AuthenticatedWorkerLifecycleService:
                     summary="Authenticated Arc worker heartbeat persisted.",
                 )
             )
+        except WorkerStateError:
+            try:
+                self._persist_record(worker)
+                self.evidence_store.append_event(
+                    self._event(
+                        event_type="worker_heartbeat",
+                        worker_id=worker.worker_id,
+                        request_id=heartbeat["heartbeat_id"],
+                        payload=heartbeat,
+                        outcome="blocked",
+                        summary=(
+                            "Authenticated Arc heartbeat failed closed and "
+                            "worker state was persisted."
+                        ),
+                        reason_codes=[
+                            "worker_quarantined"
+                            if worker.state == "quarantined"
+                            else "worker_stale"
+                        ],
+                    )
+                )
+            except EvidenceWriteError:
+                self.registry.quarantine(
+                    worker.worker_id,
+                    "worker_heartbeat_evidence_failed",
+                )
+                raise
+            raise
         except EvidenceWriteError:
             self.registry.quarantine(
                 worker.worker_id,
@@ -205,6 +233,7 @@ class AuthenticatedWorkerLifecycleService:
         payload: dict[str, Any],
         outcome: str,
         summary: str,
+        reason_codes: list[str] | None = None,
     ) -> dict[str, Any]:
         now = self._now()
         return {
@@ -231,7 +260,7 @@ class AuthenticatedWorkerLifecycleService:
             "payload_hash": payload_hash(payload),
             "redacted_summary": summary,
             "outcome": outcome,
-            "reason_codes": [],
+            "reason_codes": reason_codes or [],
             "runtime_authority_blocked": True,
             "executable": False,
             "execution_allowed": False,

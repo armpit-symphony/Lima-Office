@@ -459,7 +459,7 @@ def main(argv: list[str] | None = None) -> int:
             (supervisor_db, worker_replay_db, operator_replay_db),
             (operator_key, worker_key),
         )
-        if len(first_events) != 7 or len(fresh_events) != 6 or len(workers) != 1:
+        if len(first_events) != 8 or len(fresh_events) != 7 or len(workers) != 1:
             raise SystemExit("durable operator evidence restart proof failed")
 
         output = {

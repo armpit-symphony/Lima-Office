@@ -37,6 +37,7 @@ class WorkerRecord:
     boot_id: str | None = None
     worker_version: str | None = None
     last_heartbeat_sequence: int | None = None
+    last_heartbeat_at: str | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def can_accept_task(self) -> bool:
@@ -57,6 +58,7 @@ class WorkerRecord:
             "boot_id": self.boot_id,
             "worker_version": self.worker_version,
             "last_heartbeat_sequence": self.last_heartbeat_sequence,
+            "last_heartbeat_at": self.last_heartbeat_at,
             "updated_at": updated_at,
         }
 
@@ -180,6 +182,12 @@ class WorkerRegistry:
         record.last_heartbeat_sequence = (
             int(sequence) if isinstance(sequence, int) else None
         )
+        last_heartbeat_at = payload.get("last_heartbeat_at")
+        record.last_heartbeat_at = (
+            str(last_heartbeat_at)
+            if isinstance(last_heartbeat_at, str) and last_heartbeat_at
+            else None
+        )
         return record
 
     def get(self, worker_id: str) -> WorkerRecord:
@@ -250,6 +258,12 @@ class WorkerRegistry:
         missed = heartbeat.get("missed_heartbeat_count")
         worker.missed_heartbeat_count = missed if isinstance(missed, int) else worker.missed_heartbeat_count
         worker.last_heartbeat_sequence = sequence
+        received_at = heartbeat.get("supervisor_received_at")
+        if not isinstance(received_at, str) or not received_at:
+            raise WorkerStateError(
+                "heartbeat Supervisor receipt time is required"
+            )
+        worker.last_heartbeat_at = received_at
         return worker
 
     def summary(self) -> dict[str, Any]:

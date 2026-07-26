@@ -45,6 +45,8 @@ python scripts/arc-operator-supervisor-smoke.py `
 - Guardian returns a request-bound decision.
 - LIMA reports `source_policy=guardian_core.policy`.
 - Arc acknowledges one assignment preview.
+- The Supervisor refreshes and persists the authenticated heartbeat
+  synchronously before the assignment preview.
 - SQLite contains request, Guardian, LIMA, assignment, and acknowledgement
   evidence.
 - An exact replay is denied.

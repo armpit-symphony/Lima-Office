@@ -9,7 +9,13 @@ import unittest
 from lima_office.contracts import ContractLoader, ContractValidator
 from lima_office.evidence.sqlite_store import SQLiteEvidenceStore
 from lima_office.guardian.authority import GuardianCoreAuthority
-from lima_office.runtime.errors import ContractValidationError, EvidenceWriteError, PolicyDenyError
+from lima_office.runtime.errors import (
+    ContractValidationError,
+    EvidenceWriteError,
+    PolicyDenyError,
+    WorkerChannelAuthenticationError,
+    WorkerEndpointUnavailableError,
+)
 from lima_office.supervisor.arc_worker import LocalArcWorkerPreviewEndpoint
 from lima_office.supervisor.control_plane import SupervisorControlPlane
 from lima_office.supervisor.worker_registry import WorkerRegistry
@@ -115,6 +121,54 @@ class ArcGovernedControlPlaneTests(unittest.TestCase):
             or GuardianCoreAuthority(self.validator, decider=self.guardian_decider),
             lima_runner=lima_runner or self.lima_runner,
             worker_endpoints={"arc-worker-001": endpoint or self.endpoint},
+            clock=lambda: FIXED_TIME,
+        )
+
+    def _authenticated_control_plane(
+        self,
+        *,
+        refresher: object | None,
+        endpoint: object | None = None,
+    ) -> SupervisorControlPlane:
+        self.registry = WorkerRegistry()
+        worker = self.registry.register_authenticated_worker(
+            worker_id="arc-worker-001",
+            tenant_id="tenant-lab-001",
+            role="arc-office-worker",
+            capabilities=[
+                "document_read",
+                "it_diagnostics_read_only",
+                "draft_workspace",
+            ],
+            channel_identity_ref="worker-key-001",
+            boot_id="boot-001",
+            worker_version="arc-bot-shell-0.1.0",
+            policy_hash="guardian-policy-lab-v1",
+        )
+        worker.state = "healthy"
+        refreshers = (
+            {"arc-worker-001": refresher}
+            if callable(refresher)
+            else {}
+        )
+        return SupervisorControlPlane(
+            tenant_id="tenant-lab-001",
+            customer_context_id="customer-context-main",
+            authenticated_actors={"operator-lab-001": "operator"},
+            validator=self.validator,
+            registry=self.registry,
+            evidence_store=self.store,
+            guardian_authority=GuardianCoreAuthority(
+                self.validator,
+                decider=self.guardian_decider,
+            ),
+            lima_runner=self.lima_runner,
+            worker_endpoints={
+                "arc-worker-001": endpoint or self.endpoint
+            },
+            worker_health_refreshers=refreshers,
+            policy_version="guardian-policy-lab-v1",
+            require_authenticated_workers=True,
             clock=lambda: FIXED_TIME,
         )
 
@@ -355,6 +409,148 @@ class ArcGovernedControlPlaneTests(unittest.TestCase):
         self.assertEqual([], self.endpoint.received_previews)
         self.assertTrue(result["runtime_authority_blocked"])
         self.assertFalse(result["execution_allowed"])
+
+    def test_operational_path_refreshes_authenticated_heartbeat_before_assignment(
+        self,
+    ) -> None:
+        calls = []
+
+        def refresh() -> object:
+            calls.append("heartbeat")
+            return self.registry.get("arc-worker-001")
+
+        result = self._authenticated_control_plane(
+            refresher=refresh,
+        ).submit(
+            self._request(
+                request_id="request-health-refresh",
+                idempotency_key="idem-health-refresh",
+            )
+        )
+
+        self.assertEqual(["heartbeat"], calls)
+        self.assertEqual("acknowledged", result["status"])
+        self.assertEqual(
+            [
+                "request_received",
+                "guardian_request",
+                "guardian_decision",
+                "lima_decision",
+                "worker_heartbeat",
+                "assignment_preview",
+                "worker_acknowledgement",
+            ],
+            [event["event_type"] for event in result["evidence"]],
+        )
+        self.assertFalse(result["execution_allowed"])
+
+    def test_unavailable_health_refresh_marks_worker_offline_and_blocks(
+        self,
+    ) -> None:
+        def unavailable() -> object:
+            raise WorkerEndpointUnavailableError("private detail")
+
+        result = self._authenticated_control_plane(
+            refresher=unavailable,
+        ).submit(
+            self._request(
+                request_id="request-worker-disconnected",
+                idempotency_key="idem-worker-disconnected",
+            )
+        )
+
+        self.assertEqual("blocked", result["status"])
+        self.assertEqual(["worker_stale"], result["reason_codes"])
+        self.assertEqual(
+            "offline",
+            self.registry.get("arc-worker-001").state,
+        )
+        self.assertEqual(
+            "offline",
+            self.store.worker_records("tenant-lab-001")[0]["state"],
+        )
+        self.assertNotIn("private detail", str(result))
+        self.assertEqual([], self.endpoint.received_previews)
+        self.assertEqual(
+            result["evidence"][-2]["event_id"],
+            result["evidence"][-1]["parent_event_id"],
+        )
+
+    def test_invalid_health_response_quarantines_worker_and_blocks(
+        self,
+    ) -> None:
+        def invalid() -> object:
+            raise WorkerChannelAuthenticationError("signature detail")
+
+        result = self._authenticated_control_plane(
+            refresher=invalid,
+        ).submit(
+            self._request(
+                request_id="request-worker-invalid",
+                idempotency_key="idem-worker-invalid",
+            )
+        )
+
+        self.assertEqual("blocked", result["status"])
+        self.assertEqual(["worker_quarantined"], result["reason_codes"])
+        self.assertEqual(
+            "quarantined",
+            self.registry.get("arc-worker-001").state,
+        )
+        self.assertEqual(
+            "quarantined",
+            self.store.worker_records("tenant-lab-001")[0]["state"],
+        )
+        self.assertNotIn("signature detail", str(result))
+        self.assertEqual([], self.endpoint.received_previews)
+
+    def test_unexpected_acknowledgement_failure_is_blocked_and_redacted(
+        self,
+    ) -> None:
+        class FailingEndpoint:
+            def acknowledge_preview(
+                inner_self,
+                assignment: dict[str, object],
+            ) -> dict[str, object]:
+                raise RuntimeError("private worker implementation detail")
+
+        def refresh() -> object:
+            return self.registry.get("arc-worker-001")
+
+        result = self._authenticated_control_plane(
+            refresher=refresh,
+            endpoint=FailingEndpoint(),
+        ).submit(
+            self._request(
+                request_id="request-worker-failure",
+                idempotency_key="idem-worker-failure",
+            )
+        )
+
+        self.assertEqual("blocked", result["status"])
+        self.assertEqual(["health_degraded"], result["reason_codes"])
+        self.assertNotIn("private worker implementation detail", str(result))
+        self.assertEqual(
+            "failed_closed",
+            result["evidence"][-1]["outcome"],
+        )
+        self.assertFalse(result["execution_allowed"])
+
+    def test_authenticated_routing_without_health_refresher_fails_closed(
+        self,
+    ) -> None:
+        result = self._authenticated_control_plane(
+            refresher=None,
+        ).submit(
+            self._request(
+                request_id="request-health-refresh-missing",
+                idempotency_key="idem-health-refresh-missing",
+            )
+        )
+
+        self.assertEqual("blocked", result["status"])
+        self.assertEqual(["worker_stale"], result["reason_codes"])
+        self.assertEqual([], self.endpoint.received_previews)
 
     def test_supervisor_scales_same_non_executing_path_to_two_and_eight_workers(self) -> None:
         registry = WorkerRegistry(max_workers=8)

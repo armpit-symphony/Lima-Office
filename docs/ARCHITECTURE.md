@@ -6,9 +6,12 @@ LIMA Office OS is a governed small-business office control plane. The first viab
 
 Phase 0 defines the contracts and trust boundaries. The approved lab slice now
 implements one non-executing operating path: authenticated Arc registration and
-heartbeat, mandatory Guardian, LIMA governed decision, durable SQLite evidence,
-and an Arc assignment acknowledgement. It grants no execution authority and is
-not production-ready.
+synchronous assignment-time heartbeat, mandatory Guardian, LIMA governed
+decision, durable SQLite evidence, and an Arc assignment acknowledgement. One
+foreground Supervisor may bind 1-8 foreground Arc worker processes. A worker
+disconnect becomes a durable offline state, while an authenticated-channel
+failure quarantines that worker. It grants no execution authority and is not
+production-ready.
 
 The first transport is short-lived HMAC-authenticated metadata over an explicit
 foreground, loopback-only Arc endpoint and an explicit foreground,
@@ -20,6 +23,13 @@ in evidence, and represented only by opaque key IDs. Replay identities, worker
 health snapshots, and control-plane evidence persist in SQLite. Private-LAN
 deployment remains blocked on a reviewed confidentiality and device/operator
 key provisioning design.
+
+The Supervisor deliberately does not run a heartbeat scheduler yet. Each
+eligible assignment performs an explicit authenticated heartbeat refresh and
+persists its result before offering the preview. Missing refresh configuration,
+stale responses, disconnects, and invalid authenticated responses fail closed.
+This keeps background behavior visible and absent while the lab trust boundary
+is being proven.
 
 ## Architecture Planes
 

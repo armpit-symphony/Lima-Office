@@ -25,6 +25,10 @@ class WorkerChannelAuthenticationError(WorkerStateError):
     """Raised when an authenticated worker channel fails closed."""
 
 
+class WorkerEndpointUnavailableError(WorkerChannelAuthenticationError):
+    """Raised when an authenticated Arc endpoint cannot be reached."""
+
+
 class OperatorChannelAuthenticationError(PolicyDenyError):
     """Raised when an authenticated operator channel fails closed."""
 
