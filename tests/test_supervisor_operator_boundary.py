@@ -6,12 +6,12 @@ from datetime import datetime, timezone
 import json
 from pathlib import Path
 import sqlite3
+import tempfile
 import threading
 from typing import Any
+import unittest
 from urllib import error as urllib_error
 from urllib import request as urllib_request
-
-import pytest
 
 from lima_office.contracts import ContractLoader, ContractValidator
 from lima_office.evidence.sqlite_store import SQLiteEvidenceStore
@@ -82,37 +82,6 @@ class _FakeControlPlane:
         }
 
 
-@pytest.fixture
-def boundary(
-    tmp_path: Path,
-) -> tuple[
-    OperatorChannel,
-    OperatorControlPlaneService,
-    _FakeControlPlane,
-    SQLiteEvidenceStore,
-]:
-    validator = ContractValidator(ContractLoader().load())
-    store = SQLiteEvidenceStore(tmp_path / "evidence.db", validator)
-    channel = OperatorChannel(
-        tenant_id="tenant-lab-001",
-        customer_context_id="customer-context-main",
-        actor_id="operator-lab-001",
-        key_id="operator-key-001",
-        shared_key=b"o" * 32,
-        validator=validator,
-        evidence_store=store,
-        clock=lambda: datetime(2026, 7, 26, 1, 0, tzinfo=timezone.utc),
-    )
-    control_plane = _FakeControlPlane()
-    service = OperatorControlPlaneService(
-        channel=channel,
-        validator=validator,
-        control_plane=control_plane,  # type: ignore[arg-type]
-    )
-    yield channel, service, control_plane, store
-    store.close()
-
-
 def _request() -> dict[str, Any]:
     return {
         "contract_name": "operator.control_plane.request",
@@ -151,222 +120,213 @@ def _body(channel: OperatorChannel, payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def test_authenticated_request_injects_bound_identity_and_returns_evidence(
-    boundary: tuple[
-        OperatorChannel,
-        OperatorControlPlaneService,
-        _FakeControlPlane,
-        SQLiteEvidenceStore,
-    ],
-) -> None:
-    channel, service, control_plane, _ = boundary
-    response = service.handle(_body(channel, _request()))
-    payload = response["payload"]
-    channel.verify(
-        response["envelope"],
-        payload,
-        expected_message_type="operator_response",
-        expected_sender_component="supervisor",
-    )
+class SupervisorOperatorBoundaryTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temporary = tempfile.TemporaryDirectory()
+        self.validator = ContractValidator(ContractLoader().load())
+        self.store = SQLiteEvidenceStore(
+            Path(self.temporary.name) / "evidence.db",
+            self.validator,
+        )
+        self.channel = OperatorChannel(
+            tenant_id="tenant-lab-001",
+            customer_context_id="customer-context-main",
+            actor_id="operator-lab-001",
+            key_id="operator-key-001",
+            shared_key=b"o" * 32,
+            validator=self.validator,
+            evidence_store=self.store,
+            clock=lambda: datetime(2026, 7, 26, 1, 0, tzinfo=timezone.utc),
+        )
+        self.control_plane = _FakeControlPlane()
+        self.service = OperatorControlPlaneService(
+            channel=self.channel,
+            validator=self.validator,
+            control_plane=self.control_plane,  # type: ignore[arg-type]
+        )
 
-    assert control_plane.requests == [
-        {
-            "request_id": "operator-request-001",
-            "tenant_id": "tenant-lab-001",
-            "actor_id": "operator-lab-001",
-            "action": "safe_read",
-            "resource_type": "worker_status",
-            "resource_id": "arc-worker-001",
-            "worker_id": "arc-worker-001",
-            "idempotency_key": "idem-operator-request-001",
-        }
-    ]
-    assert payload["classification_authority"] == "supervisor_server_derived"
-    assert payload["status"] == "acknowledged"
-    assert payload["evidence"][0]["event_type"] == "request_received"
-    assert payload["runtime_authority_blocked"] is True
-    assert payload["executable"] is False
-    assert payload["execution_allowed"] is False
-    assert payload["side_effects_allowed"] is False
+    def tearDown(self) -> None:
+        self.store.close()
+        self.temporary.cleanup()
 
+    def test_authenticated_request_injects_bound_identity_and_returns_evidence(
+        self,
+    ) -> None:
+        response = self.service.handle(_body(self.channel, _request()))
+        payload = response["payload"]
+        self.channel.verify(
+            response["envelope"],
+            payload,
+            expected_message_type="operator_response",
+            expected_sender_component="supervisor",
+        )
+        self.assertEqual(
+            self.control_plane.requests,
+            [
+                {
+                    "request_id": "operator-request-001",
+                    "tenant_id": "tenant-lab-001",
+                    "actor_id": "operator-lab-001",
+                    "action": "safe_read",
+                    "resource_type": "worker_status",
+                    "resource_id": "arc-worker-001",
+                    "worker_id": "arc-worker-001",
+                    "idempotency_key": "idem-operator-request-001",
+                }
+            ],
+        )
+        self.assertEqual(
+            payload["classification_authority"],
+            "supervisor_server_derived",
+        )
+        self.assertEqual(payload["status"], "acknowledged")
+        self.assertEqual(
+            payload["evidence"][0]["event_type"],
+            "request_received",
+        )
+        self.assertTrue(payload["runtime_authority_blocked"])
+        self.assertFalse(payload["executable"])
+        self.assertFalse(payload["execution_allowed"])
+        self.assertFalse(payload["side_effects_allowed"])
 
-def test_actor_tenant_policy_and_signature_mismatches_fail_closed(
-    boundary: tuple[
-        OperatorChannel,
-        OperatorControlPlaneService,
-        _FakeControlPlane,
-        SQLiteEvidenceStore,
-    ],
-) -> None:
-    channel, service, control_plane, _ = boundary
-    payload = _request()
-    payload["actor_id"] = "operator-other"
-    with pytest.raises(OperatorChannelAuthenticationError):
-        service.handle(_body(channel, payload))
+    def test_actor_and_signature_mismatches_fail_closed(self) -> None:
+        payload = _request()
+        payload["actor_id"] = "operator-other"
+        with self.assertRaises(OperatorChannelAuthenticationError):
+            self.service.handle(_body(self.channel, payload))
 
-    payload = _request()
-    body = _body(channel, payload)
-    body["envelope"]["signature"] = "0" * 64
-    with pytest.raises(OperatorChannelAuthenticationError):
-        service.handle(body)
+        payload = _request()
+        body = _body(self.channel, payload)
+        body["envelope"]["signature"] = "0" * 64
+        with self.assertRaises(OperatorChannelAuthenticationError):
+            self.service.handle(body)
+        self.assertEqual(self.control_plane.requests, [])
 
-    assert control_plane.requests == []
+    def test_replayed_operator_envelope_is_rejected_before_control_plane(
+        self,
+    ) -> None:
+        body = _body(self.channel, _request())
+        self.service.handle(body)
+        with self.assertRaises(OperatorChannelAuthenticationError):
+            self.service.handle(body)
+        self.assertEqual(len(self.control_plane.requests), 1)
 
+    def test_client_cannot_supply_classification_or_execution_authority(
+        self,
+    ) -> None:
+        payload = _request()
+        payload["action_category"] = "informational"
+        with self.assertRaises(Exception):
+            self.service.handle(_body(self.channel, payload))
 
-def test_replayed_operator_envelope_is_rejected_before_control_plane(
-    boundary: tuple[
-        OperatorChannel,
-        OperatorControlPlaneService,
-        _FakeControlPlane,
-        SQLiteEvidenceStore,
-    ],
-) -> None:
-    channel, service, control_plane, _ = boundary
-    body = _body(channel, _request())
-    service.handle(body)
-    with pytest.raises(OperatorChannelAuthenticationError):
-        service.handle(body)
-    assert len(control_plane.requests) == 1
+        payload = _request()
+        payload["execution_allowed"] = True
+        with self.assertRaises(Exception):
+            self.service.handle(_body(self.channel, payload))
+        self.assertEqual(self.control_plane.requests, [])
 
+    def test_supervisor_server_rejects_non_loopback_bind(self) -> None:
+        with self.assertRaisesRegex(
+            OperatorChannelAuthenticationError,
+            "loopback-only",
+        ):
+            build_supervisor_operator_server(
+                host="0.0.0.0",
+                port=0,
+                service=self.service,
+            )
 
-def test_client_cannot_supply_classification_or_execution_authority(
-    boundary: tuple[
-        OperatorChannel,
-        OperatorControlPlaneService,
-        _FakeControlPlane,
-        SQLiteEvidenceStore,
-    ],
-) -> None:
-    channel, service, control_plane, _ = boundary
-    payload = _request()
-    payload["action_category"] = "informational"
-    with pytest.raises(Exception):
-        service.handle(_body(channel, payload))
-
-    payload = _request()
-    payload["execution_allowed"] = True
-    with pytest.raises(Exception):
-        service.handle(_body(channel, payload))
-    assert control_plane.requests == []
-
-
-def test_supervisor_server_rejects_non_loopback_bind(
-    boundary: tuple[
-        OperatorChannel,
-        OperatorControlPlaneService,
-        _FakeControlPlane,
-        SQLiteEvidenceStore,
-    ],
-) -> None:
-    _, service, _, _ = boundary
-    with pytest.raises(OperatorChannelAuthenticationError, match="loopback-only"):
-        build_supervisor_operator_server(
-            host="0.0.0.0",
+    def test_http_authentication_failure_is_publicly_redacted(self) -> None:
+        server = build_supervisor_operator_server(
+            host="127.0.0.1",
             port=0,
-            service=service,
+            service=self.service,
         )
+        payload = _request()
+        request_body = _body(self.channel, payload)
+        request_body["envelope"]["signature"] = "0" * 64
+        encoded = json.dumps(request_body).encode("utf-8")
+        request = urllib_request.Request(
+            f"http://127.0.0.1:{server.server_port}/v1/operator/preflight",
+            data=encoded,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        thread = threading.Thread(target=server.handle_request)
+        thread.start()
+        try:
+            with self.assertRaises(urllib_error.HTTPError) as caught:
+                urllib_request.urlopen(request, timeout=2)
+            response_body = json.loads(caught.exception.read())
+            thread.join(timeout=2)
+        finally:
+            server.server_close()
 
+        self.assertEqual(
+            response_body,
+            {
+                "status": "authentication_failed",
+                "runtime_authority_blocked": True,
+                "executable": False,
+                "execution_allowed": False,
+                "side_effects_allowed": False,
+            },
+        )
+        self.assertNotIn("signature", json.dumps(response_body))
+        self.assertEqual(self.control_plane.requests, [])
 
-def test_http_authentication_failure_is_publicly_redacted(
-    boundary: tuple[
-        OperatorChannel,
-        OperatorControlPlaneService,
-        _FakeControlPlane,
-        SQLiteEvidenceStore,
-    ],
-) -> None:
-    channel, service, control_plane, _ = boundary
-    server = build_supervisor_operator_server(
-        host="127.0.0.1",
-        port=0,
-        service=service,
-    )
-    payload = _request()
-    body = _body(channel, payload)
-    body["envelope"]["signature"] = "0" * 64
-    encoded = json.dumps(body).encode("utf-8")
-    request = urllib_request.Request(
-        f"http://127.0.0.1:{server.server_port}/v1/operator/preflight",
-        data=encoded,
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-    thread = threading.Thread(target=server.handle_request)
-    thread.start()
-    try:
-        with pytest.raises(urllib_error.HTTPError) as exc_info:
-            urllib_request.urlopen(request, timeout=2)
-        body = json.loads(exc_info.value.read())
-        thread.join(timeout=2)
-    finally:
-        server.server_close()
-
-    assert body == {
-        "status": "authentication_failed",
-        "runtime_authority_blocked": True,
-        "executable": False,
-        "execution_allowed": False,
-        "side_effects_allowed": False,
-    }
-    assert "signature" not in json.dumps(body)
-    assert control_plane.requests == []
-
-
-def test_legacy_action_hash_uniqueness_migrates_without_losing_history(
-    tmp_path: Path,
-) -> None:
-    path = tmp_path / "legacy.db"
-    connection = sqlite3.connect(path)
-    connection.executescript(
-        """
-        CREATE TABLE control_plane_requests (
-            request_id TEXT PRIMARY KEY,
-            tenant_id TEXT NOT NULL,
-            idempotency_key TEXT NOT NULL,
-            request_hash TEXT NOT NULL,
-            payload_hash TEXT NOT NULL,
-            created_at TEXT NOT NULL,
-            UNIQUE (tenant_id, idempotency_key),
-            UNIQUE (tenant_id, request_hash)
-        );
-        INSERT INTO control_plane_requests VALUES (
-            'request-legacy-001',
-            'tenant-lab-001',
-            'idem-legacy-001',
-            'sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-            'sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
-            '2026-07-26T01:00:00Z'
-        );
-        """
-    )
-    connection.close()
-
-    validator = ContractValidator(ContractLoader().load())
-    store = SQLiteEvidenceStore(path, validator)
-    store.close()
-
-    reopened = sqlite3.connect(path)
-    try:
-        rows = reopened.execute(
-            "SELECT request_id FROM control_plane_requests ORDER BY request_id"
-        ).fetchall()
-        reopened.execute(
+    def test_legacy_action_hash_uniqueness_migrates_without_losing_history(
+        self,
+    ) -> None:
+        path = Path(self.temporary.name) / "legacy.db"
+        connection = sqlite3.connect(path)
+        connection.executescript(
             """
-            INSERT INTO control_plane_requests VALUES (?, ?, ?, ?, ?, ?)
-            """,
-            (
-                "request-fresh-002",
-                "tenant-lab-001",
-                "idem-fresh-002",
-                "sha256:"
-                + "a" * 64,
-                "sha256:"
-                + "c" * 64,
-                "2026-07-26T01:01:00Z",
-            ),
+            CREATE TABLE control_plane_requests (
+                request_id TEXT PRIMARY KEY,
+                tenant_id TEXT NOT NULL,
+                idempotency_key TEXT NOT NULL,
+                request_hash TEXT NOT NULL,
+                payload_hash TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                UNIQUE (tenant_id, idempotency_key),
+                UNIQUE (tenant_id, request_hash)
+            );
+            INSERT INTO control_plane_requests VALUES (
+                'request-legacy-001',
+                'tenant-lab-001',
+                'idem-legacy-001',
+                'sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+                'sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+                '2026-07-26T01:00:00Z'
+            );
+            """
         )
-        reopened.commit()
-    finally:
-        reopened.close()
+        connection.close()
 
-    assert rows == [("request-legacy-001",)]
+        migrated = SQLiteEvidenceStore(path, self.validator)
+        migrated.close()
+        reopened = sqlite3.connect(path)
+        try:
+            rows = reopened.execute(
+                "SELECT request_id FROM control_plane_requests ORDER BY request_id"
+            ).fetchall()
+            reopened.execute(
+                "INSERT INTO control_plane_requests VALUES (?, ?, ?, ?, ?, ?)",
+                (
+                    "request-fresh-002",
+                    "tenant-lab-001",
+                    "idem-fresh-002",
+                    "sha256:" + "a" * 64,
+                    "sha256:" + "c" * 64,
+                    "2026-07-26T01:01:00Z",
+                ),
+            )
+            reopened.commit()
+        finally:
+            reopened.close()
+        self.assertEqual(rows, [("request-legacy-001",)])
+
+
+if __name__ == "__main__":
+    unittest.main()
