@@ -235,6 +235,11 @@
             "supervisor",
             "lima_it_system",
             "draft_message",
+            "worker_status",
+            "evidence_trace",
+            "external_message",
+            "terminal",
+            "credential_ref",
             "unknown"
           ]
         },
