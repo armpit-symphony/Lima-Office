@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 from collections.abc import Callable, Mapping
 from typing import Any, Protocol
 
@@ -64,6 +66,11 @@ class GuardianCoreAuthority:
         evidence_refs = list(request["evidence_refs"])
         if not evidence_refs:
             raise PolicyDenyError("Guardian evaluation requires pre-action evidence")
+        policy_snapshot_hash = self._policy_snapshot_hash(
+            policy_version=request["policy_version"],
+            tool_name=tool_name,
+            extra_policies=extra_policies,
+        )
         decision = build_guardian_decision(
             action=request["action"],
             decision=mapped,
@@ -83,7 +90,7 @@ class GuardianCoreAuthority:
                     "actor_id": request["actor_id"],
                 },
                 "resource_ref": {
-                    "resource_type": "unknown",
+                    "resource_type": request["resource"]["resource_type"],
                     "resource_id": request["resource"]["resource_id"],
                     "resource_scope": "task_scoped",
                 },
@@ -99,7 +106,7 @@ class GuardianCoreAuthority:
                     else None
                 ),
                 "policy_version": request["policy_version"],
-                "policy_snapshot_hash": request["payload_hash"],
+                "policy_snapshot_hash": policy_snapshot_hash,
                 "created_at": request["issued_at"],
                 "issued_at": request["issued_at"],
                 "effective_at": request["issued_at"],
@@ -111,6 +118,30 @@ class GuardianCoreAuthority:
             },
         )
         return self.validator.validate(decision, "guardian.decision")
+
+    @staticmethod
+    def _policy_snapshot_hash(
+        *,
+        policy_version: str,
+        tool_name: str,
+        extra_policies: Mapping[str, Mapping[str, Any]],
+    ) -> str:
+        """Bind evidence to the server-owned Guardian policy input."""
+
+        snapshot = {
+            "authority": "guardian_core.policy.decide_tool_use",
+            "policy_version": policy_version,
+            "tool_name": tool_name,
+            "policy": extra_policies[tool_name],
+            "room_execution_allowed": False,
+        }
+        canonical = json.dumps(
+            snapshot,
+            ensure_ascii=True,
+            separators=(",", ":"),
+            sort_keys=True,
+        ).encode("utf-8")
+        return f"sha256:{hashlib.sha256(canonical).hexdigest()}"
 
     @staticmethod
     def _load_decider() -> Callable[..., Any]:
