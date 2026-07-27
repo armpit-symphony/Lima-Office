@@ -165,6 +165,68 @@ class ArcGovernedControlPlaneTests(unittest.TestCase):
             ],
         )
 
+    def test_guardian_policy_identity_is_stable_and_preserves_resource_type(self) -> None:
+        control_plane = self._control_plane()
+        safe_request = control_plane._normalize_request(self._request())
+        safe_guardian_request = control_plane._guardian_request(
+            safe_request,
+            "ev-request-001-request-received-1",
+        )
+        safe_decision = GuardianCoreAuthority(
+            self.validator,
+            decider=self.guardian_decider,
+        ).evaluate(safe_guardian_request)
+
+        second_request = control_plane._normalize_request(
+            self._request(
+                request_id="request-policy-identity-002",
+                idempotency_key="idem-policy-identity-002",
+            )
+        )
+        second_decision = GuardianCoreAuthority(
+            self.validator,
+            decider=self.guardian_decider,
+        ).evaluate(
+            control_plane._guardian_request(
+                second_request,
+                "ev-request-policy-identity-002-request-received-1",
+            )
+        )
+
+        write_request = control_plane._normalize_request(
+            self._request(
+                action="external_write",
+                request_id="request-policy-write-003",
+                idempotency_key="idem-policy-write-003",
+            )
+        )
+        write_decision = GuardianCoreAuthority(
+            self.validator,
+            decider=self.guardian_decider,
+        ).evaluate(
+            control_plane._guardian_request(
+                write_request,
+                "ev-request-policy-write-003-request-received-1",
+            )
+        )
+
+        self.assertEqual(
+            safe_decision["resource_ref"]["resource_type"],
+            "worker_status",
+        )
+        self.assertEqual(
+            safe_decision["policy_snapshot_hash"],
+            second_decision["policy_snapshot_hash"],
+        )
+        self.assertNotEqual(
+            safe_decision["policy_snapshot_hash"],
+            safe_guardian_request["payload_hash"],
+        )
+        self.assertNotEqual(
+            safe_decision["policy_snapshot_hash"],
+            write_decision["policy_snapshot_hash"],
+        )
+
     def test_caller_cannot_supply_classification_or_tool_identity(self) -> None:
         request = self._request()
         request["action_category"] = "informational"
