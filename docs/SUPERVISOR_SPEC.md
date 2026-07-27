@@ -73,6 +73,21 @@ The worker registry tracks:
 - Rollback state.
 - Evidence refs.
 
+The first Arc-facing inventory surface is an explicit foreground refresh, not
+a passive or background dashboard poll. The authenticated operator cannot
+choose the worker set or assert worker health, role, capability, eligibility,
+classification, or authority. The Supervisor lists its own registry in stable
+worker-ID order, derives a non-executing `status` preflight for each worker,
+and returns at most eight signed entries.
+
+A worker is eligible only when it is authenticated, registry-assignable, has a
+fresh governed status result, and acknowledges the non-executing assignment
+preview. Offline, degraded, quarantined, revoked, or rejected workers remain
+ineligible. Guardian or LIMA unavailability denies the inventory and suppresses
+worker details. Worker disconnects and quarantine remain isolated to the
+affected worker while the other workers continue through their independent
+request-bound decisions.
+
 ## Model Router
 
 The model router selects local or subscription/cloud provider class based on policy. It must record:

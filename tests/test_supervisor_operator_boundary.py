@@ -29,10 +29,15 @@ NOW = "2026-07-26T01:00:00Z"
 class _FakeControlPlane:
     def __init__(self) -> None:
         self.requests: list[dict[str, Any]] = []
+        self.registry = _FakeRegistry(1)
+        self.omit_guardian = False
+        self.omit_lima = False
 
     def submit(self, request: dict[str, Any]) -> dict[str, Any]:
         self.requests.append(dict(request))
-        return {
+        record = self.registry.by_id(request["worker_id"])
+        blocked = record.state in {"offline", "quarantined", "revoked"}
+        result = {
             "request_id": request["request_id"],
             "tenant_id": request["tenant_id"],
             "actor_id": request["actor_id"],
@@ -40,7 +45,7 @@ class _FakeControlPlane:
             "status": "acknowledged",
             "classification_authority": "supervisor_server_derived",
             "action_category": "informational",
-            "guardian": {
+            "guardian": None if self.omit_guardian else {
                 "decision_id": "guardian-decision-001",
                 "decision": "allow_with_evidence",
                 "approval_required": False,
@@ -49,7 +54,7 @@ class _FakeControlPlane:
                 "request_binding": "sha256:" + "2" * 64,
                 "expires_at": "2026-07-26T01:05:00Z",
             },
-            "lima": {
+            "lima": None if self.omit_lima else {
                 "decision_id": "lima-decision-001",
                 "status": "allowed_dry_run",
                 "allowed": True,
@@ -61,11 +66,11 @@ class _FakeControlPlane:
                 "execution_allowed": False,
                 "side_effects_allowed": False,
             },
-            "assignment": {
+            "assignment": None if blocked else {
                 "assignment_id": "assignment-001",
                 "status": "acknowledged",
             },
-            "reason_codes": [],
+            "reason_codes": ["worker_stale"] if blocked else [],
             "evidence": [
                 {
                     "event_id": "event-001",
@@ -80,6 +85,62 @@ class _FakeControlPlane:
             "execution_allowed": False,
             "side_effects_allowed": False,
         }
+        if blocked:
+            result["status"] = "blocked"
+        return result
+
+    def submit_many(
+        self,
+        request: dict[str, Any],
+        worker_ids: list[str],
+    ) -> dict[str, Any]:
+        results = []
+        for index, worker_id in enumerate(worker_ids, start=1):
+            derived = dict(request)
+            derived["worker_id"] = worker_id
+            derived["resource_id"] = worker_id
+            derived["request_id"] = f"{request['request_id']}:worker-{index}"
+            derived["idempotency_key"] = (
+                f"{request['idempotency_key']}:{worker_id}"
+            )
+            results.append(self.submit(derived))
+        return {
+            "worker_count": len(results),
+            "results": results,
+            "runtime_authority_blocked": True,
+            "executable": False,
+            "execution_allowed": False,
+            "side_effects_allowed": False,
+        }
+
+
+class _FakeRecord:
+    def __init__(self, index: int) -> None:
+        self.worker_id = f"arc-worker-{index:03d}"
+        self.role = "general_office_arc_worker"
+        self.capabilities = ("document_read",)
+        self.state = "healthy"
+        self.authenticated = True
+        self.worker_version = "arc-bot-shell-0.1.0"
+        self.last_heartbeat_at = NOW
+
+    def can_accept_task(self) -> bool:
+        return self.state in {"registered", "healthy"}
+
+
+class _FakeRegistry:
+    def __init__(self, worker_count: int) -> None:
+        self._records = tuple(
+            _FakeRecord(index) for index in range(1, worker_count + 1)
+        )
+
+    def records(self) -> tuple[_FakeRecord, ...]:
+        return self._records
+
+    def by_id(self, worker_id: str) -> _FakeRecord:
+        return next(
+            record for record in self._records if record.worker_id == worker_id
+        )
 
 
 def _request() -> dict[str, Any]:
@@ -117,6 +178,30 @@ def _body(channel: OperatorChannel, payload: dict[str, Any]) -> dict[str, Any]:
             sender_component="operator_client",
         ),
         "payload": payload,
+    }
+
+
+def _inventory_request() -> dict[str, Any]:
+    return {
+        "contract_name": "operator.worker_inventory.request",
+        "contract_version": "1.0.0",
+        "schema_version": "1.0.0",
+        "taxonomy_version": "taxonomy-recon-v1",
+        "tenant_id": "tenant-lab-001",
+        "customer_context_id": "customer-context-main",
+        "environment": "phase0_lab",
+        "correlation_id": "corr:worker-inventory-001",
+        "causation_id": None,
+        "idempotency_key": "idem:worker-inventory-001",
+        "producer": {"component": "operator_client", "produced_at": NOW},
+        "policy_version": "guardian-policy-lab-v1",
+        "request_id": "worker-inventory-001",
+        "actor_id": "operator-lab-001",
+        "operation": "refresh_non_executing_worker_status",
+        "runtime_authority_blocked": True,
+        "executable": False,
+        "execution_allowed": False,
+        "side_effects_allowed": False,
     }
 
 
@@ -224,6 +309,115 @@ class SupervisorOperatorBoundaryTests(unittest.TestCase):
         with self.assertRaises(Exception):
             self.service.handle(_body(self.channel, payload))
         self.assertEqual(self.control_plane.requests, [])
+
+    def test_inventory_uses_server_owned_worker_set_and_governed_results(
+        self,
+    ) -> None:
+        for worker_count in (1, 2, 8):
+            with self.subTest(worker_count=worker_count):
+                self.control_plane.registry = _FakeRegistry(worker_count)
+                self.control_plane.requests.clear()
+                request = _inventory_request()
+                request["request_id"] = f"worker-inventory-{worker_count}"
+                request["idempotency_key"] = f"idem:worker-inventory-{worker_count}"
+                response = self.service.handle_inventory(
+                    _body(self.channel, request)
+                )
+                payload = response["payload"]
+                self.channel.verify(
+                    response["envelope"],
+                    payload,
+                    expected_message_type="operator_response",
+                    expected_sender_component="supervisor",
+                )
+                self.assertEqual(worker_count, payload["worker_count"])
+                self.assertEqual("healthy", payload["status"])
+                self.assertTrue(
+                    all(worker["eligible"] for worker in payload["workers"])
+                )
+                self.assertTrue(
+                    all(
+                        worker["guardian_decision_id"]
+                        and worker["lima_decision_id"]
+                        and worker["assignment_status"] == "acknowledged"
+                        for worker in payload["workers"]
+                    )
+                )
+                self.assertTrue(payload["runtime_authority_blocked"])
+                self.assertFalse(payload["execution_allowed"])
+                self.assertEqual(
+                    [item["worker_id"] for item in self.control_plane.requests],
+                    [
+                        f"arc-worker-{index:03d}"
+                        for index in range(1, worker_count + 1)
+                    ],
+                )
+
+    def test_inventory_caller_cannot_choose_workers_or_authority(self) -> None:
+        for field, value in (
+            ("worker_ids", ["arc-attacker-001"]),
+            ("eligible", True),
+            ("action_category", "informational"),
+            ("execution_allowed", True),
+        ):
+            with self.subTest(field=field):
+                payload = _inventory_request()
+                payload[field] = value
+                with self.assertRaises(Exception):
+                    self.service.handle_inventory(_body(self.channel, payload))
+        self.assertEqual(self.control_plane.requests, [])
+
+    def test_inventory_offline_worker_is_visible_but_ineligible(self) -> None:
+        records = _FakeRegistry(2)
+        records._records[-1].state = "offline"
+        self.control_plane.registry = records
+        payload = self.service.handle_inventory(
+            _body(self.channel, _inventory_request())
+        )["payload"]
+        self.assertEqual("degraded_read_only", payload["status"])
+        self.assertTrue(payload["workers"][0]["eligible"])
+        self.assertFalse(payload["workers"][1]["eligible"])
+        self.assertEqual("offline", payload["workers"][1]["state"])
+        self.assertEqual(["worker_stale"], payload["workers"][1]["reason_codes"])
+
+    def test_inventory_hides_details_when_guardian_is_missing(self) -> None:
+        self.control_plane.omit_guardian = True
+        payload = self.service.handle_inventory(
+            _body(self.channel, _inventory_request())
+        )["payload"]
+        self.assertEqual("denied", payload["status"])
+        self.assertEqual([], payload["workers"])
+        self.assertEqual(0, payload["worker_count"])
+        self.assertEqual(
+            ["recon_missing_guardian_decision"],
+            payload["reason_codes"],
+        )
+
+    def test_inventory_hides_details_when_lima_is_missing(self) -> None:
+        self.control_plane.omit_lima = True
+        payload = self.service.handle_inventory(
+            _body(self.channel, _inventory_request())
+        )["payload"]
+        self.assertEqual("denied", payload["status"])
+        self.assertEqual([], payload["workers"])
+        self.assertEqual(0, payload["worker_count"])
+
+    def test_inventory_quarantined_worker_is_visible_but_ineligible(self) -> None:
+        records = _FakeRegistry(2)
+        records._records[-1].state = "quarantined"
+        self.control_plane.registry = records
+        payload = self.service.handle_inventory(
+            _body(self.channel, _inventory_request())
+        )["payload"]
+        self.assertEqual("degraded_read_only", payload["status"])
+        self.assertEqual("quarantined", payload["workers"][-1]["state"])
+        self.assertFalse(payload["workers"][-1]["eligible"])
+
+    def test_replayed_inventory_envelope_is_rejected(self) -> None:
+        body = _body(self.channel, _inventory_request())
+        self.service.handle_inventory(body)
+        with self.assertRaises(OperatorChannelAuthenticationError):
+            self.service.handle_inventory(body)
 
     def test_supervisor_server_rejects_non_loopback_bind(self) -> None:
         with self.assertRaisesRegex(

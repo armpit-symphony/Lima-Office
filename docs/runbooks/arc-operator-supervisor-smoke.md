@@ -54,6 +54,31 @@ python scripts/arc-operator-supervisor-smoke.py `
   accepted and prior evidence remains.
 - All runtime authority, execution, and side-effect flags remain false.
 
+## Multi-worker inventory proof
+
+The 1-, 2-, and 8-worker smoke launches separate foreground Arc processes and uses
+Arc's explicit inventory command:
+
+```powershell
+python scripts/arc-multi-worker-supervisor-smoke.py `
+  --arc-source C:\path\to\Arc-Bot-shell `
+  --worker-count 1
+
+python scripts/arc-multi-worker-supervisor-smoke.py `
+  --arc-source C:\path\to\Arc-Bot-shell `
+  --worker-count 2
+
+python scripts/arc-multi-worker-supervisor-smoke.py `
+  --arc-source C:\path\to\Arc-Bot-shell `
+  --worker-count 8
+```
+
+It proves Arc displays the complete healthy registry with Guardian/LIMA
+decision identities and evidence references. It then restarts the Supervisor,
+disconnects one Arc process, persists that worker as offline, and proves Arc
+shows a degraded read-only inventory in which only that worker is ineligible.
+No scheduler or hidden polling is started.
+
 ## Boundaries
 
 Both HTTP listeners are loopback-only. Private-LAN deployment remains blocked

@@ -15,6 +15,7 @@ from lima_office.runtime.errors import OperatorChannelAuthenticationError
 
 from .control_plane import SupervisorControlPlane
 from .operator_channel import OperatorChannel
+from .worker_registry import WorkerRecord
 
 
 logger = logging.getLogger(__name__)
@@ -36,6 +37,58 @@ class OperatorControlPlaneService:
         self.control_plane = control_plane
 
     def handle(self, body: Mapping[str, Any]) -> dict[str, Any]:
+        request = self._authenticate_and_validate(
+            body,
+            contract_name="operator.control_plane.request",
+        )
+        result = self.control_plane.submit(
+            {
+                "request_id": request["request_id"],
+                "tenant_id": self.channel.tenant_id,
+                "actor_id": self.channel.actor_id,
+                "action": request["action"],
+                "resource_type": request["resource_type"],
+                "resource_id": request["resource_id"],
+                "worker_id": request["worker_id"],
+                "idempotency_key": request["idempotency_key"],
+            }
+        )
+        return self._signed(self._response(request, result))
+
+    def handle_inventory(self, body: Mapping[str, Any]) -> dict[str, Any]:
+        """Refresh server-owned worker status through Guardian and LIMA."""
+
+        request = self._authenticate_and_validate(
+            body,
+            contract_name="operator.worker_inventory.request",
+        )
+        records = self.control_plane.registry.records()
+        if records:
+            results = self.control_plane.submit_many(
+                {
+                    "request_id": request["request_id"],
+                    "tenant_id": self.channel.tenant_id,
+                    "actor_id": self.channel.actor_id,
+                    "action": "status",
+                    "resource_type": "worker_status",
+                    "resource_id": "supervisor_worker_inventory",
+                    "worker_id": records[0].worker_id,
+                    "idempotency_key": request["idempotency_key"],
+                },
+                [record.worker_id for record in records],
+            )["results"]
+        else:
+            results = []
+        return self._signed(
+            self._inventory_response(request, records, results)
+        )
+
+    def _authenticate_and_validate(
+        self,
+        body: Mapping[str, Any],
+        *,
+        contract_name: str,
+    ) -> dict[str, Any]:
         if (
             not isinstance(body, Mapping)
             or set(body) != {"envelope", "payload"}
@@ -54,22 +107,12 @@ class OperatorControlPlaneService:
         )
         request = self.validator.validate(
             payload,
-            "operator.control_plane.request",
+            contract_name,
         )
         self._assert_request_binding(request)
-        result = self.control_plane.submit(
-            {
-                "request_id": request["request_id"],
-                "tenant_id": self.channel.tenant_id,
-                "actor_id": self.channel.actor_id,
-                "action": request["action"],
-                "resource_type": request["resource_type"],
-                "resource_id": request["resource_id"],
-                "worker_id": request["worker_id"],
-                "idempotency_key": request["idempotency_key"],
-            }
-        )
-        response = self._response(request, result)
+        return request
+
+    def _signed(self, response: dict[str, Any]) -> dict[str, Any]:
         return {
             "envelope": self.channel.sign(
                 response,
@@ -169,6 +212,125 @@ class OperatorControlPlaneService:
             "operator.control_plane.response",
         )
 
+    def _inventory_response(
+        self,
+        request: dict[str, Any],
+        records: tuple[WorkerRecord, ...],
+        results: list[dict[str, Any]],
+    ) -> dict[str, Any]:
+        governed = all(
+            isinstance(result.get("guardian"), Mapping)
+            and isinstance(result.get("lima"), Mapping)
+            and result["lima"].get("source_policy") == "guardian_core.policy"
+            for result in results
+        )
+        if results and not governed:
+            workers: list[dict[str, Any]] = []
+            status = "denied"
+            reason_codes = ["recon_missing_guardian_decision"]
+        else:
+            workers = [
+                self._inventory_worker(record, result)
+                for record, result in zip(records, results, strict=True)
+            ]
+            status = (
+                "healthy"
+                if workers and all(worker["eligible"] for worker in workers)
+                else "degraded_read_only"
+            )
+            reason_codes = sorted(
+                {
+                    code
+                    for worker in workers
+                    for code in worker["reason_codes"]
+                }
+            )
+        evidence_refs = sorted(
+            {
+                reference
+                for worker in workers
+                for reference in worker["evidence_refs"]
+            }
+        )
+        response = {
+            "contract_name": "operator.worker_inventory.response",
+            "contract_version": "1.0.0",
+            "schema_version": "1.0.0",
+            "taxonomy_version": "taxonomy-recon-v1",
+            "tenant_id": self.channel.tenant_id,
+            "customer_context_id": self.channel.customer_context_id,
+            "environment": "phase0_lab",
+            "correlation_id": request["correlation_id"],
+            "causation_id": request["request_id"],
+            "idempotency_key": f"response:{request['idempotency_key']}",
+            "producer": {"component": "supervisor", "produced_at": self._now()},
+            "policy_version": self.channel.policy_version,
+            "request_id": request["request_id"],
+            "actor_id": self.channel.actor_id,
+            "status": status,
+            "classification_authority": "supervisor_server_derived",
+            "worker_count": len(workers),
+            "workers": workers,
+            "evidence_refs": evidence_refs,
+            "reason_codes": reason_codes,
+            "runtime_authority_blocked": True,
+            "executable": False,
+            "execution_allowed": False,
+            "side_effects_allowed": False,
+        }
+        return self.validator.validate(
+            response,
+            "operator.worker_inventory.response",
+        )
+
+    @staticmethod
+    def _inventory_worker(
+        record: WorkerRecord,
+        result: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        guardian = result["guardian"]
+        lima = result["lima"]
+        assignment = result.get("assignment")
+        evidence_refs = sorted(
+            str(event["event_id"])
+            for event in result.get("evidence") or []
+            if isinstance(event, Mapping) and event.get("event_id")
+        )
+        eligible = (
+            record.authenticated
+            and record.can_accept_task()
+            and result.get("status") == "acknowledged"
+            and isinstance(assignment, Mapping)
+            and assignment.get("status") == "acknowledged"
+        )
+        return {
+            "worker_id": record.worker_id,
+            "role": record.role,
+            "capabilities": sorted(record.capabilities),
+            "state": record.state,
+            "authenticated": record.authenticated,
+            "eligible": eligible,
+            "worker_version": record.worker_version,
+            "last_heartbeat_at": record.last_heartbeat_at,
+            "control_plane_status": result["status"],
+            "guardian_decision_id": guardian["decision_id"],
+            "lima_decision_id": lima["decision_id"],
+            "lima_status": lima["status"],
+            "assignment_status": (
+                str(assignment["status"])
+                if isinstance(assignment, Mapping)
+                else None
+            ),
+            "evidence_refs": evidence_refs,
+            "reason_codes": [
+                str(code) for code in result.get("reason_codes") or []
+            ],
+            "runtime_authority_blocked": True,
+            "executable": False,
+            "execution_allowed": False,
+            "side_effects_allowed": False,
+        }
+
     @staticmethod
     def _now() -> str:
         return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
@@ -178,7 +340,12 @@ class _OperatorRequestHandler(BaseHTTPRequestHandler):
     server: "SupervisorOperatorServer"
 
     def do_POST(self) -> None:
-        if self.path != "/v1/operator/preflight":
+        handlers = {
+            "/v1/operator/preflight": self.server.operator_service.handle,
+            "/v1/operator/workers": self.server.operator_service.handle_inventory,
+        }
+        handler = handlers.get(self.path)
+        if handler is None:
             self._reply(HTTPStatus.NOT_FOUND, self._failed_closed("not_found"))
             return
         try:
@@ -194,7 +361,7 @@ class _OperatorRequestHandler(BaseHTTPRequestHandler):
         try:
             raw = self.rfile.read(content_length)
             body = json.loads(raw)
-            response = self.server.operator_service.handle(body)
+            response = handler(body)
         except OperatorChannelAuthenticationError:
             logger.warning("Supervisor rejected an unauthenticated operator request")
             self._reply(

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/operator.worker_inventory.request.schema.json",
+  "title": "Authenticated Operator Worker Inventory Request v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "policy_version",
+    "request_id",
+    "actor_id",
+    "operation",
+    "runtime_authority_blocked",
+    "executable",
+    "execution_allowed",
+    "side_effects_allowed"
+  ],
+  "properties": {
+    "contract_name": {"type": "string", "const": "operator.worker_inventory.request"},
+    "contract_version": {"type": "string", "const": "1.0.0"},
+    "schema_version": {"type": "string", "const": "1.0.0"},
+    "taxonomy_version": {"type": "string", "const": "taxonomy-recon-v1"},
+    "tenant_id": {"type": "string", "minLength": 1},
+    "customer_context_id": {"type": "string", "minLength": 1},
+    "environment": {"type": "string", "const": "phase0_lab"},
+    "correlation_id": {"type": "string", "minLength": 1},
+    "causation_id": {"type": ["string", "null"]},
+    "idempotency_key": {"type": "string", "minLength": 1},
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["component", "produced_at"],
+      "properties": {
+        "component": {"type": "string", "const": "operator_client"},
+        "produced_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "policy_version": {"type": "string", "minLength": 1},
+    "request_id": {"type": "string", "minLength": 1},
+    "actor_id": {"type": "string", "minLength": 1},
+    "operation": {
+      "type": "string",
+      "const": "refresh_non_executing_worker_status"
+    },
+    "runtime_authority_blocked": {"type": "boolean", "const": true},
+    "executable": {"type": "boolean", "const": false},
+    "execution_allowed": {"type": "boolean", "const": false},
+    "side_effects_allowed": {"type": "boolean", "const": false}
+  }
+}

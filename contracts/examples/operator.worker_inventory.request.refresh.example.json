@@ -1,0 +1,21 @@
+{
+  "contract_name": "operator.worker_inventory.request",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr:worker-inventory-001",
+  "causation_id": null,
+  "idempotency_key": "idem:worker-inventory-001",
+  "producer": {"component": "operator_client", "produced_at": "2026-07-26T01:00:00Z"},
+  "policy_version": "guardian-policy-lab-v1",
+  "request_id": "worker-inventory-001",
+  "actor_id": "operator-lab-001",
+  "operation": "refresh_non_executing_worker_status",
+  "runtime_authority_blocked": true,
+  "executable": false,
+  "execution_allowed": false,
+  "side_effects_allowed": false
+}

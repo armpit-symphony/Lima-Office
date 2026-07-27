@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prove one foreground Supervisor with 2 or 8 real Arc worker processes."""
+"""Prove one foreground Supervisor with 1, 2, or 8 real Arc processes."""
 
 from __future__ import annotations
 
@@ -34,7 +34,7 @@ class WorkerProcess:
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Launch one Supervisor with 2 or 8 separate foreground Arc "
+            "Launch one Supervisor with 1, 2, or 8 separate foreground Arc "
             "workers, then prove non-executing routing and offline isolation."
         )
     )
@@ -42,7 +42,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--worker-count",
         type=int,
-        choices=(2, 8),
+        choices=(1, 2, 8),
         required=True,
     )
     return parser
@@ -303,6 +303,64 @@ def _run_operator(
     return result
 
 
+def _run_inventory(
+    *,
+    arc_source: Path,
+    supervisor_url: str,
+    replay_db: Path,
+    operator_key: bytes,
+    request_id: str,
+    idempotency_key: str,
+) -> dict[str, Any]:
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "arc_bot_shell.control_plane.worker_inventory_cli",
+            "--refresh",
+            "--supervisor-url",
+            supervisor_url,
+            "--tenant-id",
+            "tenant-lab-001",
+            "--customer-context-id",
+            "customer-context-main",
+            "--operator-id",
+            "operator-lab-001",
+            "--operator-key-id",
+            "operator-key-001",
+            "--request-id",
+            request_id,
+            "--idempotency-key",
+            idempotency_key,
+            "--replay-db",
+            str(replay_db),
+            "--operator-key-stdin",
+        ],
+        cwd=arc_source,
+        input=operator_key.hex() + "\n",
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=30,
+    )
+    if completed.returncode != 0:
+        raise SystemExit(f"Arc worker inventory failed closed for {request_id}")
+    try:
+        result = json.loads(completed.stdout)
+    except json.JSONDecodeError as exc:
+        raise SystemExit("Arc worker inventory result is invalid") from exc
+    _assert_non_executing(result)
+    for worker in result.get("workers", []):
+        _assert_non_executing(worker)
+        if not worker.get("guardian_decision_id") or not worker.get(
+            "lima_decision_id"
+        ):
+            raise SystemExit(
+                "Arc inventory worker lacks Guardian/LIMA decision evidence"
+            )
+    return result
+
+
 def _assert_non_executing(result: dict[str, Any]) -> None:
     if result.get("runtime_authority_blocked") is not True:
         raise SystemExit("runtime authority was not blocked")
@@ -371,6 +429,25 @@ def main(argv: list[str] | None = None) -> int:
                 operator_key=operator_key,
             )
             supervisor_url = f"http://127.0.0.1:{ready['port']}"
+            initial_inventory = _run_inventory(
+                arc_source=arc_source,
+                supervisor_url=supervisor_url,
+                replay_db=operator_replay_db,
+                operator_key=operator_key,
+                request_id=f"inventory-{args.worker_count}-initial",
+                idempotency_key=f"idem-inventory-{args.worker_count}-initial",
+            )
+            if (
+                initial_inventory["status"] != "healthy"
+                or initial_inventory["worker_count"] != args.worker_count
+                or not all(
+                    worker["eligible"]
+                    for worker in initial_inventory["workers"]
+                )
+            ):
+                raise SystemExit(
+                    "Arc did not display the complete governed healthy inventory"
+                )
             for index, worker in enumerate(workers, start=1):
                 result = _run_operator(
                     arc_source=arc_source,
@@ -426,18 +503,45 @@ def main(argv: list[str] | None = None) -> int:
             ):
                 raise SystemExit("disconnected Arc worker did not fail closed")
 
-            isolation_result = _run_operator(
+            isolation_result: dict[str, Any] | None = None
+            if args.worker_count > 1:
+                isolation_result = _run_operator(
+                    arc_source=arc_source,
+                    supervisor_url=supervisor_url,
+                    replay_db=operator_replay_db,
+                    operator_key=operator_key,
+                    worker_id=workers[0].worker_id,
+                    request_id=f"isolation-{args.worker_count}-healthy",
+                    idempotency_key=f"idem-isolation-{args.worker_count}-healthy",
+                )
+                if isolation_result["status"] != "acknowledged":
+                    raise SystemExit(
+                        "one disconnected worker affected a healthy Arc worker"
+                    )
+            degraded_inventory = _run_inventory(
                 arc_source=arc_source,
                 supervisor_url=supervisor_url,
                 replay_db=operator_replay_db,
                 operator_key=operator_key,
-                worker_id=workers[0].worker_id,
-                request_id=f"isolation-{args.worker_count}-healthy",
-                idempotency_key=f"idem-isolation-{args.worker_count}-healthy",
+                request_id=f"inventory-{args.worker_count}-degraded",
+                idempotency_key=f"idem-inventory-{args.worker_count}-degraded",
             )
-            if isolation_result["status"] != "acknowledged":
+            visible_states = {
+                worker["worker_id"]: worker
+                for worker in degraded_inventory["workers"]
+            }
+            if (
+                degraded_inventory["status"] != "degraded_read_only"
+                or degraded_inventory["worker_count"] != args.worker_count
+                or visible_states[disconnected.worker_id]["eligible"] is not False
+                or visible_states[disconnected.worker_id]["state"] != "offline"
+                or (
+                    args.worker_count > 1
+                    and visible_states[workers[0].worker_id]["eligible"] is not True
+                )
+            ):
                 raise SystemExit(
-                    "one disconnected worker affected a healthy Arc worker"
+                    "Arc inventory did not isolate the disconnected worker"
                 )
         finally:
             if supervisor is not None:
@@ -463,7 +567,10 @@ def main(argv: list[str] | None = None) -> int:
             raise SystemExit("durable worker inventory is incomplete")
         if states[workers[-1].worker_id] != "offline":
             raise SystemExit("disconnected worker state was not durable")
-        if states[workers[0].worker_id] != "healthy":
+        if (
+            args.worker_count > 1
+            and states[workers[0].worker_id] != "healthy"
+        ):
             raise SystemExit("healthy worker state was not durable")
         if [event["event_type"] for event in offline_events][-2:] != [
             "worker_heartbeat",
@@ -487,6 +594,14 @@ def main(argv: list[str] | None = None) -> int:
                 for worker_id, result in scale_results.items()
             },
             "supervisor_restart": "passed",
+            "arc_worker_inventory": {
+                "initial_status": initial_inventory["status"],
+                "initial_worker_count": initial_inventory["worker_count"],
+                "degraded_status": degraded_inventory["status"],
+                "offline_worker_visible": True,
+                "healthy_worker_eligible": True,
+                "guardian_lima_evidence_present": True,
+            },
             "disconnected_worker": {
                 "worker_id": workers[-1].worker_id,
                 "status": offline_result["status"],
@@ -496,7 +611,11 @@ def main(argv: list[str] | None = None) -> int:
                     event["event_type"] for event in offline_events
                 ],
             },
-            "healthy_worker_isolation": isolation_result["status"],
+            "healthy_worker_isolation": (
+                isolation_result["status"]
+                if isolation_result is not None
+                else "not_applicable_one_worker"
+            ),
             "transport": {
                 "loopback_only": True,
                 "foreground_supervisor": True,
