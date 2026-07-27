@@ -361,6 +361,63 @@ def _run_inventory(
     return result
 
 
+def _run_evidence(
+    *,
+    arc_source: Path,
+    supervisor_url: str,
+    replay_db: Path,
+    operator_key: bytes,
+    target_request_id: str,
+    request_id: str,
+    idempotency_key: str,
+) -> dict[str, Any]:
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "arc_bot_shell.control_plane.evidence_cli",
+            "--read",
+            "--target-request-id",
+            target_request_id,
+            "--supervisor-url",
+            supervisor_url,
+            "--tenant-id",
+            "tenant-lab-001",
+            "--customer-context-id",
+            "customer-context-main",
+            "--operator-id",
+            "operator-lab-001",
+            "--operator-key-id",
+            "operator-key-001",
+            "--request-id",
+            request_id,
+            "--idempotency-key",
+            idempotency_key,
+            "--replay-db",
+            str(replay_db),
+            "--operator-key-stdin",
+        ],
+        cwd=arc_source,
+        input=operator_key.hex() + "\n",
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=30,
+    )
+    if completed.returncode != 0:
+        raise SystemExit(f"Arc evidence trace failed closed for {request_id}")
+    try:
+        result = json.loads(completed.stdout)
+    except json.JSONDecodeError as exc:
+        raise SystemExit("Arc evidence trace result is invalid") from exc
+    _assert_non_executing(result)
+    for event in result.get("events", []):
+        _assert_non_executing(event)
+        if event.get("request_id") != target_request_id:
+            raise SystemExit("Arc evidence trace crossed a request boundary")
+    return result
+
+
 def _assert_non_executing(result: dict[str, Any]) -> None:
     if result.get("runtime_authority_blocked") is not True:
         raise SystemExit("runtime authority was not blocked")
@@ -486,6 +543,61 @@ def main(argv: list[str] | None = None) -> int:
             if restart_result["status"] != "acknowledged":
                 raise SystemExit("healthy worker did not survive Supervisor restart")
 
+            evidence_target = f"scale-{args.worker_count}-worker-001"
+            evidence_request_id = f"evidence-{args.worker_count}-after-restart"
+            evidence_idempotency_key = (
+                f"idem-evidence-{args.worker_count}-after-restart"
+            )
+            evidence_result = _run_evidence(
+                arc_source=arc_source,
+                supervisor_url=supervisor_url,
+                replay_db=operator_replay_db,
+                operator_key=operator_key,
+                target_request_id=evidence_target,
+                request_id=evidence_request_id,
+                idempotency_key=evidence_idempotency_key,
+            )
+            expected_event_types = {
+                "request_received",
+                "guardian_request",
+                "guardian_decision",
+                "lima_decision",
+                "worker_heartbeat",
+                "assignment_preview",
+                "worker_acknowledgement",
+            }
+            observed_event_types = {
+                event["event_type"] for event in evidence_result["events"]
+            }
+            if (
+                evidence_result["status"] != "available"
+                or evidence_result["target_request_id"] != evidence_target
+                or not expected_event_types.issubset(observed_event_types)
+                or not evidence_result["guardian_decision_id"]
+                or not evidence_result["lima_decision_id"]
+                or not evidence_result["authorization_evidence_refs"]
+            ):
+                raise SystemExit(
+                    "Arc did not display the durable governed evidence chain "
+                    "after Supervisor restart"
+                )
+
+            evidence_replay = _run_evidence(
+                arc_source=arc_source,
+                supervisor_url=supervisor_url,
+                replay_db=operator_replay_db,
+                operator_key=operator_key,
+                target_request_id=evidence_target,
+                request_id=evidence_request_id,
+                idempotency_key=evidence_idempotency_key,
+            )
+            if (
+                evidence_replay["status"] != "denied"
+                or evidence_replay["events"]
+                or evidence_replay["reason_codes"] != ["nonce_replay_denied"]
+            ):
+                raise SystemExit("Arc evidence query replay did not fail closed")
+
             disconnected = workers[-1]
             _stop(disconnected.process)
             offline_result = _run_operator(
@@ -557,6 +669,10 @@ def main(argv: list[str] | None = None) -> int:
                 f"offline-{args.worker_count}-worker",
                 "tenant-lab-001",
             )
+            evidence_query_events = store.events_for_request(
+                evidence_request_id,
+                "tenant-lab-001",
+            )
         finally:
             store.close()
         states = {
@@ -577,6 +693,16 @@ def main(argv: list[str] | None = None) -> int:
             "denial",
         ]:
             raise SystemExit("offline failure evidence chain is incomplete")
+        evidence_query_event_types = [
+            event["event_type"] for event in evidence_query_events
+        ]
+        if (
+            "evidence_read" not in evidence_query_event_types
+            or evidence_query_event_types[-1] != "replay_rejected"
+        ):
+            raise SystemExit(
+                "evidence-read authorization or replay evidence was not durable"
+            )
 
         persisted_paths = [
             root / "supervisor.db",
@@ -594,6 +720,18 @@ def main(argv: list[str] | None = None) -> int:
                 for worker_id, result in scale_results.items()
             },
             "supervisor_restart": "passed",
+            "arc_evidence_trace": {
+                "status_after_restart": evidence_result["status"],
+                "target_request_id": evidence_result["target_request_id"],
+                "event_count": evidence_result["event_count"],
+                "event_types": sorted(observed_event_types),
+                "guardian_lima_authorized": True,
+                "arc_acknowledged": True,
+                "replay_status": evidence_replay["status"],
+                "replay_reason_codes": evidence_replay["reason_codes"],
+                "durable_query_event_types": evidence_query_event_types,
+                "public_events_redacted": True,
+            },
             "arc_worker_inventory": {
                 "initial_status": initial_inventory["status"],
                 "initial_worker_count": initial_inventory["worker_count"],

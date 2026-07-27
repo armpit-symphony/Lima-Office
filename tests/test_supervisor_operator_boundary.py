@@ -15,7 +15,10 @@ from urllib import request as urllib_request
 
 from lima_office.contracts import ContractLoader, ContractValidator
 from lima_office.evidence.sqlite_store import SQLiteEvidenceStore
-from lima_office.runtime.errors import OperatorChannelAuthenticationError
+from lima_office.runtime.errors import (
+    EvidenceWriteError,
+    OperatorChannelAuthenticationError,
+)
 from lima_office.supervisor.operator_channel import OperatorChannel
 from lima_office.supervisor.operator_service import (
     OperatorControlPlaneService,
@@ -32,6 +35,7 @@ class _FakeControlPlane:
         self.registry = _FakeRegistry(1)
         self.omit_guardian = False
         self.omit_lima = False
+        self.evidence_store: SQLiteEvidenceStore | None = None
 
     def submit(self, request: dict[str, Any]) -> dict[str, Any]:
         self.requests.append(dict(request))
@@ -75,6 +79,7 @@ class _FakeControlPlane:
                 {
                     "event_id": "event-001",
                     "event_type": "request_received",
+                    "payload_hash": "sha256:" + "3" * 64,
                     "outcome": "received",
                     "reason_codes": [],
                     "created_at": NOW,
@@ -143,6 +148,23 @@ class _FakeRegistry:
         )
 
 
+class _FailEvidenceReadStore:
+    def __init__(self, delegate: SQLiteEvidenceStore) -> None:
+        self.delegate = delegate
+
+    def events_for_request(
+        self,
+        request_id: str,
+        tenant_id: str,
+    ) -> list[dict[str, Any]]:
+        return self.delegate.events_for_request(request_id, tenant_id)
+
+    def append_event(self, event: dict[str, Any]) -> dict[str, Any]:
+        raise EvidenceWriteError(
+            r"private evidence path C:\customer\secret.db is unavailable"
+        )
+
+
 def _request() -> dict[str, Any]:
     return {
         "contract_name": "operator.control_plane.request",
@@ -205,6 +227,74 @@ def _inventory_request() -> dict[str, Any]:
     }
 
 
+def _evidence_request(
+    *,
+    request_id: str = "evidence-query-001",
+    target_request_id: str = "operator-request-target-001",
+) -> dict[str, Any]:
+    return {
+        "contract_name": "operator.evidence_trace.request",
+        "contract_version": "1.0.0",
+        "schema_version": "1.0.0",
+        "taxonomy_version": "taxonomy-recon-v1",
+        "tenant_id": "tenant-lab-001",
+        "customer_context_id": "customer-context-main",
+        "environment": "phase0_lab",
+        "correlation_id": f"corr:{request_id}",
+        "causation_id": None,
+        "idempotency_key": f"idem:{request_id}",
+        "producer": {"component": "operator_client", "produced_at": NOW},
+        "policy_version": "guardian-policy-lab-v1",
+        "request_id": request_id,
+        "actor_id": "operator-lab-001",
+        "operation": "read_redacted_evidence_trace",
+        "target_request_id": target_request_id,
+        "runtime_authority_blocked": True,
+        "executable": False,
+        "execution_allowed": False,
+        "side_effects_allowed": False,
+    }
+
+
+def _evidence_event(
+    *,
+    event_id: str = "target-event-001",
+    actor_id: str = "operator-lab-001",
+    request_id: str = "operator-request-target-001",
+) -> dict[str, Any]:
+    return {
+        "contract_name": "control_plane.event",
+        "contract_version": "1.0.0",
+        "schema_version": "1.0.0",
+        "taxonomy_version": "taxonomy-recon-v1",
+        "tenant_id": "tenant-lab-001",
+        "customer_context_id": "customer-context-main",
+        "environment": "phase0_lab",
+        "correlation_id": f"corr:{request_id}",
+        "causation_id": None,
+        "idempotency_key": f"event:{event_id}",
+        "producer": {"component": "supervisor", "produced_at": NOW},
+        "policy_version": "guardian-policy-lab-v1",
+        "event_id": event_id,
+        "event_type": "request_received",
+        "actor_id": actor_id,
+        "worker_id": "arc-worker-001",
+        "request_id": request_id,
+        "decision_id": None,
+        "guardian_decision_id": None,
+        "parent_event_id": None,
+        "payload_hash": "sha256:" + "4" * 64,
+        "redacted_summary": "Operator request received and normalized.",
+        "outcome": "received",
+        "reason_codes": [],
+        "runtime_authority_blocked": True,
+        "executable": False,
+        "execution_allowed": False,
+        "side_effects_allowed": False,
+        "created_at": NOW,
+    }
+
+
 class SupervisorOperatorBoundaryTests(unittest.TestCase):
     def setUp(self) -> None:
         self.temporary = tempfile.TemporaryDirectory()
@@ -224,6 +314,7 @@ class SupervisorOperatorBoundaryTests(unittest.TestCase):
             clock=lambda: datetime(2026, 7, 26, 1, 0, tzinfo=timezone.utc),
         )
         self.control_plane = _FakeControlPlane()
+        self.control_plane.evidence_store = self.store
         self.service = OperatorControlPlaneService(
             channel=self.channel,
             validator=self.validator,
@@ -418,6 +509,230 @@ class SupervisorOperatorBoundaryTests(unittest.TestCase):
         self.service.handle_inventory(body)
         with self.assertRaises(OperatorChannelAuthenticationError):
             self.service.handle_inventory(body)
+
+    def test_evidence_trace_requires_governed_read_and_returns_allowlist(
+        self,
+    ) -> None:
+        self.store.append_event(_evidence_event())
+        response = self.service.handle_evidence(
+            _body(self.channel, _evidence_request())
+        )
+        payload = response["payload"]
+        self.channel.verify(
+            response["envelope"],
+            payload,
+            expected_message_type="operator_response",
+            expected_sender_component="supervisor",
+        )
+
+        self.assertEqual(payload["status"], "available")
+        self.assertEqual(payload["event_count"], 1)
+        self.assertEqual(payload["events"][0]["event_id"], "target-event-001")
+        self.assertEqual(
+            set(payload["events"][0]),
+            {
+                "event_id",
+                "event_type",
+                "actor_id",
+                "worker_id",
+                "request_id",
+                "decision_id",
+                "guardian_decision_id",
+                "parent_event_id",
+                "payload_hash",
+                "redacted_summary",
+                "outcome",
+                "reason_codes",
+                "created_at",
+                "runtime_authority_blocked",
+                "executable",
+                "execution_allowed",
+                "side_effects_allowed",
+            },
+        )
+        self.assertEqual(
+            self.control_plane.requests[-1],
+            {
+                "request_id": "evidence-query-001",
+                "tenant_id": "tenant-lab-001",
+                "actor_id": "operator-lab-001",
+                "action": "safe_read",
+                "resource_type": "evidence_trace",
+                "resource_id": "operator-request-target-001",
+                "worker_id": "arc-worker-001",
+                "idempotency_key": "idem:evidence-query-001",
+            },
+        )
+        query_events = self.store.events_for_request(
+            "evidence-query-001",
+            "tenant-lab-001",
+        )
+        self.assertEqual(
+            [event["event_type"] for event in query_events],
+            ["evidence_read"],
+        )
+        self.assertTrue(payload["runtime_authority_blocked"])
+        self.assertFalse(payload["executable"])
+        self.assertFalse(payload["execution_allowed"])
+        self.assertFalse(payload["side_effects_allowed"])
+
+    def test_evidence_trace_hides_missing_and_other_actor_records(self) -> None:
+        self.store.append_event(
+            _evidence_event(
+                event_id="other-actor-event-001",
+                actor_id="operator-other",
+                request_id="other-actor-request-001",
+            )
+        )
+        cases = (
+            ("missing-request-001", "evidence-query-missing"),
+            ("other-actor-request-001", "evidence-query-other-actor"),
+        )
+        for target_request_id, query_request_id in cases:
+            with self.subTest(target_request_id=target_request_id):
+                payload = self.service.handle_evidence(
+                    _body(
+                        self.channel,
+                        _evidence_request(
+                            request_id=query_request_id,
+                            target_request_id=target_request_id,
+                        ),
+                    )
+                )["payload"]
+                self.assertEqual(payload["status"], "not_found")
+                self.assertEqual(payload["events"], [])
+                self.assertEqual(payload["event_count"], 0)
+                self.assertEqual(payload["reason_codes"], ["missing_ref"])
+
+        actor_query_events = self.store.events_for_request(
+            "evidence-query-other-actor",
+            "tenant-lab-001",
+        )
+        self.assertEqual(
+            actor_query_events[-1]["reason_codes"],
+            ["cross_tenant_blocked"],
+        )
+
+    def test_evidence_trace_fails_closed_without_guardian_lima_or_worker(
+        self,
+    ) -> None:
+        for mode in ("guardian", "lima", "worker"):
+            with self.subTest(mode=mode):
+                self.control_plane.omit_guardian = mode == "guardian"
+                self.control_plane.omit_lima = mode == "lima"
+                if mode == "worker":
+                    self.control_plane.registry = _FakeRegistry(0)
+                request = _evidence_request(
+                    request_id=f"evidence-query-{mode}",
+                )
+                payload = self.service.handle_evidence(
+                    _body(self.channel, request)
+                )["payload"]
+                self.assertEqual(payload["status"], "denied")
+                self.assertEqual(payload["events"], [])
+                self.assertEqual(payload["event_count"], 0)
+                self.assertFalse(payload["execution_allowed"])
+                if mode == "worker":
+                    self.assertEqual(
+                        payload["reason_codes"],
+                        ["worker_stale"],
+                    )
+                    self.assertEqual(
+                        len(payload["authorization_evidence_refs"]),
+                        1,
+                    )
+                    denial_events = self.store.events_for_request(
+                        "evidence-query-worker",
+                        "tenant-lab-001",
+                    )
+                    self.assertEqual(
+                        [event["event_type"] for event in denial_events],
+                        ["denial"],
+                    )
+                self.control_plane.omit_guardian = False
+                self.control_plane.omit_lima = False
+                self.control_plane.registry = _FakeRegistry(1)
+
+    def test_evidence_trace_replay_self_target_and_client_authority_fail_closed(
+        self,
+    ) -> None:
+        body = _body(self.channel, _evidence_request())
+        self.service.handle_evidence(body)
+        with self.assertRaises(OperatorChannelAuthenticationError):
+            self.service.handle_evidence(body)
+
+        self_target = _evidence_request(
+            request_id="evidence-query-self",
+            target_request_id="evidence-query-self",
+        )
+        with self.assertRaises(OperatorChannelAuthenticationError):
+            self.service.handle_evidence(_body(self.channel, self_target))
+
+        for field, value in (
+            ("worker_id", "arc-attacker-001"),
+            ("action_category", "informational"),
+            ("classification_authority", "client"),
+            ("execution_allowed", True),
+        ):
+            with self.subTest(field=field):
+                payload = _evidence_request(
+                    request_id=f"evidence-query-client-{field}"
+                )
+                payload[field] = value
+                with self.assertRaises(Exception):
+                    self.service.handle_evidence(_body(self.channel, payload))
+
+    def test_evidence_writer_failure_is_publicly_redacted_and_fails_closed(
+        self,
+    ) -> None:
+        self.store.append_event(_evidence_event())
+        self.control_plane.evidence_store = _FailEvidenceReadStore(self.store)
+        server = build_supervisor_operator_server(
+            host="127.0.0.1",
+            port=0,
+            service=self.service,
+        )
+        encoded = json.dumps(
+            _body(self.channel, _evidence_request())
+        ).encode("utf-8")
+        request = urllib_request.Request(
+            f"http://127.0.0.1:{server.server_port}/v1/operator/evidence",
+            data=encoded,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        response_holder: dict[str, Any] = {}
+
+        def send_request() -> None:
+            try:
+                urllib_request.urlopen(request, timeout=2)
+            except urllib_error.HTTPError as exc:
+                response_holder["status"] = exc.code
+                response_holder["body"] = json.loads(exc.read())
+
+        thread = threading.Thread(target=send_request)
+        thread.start()
+        try:
+            server.handle_request()
+            thread.join(timeout=2)
+        finally:
+            server.server_close()
+
+        self.assertEqual(response_holder["status"], 503)
+        response_body = response_holder["body"]
+
+        self.assertEqual(
+            response_body,
+            {
+                "status": "unavailable",
+                "runtime_authority_blocked": True,
+                "executable": False,
+                "execution_allowed": False,
+                "side_effects_allowed": False,
+            },
+        )
+        self.assertNotIn("private", json.dumps(response_body).lower())
+        self.assertNotIn("secret.db", json.dumps(response_body).lower())
 
     def test_supervisor_server_rejects_non_loopback_bind(self) -> None:
         with self.assertRaisesRegex(

@@ -88,6 +88,22 @@ worker details. Worker disconnects and quarantine remain isolated to the
 affected worker while the other workers continue through their independent
 request-bound decisions.
 
+## Operator Evidence Trace
+
+The Supervisor exposes one signed, loopback-only evidence-read operation for
+Arc. The request accepts a target request ID but no worker choice, role,
+classification, capability, or authority claim. The Supervisor selects an
+authenticated worker, derives the evidence-read resource and safe-read
+category, and routes a non-executing assignment through mandatory Guardian and
+LIMA before reading SQLite.
+
+Only redacted event metadata is returned. Tenant scope comes from the
+authenticated channel and every target event must belong to the authenticated
+actor. Missing and actor-mismatched targets are intentionally
+indistinguishable to the caller. The authorization chain and the
+`evidence_read` event are durable. No target events are returned if Guardian,
+LIMA, Arc acknowledgement, or evidence writing fails.
+
 ## Model Router
 
 The model router selects local or subscription/cloud provider class based on policy. It must record:

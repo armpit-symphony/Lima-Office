@@ -71,6 +71,7 @@
         "worker_acknowledgement",
         "worker_registration",
         "worker_heartbeat",
+        "evidence_read",
         "denial",
         "failure",
         "approval_requested",

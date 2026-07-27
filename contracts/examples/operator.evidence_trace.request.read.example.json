@@ -1,0 +1,22 @@
+{
+  "contract_name": "operator.evidence_trace.request",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr:evidence-query-001",
+  "causation_id": null,
+  "idempotency_key": "idem:evidence-query-001",
+  "producer": {"component": "operator_client", "produced_at": "2026-07-27T01:00:00Z"},
+  "policy_version": "guardian-policy-lab-v1",
+  "request_id": "evidence-query-001",
+  "actor_id": "operator-lab-001",
+  "operation": "read_redacted_evidence_trace",
+  "target_request_id": "operator-request-001",
+  "runtime_authority_blocked": true,
+  "executable": false,
+  "execution_allowed": false,
+  "side_effects_allowed": false
+}
