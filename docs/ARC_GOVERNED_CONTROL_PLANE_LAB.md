@@ -21,7 +21,7 @@ and remains only a possible future operator/evidence display.
 - Guardian Suite:
   `69e843218c521b913edcec404dea6b7be8c64f06`
 - LIMA AI OS:
-  `4e7c648349f0a5a19694ac5f0c57b5cb14dc2b17`
+  `4e9b08a69fc8a8cbe5aba685198a30770627422f`
 - LIMA package:
   `lima-runtime==0.1.0rc1`
 - Supported LIMA API:
@@ -51,6 +51,10 @@ identity, and zero side-effect counters.
   authority.
 - Guardian is mandatory. Missing, invalid, expired, or mismatched Guardian
   decisions deny the request.
+- LIMA must carry the same non-authorizing Guardian decision reference that the
+  Supervisor verified, including the policy snapshot, request and payload
+  hashes, tenant, worker, action, and expiry. The Supervisor verifies the exact
+  echo and persists its hash before an Arc assignment preview can be offered.
 - The Supervisor rejects LIMA's compatibility fallback policy.
 - Arc receives metadata only through `worker.assignment.preview`.
 - Every result preserves `runtime_authority_blocked=true`,

@@ -434,6 +434,16 @@ def _assert_non_executing(result: dict[str, Any]) -> None:
     if isinstance(lima, dict):
         if lima.get("source_policy") != "guardian_core.policy":
             raise SystemExit("mandatory Guardian-backed LIMA policy is absent")
+        guardian = result.get("guardian")
+        if not isinstance(guardian, dict):
+            raise SystemExit("Guardian decision evidence is absent")
+        if lima.get("guardian_decision_id") != guardian.get("decision_id"):
+            raise SystemExit("LIMA is not bound to the accepted Guardian decision")
+        if lima.get("guardian_binding_mode") != "reference_only_non_authorizing":
+            raise SystemExit("LIMA Guardian binding mode is invalid")
+        binding_hash = lima.get("guardian_binding_hash")
+        if not isinstance(binding_hash, str) or not binding_hash.startswith("sha256:"):
+            raise SystemExit("LIMA Guardian binding hash is absent")
         if any(
             lima.get(field) is not False
             for field in (

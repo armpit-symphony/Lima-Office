@@ -44,6 +44,9 @@ python scripts/arc-operator-supervisor-smoke.py `
 - The request contains no caller-supplied action category or actor role.
 - Guardian returns a request-bound decision.
 - LIMA reports `source_policy=guardian_core.policy`.
+- LIMA echoes the exact Supervisor-verified Guardian decision reference in
+  `reference_only_non_authorizing` mode, and the Supervisor persists its
+  SHA-256 binding hash in the LIMA evidence event.
 - Arc acknowledges one assignment preview.
 - The Supervisor refreshes and persists the authenticated heartbeat
   synchronously before the assignment preview.

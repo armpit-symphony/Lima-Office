@@ -18,6 +18,13 @@ the HMAC envelope. The request cannot carry actor role or action-category
 authority. The Supervisor derives both and returns a signed, redacted evidence
 summary with every execution flag fixed false.
 
+The governed Arc path may add `guardian_binding_hash` only to the durable
+`control_plane.event` emitted for an accepted LIMA decision. It hashes the
+exact non-authorizing Guardian reference already verified by the Supervisor;
+the reference binds decision, policy snapshot, request, payload, tenant,
+worker, action, and expiry. Missing or mismatched binding evidence fails closed
+before assignment. The hash is evidence lineage, not execution authority.
+
 Phase 0 policies are pre-runtime requirements and are indexed in [docs/policies/README.md](policies/README.md). A contract record is not enough to authorize runtime behavior; Guardian must also link the relevant policy refs, approval state, and evidence.
 
 ## Contract Rules

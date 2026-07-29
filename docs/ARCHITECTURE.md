@@ -6,8 +6,9 @@ LIMA Office OS is a governed small-business office control plane. The first viab
 
 Phase 0 defines the contracts and trust boundaries. The approved lab slice now
 implements one non-executing operating path: authenticated Arc registration and
-synchronous assignment-time heartbeat, mandatory Guardian, LIMA governed
-decision, durable SQLite evidence, and an Arc assignment acknowledgement. One
+synchronous assignment-time heartbeat, mandatory Guardian, a LIMA governed
+decision bound to the exact Supervisor-verified Guardian decision reference,
+durable SQLite evidence, and an Arc assignment acknowledgement. One
 foreground Supervisor may bind 1-8 foreground Arc worker processes. A worker
 disconnect becomes a durable offline state, while an authenticated-channel
 failure quarantines that worker. It grants no execution authority and is not
@@ -20,7 +21,9 @@ one operator and submits a structured request without supplying actor role or
 action classification; the Supervisor binds identity and derives
 classification server-side. Channel keys are injected over stdin, never stored
 in evidence, and represented only by opaque key IDs. Replay identities, worker
-health snapshots, and control-plane evidence persist in SQLite. Private-LAN
+health snapshots, and control-plane evidence persist in SQLite. The accepted
+LIMA evidence event stores a hash of the non-authorizing Guardian reference so
+the Guardian-to-LIMA lineage survives restart. Private-LAN
 deployment remains blocked on a reviewed confidentiality and device/operator
 key provisioning design.
 

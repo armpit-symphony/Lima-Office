@@ -37,6 +37,9 @@
     "risk_level": "low",
     "reason_codes": [],
     "source_policy": "guardian_core.policy",
+    "guardian_decision_id": "guardian-decision-001",
+    "guardian_binding_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "guardian_binding_mode": "reference_only_non_authorizing",
     "executable": false,
     "execution_allowed": false,
     "side_effects_allowed": false

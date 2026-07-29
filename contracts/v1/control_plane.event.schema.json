@@ -4,6 +4,24 @@
   "title": "Durable Control-Plane Evidence Event Contract v1",
   "type": "object",
   "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "event_type": {"const": "lima_decision"}
+        },
+        "required": ["event_type"]
+      },
+      "then": {
+        "required": ["guardian_binding_hash"]
+      },
+      "else": {
+        "not": {
+          "required": ["guardian_binding_hash"]
+        }
+      }
+    }
+  ],
   "required": [
     "contract_name",
     "contract_version",
@@ -84,6 +102,10 @@
     "request_id": {"type": "string", "minLength": 1},
     "decision_id": {"type": ["string", "null"]},
     "guardian_decision_id": {"type": ["string", "null"]},
+    "guardian_binding_hash": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
     "parent_event_id": {"type": ["string", "null"]},
     "payload_hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
     "redacted_summary": {"type": "string", "minLength": 1, "maxLength": 240},
