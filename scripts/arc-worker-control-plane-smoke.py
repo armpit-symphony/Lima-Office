@@ -212,6 +212,9 @@ def main(argv: list[str] | None = None) -> int:
                 guardian_authority=GuardianCoreAuthority(validator),
                 lima_runner=load_lima_runner(),
                 worker_endpoints={"arc-worker-001": client},
+                worker_health_refreshers={
+                    "arc-worker-001": lambda: lifecycle.heartbeat(client)
+                },
                 require_authenticated_workers=True,
             )
             result = control_plane.submit(
@@ -232,7 +235,18 @@ def main(argv: list[str] | None = None) -> int:
             supervisor_store.close()
 
         if result["status"] != "acknowledged":
-            raise SystemExit("Arc control-plane assignment was not acknowledged")
+            raise SystemExit(
+                "Arc control-plane assignment was not acknowledged: "
+                + json.dumps(
+                    {
+                        "status": result.get("status"),
+                        "reason_codes": result.get("reason_codes"),
+                        "assignment": result.get("assignment"),
+                        "worker_state": result.get("worker_state"),
+                    },
+                    sort_keys=True,
+                )
+            )
         if result["guardian"] is None or result["lima"] is None:
             raise SystemExit("Guardian and LIMA evidence are required")
         if result["lima"]["source_policy"] != "guardian_core.policy":
@@ -290,7 +304,7 @@ def main(argv: list[str] | None = None) -> int:
         _assert_key_not_persisted((supervisor_db, arc_replay_db), shared_key)
 
         if (
-            len(reopened_events) != 6
+            len(reopened_events) != 7
             or len(reopened_workers) != 1
             or len(restored_workers) != 1
             or restarted_worker.boot_id != "boot-smoke-002"
