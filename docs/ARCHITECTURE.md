@@ -11,11 +11,15 @@ and an Arc assignment acknowledgement. It grants no execution authority and is
 not production-ready.
 
 The first transport is short-lived HMAC-authenticated metadata over an explicit
-foreground, loopback-only Arc endpoint. Channel keys are injected by the lab
-operator, never stored in evidence, and represented only by an opaque key ID.
-Replay identities and worker health snapshots persist in SQLite. Private-LAN
-deployment remains blocked on a reviewed confidentiality and device-key
-provisioning design.
+foreground, loopback-only Arc endpoint and an explicit foreground,
+loopback-only Supervisor endpoint. The Arc `arc-preflight` client authenticates
+one operator and submits a structured request without supplying actor role or
+action classification; the Supervisor binds identity and derives
+classification server-side. Channel keys are injected over stdin, never stored
+in evidence, and represented only by opaque key IDs. Replay identities, worker
+health snapshots, and control-plane evidence persist in SQLite. Private-LAN
+deployment remains blocked on a reviewed confidentiality and device/operator
+key provisioning design.
 
 ## Architecture Planes
 

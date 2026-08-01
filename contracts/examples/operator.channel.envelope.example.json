@@ -1,0 +1,27 @@
+{
+  "contract_name": "operator.channel.envelope",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr:operator-message-001",
+  "causation_id": null,
+  "idempotency_key": "operator-channel:operator-message-001",
+  "producer": {
+    "component": "operator_client",
+    "produced_at": "2026-07-26T01:00:00Z"
+  },
+  "policy_version": "guardian-policy-lab-v1",
+  "message_id": "operator-message-001",
+  "actor_id": "operator-lab-001",
+  "message_type": "operator_request",
+  "key_id": "operator-key-001",
+  "nonce": "00112233445566778899aabbccddeeff",
+  "payload_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "signature_algorithm": "hmac-sha256",
+  "signature": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "issued_at": "2026-07-26T01:00:00Z",
+  "expires_at": "2026-07-26T01:01:00Z"
+}

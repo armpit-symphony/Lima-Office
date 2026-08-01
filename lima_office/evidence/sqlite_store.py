@@ -41,6 +41,7 @@ class SQLiteEvidenceStore:
             self._connection.execute("PRAGMA foreign_keys = ON")
             self._connection.execute("PRAGMA journal_mode = WAL")
             self._create_schema()
+            self._migrate_request_replay_identity()
         except sqlite3.Error as exc:
             raise EvidenceWriteError("SQLite evidence store is unavailable") from exc
 
@@ -188,6 +189,46 @@ class SQLiteEvidenceStore:
         except sqlite3.Error as exc:
             raise EvidenceWriteError("worker channel reservation failed closed") from exc
 
+    def reserve_operator_message(self, envelope: dict[str, Any]) -> None:
+        """Atomically reject replayed authenticated operator messages."""
+
+        envelope = self.validator.validate(envelope, "operator.channel.envelope")
+        self._require_writable()
+        try:
+            with self._connection:
+                self._connection.execute(
+                    """
+                    INSERT INTO operator_channel_messages (
+                        tenant_id,
+                        actor_id,
+                        key_id,
+                        message_id,
+                        nonce,
+                        message_type,
+                        payload_hash,
+                        expires_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        envelope["tenant_id"],
+                        envelope["actor_id"],
+                        envelope["key_id"],
+                        envelope["message_id"],
+                        envelope["nonce"],
+                        envelope["message_type"],
+                        envelope["payload_hash"],
+                        envelope["expires_at"],
+                    ),
+                )
+        except sqlite3.IntegrityError as exc:
+            raise EvidenceWriteError(
+                "authenticated operator message replay rejected"
+            ) from exc
+        except sqlite3.Error as exc:
+            raise EvidenceWriteError(
+                "operator channel reservation failed closed"
+            ) from exc
+
     def upsert_worker_record(self, worker: dict[str, Any]) -> None:
         """Persist a redacted worker inventory/health snapshot."""
 
@@ -247,7 +288,7 @@ class SQLiteEvidenceStore:
                     payload_hash TEXT NOT NULL,
                     created_at TEXT NOT NULL,
                     UNIQUE (tenant_id, idempotency_key),
-                    UNIQUE (tenant_id, request_hash)
+                    UNIQUE (tenant_id, payload_hash)
                 );
 
                 CREATE TABLE IF NOT EXISTS control_plane_events (
@@ -292,8 +333,78 @@ class SQLiteEvidenceStore:
                     worker_json TEXT NOT NULL,
                     PRIMARY KEY (tenant_id, worker_id)
                 );
+
+                CREATE TABLE IF NOT EXISTS operator_channel_messages (
+                    tenant_id TEXT NOT NULL,
+                    actor_id TEXT NOT NULL,
+                    key_id TEXT NOT NULL,
+                    message_id TEXT NOT NULL,
+                    nonce TEXT NOT NULL,
+                    message_type TEXT NOT NULL,
+                    payload_hash TEXT NOT NULL,
+                    expires_at TEXT NOT NULL,
+                    PRIMARY KEY (tenant_id, actor_id, key_id, message_id),
+                    UNIQUE (tenant_id, actor_id, key_id, nonce)
+                );
                 """
             )
+
+    def _migrate_request_replay_identity(self) -> None:
+        """Replace the legacy permanent action-hash uniqueness without data loss."""
+
+        row = self._connection.execute(
+            """
+            SELECT sql
+            FROM sqlite_master
+            WHERE type = 'table' AND name = 'control_plane_requests'
+            """
+        ).fetchone()
+        schema = str(row["sql"]) if row is not None else ""
+        normalized = " ".join(schema.split()).lower()
+        if "unique (tenant_id, request_hash)" not in normalized:
+            return
+        try:
+            with self._connection:
+                self._connection.executescript(
+                    """
+                    ALTER TABLE control_plane_requests
+                    RENAME TO control_plane_requests_legacy;
+
+                    CREATE TABLE control_plane_requests (
+                        request_id TEXT PRIMARY KEY,
+                        tenant_id TEXT NOT NULL,
+                        idempotency_key TEXT NOT NULL,
+                        request_hash TEXT NOT NULL,
+                        payload_hash TEXT NOT NULL,
+                        created_at TEXT NOT NULL,
+                        UNIQUE (tenant_id, idempotency_key),
+                        UNIQUE (tenant_id, payload_hash)
+                    );
+
+                    INSERT INTO control_plane_requests (
+                        request_id,
+                        tenant_id,
+                        idempotency_key,
+                        request_hash,
+                        payload_hash,
+                        created_at
+                    )
+                    SELECT
+                        request_id,
+                        tenant_id,
+                        idempotency_key,
+                        request_hash,
+                        payload_hash,
+                        created_at
+                    FROM control_plane_requests_legacy;
+
+                    DROP TABLE control_plane_requests_legacy;
+                    """
+                )
+        except sqlite3.Error as exc:
+            raise EvidenceWriteError(
+                "request replay identity migration failed closed"
+            ) from exc
 
     def _require_writable(self) -> None:
         if self.fail_writes:

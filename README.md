@@ -95,6 +95,7 @@ No remediation runtime, endpoint control, production server change, or network c
 - [Operator console UX spec](docs/ux/OPERATOR_CONSOLE_SPEC.md)
 - [Runbooks](docs/runbooks/)
 - [Arc worker control-plane smoke](docs/runbooks/arc-worker-control-plane-smoke.md)
+- [Arc operator → Supervisor → Arc smoke](docs/runbooks/arc-operator-supervisor-smoke.md)
 
 ## Current Repo Status
 

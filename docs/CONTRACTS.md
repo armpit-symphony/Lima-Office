@@ -11,6 +11,13 @@ capabilities. Registration, heartbeat, and assignment payloads remain
 non-executing. The shared channel key is never a contract field or evidence
 member.
 
+The authenticated operator path uses `operator.channel.envelope`,
+`operator.control_plane.request`, and `operator.control_plane.response`.
+Operator identity, tenant, policy, expiry, nonce, and payload hash are bound by
+the HMAC envelope. The request cannot carry actor role or action-category
+authority. The Supervisor derives both and returns a signed, redacted evidence
+summary with every execution flag fixed false.
+
 Phase 0 policies are pre-runtime requirements and are indexed in [docs/policies/README.md](policies/README.md). A contract record is not enough to authorize runtime behavior; Guardian must also link the relevant policy refs, approval state, and evidence.
 
 ## Contract Rules

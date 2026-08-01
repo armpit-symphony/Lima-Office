@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/operator.control_plane.response.schema.json",
+  "title": "Authenticated Operator Control-Plane Response v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "policy_version",
+    "request_id",
+    "actor_id",
+    "worker_id",
+    "status",
+    "classification_authority",
+    "action_category",
+    "guardian",
+    "lima",
+    "assignment_id",
+    "assignment_status",
+    "evidence",
+    "reason_codes",
+    "runtime_authority_blocked",
+    "executable",
+    "execution_allowed",
+    "side_effects_allowed"
+  ],
+  "properties": {
+    "contract_name": {"type": "string", "const": "operator.control_plane.response"},
+    "contract_version": {"type": "string", "const": "1.0.0"},
+    "schema_version": {"type": "string", "const": "1.0.0"},
+    "taxonomy_version": {"type": "string", "const": "taxonomy-recon-v1"},
+    "tenant_id": {"type": "string", "minLength": 1},
+    "customer_context_id": {"type": "string", "minLength": 1},
+    "environment": {"type": "string", "const": "phase0_lab"},
+    "correlation_id": {"type": "string", "minLength": 1},
+    "causation_id": {"type": ["string", "null"]},
+    "idempotency_key": {"type": "string", "minLength": 1},
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["component", "produced_at"],
+      "properties": {
+        "component": {"type": "string", "const": "supervisor"},
+        "produced_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "policy_version": {"type": "string", "minLength": 1},
+    "request_id": {"type": "string", "minLength": 1},
+    "actor_id": {"type": "string", "minLength": 1},
+    "worker_id": {"type": "string", "minLength": 1},
+    "status": {
+      "type": "string",
+      "enum": [
+        "acknowledged",
+        "rejected",
+        "blocked",
+        "denied",
+        "confirm_required",
+        "privileged_required",
+        "unavailable"
+      ]
+    },
+    "classification_authority": {
+      "type": "string",
+      "const": "supervisor_server_derived"
+    },
+    "action_category": {
+      "type": "string",
+      "enum": [
+        "informational",
+        "external_write",
+        "shell",
+        "credential_access",
+        "file_mutation",
+        "unknown"
+      ]
+    },
+    "guardian": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": [
+        "decision_id",
+        "decision",
+        "approval_required",
+        "policy_version",
+        "policy_snapshot_hash",
+        "request_binding",
+        "expires_at"
+      ],
+      "properties": {
+        "decision_id": {"type": "string", "minLength": 1},
+        "decision": {
+          "type": "string",
+          "enum": ["allow_with_evidence", "requires_approval", "deny"]
+        },
+        "approval_required": {"type": "boolean"},
+        "policy_version": {"type": "string", "minLength": 1},
+        "policy_snapshot_hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "request_binding": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "expires_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "lima": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": [
+        "decision_id",
+        "status",
+        "allowed",
+        "requires_approval",
+        "risk_level",
+        "reason_codes",
+        "source_policy",
+        "executable",
+        "execution_allowed",
+        "side_effects_allowed"
+      ],
+      "properties": {
+        "decision_id": {"type": "string", "minLength": 1},
+        "status": {
+          "type": "string",
+          "enum": [
+            "allowed_dry_run",
+            "confirm_required",
+            "privileged_required",
+            "denied"
+          ]
+        },
+        "allowed": {"type": "boolean"},
+        "requires_approval": {"type": "boolean"},
+        "risk_level": {
+          "type": "string",
+          "enum": ["low", "medium", "high", "critical", "blocked"]
+        },
+        "reason_codes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "source_policy": {"type": "string", "const": "guardian_core.policy"},
+        "executable": {"type": "boolean", "const": false},
+        "execution_allowed": {"type": "boolean", "const": false},
+        "side_effects_allowed": {"type": "boolean", "const": false}
+      }
+    },
+    "assignment_id": {"type": ["string", "null"]},
+    "assignment_status": {
+      "type": ["string", "null"],
+      "enum": ["acknowledged", "rejected", null]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["event_id", "event_type", "outcome", "reason_codes", "created_at"],
+        "properties": {
+          "event_id": {"type": "string", "minLength": 1},
+          "event_type": {"type": "string", "minLength": 1},
+          "outcome": {"type": "string", "minLength": 1},
+          "reason_codes": {
+            "type": "array",
+            "items": {"type": "string"},
+            "uniqueItems": true
+          },
+          "created_at": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "reason_codes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "runtime_authority_blocked": {"type": "boolean", "const": true},
+    "executable": {"type": "boolean", "const": false},
+    "execution_allowed": {"type": "boolean", "const": false},
+    "side_effects_allowed": {"type": "boolean", "const": false}
+  }
+}
