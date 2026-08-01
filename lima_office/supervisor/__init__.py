@@ -1,5 +1,7 @@
 """Supervisor-side scaffolding and approved non-executing lab boundaries."""
 
+from lima_office.runtime.errors import WorkerEndpointUnavailableError
+
 from .arc_worker import ArcWorkerPreviewEndpoint, LocalArcWorkerPreviewEndpoint
 from .control_plane import SupervisorControlPlane, load_lima_runner
 from .heartbeat import HeartbeatService
@@ -31,6 +33,7 @@ __all__ = [
     "TaskQueue",
     "WorkerLifecycleSimulator",
     "WorkerChannel",
+    "WorkerEndpointUnavailableError",
     "WorkerRecord",
     "WorkerRegistry",
     "build_supervisor_operator_server",

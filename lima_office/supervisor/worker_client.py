@@ -12,7 +12,10 @@ from urllib.parse import urlparse
 from uuid import uuid4
 
 from lima_office.contracts.validator import ContractValidator
-from lima_office.runtime.errors import WorkerChannelAuthenticationError
+from lima_office.runtime.errors import (
+    WorkerChannelAuthenticationError,
+    WorkerEndpointUnavailableError,
+)
 
 from .arc_worker import ArcWorkerPreviewEndpoint
 from .worker_channel import WorkerChannel
@@ -126,7 +129,7 @@ class AuthenticatedArcWorkerClient(ArcWorkerPreviewEndpoint):
             urllib_error.HTTPError,
             urllib_error.URLError,
         ) as exc:
-            raise WorkerChannelAuthenticationError(
+            raise WorkerEndpointUnavailableError(
                 "Arc worker endpoint is unavailable"
             ) from exc
         if len(raw) > MAX_RESPONSE_BYTES:
@@ -193,9 +196,10 @@ class AuthenticatedArcWorkerClient(ArcWorkerPreviewEndpoint):
             address = ipaddress.ip_address(parsed.hostname)
         except ValueError as exc:
             raise WorkerChannelAuthenticationError(
-                "Arc lab endpoint must use a literal loopback/private address"
+                "Arc lab endpoint must use a literal loopback address"
             ) from exc
-        if not (address.is_loopback or address.is_private):
+        if not address.is_loopback:
             raise WorkerChannelAuthenticationError(
-                "Arc lab endpoint cannot use a public network address"
+                "Arc lab endpoint is loopback-only until trusted private-LAN "
+                "transport is approved"
             )

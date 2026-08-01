@@ -6,6 +6,7 @@ from collections.abc import Callable, Mapping
 from datetime import datetime, timedelta, timezone
 import hashlib
 import json
+import logging
 from typing import Any
 from uuid import uuid4
 
@@ -16,11 +17,13 @@ from lima_office.runtime.errors import (
     ContractValidationError,
     PolicyDenyError,
     UnsafeRuntimeActionError,
+    WorkerChannelAuthenticationError,
+    WorkerEndpointUnavailableError,
     WorkerStateError,
 )
 
 from .arc_worker import ArcWorkerPreviewEndpoint
-from .worker_registry import WorkerRegistry
+from .worker_registry import WorkerRecord, WorkerRegistry
 
 
 ACTION_CATEGORIES = {
@@ -51,6 +54,7 @@ CALLER_FIELDS = frozenset(
     }
 )
 LIMA_GUARDIAN_SOURCE_POLICY = "guardian_core.policy"
+logger = logging.getLogger(__name__)
 
 
 def load_lima_runner() -> Callable[[dict[str, Any]], Any] | None:
@@ -78,6 +82,9 @@ class SupervisorControlPlane:
         guardian_authority: GuardianAuthority,
         lima_runner: Callable[[dict[str, Any]], Any] | None,
         worker_endpoints: Mapping[str, ArcWorkerPreviewEndpoint],
+        worker_health_refreshers: (
+            Mapping[str, Callable[[], WorkerRecord]] | None
+        ) = None,
         policy_version: str = "guardian-policy-lab-v1",
         require_authenticated_workers: bool = False,
         clock: Callable[[], datetime] | None = None,
@@ -93,6 +100,7 @@ class SupervisorControlPlane:
         self.guardian_authority = guardian_authority
         self.lima_runner = lima_runner
         self.worker_endpoints = dict(worker_endpoints)
+        self.worker_health_refreshers = dict(worker_health_refreshers or {})
         self.policy_version = policy_version
         self.require_authenticated_workers = require_authenticated_workers
         self.clock = clock or (lambda: datetime.now(timezone.utc))
@@ -240,6 +248,10 @@ class SupervisorControlPlane:
             )
         except (WorkerStateError, UnsafeRuntimeActionError):
             worker_reason = self._worker_block_reason(request["requested_worker_id"])
+            failure_parent = self.evidence_store.latest_event_id(
+                request["request_id"],
+                request["tenant_id"],
+            ) or lima_event["event_id"]
             blocked = self.evidence_store.append_event(
                 self._event(
                     request,
@@ -250,7 +262,7 @@ class SupervisorControlPlane:
                     reason_codes=[worker_reason],
                     decision_id=lima_decision["decision_id"],
                     guardian_decision_id=guardian_decision["decision_id"],
-                    parent_event_id=lima_event["event_id"],
+                    parent_event_id=failure_parent,
                 )
             )
             return self._result(
@@ -501,6 +513,11 @@ class SupervisorControlPlane:
             raise WorkerStateError(
                 "operational control-plane routing requires authenticated Arc registration"
             )
+        parent_event_id = self._refresh_worker_health(
+            request,
+            parent_event_id=parent_event_id,
+        )
+        worker = self.registry.require_assignable(worker_id, request["tenant_id"])
         if capability not in worker.capabilities:
             raise WorkerStateError("Arc worker lacks the required preview capability")
         endpoint = self.worker_endpoints.get(worker_id)
@@ -553,15 +570,31 @@ class SupervisorControlPlane:
         assignment = self.validator.validate(assignment, "worker.assignment.preview")
         try:
             acknowledgement = endpoint.acknowledge_preview(assignment)
-        except Exception:
+        except WorkerEndpointUnavailableError:
+            logger.warning(
+                "Arc worker became unavailable during assignment acknowledgement",
+                extra={
+                    "worker_id": worker_id,
+                    "request_id": request["request_id"],
+                },
+            )
+            worker = self.registry.update_state(
+                worker_id,
+                "offline",
+                "assignment_endpoint_unavailable",
+            )
+            self._persist_worker(worker)
             rejection = self.evidence_store.append_event(
                 self._event(
                     request,
                     event_type="worker_acknowledgement",
                     component="worker",
-                    outcome="rejected",
-                    summary="Arc worker rejected or failed to acknowledge the assignment preview.",
-                    reason_codes=["capability_mismatch"],
+                    outcome="blocked",
+                    summary=(
+                        "Arc worker became unavailable before acknowledging "
+                        "the assignment preview."
+                    ),
+                    reason_codes=["worker_stale"],
                     decision_id=lima_decision["decision_id"],
                     guardian_decision_id=guardian_decision["decision_id"],
                     parent_event_id=assignment_event["event_id"],
@@ -569,7 +602,74 @@ class SupervisorControlPlane:
             )
             return self._result(
                 request,
-                status="rejected",
+                status="blocked",
+                guardian_decision=guardian_decision,
+                lima_decision=lima_decision,
+                reason_codes=list(rejection["reason_codes"]),
+            )
+        except WorkerChannelAuthenticationError:
+            logger.warning(
+                "Arc worker acknowledgement failed channel authentication",
+                extra={
+                    "worker_id": worker_id,
+                    "request_id": request["request_id"],
+                },
+            )
+            worker = self.registry.quarantine(
+                worker_id,
+                "assignment_channel_authentication_failed",
+            )
+            self._persist_worker(worker)
+            rejection = self.evidence_store.append_event(
+                self._event(
+                    request,
+                    event_type="worker_acknowledgement",
+                    component="worker",
+                    outcome="blocked",
+                    summary=(
+                        "Arc worker acknowledgement failed authenticated "
+                        "channel verification and the worker was quarantined."
+                    ),
+                    reason_codes=["worker_quarantined"],
+                    decision_id=lima_decision["decision_id"],
+                    guardian_decision_id=guardian_decision["decision_id"],
+                    parent_event_id=assignment_event["event_id"],
+                )
+            )
+            return self._result(
+                request,
+                status="blocked",
+                guardian_decision=guardian_decision,
+                lima_decision=lima_decision,
+                reason_codes=list(rejection["reason_codes"]),
+            )
+        except Exception:
+            logger.exception(
+                "Arc worker acknowledgement failed closed",
+                extra={
+                    "worker_id": worker_id,
+                    "request_id": request["request_id"],
+                },
+            )
+            rejection = self.evidence_store.append_event(
+                self._event(
+                    request,
+                    event_type="worker_acknowledgement",
+                    component="worker",
+                    outcome="failed_closed",
+                    summary=(
+                        "Arc worker acknowledgement failed closed before "
+                        "a valid non-executing response was available."
+                    ),
+                    reason_codes=["health_degraded"],
+                    decision_id=lima_decision["decision_id"],
+                    guardian_decision_id=guardian_decision["decision_id"],
+                    parent_event_id=assignment_event["event_id"],
+                )
+            )
+            return self._result(
+                request,
+                status="blocked",
                 guardian_decision=guardian_decision,
                 lima_decision=lima_decision,
                 reason_codes=list(rejection["reason_codes"]),
@@ -604,6 +704,126 @@ class SupervisorControlPlane:
             lima_decision=lima_decision,
             assignment=acknowledgement,
             reason_codes=list(acknowledgement_event["reason_codes"]),
+        )
+
+    def _refresh_worker_health(
+        self,
+        request: dict[str, Any],
+        *,
+        parent_event_id: str,
+    ) -> str:
+        if not self.require_authenticated_workers:
+            return parent_event_id
+        worker_id = request["requested_worker_id"]
+        refresher = self.worker_health_refreshers.get(worker_id)
+        if refresher is None:
+            raise WorkerStateError(
+                "authenticated Arc routing requires an explicit health refresher"
+            )
+        try:
+            worker = refresher()
+            if (
+                worker.worker_id != worker_id
+                or worker.tenant_id != request["tenant_id"]
+                or not worker.authenticated
+            ):
+                raise WorkerChannelAuthenticationError(
+                    "refreshed Arc worker identity binding mismatch"
+                )
+        except WorkerEndpointUnavailableError:
+            logger.warning(
+                "Arc worker heartbeat endpoint is unavailable",
+                extra={
+                    "worker_id": worker_id,
+                    "request_id": request["request_id"],
+                },
+            )
+            worker = self.registry.update_state(
+                worker_id,
+                "offline",
+                "heartbeat_endpoint_unavailable",
+            )
+            self._persist_worker(worker)
+            self.evidence_store.append_event(
+                self._event(
+                    request,
+                    event_type="worker_heartbeat",
+                    component="worker",
+                    outcome="blocked",
+                    summary=(
+                        "Synchronous authenticated Arc heartbeat failed "
+                        "because the worker endpoint was unavailable."
+                    ),
+                    reason_codes=["worker_stale"],
+                    parent_event_id=parent_event_id,
+                )
+            )
+            raise WorkerStateError(
+                "Arc worker heartbeat endpoint is unavailable"
+            ) from None
+        except WorkerChannelAuthenticationError:
+            logger.warning(
+                "Arc worker heartbeat failed channel authentication",
+                extra={
+                    "worker_id": worker_id,
+                    "request_id": request["request_id"],
+                },
+            )
+            worker = self.registry.quarantine(
+                worker_id,
+                "heartbeat_channel_authentication_failed",
+            )
+            self._persist_worker(worker)
+            self.evidence_store.append_event(
+                self._event(
+                    request,
+                    event_type="worker_heartbeat",
+                    component="worker",
+                    outcome="blocked",
+                    summary=(
+                        "Synchronous Arc heartbeat failed authenticated "
+                        "channel verification and the worker was quarantined."
+                    ),
+                    reason_codes=["worker_quarantined"],
+                    parent_event_id=parent_event_id,
+                )
+            )
+            raise WorkerStateError(
+                "Arc worker heartbeat authentication failed"
+            ) from None
+        except WorkerStateError:
+            reason = self._worker_block_reason(worker_id)
+            self.evidence_store.append_event(
+                self._event(
+                    request,
+                    event_type="worker_heartbeat",
+                    component="worker",
+                    outcome="blocked",
+                    summary="Synchronous authenticated Arc heartbeat failed closed.",
+                    reason_codes=[reason],
+                    parent_event_id=parent_event_id,
+                )
+            )
+            raise
+
+        event = self.evidence_store.append_event(
+            self._event(
+                request,
+                event_type="worker_heartbeat",
+                component="worker",
+                outcome="received",
+                summary=(
+                    "Synchronous authenticated Arc heartbeat refreshed "
+                    "assignment eligibility."
+                ),
+                parent_event_id=parent_event_id,
+            )
+        )
+        return str(event["event_id"])
+
+    def _persist_worker(self, worker: WorkerRecord) -> None:
+        self.evidence_store.upsert_worker_record(
+            worker.to_record(updated_at=self._now())
         )
 
     def _worker_block_reason(self, worker_id: str) -> str:

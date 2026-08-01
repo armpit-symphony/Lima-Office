@@ -16,6 +16,7 @@ from lima_office.contracts import ContractLoader, ContractValidator
 from lima_office.evidence.sqlite_store import SQLiteEvidenceStore
 from lima_office.runtime.errors import (
     WorkerChannelAuthenticationError,
+    WorkerEndpointUnavailableError,
     WorkerStateError,
 )
 from lima_office.supervisor import (
@@ -95,6 +96,7 @@ class AuthenticatedArcWorkerLifecycleTests(unittest.TestCase):
             validator=self.validator,
         )
         self.heartbeat_sequence = 0
+        self.heartbeat_reported_at = "2026-07-25T05:00:00Z"
 
     def _urlopen(self, request: Any, timeout: float) -> _Response:
         self.assertEqual(timeout, 2.0)
@@ -141,7 +143,7 @@ class AuthenticatedArcWorkerLifecycleTests(unittest.TestCase):
         )
         payload["guardian_decision_id"] = "guardian:not_invoked_for_heartbeat"
         payload["producer"]["produced_at"] = "2026-07-25T05:00:00Z"
-        payload["reported_at"] = "2026-07-25T05:00:00Z"
+        payload["reported_at"] = self.heartbeat_reported_at
         payload["supervisor_received_at"] = "2026-07-25T04:59:00Z"
         payload["heartbeat_due_at"] = "2026-07-25T05:01:00Z"
         payload["heartbeat_age_seconds"] = 999
@@ -159,6 +161,7 @@ class AuthenticatedArcWorkerLifecycleTests(unittest.TestCase):
         self.assertEqual("lab-key-001", registered.channel_identity_ref)
         self.assertEqual("healthy", heartbeat.state)
         self.assertEqual(1, heartbeat.last_heartbeat_sequence)
+        self.assertEqual("2026-07-25T05:00:00Z", heartbeat.last_heartbeat_at)
         self.assertEqual(0, heartbeat.heartbeat["heartbeat_age_seconds"])
         self.assertEqual(
             "2026-07-25T05:00:00Z",
@@ -202,6 +205,36 @@ class AuthenticatedArcWorkerLifecycleTests(unittest.TestCase):
         self.assertEqual("healthy", restored[0].state)
         self.assertTrue(restored[0].authenticated)
         self.assertEqual(1, restored[0].last_heartbeat_sequence)
+        self.assertEqual(
+            "2026-07-25T05:00:00Z",
+            restored[0].last_heartbeat_at,
+        )
+
+    def test_stale_heartbeat_state_and_evidence_are_persisted(self) -> None:
+        with mock.patch(
+            "lima_office.supervisor.worker_client.urllib_request.urlopen",
+            side_effect=self._urlopen,
+        ):
+            self.lifecycle.register(self.client)
+            self.heartbeat_reported_at = "2026-07-25T04:56:59Z"
+            with self.assertRaisesRegex(
+                WorkerStateError,
+                "stale heartbeat",
+            ):
+                self.lifecycle.heartbeat(self.client)
+
+        record = self.registry.get("arc-worker-001")
+        self.assertEqual("offline", record.state)
+        persisted = self.supervisor_store.worker_records(
+            "tenant-lab-001"
+        )
+        self.assertEqual("offline", persisted[0]["state"])
+        events = self.supervisor_store.events_for_request(
+            "heartbeat:arc-worker-001:1",
+            "tenant-lab-001",
+        )
+        self.assertEqual("blocked", events[-1]["outcome"])
+        self.assertEqual(["worker_stale"], events[-1]["reason_codes"])
 
     def test_authenticated_response_replay_is_rejected_durably(self) -> None:
         payload = self._registration()
@@ -246,13 +279,32 @@ class AuthenticatedArcWorkerLifecycleTests(unittest.TestCase):
         self.assertEqual(0, self.registry.summary()["worker_count"])
         self.assertEqual([], self.supervisor_store.worker_records("tenant-lab-001"))
 
-    def test_public_network_worker_address_is_rejected(self) -> None:
-        with self.assertRaises(WorkerChannelAuthenticationError):
-            AuthenticatedArcWorkerClient(
-                base_url="http://8.8.8.8:8765",
-                channel=self.supervisor_channel,
-                validator=self.validator,
-            )
+    def test_non_loopback_worker_addresses_are_rejected(self) -> None:
+        for base_url in (
+            "http://8.8.8.8:8765",
+            "http://192.168.1.8:8765",
+        ):
+            with self.subTest(base_url=base_url), self.assertRaises(
+                WorkerChannelAuthenticationError
+            ):
+                AuthenticatedArcWorkerClient(
+                    base_url=base_url,
+                    channel=self.supervisor_channel,
+                    validator=self.validator,
+                )
+
+    def test_worker_timeout_has_a_distinct_fail_closed_error(self) -> None:
+        with mock.patch(
+            "lima_office.supervisor.worker_client.urllib_request.urlopen",
+            side_effect=TimeoutError("private timeout detail"),
+        ), self.assertRaises(WorkerEndpointUnavailableError) as caught:
+            self.client.request_heartbeat()
+
+        self.assertEqual(
+            "Arc worker endpoint is unavailable",
+            str(caught.exception),
+        )
+        self.assertNotIn("private timeout detail", str(caught.exception))
 
     def test_heartbeat_identity_and_future_time_fail_closed(self) -> None:
         wrong_customer = self._heartbeat()
