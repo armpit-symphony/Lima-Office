@@ -14,7 +14,7 @@ EXPECTED = {
     },
     "lima-runtime": {
         "version": "0.1.0rc1",
-        "commit": "4e7c648349f0a5a19694ac5f0c57b5cb14dc2b17",
+        "commit": "40d6f1379284931ee46f05650e9201d6f98975d6",
     },
 }
 

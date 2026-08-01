@@ -55,7 +55,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: armpit-symphony/Arc-Bot-shell
-          ref: 695711ce17f2d5cb8781ee08f7bda543f46c83dc
+          ref: 699155942d4a0e4fc3e67d7f04a139cb04870451
           path: arc-bot-shell
 
       - name: Set up Python
