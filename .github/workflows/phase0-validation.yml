@@ -72,6 +72,16 @@ jobs:
       - name: Run complete exact-stack tests
         run: python -m unittest discover -s tests -v
 
+      - name: Prove foreground Arc worker control plane
+        run: |
+          python scripts/arc-worker-control-plane-smoke.py \
+            --arc-source "$GITHUB_WORKSPACE/arc-bot-shell"
+
+      - name: Prove real Arc operator to Supervisor flow
+        run: |
+          python scripts/arc-operator-supervisor-smoke.py \
+            --arc-source "$GITHUB_WORKSPACE/arc-bot-shell"
+
       - name: Prove one, two, and eight foreground Arc workers
         shell: bash
         run: |

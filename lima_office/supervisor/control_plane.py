@@ -54,6 +54,7 @@ CALLER_FIELDS = frozenset(
     }
 )
 LIMA_GUARDIAN_SOURCE_POLICY = "guardian_core.policy"
+GUARDIAN_BINDING_MODE = "reference_only_non_authorizing"
 logger = logging.getLogger(__name__)
 
 
@@ -207,6 +208,9 @@ class SupervisorControlPlane:
                 summary="LIMA returned a non-executing governed decision.",
                 decision_id=lima_decision["decision_id"],
                 guardian_decision_id=guardian_decision["decision_id"],
+                guardian_binding_hash=lima_decision["metadata"][
+                    "guardian_binding_hash"
+                ],
                 parent_event_id=guardian_event["event_id"],
             )
         )
@@ -447,6 +451,7 @@ class SupervisorControlPlane:
         if self.lima_runner is None:
             return None
         capability = ACTION_CAPABILITIES.get(request["action"])
+        guardian_binding = self._guardian_reference(guardian_decision)
         payload = {
             "request_id": request["request_id"],
             "consumer": "lima_office_supervisor",
@@ -460,10 +465,12 @@ class SupervisorControlPlane:
             "requested_action": request["action"],
             "action_category": request["action_category"],
             "tool_name": capability or "arc_blocked_preview",
+            "guardian_binding": guardian_binding,
             "tool_args": {},
             "trust_context": {
                 "authenticated_tenant_id": request["tenant_id"],
                 "authenticated_actor_role": request["actor_role"],
+                "worker_id": request["requested_worker_id"],
                 "guardian_decision_id": guardian_decision["decision_id"],
                 "guardian_policy_version": guardian_decision["policy_version"],
                 "request_hash": request["request_hash"],
@@ -476,15 +483,17 @@ class SupervisorControlPlane:
         try:
             raw = self.lima_runner(payload)
             decision = raw.to_dict() if hasattr(raw, "to_dict") else dict(raw)
-            self._validate_lima_decision(request, decision)
+            self._validate_lima_decision(request, decision, guardian_decision)
             return decision
         except Exception:
             return None
 
-    @staticmethod
+    @classmethod
     def _validate_lima_decision(
+        cls,
         request: dict[str, Any],
         decision: dict[str, Any],
+        guardian_decision: dict[str, Any],
     ) -> None:
         if decision.get("request_id") != request["request_id"]:
             raise UnsafeRuntimeActionError("LIMA decision request mismatch")
@@ -495,6 +504,65 @@ class SupervisorControlPlane:
             for field in ("executable", "execution_allowed", "side_effects_allowed")
         ):
             raise UnsafeRuntimeActionError("LIMA decision cannot authorize execution")
+        expected_binding = cls._guardian_reference(guardian_decision)
+        expected_hash = cls._hash(expected_binding)
+        metadata = decision.get("metadata")
+        audit_event = decision.get("audit_event")
+        if not isinstance(metadata, Mapping) or not isinstance(audit_event, Mapping):
+            raise UnsafeRuntimeActionError("LIMA Guardian binding evidence is missing")
+        audit_metadata = audit_event.get("metadata")
+        request_metadata = metadata.get("request")
+        if not isinstance(audit_metadata, Mapping) or not isinstance(
+            request_metadata,
+            Mapping,
+        ):
+            raise UnsafeRuntimeActionError("LIMA Guardian binding evidence is incomplete")
+        expected_summary = {
+            "guardian_binding_present": True,
+            "guardian_binding_hash": expected_hash,
+            "guardian_decision_id": guardian_decision["decision_id"],
+            "guardian_binding_mode": GUARDIAN_BINDING_MODE,
+        }
+        if metadata.get("guardian_binding") != expected_binding:
+            raise UnsafeRuntimeActionError("LIMA Guardian decision reference mismatch")
+        if request_metadata.get("guardian_binding") != expected_binding:
+            raise UnsafeRuntimeActionError("LIMA governed-request binding echo mismatch")
+        if any(metadata.get(key) != value for key, value in expected_summary.items()):
+            raise UnsafeRuntimeActionError("LIMA Guardian binding summary mismatch")
+        if any(
+            audit_metadata.get(key) != value
+            for key, value in expected_summary.items()
+        ):
+            raise UnsafeRuntimeActionError("LIMA Guardian audit binding mismatch")
+        if (
+            audit_event.get("request_id") != request["request_id"]
+            or audit_event.get("decision_id") != decision.get("decision_id")
+        ):
+            raise UnsafeRuntimeActionError("LIMA audit identity mismatch")
+
+    @staticmethod
+    def _guardian_reference(
+        guardian_decision: Mapping[str, Any],
+    ) -> dict[str, str]:
+        return {
+            "binding_mode": GUARDIAN_BINDING_MODE,
+            "decision_id": str(guardian_decision["decision_id"]),
+            "request_id": str(guardian_decision["request_id"]),
+            "policy_version": str(guardian_decision["policy_version"]),
+            "policy_snapshot_hash": str(
+                guardian_decision["policy_snapshot_hash"]
+            ),
+            "valid_for_action_ref": str(
+                guardian_decision["valid_for_action_ref"]
+            ),
+            "decision_scope_hash": str(
+                guardian_decision["decision_scope_hash"]
+            ),
+            "bound_tenant_id": str(guardian_decision["bound_tenant_id"]),
+            "bound_worker_id": str(guardian_decision["bound_worker_id"]),
+            "bound_action_type": str(guardian_decision["bound_action_type"]),
+            "expires_at": str(guardian_decision["expires_at"]),
+        }
 
     def _route_assignment(
         self,
@@ -846,10 +914,11 @@ class SupervisorControlPlane:
         reason_codes: list[str] | None = None,
         decision_id: str | None = None,
         guardian_decision_id: str | None = None,
+        guardian_binding_hash: str | None = None,
         parent_event_id: str | None = None,
     ) -> dict[str, Any]:
         created_at = self._now()
-        return {
+        event = {
             "contract_name": "control_plane.event",
             "contract_version": "1.0.0",
             "schema_version": "1.0.0",
@@ -880,6 +949,9 @@ class SupervisorControlPlane:
             "side_effects_allowed": False,
             "created_at": created_at,
         }
+        if guardian_binding_hash is not None:
+            event["guardian_binding_hash"] = guardian_binding_hash
+        return event
 
     def _result(
         self,
@@ -931,6 +1003,7 @@ class SupervisorControlPlane:
     def _public_lima(decision: dict[str, Any] | None) -> dict[str, Any] | None:
         if decision is None:
             return None
+        metadata = decision["metadata"]
         return {
             "decision_id": decision["decision_id"],
             "status": decision["status"],
@@ -939,6 +1012,9 @@ class SupervisorControlPlane:
             "risk_level": decision["risk_level"],
             "reason_codes": SupervisorControlPlane._safe_reason_codes(decision),
             "source_policy": decision["source_policy"],
+            "guardian_decision_id": metadata["guardian_decision_id"],
+            "guardian_binding_hash": metadata["guardian_binding_hash"],
+            "guardian_binding_mode": metadata["guardian_binding_mode"],
             "executable": False,
             "execution_allowed": False,
             "side_effects_allowed": False,

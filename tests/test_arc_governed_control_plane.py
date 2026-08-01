@@ -3,6 +3,9 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from pathlib import Path
 from types import SimpleNamespace
+from copy import deepcopy
+import hashlib
+import json
 import tempfile
 import unittest
 
@@ -57,8 +60,18 @@ class FakeLimaRunner:
             status, allowed, approval, risk = "privileged_required", False, True, "high"
         else:
             status, allowed, approval, risk = "denied", False, False, "blocked"
+        guardian_binding = deepcopy(request["guardian_binding"])
+        binding_hash = "sha256:" + hashlib.sha256(
+            json.dumps(
+                guardian_binding,
+                ensure_ascii=True,
+                separators=(",", ":"),
+                sort_keys=True,
+            ).encode("utf-8")
+        ).hexdigest()
+        decision_id = f"decision:{request['request_id']}:{binding_hash}"
         return {
-            "decision_id": f"decision:{request['request_id']}",
+            "decision_id": decision_id,
             "request_id": request["request_id"],
             "consumer": request["consumer"],
             "status": status,
@@ -70,6 +83,24 @@ class FakeLimaRunner:
             "executable": False,
             "execution_allowed": False,
             "side_effects_allowed": False,
+            "metadata": {
+                "request": deepcopy(request),
+                "guardian_binding": guardian_binding,
+                "guardian_binding_present": True,
+                "guardian_binding_hash": binding_hash,
+                "guardian_decision_id": guardian_binding["decision_id"],
+                "guardian_binding_mode": guardian_binding["binding_mode"],
+            },
+            "audit_event": {
+                "request_id": request["request_id"],
+                "decision_id": decision_id,
+                "metadata": {
+                    "guardian_binding_present": True,
+                    "guardian_binding_hash": binding_hash,
+                    "guardian_decision_id": guardian_binding["decision_id"],
+                    "guardian_binding_mode": guardian_binding["binding_mode"],
+                },
+            },
         }
 
 
@@ -199,6 +230,17 @@ class ArcGovernedControlPlaneTests(unittest.TestCase):
         self.assertEqual(result["guardian"]["decision"], "allow_with_evidence")
         self.assertEqual(result["lima"]["status"], "allowed_dry_run")
         self.assertEqual(result["lima"]["source_policy"], "guardian_core.policy")
+        self.assertEqual(
+            result["lima"]["guardian_decision_id"],
+            result["guardian"]["decision_id"],
+        )
+        self.assertEqual(
+            result["lima"]["guardian_binding_mode"],
+            "reference_only_non_authorizing",
+        )
+        self.assertTrue(
+            result["lima"]["guardian_binding_hash"].startswith("sha256:")
+        )
         self.assertEqual(result["assignment"]["status"], "acknowledged")
         self.assertTrue(result["runtime_authority_blocked"])
         self.assertFalse(result["executable"])
@@ -207,6 +249,19 @@ class ArcGovernedControlPlaneTests(unittest.TestCase):
         self.assertEqual(len(self.guardian_decider.calls), 1)
         self.assertEqual(len(self.lima_runner.calls), 1)
         self.assertEqual(len(self.endpoint.received_previews), 1)
+        lima_call = self.lima_runner.calls[0]
+        self.assertEqual(
+            lima_call["guardian_binding"]["decision_id"],
+            result["guardian"]["decision_id"],
+        )
+        self.assertEqual(
+            lima_call["guardian_binding"]["policy_snapshot_hash"],
+            result["guardian"]["policy_snapshot_hash"],
+        )
+        self.assertEqual(
+            lima_call["trust_context"]["worker_id"],
+            "arc-worker-001",
+        )
         self.assertEqual(
             [event["event_type"] for event in result["evidence"]],
             [
@@ -218,6 +273,82 @@ class ArcGovernedControlPlaneTests(unittest.TestCase):
                 "worker_acknowledgement",
             ],
         )
+        lima_event = next(
+            event
+            for event in result["evidence"]
+            if event["event_type"] == "lima_decision"
+        )
+        self.assertEqual(
+            lima_event["guardian_binding_hash"],
+            result["lima"]["guardian_binding_hash"],
+        )
+
+    def test_lima_guardian_reference_tampering_fails_before_arc(self) -> None:
+        tamper_cases = {
+            "decision_id": ("guardian_binding", "decision_id", "other-decision"),
+            "policy_snapshot_hash": (
+                "guardian_binding",
+                "policy_snapshot_hash",
+                "sha256:" + ("0" * 64),
+            ),
+            "tenant": ("guardian_binding", "bound_tenant_id", "other-tenant"),
+            "worker": ("guardian_binding", "bound_worker_id", "other-worker"),
+            "action": ("guardian_binding", "bound_action_type", "status"),
+            "expiry": (
+                "guardian_binding",
+                "expires_at",
+                "2099-01-01T00:00:00Z",
+            ),
+            "binding_hash": (
+                "metadata",
+                "guardian_binding_hash",
+                "sha256:" + ("f" * 64),
+            ),
+            "audit_hash": (
+                "audit_metadata",
+                "guardian_binding_hash",
+                "sha256:" + ("e" * 64),
+            ),
+        }
+        for index, (name, (target, field, value)) in enumerate(
+            tamper_cases.items(),
+            start=1,
+        ):
+            with self.subTest(name=name):
+                base_runner = FakeLimaRunner()
+
+                def tampering_runner(
+                    request: dict[str, object],
+                    *,
+                    _target: str = target,
+                    _field: str = field,
+                    _value: str = value,
+                ) -> dict[str, object]:
+                    decision = base_runner(request)
+                    if _target == "guardian_binding":
+                        decision["metadata"]["guardian_binding"][_field] = _value
+                    elif _target == "metadata":
+                        decision["metadata"][_field] = _value
+                    else:
+                        decision["audit_event"]["metadata"][_field] = _value
+                    return decision
+
+                result = self._control_plane(
+                    lima_runner=tampering_runner,
+                ).submit(
+                    self._request(
+                        request_id=f"request-binding-tamper-{index}",
+                        idempotency_key=f"idem-binding-tamper-{index}",
+                    )
+                )
+
+                self.assertEqual(result["status"], "denied")
+                self.assertIsNone(result["lima"])
+                self.assertEqual(
+                    result["evidence"][-1]["event_type"],
+                    "failure",
+                )
+        self.assertEqual(self.endpoint.received_previews, [])
 
     def test_guardian_policy_identity_is_stable_and_preserves_resource_type(self) -> None:
         control_plane = self._control_plane()
