@@ -59,5 +59,6 @@
   "runtime_authority_blocked": true,
   "executable": false,
   "execution_allowed": false,
-  "side_effects_allowed": false
+  "side_effects_allowed": false,
+  "execution_grant": null
 }

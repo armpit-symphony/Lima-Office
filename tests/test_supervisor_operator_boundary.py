@@ -36,6 +36,8 @@ class _FakeControlPlane:
         self.omit_guardian = False
         self.omit_lima = False
         self.evidence_store: SQLiteEvidenceStore | None = None
+        # None unless a test opts a grant in, matching the default-off posture.
+        self.execution_grant: dict[str, Any] | None = None
 
     def submit(self, request: dict[str, Any]) -> dict[str, Any]:
         self.requests.append(dict(request))
@@ -78,6 +80,7 @@ class _FakeControlPlane:
                 "status": "acknowledged",
             },
             "reason_codes": ["worker_stale"] if blocked else [],
+            "execution_grant": None if blocked else self.execution_grant,
             "evidence": [
                 {
                     "event_id": "event-001",
@@ -842,3 +845,110 @@ class SupervisorOperatorBoundaryTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class OperatorResponseExecutionGrantTests(unittest.TestCase):
+    """The grant must survive the HTTP boundary, and default to absent."""
+
+    def setUp(self) -> None:
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.validator = ContractValidator(ContractLoader().load())
+        self.store = SQLiteEvidenceStore(
+            Path(self.temporary.name) / "evidence.db",
+            self.validator,
+        )
+        self.addCleanup(self.store.close)
+        self.channel = OperatorChannel(
+            tenant_id="tenant-lab-001",
+            customer_context_id="customer-context-main",
+            actor_id="operator-lab-001",
+            key_id="operator-key-001",
+            shared_key=b"o" * 32,
+            validator=self.validator,
+            evidence_store=self.store,
+            clock=lambda: datetime(2026, 7, 26, 1, 0, tzinfo=timezone.utc),
+        )
+        self.control_plane = _FakeControlPlane()
+        self.control_plane.evidence_store = self.store
+        self.service = OperatorControlPlaneService(
+            channel=self.channel,
+            validator=self.validator,
+            control_plane=self.control_plane,  # type: ignore[arg-type]
+        )
+
+    GRANT = {
+        "grant_contract": "lima.governed_execution_grant",
+        "grant_version": "v0.1",
+        "grant_mode": "single_use_operator_gated",
+        "grant_id": "grant:wire001",
+        "decision_id": "decision:wire001",
+        "request_id": "request-001",
+        "guardian_decision_id": "gd-wire-001",
+        "policy_version": "guardian-policy-lab-v1",
+        "policy_snapshot_hash": "sha256:" + "a" * 64,
+        "guardian_binding_hash": "sha256:" + "b" * 64,
+        "granted_capability": "document_read",
+        "bound_tenant_id": "tenant-lab-001",
+        "bound_worker_id": "arc-worker-001",
+        "bound_action_type": "safe_read",
+        "scope_hash": "sha256:" + "c" * 64,
+        "nonce": "nonce-wire-001",
+        "issued_at": NOW,
+        "expires_at": NOW,
+        "execution_allowed": True,
+        "side_effects_allowed": False,
+        "requires_operator_opt_in": True,
+    }
+
+    def _payload(self) -> dict[str, Any]:
+        response = self.service.handle(_body(self.channel, _request()))
+        return response["payload"]
+
+    def test_response_carries_no_grant_by_default(self) -> None:
+        payload = self._payload()
+
+        self.assertIn("execution_grant", payload)
+        self.assertIsNone(payload["execution_grant"])
+
+    def test_response_carries_the_grant_when_one_was_issued(self) -> None:
+        self.control_plane.execution_grant = dict(self.GRANT)
+        payload = self._payload()
+
+        grant = payload["execution_grant"]
+        self.assertIsNotNone(grant, "an issued grant must reach the operator")
+        self.assertEqual(grant["grant_id"], "grant:wire001")
+        self.assertEqual(grant["granted_capability"], "document_read")
+        self.assertIs(grant["execution_allowed"], True)
+        self.assertIs(grant["requires_operator_opt_in"], True)
+
+    def test_carrying_a_grant_does_not_relax_the_response_flags(self) -> None:
+        self.control_plane.execution_grant = dict(self.GRANT)
+        payload = self._payload()
+
+        self.assertIsNotNone(payload["execution_grant"])
+        self.assertIs(payload["runtime_authority_blocked"], True)
+        for field in ("executable", "execution_allowed", "side_effects_allowed"):
+            self.assertIs(payload[field], False)
+
+    def test_grant_is_covered_by_the_authenticated_envelope(self) -> None:
+        self.control_plane.execution_grant = dict(self.GRANT)
+        response = self.service.handle(_body(self.channel, _request()))
+
+        # Verification recomputes the payload hash, so a grant tampered with in
+        # transit cannot be accepted.
+        self.channel.verify(
+            response["envelope"],
+            response["payload"],
+            expected_message_type="operator_response",
+            expected_sender_component="supervisor",
+        )
+        tampered = dict(response["payload"])
+        tampered["execution_grant"] = dict(self.GRANT, grant_id="grant:forged")
+        with self.assertRaises(Exception):
+            self.channel.verify(
+                response["envelope"],
+                tampered,
+                expected_message_type="operator_response",
+                expected_sender_component="supervisor",
+            )
