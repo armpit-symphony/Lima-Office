@@ -1,3 +1,3 @@
 -r requirements-dev.txt
 guardian-suite @ git+https://github.com/armpit-symphony/LIMA-Guardian-Suite.git@69e843218c521b913edcec404dea6b7be8c64f06
-lima-runtime @ git+https://github.com/armpit-symphony/LIMA-AI-OS.git@40d6f1379284931ee46f05650e9201d6f98975d6
+lima-runtime @ git+https://github.com/armpit-symphony/LIMA-AI-OS.git@0718af23570ed631ed4af4c7d9d8b0db82075648

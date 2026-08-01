@@ -94,7 +94,8 @@
         "failure",
         "approval_requested",
         "approval_expired",
-        "replay_rejected"
+        "replay_rejected",
+            "execution_grant_issued"
       ]
     },
     "actor_id": {"type": "string", "minLength": 1},
