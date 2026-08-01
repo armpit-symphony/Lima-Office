@@ -1,0 +1,33 @@
+{
+  "contract_name": "guardian.evaluation.request",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-control-plane-001",
+  "causation_id": "request-control-plane-001",
+  "idempotency_key": "idem-guardian-control-plane-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-07-24T04:00:00Z"
+  },
+  "policy_version": "guardian-policy-lab-v1",
+  "request_id": "request-control-plane-001",
+  "actor_id": "operator-lab-001",
+  "actor_role": "operator",
+  "action": "safe_read",
+  "resource": {
+    "resource_type": "worker_status",
+    "resource_id": "arc-worker-001"
+  },
+  "worker_id": "arc-worker-001",
+  "server_derived_category": "informational",
+  "classification_authority": "supervisor_server_derived",
+  "request_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "payload_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "evidence_refs": [],
+  "issued_at": "2026-07-24T04:00:00Z",
+  "expires_at": "2026-07-24T04:05:00Z"
+}
