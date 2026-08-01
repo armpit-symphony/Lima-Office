@@ -33,6 +33,17 @@ non-executing assignment acknowledgement or fail-closed status. Missing
 Guardian/LIMA authority denies the whole inventory without returning
 ungoverned worker details. There is no background inventory polling.
 
+Arc's explicit `arc-evidence --read --target-request-id <request-id>` command
+is the first operator-visible durable evidence surface. The client supplies
+only the target request reference; the Supervisor selects an authenticated
+worker and derives a `safe_read` classification for an `evidence_trace`
+resource. The trace is returned only after mandatory Guardian authority, a
+Guardian-backed LIMA decision, and a non-executing Arc acknowledgement.
+Returned events use a fixed redacted allowlist. Tenant lookup is fixed by the
+authenticated channel, actor ownership must match every event, missing and
+other-actor records are both reported as `not_found`, and the query itself is
+persisted as `evidence_read`. Replay and evidence-write failures fail closed.
+
 The Supervisor deliberately does not run a heartbeat scheduler yet. Each
 eligible assignment performs an explicit authenticated heartbeat refresh and
 persists its result before offering the preview. Missing refresh configuration,

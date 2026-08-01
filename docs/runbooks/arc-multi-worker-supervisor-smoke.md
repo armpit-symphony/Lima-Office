@@ -46,6 +46,13 @@ For each run:
 - Every worker receives one real authenticated, non-executing assignment
   preview and acknowledges it.
 - A Supervisor restart restores the complete durable worker inventory.
+- After restart, Arc uses `arc-evidence` to retrieve the redacted seven-event
+  chain for a request created before restart.
+- The evidence read has its own Guardian decision, Guardian-backed LIMA
+  decision, non-executing Arc acknowledgement, and durable `evidence_read`
+  event.
+- Reusing the evidence query request/idempotency identity is denied with
+  `nonce_replay_denied` and returns no target events.
 - The final worker process is disconnected after restart.
 - A request for that worker fails closed as `blocked` with `worker_stale`.
 - The disconnected worker's durable state becomes `offline`.

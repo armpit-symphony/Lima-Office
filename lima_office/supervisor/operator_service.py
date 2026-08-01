@@ -9,12 +9,14 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import logging
 from typing import Any
+from uuid import uuid4
 
 from lima_office.contracts.validator import ContractValidator
 from lima_office.runtime.errors import OperatorChannelAuthenticationError
 
 from .control_plane import SupervisorControlPlane
 from .operator_channel import OperatorChannel
+from .worker_channel import payload_hash
 from .worker_registry import WorkerRecord
 
 
@@ -81,6 +83,126 @@ class OperatorControlPlaneService:
             results = []
         return self._signed(
             self._inventory_response(request, records, results)
+        )
+
+    def handle_evidence(self, body: Mapping[str, Any]) -> dict[str, Any]:
+        """Return one redacted trace only after a bound governed read."""
+
+        request = self._authenticate_and_validate(
+            body,
+            contract_name="operator.evidence_trace.request",
+        )
+        if request["target_request_id"] == request["request_id"]:
+            raise OperatorChannelAuthenticationError(
+                "evidence query cannot target its own authorization request"
+            )
+        authenticated = tuple(
+            record
+            for record in self.control_plane.registry.records()
+            if record.authenticated
+        )
+        if not authenticated:
+            denial = self._append_ungoverned_evidence_denial(
+                request,
+                reason_code="worker_stale",
+                summary=(
+                    "Evidence trace read denied because no authenticated "
+                    "Arc worker was available."
+                ),
+            )
+            return self._signed(
+                self._evidence_response(
+                    request,
+                    status="denied",
+                    result={
+                        "evidence": [denial],
+                        "reason_codes": ["worker_stale"],
+                    },
+                    reason_codes=["worker_stale"],
+                )
+            )
+        selected = next(
+            (
+                record
+                for record in authenticated
+                if record.can_accept_task()
+            ),
+            authenticated[0],
+        )
+        result = self.control_plane.submit(
+            {
+                "request_id": request["request_id"],
+                "tenant_id": self.channel.tenant_id,
+                "actor_id": self.channel.actor_id,
+                "action": "safe_read",
+                "resource_type": "evidence_trace",
+                "resource_id": request["target_request_id"],
+                "worker_id": selected.worker_id,
+                "idempotency_key": request["idempotency_key"],
+            }
+        )
+        assignment = result.get("assignment")
+        guardian = result.get("guardian")
+        lima = result.get("lima")
+        governed = (
+            result.get("status") == "acknowledged"
+            and isinstance(assignment, Mapping)
+            and assignment.get("status") == "acknowledged"
+            and isinstance(guardian, Mapping)
+            and isinstance(lima, Mapping)
+            and lima.get("source_policy") == "guardian_core.policy"
+        )
+        if not governed:
+            return self._signed(
+                self._evidence_response(
+                    request,
+                    status="denied",
+                    selected=selected,
+                    result=result,
+                    reason_codes=(
+                        [str(code) for code in result.get("reason_codes") or []]
+                        or ["recon_missing_guardian_decision"]
+                    ),
+                )
+            )
+
+        target_events = self.control_plane.evidence_store.events_for_request(
+            request["target_request_id"],
+            self.channel.tenant_id,
+        )
+        actor_bound = bool(target_events) and all(
+            event.get("actor_id") == self.channel.actor_id
+            for event in target_events
+        )
+        available = bool(target_events) and actor_bound
+        internal_reasons = (
+            []
+            if available
+            else ["cross_tenant_blocked" if target_events else "missing_ref"]
+        )
+        self._append_evidence_read_event(
+            request,
+            result,
+            selected=selected,
+            available=available,
+            reason_codes=internal_reasons,
+        )
+        refreshed_result = dict(result)
+        refreshed_result["evidence"] = (
+            self.control_plane.evidence_store.events_for_request(
+                request["request_id"],
+                self.channel.tenant_id,
+            )
+        )
+        return self._signed(
+            self._evidence_response(
+                request,
+                status="available" if available else "not_found",
+                selected=selected,
+                result=refreshed_result,
+                events=target_events if available else [],
+                reason_codes=[] if available else ["missing_ref"],
+            )
         )
 
     def _authenticate_and_validate(
@@ -283,6 +405,220 @@ class OperatorControlPlaneService:
             "operator.worker_inventory.response",
         )
 
+    def _evidence_response(
+        self,
+        request: dict[str, Any],
+        *,
+        status: str,
+        selected: WorkerRecord | None = None,
+        result: Mapping[str, Any] | None = None,
+        events: list[dict[str, Any]] | None = None,
+        reason_codes: list[str] | None = None,
+    ) -> dict[str, Any]:
+        result = result or {}
+        guardian = result.get("guardian")
+        lima = result.get("lima")
+        authorization_refs = sorted(
+            str(event["event_id"])
+            for event in result.get("evidence") or []
+            if isinstance(event, Mapping) and event.get("event_id")
+        )
+        public_events = [
+            self._public_evidence_event(event)
+            for event in events or []
+        ]
+        response = {
+            "contract_name": "operator.evidence_trace.response",
+            "contract_version": "1.0.0",
+            "schema_version": "1.0.0",
+            "taxonomy_version": "taxonomy-recon-v1",
+            "tenant_id": self.channel.tenant_id,
+            "customer_context_id": self.channel.customer_context_id,
+            "environment": "phase0_lab",
+            "correlation_id": request["correlation_id"],
+            "causation_id": request["request_id"],
+            "idempotency_key": f"response:{request['idempotency_key']}",
+            "producer": {"component": "supervisor", "produced_at": self._now()},
+            "policy_version": self.channel.policy_version,
+            "request_id": request["request_id"],
+            "target_request_id": request["target_request_id"],
+            "actor_id": self.channel.actor_id,
+            "status": status,
+            "classification_authority": "supervisor_server_derived",
+            "worker_id": selected.worker_id if selected is not None else None,
+            "guardian_decision_id": (
+                str(guardian["decision_id"])
+                if isinstance(guardian, Mapping)
+                else None
+            ),
+            "lima_decision_id": (
+                str(lima["decision_id"])
+                if isinstance(lima, Mapping)
+                else None
+            ),
+            "authorization_evidence_refs": authorization_refs,
+            "event_count": len(public_events),
+            "events": public_events,
+            "reason_codes": sorted(set(reason_codes or [])),
+            "runtime_authority_blocked": True,
+            "executable": False,
+            "execution_allowed": False,
+            "side_effects_allowed": False,
+        }
+        return self.validator.validate(
+            response,
+            "operator.evidence_trace.response",
+        )
+
+    def _append_evidence_read_event(
+        self,
+        request: dict[str, Any],
+        result: Mapping[str, Any],
+        *,
+        selected: WorkerRecord,
+        available: bool,
+        reason_codes: list[str],
+    ) -> None:
+        authorization_events = [
+            event
+            for event in result.get("evidence") or []
+            if isinstance(event, Mapping)
+        ]
+        if not authorization_events:
+            raise RuntimeError(
+                "governed evidence read lacks authorization evidence"
+            )
+        last = authorization_events[-1]
+        guardian = result["guardian"]
+        lima = result["lima"]
+        now = self._now()
+        self.control_plane.evidence_store.append_event(
+            {
+                "contract_name": "control_plane.event",
+                "contract_version": "1.0.0",
+                "schema_version": "1.0.0",
+                "taxonomy_version": "taxonomy-recon-v1",
+                "tenant_id": self.channel.tenant_id,
+                "customer_context_id": self.channel.customer_context_id,
+                "environment": "phase0_lab",
+                "correlation_id": request["correlation_id"],
+                "causation_id": str(last["event_id"]),
+                "idempotency_key": (
+                    f"event:{request['idempotency_key']}:evidence_read:"
+                    f"{uuid4().hex}"
+                ),
+                "producer": {"component": "supervisor", "produced_at": now},
+                "policy_version": self.channel.policy_version,
+                "event_id": f"ev-control-plane:{uuid4().hex}",
+                "event_type": "evidence_read",
+                "actor_id": self.channel.actor_id,
+                "worker_id": selected.worker_id,
+                "request_id": request["request_id"],
+                "decision_id": str(lima["decision_id"]),
+                "guardian_decision_id": str(guardian["decision_id"]),
+                "parent_event_id": str(last["event_id"]),
+                "payload_hash": str(last["payload_hash"]),
+                "redacted_summary": (
+                    "Authorized redacted evidence trace read completed."
+                    if available
+                    else "Authorized evidence trace read found no visible record."
+                ),
+                "outcome": "acknowledged" if available else "denied",
+                "reason_codes": reason_codes,
+                "runtime_authority_blocked": True,
+                "executable": False,
+                "execution_allowed": False,
+                "side_effects_allowed": False,
+                "created_at": now,
+            }
+        )
+
+    def _append_ungoverned_evidence_denial(
+        self,
+        request: dict[str, Any],
+        *,
+        reason_code: str,
+        summary: str,
+    ) -> dict[str, Any]:
+        """Persist a pre-Guardian denial when no Arc route can exist."""
+
+        now = self._now()
+        return self.control_plane.evidence_store.append_event(
+            {
+                "contract_name": "control_plane.event",
+                "contract_version": "1.0.0",
+                "schema_version": "1.0.0",
+                "taxonomy_version": "taxonomy-recon-v1",
+                "tenant_id": self.channel.tenant_id,
+                "customer_context_id": self.channel.customer_context_id,
+                "environment": "phase0_lab",
+                "correlation_id": request["correlation_id"],
+                "causation_id": request["causation_id"],
+                "idempotency_key": (
+                    f"event:{request['idempotency_key']}:denial:{uuid4().hex}"
+                ),
+                "producer": {"component": "supervisor", "produced_at": now},
+                "policy_version": self.channel.policy_version,
+                "event_id": f"ev-control-plane:{uuid4().hex}",
+                "event_type": "denial",
+                "actor_id": self.channel.actor_id,
+                "worker_id": None,
+                "request_id": request["request_id"],
+                "decision_id": None,
+                "guardian_decision_id": None,
+                "parent_event_id": None,
+                "payload_hash": payload_hash(request),
+                "redacted_summary": summary,
+                "outcome": "denied",
+                "reason_codes": [reason_code],
+                "runtime_authority_blocked": True,
+                "executable": False,
+                "execution_allowed": False,
+                "side_effects_allowed": False,
+                "created_at": now,
+            }
+        )
+
+    @staticmethod
+    def _public_evidence_event(event: Mapping[str, Any]) -> dict[str, Any]:
+        return {
+            "event_id": str(event["event_id"]),
+            "event_type": str(event["event_type"]),
+            "actor_id": str(event["actor_id"]),
+            "worker_id": (
+                str(event["worker_id"])
+                if event.get("worker_id") is not None
+                else None
+            ),
+            "request_id": str(event["request_id"]),
+            "decision_id": (
+                str(event["decision_id"])
+                if event.get("decision_id") is not None
+                else None
+            ),
+            "guardian_decision_id": (
+                str(event["guardian_decision_id"])
+                if event.get("guardian_decision_id") is not None
+                else None
+            ),
+            "parent_event_id": (
+                str(event["parent_event_id"])
+                if event.get("parent_event_id") is not None
+                else None
+            ),
+            "payload_hash": str(event["payload_hash"]),
+            "redacted_summary": str(event["redacted_summary"]),
+            "outcome": str(event["outcome"]),
+            "reason_codes": [
+                str(code) for code in event.get("reason_codes") or []
+            ],
+            "created_at": str(event["created_at"]),
+            "runtime_authority_blocked": True,
+            "executable": False,
+            "execution_allowed": False,
+            "side_effects_allowed": False,
+        }
+
     @staticmethod
     def _inventory_worker(
         record: WorkerRecord,
@@ -343,6 +679,7 @@ class _OperatorRequestHandler(BaseHTTPRequestHandler):
         handlers = {
             "/v1/operator/preflight": self.server.operator_service.handle,
             "/v1/operator/workers": self.server.operator_service.handle_inventory,
+            "/v1/operator/evidence": self.server.operator_service.handle_evidence,
         }
         handler = handlers.get(self.path)
         if handler is None:
