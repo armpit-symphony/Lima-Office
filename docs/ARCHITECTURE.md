@@ -24,6 +24,15 @@ health snapshots, and control-plane evidence persist in SQLite. Private-LAN
 deployment remains blocked on a reviewed confidentiality and device/operator
 key provisioning design.
 
+Arc is the primary lab operator surface. Its explicit `arc-workers --refresh`
+command requests no worker identities or authority. The Supervisor enumerates
+its server-owned 1-8 worker registry and derives one status preflight per
+worker. Every returned worker entry therefore has a mandatory Guardian
+decision, Guardian-backed LIMA decision, durable evidence references, and a
+non-executing assignment acknowledgement or fail-closed status. Missing
+Guardian/LIMA authority denies the whole inventory without returning
+ungoverned worker details. There is no background inventory polling.
+
 The Supervisor deliberately does not run a heartbeat scheduler yet. Each
 eligible assignment performs an explicit authenticated heartbeat refresh and
 persists its result before offering the preview. Missing refresh configuration,

@@ -208,6 +208,11 @@ class WorkerRegistry:
             raise WorkerStateError(f"worker {worker_id} cannot accept tasks while {worker.state}")
         return worker
 
+    def records(self) -> tuple[WorkerRecord, ...]:
+        """Return the server-owned worker inventory in stable identity order."""
+
+        return tuple(self._workers[key] for key in sorted(self._workers))
+
     def update_state(self, worker_id: str, state: str, reason: str | None = None) -> WorkerRecord:
         worker = self.get(worker_id)
         if worker.state == "revoked" and state != "revoked":
