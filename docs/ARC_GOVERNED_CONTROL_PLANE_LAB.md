@@ -21,7 +21,7 @@ and remains only a possible future operator/evidence display.
 - Guardian Suite:
   `69e843218c521b913edcec404dea6b7be8c64f06`
 - LIMA AI OS:
-  `4e9b08a69fc8a8cbe5aba685198a30770627422f`
+  `40d6f1379284931ee46f05650e9201d6f98975d6`
 - LIMA package:
   `lima-runtime==0.1.0rc1`
 - Supported LIMA API:
