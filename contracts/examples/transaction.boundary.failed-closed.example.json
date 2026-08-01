@@ -1,0 +1,73 @@
+{
+  "contract_name": "transaction.boundary",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "mock",
+  "correlation_id": "corr-failed-closed-001",
+  "causation_id": "cause-replay-check-001",
+  "idempotency_key": "idem-failed-closed-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-24T14:06:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "transaction_id": "txn-failed-closed-001",
+  "transaction_type": "approval_token_consume",
+  "participants": [
+    "supervisor",
+    "token_consumption_store",
+    "evidence_ledger"
+  ],
+  "required_operations": [
+    "validate_token_binding",
+    "consume_token_nonce_once",
+    "append_denial_evidence"
+  ],
+  "transaction_status": "failed_closed",
+  "preconditions": [
+    "token_verification_valid",
+    "binding_nonce_unused"
+  ],
+  "postconditions": [
+    "authorization_blocked",
+    "incident_triage_required"
+  ],
+  "related_transaction_id": "txn-failed-closed-001",
+  "related_coordinator_event_ids": [
+    "coord-ev-008",
+    "coord-ev-010"
+  ],
+  "related_replay_record_ids": [
+    "rr-email-draft-failed-closed-001"
+  ],
+  "related_ledger_entry_ids": [
+    "ledger-entry-replay-denial-001"
+  ],
+  "related_evidence_artifact_ids": [
+    "ev-token-consume-failed-closed-001"
+  ],
+  "related_export_manifest_ids": [],
+  "linkage_status": "drift_detected",
+  "linkage_failure_reasons": [
+    "token_atomicity_ambiguous",
+    "failed_closed_terminal_state"
+  ],
+  "canonical_tenant_id": "tenant-lab-001",
+  "canonical_correlation_id": "corr-failed-closed-001",
+  "canonical_idempotency_key": "idem-failed-closed-001",
+  "canonical_decision_nonce": "decision-nonce-email-draft-001",
+  "canonical_action_type": "approval_token_consume",
+  "canonical_tool_scope": null,
+  "canonical_worker_id": "arc-admin-01",
+  "canonical_task_id": "task-email-draft-001",
+  "evidence_refs": [
+    "ev-token-consume-failed-closed-001"
+  ],
+  "failure_reason": "Token consume atomicity ambiguous; action failed closed.",
+  "created_at": "2026-05-24T14:06:00Z",
+  "committed_at": null,
+  "rolled_back_at": null
+}

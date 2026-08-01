@@ -1,0 +1,58 @@
+{
+  "contract_name": "memory.access",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-memory-email-001",
+  "causation_id": "task-email-draft-001",
+  "idempotency_key": "idem-memory-email-001",
+  "memory_access_id": "mem-email-context-001",
+  "task_id": "task-email-draft-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:27:00Z"
+  },
+  "actor": {
+    "actor_type": "helper_agent",
+    "actor_id": "helper-memory-review-01"
+  },
+  "memory_namespace": "tenant-lab-001-office-memory",
+  "tenant_namespace": "tenant-lab-001",
+  "tenant_match_required": true,
+  "cross_tenant_access": false,
+  "cross_tenant_check_result": "tenant_match",
+  "access_type": "read",
+  "operation": "retrieve",
+  "data_classification": "customer_confidential",
+  "classification_source": "memory_metadata",
+  "purpose": "task_context_retrieval",
+  "retention_class": "short_term_operator_review",
+  "retention_rule": "retention-rule-phase0-short-review",
+  "delete_export_posture": "not_requested",
+  "source_refs": [
+    "memory-record-ref-customer-preference-001"
+  ],
+  "retrieval_scope": {
+    "max_records": 3,
+    "record_ref_only": true,
+    "untrusted_content_treatment": "scan_before_use"
+  },
+  "retrieved_record_refs": [
+    "memory-record-ref-customer-preference-001"
+  ],
+  "raw_content_allowed": false,
+  "prompt_injection_scan_status": "passed",
+  "policy_result": "allow_with_evidence",
+  "policy_version": "policy-phase0-v1",
+  "guardian_decision_id": "gd-memory-email-001",
+  "approval_required": false,
+  "approval_token_id": null,
+  "evidence_artifact_id": "ev-memory-email-001",
+  "status": "completed",
+  "denial_reason": null,
+  "requested_at": "2026-05-18T21:27:00Z",
+  "completed_at": "2026-05-18T21:27:10Z"
+}

@@ -1,0 +1,45 @@
+{
+  "contract_name": "console.alert",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-console-alert-connector-revoked-001",
+  "causation_id": null,
+  "idempotency_key": "idem-console-alert-connector-revoked-001",
+  "alert_id": "alert-connector-revoked-001",
+  "actor_ref": "security-reviewer-ref-001",
+  "role": "security_reviewer",
+  "health_domain": "connector",
+  "alert_type": "connector_revoked",
+  "health_reason_codes": [
+    "connector_revoked"
+  ],
+  "severity": "blocked",
+  "related_contract_refs": [
+    "connector.readiness:connector-readiness-revoked-001",
+    "governance.connector_consent:connector-consent-revoked-001"
+  ],
+  "policy_refs": [
+    "policy.connector_consent_scope_revocation.phase0"
+  ],
+  "risk_tier": "blocked",
+  "status": "active",
+  "runbook_ref": "runbook.live_connector_readiness_review.phase0",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-25T20:46:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "evidence_refs": [
+    "ev-connector-readiness-revoked-001"
+  ],
+  "blocked_reason": "connector_revoked_pending_operator_review",
+  "model_route_id": null,
+  "route_mode": null,
+  "route_status": null,
+  "operator_visible": true,
+  "created_at": "2026-05-25T20:46:00Z"
+}

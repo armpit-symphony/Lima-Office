@@ -1,0 +1,40 @@
+{
+  "contract_name": "governance.session_policy",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-session-policy-stepup-001",
+  "causation_id": null,
+  "idempotency_key": "idem-session-policy-stepup-001",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-24T14:15:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "session_policy_id": "session-policy-approver-stepup-001",
+  "actor_type": "approver",
+  "role": "approver",
+  "session_ttl_seconds": 14400,
+  "idle_timeout_seconds": 1800,
+  "step_up_required_actions": [
+    "approve_privileged_task",
+    "update_rollback_approval"
+  ],
+  "revocation_triggers": [
+    "manual_revoke",
+    "session_expired"
+  ],
+  "device_trust_requirement": "device_posture_required_for_privileged",
+  "mfa_requirement": "step_up_required_for_privileged",
+  "evidence_refs": [
+    "ev-session-policy-stepup-001"
+  ],
+  "reason_codes": [
+    "mfa_required"
+  ],
+  "created_at": "2026-05-24T14:15:00Z",
+  "updated_at": "2026-05-24T14:15:00Z"
+}

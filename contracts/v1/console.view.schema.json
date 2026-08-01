@@ -1,0 +1,262 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/console.view.schema.json",
+  "title": "Console View Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "view_id",
+    "actor_ref",
+    "role",
+    "view_type",
+    "view_mode",
+    "related_contract_refs",
+    "policy_refs",
+    "risk_tier",
+    "status",
+    "producer",
+    "policy_version",
+    "evidence_refs",
+    "created_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "console.view"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "view_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "actor_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "owner_operator",
+        "approver",
+        "field_it",
+        "auditor_readonly",
+        "worker_owner",
+        "security_reviewer"
+      ]
+    },
+    "view_type": {
+      "type": "string",
+      "enum": [
+        "operator_dashboard",
+        "supervisor_health",
+        "worker_fleet",
+        "task_queue",
+        "approval_inbox",
+        "guardian_decisions",
+        "evidence_viewer",
+        "incidents",
+        "lima_it_handoffs",
+        "deployment_update_attestation",
+        "governance_access_review",
+        "connector_readiness",
+        "audit_export_delete"
+      ]
+    },
+    "view_mode": {
+      "type": "string",
+      "enum": [
+        "readonly",
+        "review_only",
+        "approval_capable"
+      ]
+    },
+    "related_contract_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "visible_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "policy_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "blocked"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "rendered_metadata",
+        "empty",
+        "review_required",
+        "degraded",
+        "blocked_missing_policy",
+        "blocked_missing_evidence",
+        "blocked_role"
+      ]
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "operator_console",
+            "supervisor"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "blocked_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "role": {
+            "const": "auditor_readonly"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "view_mode": {
+            "const": "readonly"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "blocked_missing_policy",
+              "blocked_missing_evidence",
+              "blocked_role"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "blocked_reason"
+        ],
+        "properties": {
+          "risk_tier": {
+            "const": "blocked"
+          },
+          "blocked_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
+}

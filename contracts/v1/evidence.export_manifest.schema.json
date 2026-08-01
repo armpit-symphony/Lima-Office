@@ -1,0 +1,1056 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/evidence.export_manifest.schema.json",
+  "title": "Evidence Export Manifest Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "policy_version",
+    "taxonomy_version",
+    "export_manifest_id",
+    "export_request_id",
+    "requested_by_ref",
+    "approved_by_ref",
+    "export_status",
+    "export_review_status",
+    "delete_review_status",
+    "redaction_status",
+    "preservation_hold_status",
+    "included_evidence_refs",
+    "excluded_evidence_refs",
+    "redaction_profile_ref",
+    "retention_policy_refs",
+    "delete_conflict_refs",
+    "hash_manifest_ref",
+    "related_transaction_id",
+    "related_coordinator_event_ids",
+    "related_replay_record_ids",
+    "related_ledger_entry_ids",
+    "related_evidence_artifact_ids",
+    "related_export_manifest_ids",
+    "linkage_status",
+    "linkage_failure_reasons",
+    "canonical_tenant_id",
+    "canonical_correlation_id",
+    "canonical_idempotency_key",
+    "canonical_decision_nonce",
+    "canonical_action_type",
+    "canonical_tool_scope",
+    "canonical_worker_id",
+    "canonical_task_id",
+    "reason_codes",
+    "reconciliation_reason_codes",
+    "evidence_reason_codes",
+    "export_delete_conflict_codes",
+    "delete_proof_refs",
+    "export_package_refs",
+    "conflict_evidence_refs",
+    "created_at",
+    "prepared_at",
+    "exported_at",
+    "evidence_refs",
+    "raw_content_included",
+    "secret_material_included"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "evidence.export_manifest"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "operator_console"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "export_manifest_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "export_request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requested_by_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approved_by_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "export_status": {
+      "type": "string",
+      "enum": [
+        "requested",
+        "approved",
+        "denied",
+        "prepared",
+        "exported",
+        "failed",
+        "blocked_mvp"
+      ]
+    },
+    "export_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "prepared",
+        "exported",
+        "failed_closed",
+        "blocked_mvp"
+      ]
+    },
+    "delete_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "conflict_detected",
+        "blocked_mvp"
+      ]
+    },
+    "redaction_status": {
+      "type": "string",
+      "enum": [
+        "not_required",
+        "required",
+        "pending",
+        "applied",
+        "failed",
+        "blocked_mvp"
+      ]
+    },
+    "preservation_hold_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "required",
+        "active",
+        "conflict_with_delete",
+        "released",
+        "blocked_mvp"
+      ]
+    },
+    "included_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "excluded_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "redaction_profile_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "retention_policy_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "delete_conflict_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^conflict-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "hash_manifest_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "related_transaction_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "related_coordinator_event_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "related_replay_record_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "related_ledger_entry_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "related_evidence_artifact_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "related_export_manifest_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "linkage_status": {
+      "type": "string",
+      "enum": [
+        "linked",
+        "missing_ref",
+        "mismatched_tenant",
+        "mismatched_scope",
+        "mismatched_nonce",
+        "drift_detected",
+        "blocked_mvp"
+      ]
+    },
+    "linkage_failure_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "canonical_tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_decision_nonce": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_action_type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_tool_scope": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "resource_refs",
+        "allowed_operations",
+        "prohibited_operations"
+      ],
+      "properties": {
+        "resource_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "allowed_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prohibited_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "canonical_worker_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_task_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reason_code_registry_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "unknown_reason_code_policy": {
+      "type": "string",
+      "enum": [
+        "fail_closed",
+        "display_unknown",
+        "blocked_mvp"
+      ]
+    },
+    "deprecated_reason_code_policy": {
+      "type": "string",
+      "enum": [
+        "allow_with_warning",
+        "fail_closed",
+        "blocked_mvp"
+      ]
+    },
+    "reason_code_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "deprecated",
+        "unknown",
+        "blocked"
+      ]
+    },
+    "reconciliation_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evidence_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_delete_conflict_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "delete_proof_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_package_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "conflict_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "prepared_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "exported_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "raw_content_included": {
+      "type": "boolean",
+      "const": false
+    },
+    "secret_material_included": {
+      "type": "boolean",
+      "const": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "export_status": {
+            "const": "requested"
+          }
+        },
+        "required": [
+          "export_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "export_review_status": {
+            "const": "requested"
+          },
+          "delete_review_status": {
+            "const": "not_requested"
+          },
+          "approved_by_ref": {
+            "const": null
+          },
+          "redaction_profile_ref": {
+            "const": null
+          },
+          "prepared_at": {
+            "const": null
+          },
+          "exported_at": {
+            "const": null
+          },
+          "hash_manifest_ref": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "export_status": {
+            "const": "approved"
+          }
+        },
+        "required": [
+          "export_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "export_review_status": {
+            "const": "approved"
+          },
+          "approved_by_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "redaction_profile_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "prepared_at": {
+            "const": null
+          },
+          "exported_at": {
+            "const": null
+          },
+          "hash_manifest_ref": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "export_status": {
+            "const": "prepared"
+          }
+        },
+        "required": [
+          "export_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "export_review_status": {
+            "const": "prepared"
+          },
+          "approved_by_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "redaction_profile_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "included_evidence_refs": {
+            "minItems": 1
+          },
+          "prepared_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hash_manifest_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "exported_at": {
+            "const": null
+          },
+          "related_transaction_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "related_ledger_entry_ids": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "export_status": {
+            "const": "exported"
+          }
+        },
+        "required": [
+          "export_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "export_review_status": {
+            "const": "exported"
+          },
+          "redaction_status": {
+            "enum": [
+              "applied",
+              "not_required"
+            ]
+          },
+          "export_package_refs": {
+            "minItems": 1
+          },
+          "approved_by_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "redaction_profile_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "included_evidence_refs": {
+            "minItems": 1
+          },
+          "prepared_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "exported_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hash_manifest_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "related_transaction_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "related_ledger_entry_ids": {
+            "minItems": 1
+          },
+          "linkage_status": {
+            "const": "linked"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "export_status": {
+            "enum": [
+              "denied",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "export_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "export_review_status": {
+            "enum": [
+              "denied",
+              "blocked_mvp"
+            ]
+          },
+          "delete_conflict_refs": {
+            "minItems": 1
+          },
+          "delete_review_status": {
+            "enum": [
+              "denied",
+              "conflict_detected",
+              "blocked_mvp",
+              "review_required"
+            ]
+          },
+          "conflict_evidence_refs": {
+            "minItems": 1
+          },
+          "reason_codes": {
+            "minItems": 1
+          },
+          "export_delete_conflict_codes": {
+            "minItems": 1
+          },
+          "prepared_at": {
+            "const": null
+          },
+          "exported_at": {
+            "const": null
+          },
+          "hash_manifest_ref": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "export_status": {
+            "const": "blocked_mvp"
+          }
+        },
+        "required": [
+          "export_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "export_review_status": {
+            "const": "blocked_mvp"
+          },
+          "environment": {
+            "const": "blocked_mvp"
+          },
+          "delete_review_status": {
+            "not": {
+              "const": "approved"
+            }
+          },
+          "linkage_status": {
+            "const": "blocked_mvp"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "export_status": {
+            "const": "failed"
+          }
+        },
+        "required": [
+          "export_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "export_review_status": {
+            "const": "failed_closed"
+          },
+          "evidence_refs": {
+            "minItems": 1
+          },
+          "reason_codes": {
+            "minItems": 1
+          },
+          "prepared_at": {
+            "const": null
+          },
+          "exported_at": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "delete_review_status": {
+            "const": "approved"
+          }
+        },
+        "required": [
+          "delete_review_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "delete_proof_refs": {
+            "minItems": 1
+          },
+          "preservation_hold_status": {
+            "enum": [
+              "none",
+              "released"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "preservation_hold_status": {
+            "enum": [
+              "active",
+              "conflict_with_delete"
+            ]
+          }
+        },
+        "required": [
+          "preservation_hold_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "delete_review_status": {
+            "enum": [
+              "review_required",
+              "denied",
+              "conflict_detected",
+              "blocked_mvp"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "delete_review_status": {
+            "const": "conflict_detected"
+          }
+        },
+        "required": [
+          "delete_review_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "conflict_evidence_refs": {
+            "minItems": 1
+          },
+          "reason_codes": {
+            "minItems": 1
+          },
+          "export_delete_conflict_codes": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "linkage_status": {
+            "const": "linked"
+          }
+        },
+        "required": [
+          "linkage_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "linkage_failure_reasons": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "linkage_status": {
+            "enum": [
+              "missing_ref",
+              "mismatched_tenant",
+              "mismatched_scope",
+              "mismatched_nonce",
+              "drift_detected",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "linkage_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "linkage_failure_reasons": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "linkage_status": {
+            "const": "mismatched_tenant"
+          }
+        },
+        "required": [
+          "linkage_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "export_status": {
+            "enum": [
+              "denied",
+              "failed",
+              "blocked_mvp"
+            ]
+          },
+          "included_evidence_refs": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reason_code_status": {
+            "const": "unknown"
+          }
+        },
+        "required": [
+          "reason_code_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "export_status": {
+            "enum": [
+              "denied",
+              "failed_closed",
+              "blocked_mvp"
+            ]
+          },
+          "export_review_status": {
+            "not": {
+              "const": "exported"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reason_code_status": {
+            "const": "blocked"
+          }
+        },
+        "required": [
+          "reason_code_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "export_status": {
+            "not": {
+              "const": "exported"
+            }
+          },
+          "delete_review_status": {
+            "not": {
+              "const": "approved"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reason_code_status": {
+            "const": "deprecated"
+          },
+          "deprecated_reason_code_policy": {
+            "enum": [
+              "fail_closed",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "reason_code_status",
+          "deprecated_reason_code_policy"
+        ]
+      },
+      "then": {
+        "properties": {
+          "export_status": {
+            "not": {
+              "const": "exported"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

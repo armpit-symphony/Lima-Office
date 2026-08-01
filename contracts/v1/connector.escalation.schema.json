@@ -1,0 +1,377 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/connector.escalation.schema.json",
+  "title": "Connector Escalation Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "policy_version",
+    "connector_escalation_id",
+    "connector_id",
+    "ownership_ref",
+    "escalation_type",
+    "escalation_status",
+    "escalation_owner_ref",
+    "due_at_placeholder",
+    "evidence_refs",
+    "reason_codes",
+    "created_at",
+    "acknowledged_at",
+    "resolved_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "connector.escalation"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "operator_console",
+            "security_reviewer",
+            "compliance_reviewer"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "connector_escalation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "connector_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ownership_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "connector_defaults_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_slo_target_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "score_threshold_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "defaults_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "slo_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "scoring_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "escalation_type": {
+      "type": "string",
+      "enum": [
+        "stale_owner",
+        "missing_owner",
+        "revocation_overdue",
+        "disable_switch_failed",
+        "source_of_truth_conflict",
+        "sod_violation",
+        "risk_threshold_exceeded",
+        "blocked_mvp"
+      ]
+    },
+    "escalation_status": {
+      "type": "string",
+      "enum": [
+        "opened",
+        "acknowledged",
+        "escalated",
+        "resolved",
+        "failed_closed",
+        "blocked_mvp"
+      ]
+    },
+    "escalation_owner_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "due_at_placeholder": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reason_code_registry_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "unknown_reason_code_policy": {
+      "type": "string",
+      "enum": [
+        "fail_closed",
+        "display_unknown",
+        "blocked_mvp"
+      ]
+    },
+    "deprecated_reason_code_policy": {
+      "type": "string",
+      "enum": [
+        "allow_with_warning",
+        "fail_closed",
+        "blocked_mvp"
+      ]
+    },
+    "reason_code_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "deprecated",
+        "unknown",
+        "blocked"
+      ]
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "acknowledged_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "resolved_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "escalation_status": {
+            "const": "resolved"
+          }
+        },
+        "required": [
+          "escalation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "resolved_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "escalation_status": {
+            "const": "failed_closed"
+          }
+        },
+        "required": [
+          "escalation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason_codes": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "escalation_status": {
+            "const": "blocked_mvp"
+          }
+        },
+        "required": [
+          "escalation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "escalation_type": {
+            "const": "blocked_mvp"
+          },
+          "reason_codes": {
+            "contains": {
+              "const": "connector_acceptance_blocked_mvp"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "escalation_type": {
+            "enum": [
+              "missing_owner",
+              "stale_owner",
+              "revocation_overdue"
+            ]
+          }
+        },
+        "required": [
+          "escalation_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reason_code_status": {
+            "enum": [
+              "unknown",
+              "blocked"
+            ]
+          }
+        },
+        "required": [
+          "reason_code_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "escalation_status": {
+            "not": {
+              "const": "resolved"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

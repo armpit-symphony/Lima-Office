@@ -1,0 +1,72 @@
+{
+  "contract_name": "guardian.replay",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "dry_run",
+  "correlation_id": "corr-guardian-scope-mismatch-001",
+  "causation_id": "gd-email-send-requires-approval-001",
+  "idempotency_key": "idem-replay-email-scope-mismatch-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T21:44:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "replay_check_id": "gr-email-scope-mismatch-001",
+  "replay_record_id": "rr-email-scope-mismatch-001",
+  "guardian_decision_id": "gd-email-send-requires-approval-001",
+  "decision_nonce": "decision-nonce-email-draft-001",
+  "approval_binding_id": "bind-email-draft-001",
+  "token_verification_id": "tv-email-valid-001",
+  "task_id": "task-email-draft-001",
+  "worker_id": "arc-admin-01",
+  "action_type": "draft_external_message_review",
+  "tool_scope": {
+    "resource_refs": [
+      "draft-message-ref-other-002"
+    ],
+    "allowed_operations": [
+      "operator_review_draft"
+    ],
+    "prohibited_operations": [
+      "send_external_message",
+      "live_connector_write",
+      "reuse_token"
+    ]
+  },
+  "decision_scope_hash": "hash-ref-widened-scope-001",
+  "policy_snapshot_hash": "policy-snapshot-hash-phase0-approval-001",
+  "expires_at": "2026-05-18T21:48:20Z",
+  "replay_check_result": "scope_mismatch",
+  "checked_at": "2026-05-18T21:44:00Z",
+  "evidence_refs": [
+    "ev-guardian-scope-mismatch-001"
+  ],
+  "mismatch_reasons": [
+    "tool_scope_mismatch",
+    "decision_scope_hash_mismatch"
+  ],
+  "denial_evidence_ref": "ev-guardian-scope-mismatch-001",
+  "pre_action_evidence_refs": [
+    "ev-guardian-scope-mismatch-001"
+  ],
+  "post_action_evidence_refs": [],
+  "replay_artifact_id": "ev-guardian-scope-mismatch-001",
+  "redaction_profile_ref": "metadata_only",
+  "hash_algorithm": "sha256",
+  "content_hash": "hash-ref-guardian-scope-mismatch-001",
+  "parent_evidence_refs": [
+    "ev-guardian-email-draft-001"
+  ],
+  "chain_position": 2,
+  "export_manifest_refs": [],
+  "raw_content_included": false,
+  "secret_material_included": false,
+  "data_classification": "customer_confidential",
+  "redaction_level": "metadata_only",
+  "retention_class": "evidence_retained_placeholder",
+  "export_eligible": true,
+  "delete_policy_ref": "policy.audit_export_customer_exit.placeholder"
+}

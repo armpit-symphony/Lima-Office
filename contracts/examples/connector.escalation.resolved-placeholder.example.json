@@ -1,0 +1,33 @@
+{
+  "contract_name": "connector.escalation",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-connector-escalation-003",
+  "causation_id": "corr-connector-ownership-001",
+  "idempotency_key": "idem-connector-escalation-003",
+  "producer": {
+    "component": "operator_console",
+    "produced_at": "2026-05-26T03:30:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "connector_escalation_id": "connector-escalation-003",
+  "connector_id": "connector-email-meta-001",
+  "ownership_ref": "connector-ownership-001",
+  "escalation_type": "risk_threshold_exceeded",
+  "escalation_status": "resolved",
+  "escalation_owner_ref": "actor.security-reviewer.001",
+  "due_at_placeholder": "2026-05-27T03:30:00Z",
+  "evidence_refs": [
+    "ev-connector-escalation-003"
+  ],
+  "reason_codes": [
+    "connector_score_below_threshold"
+  ],
+  "created_at": "2026-05-26T03:30:00Z",
+  "acknowledged_at": "2026-05-26T03:35:00Z",
+  "resolved_at": "2026-05-26T03:45:00Z"
+}

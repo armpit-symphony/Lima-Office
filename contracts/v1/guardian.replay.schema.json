@@ -1,0 +1,981 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/guardian.replay.schema.json",
+  "title": "Guardian Replay Check Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "policy_version",
+    "replay_check_id",
+    "replay_record_id",
+    "guardian_decision_id",
+    "decision_nonce",
+    "approval_binding_id",
+    "token_verification_id",
+    "task_id",
+    "worker_id",
+    "action_type",
+    "tool_scope",
+    "decision_scope_hash",
+    "policy_snapshot_hash",
+    "expires_at",
+    "replay_check_result",
+    "checked_at",
+    "evidence_refs",
+    "mismatch_reasons",
+    "denial_evidence_ref",
+    "pre_action_evidence_refs",
+    "post_action_evidence_refs",
+    "replay_artifact_id",
+    "redaction_profile_ref",
+    "hash_algorithm",
+    "content_hash",
+    "parent_evidence_refs",
+    "chain_position",
+    "export_manifest_refs",
+    "raw_content_included",
+    "secret_material_included",
+    "data_classification",
+    "redaction_level",
+    "retention_class",
+    "export_eligible",
+    "delete_policy_ref"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "guardian.replay"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "guardian",
+            "supervisor"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "replay_check_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "replay_record_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decision_nonce": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_binding_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "token_verification_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "task_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "worker_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "action_type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tool_scope": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "resource_refs",
+        "allowed_operations",
+        "prohibited_operations"
+      ],
+      "properties": {
+        "resource_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "allowed_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prohibited_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "decision_scope_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "policy_snapshot_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "replay_check_result": {
+      "type": "string",
+      "enum": [
+        "valid_first_use",
+        "replay_denied",
+        "expired",
+        "stale",
+        "revoked",
+        "scope_mismatch",
+        "tenant_mismatch",
+        "blocked_mvp"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reason_code_registry_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "unknown_reason_code_policy": {
+      "type": "string",
+      "enum": [
+        "fail_closed",
+        "display_unknown",
+        "blocked_mvp"
+      ]
+    },
+    "deprecated_reason_code_policy": {
+      "type": "string",
+      "enum": [
+        "allow_with_warning",
+        "fail_closed",
+        "blocked_mvp"
+      ]
+    },
+    "reason_code_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "deprecated",
+        "unknown",
+        "blocked"
+      ]
+    },
+    "reconciliation_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evidence_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_delete_conflict_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "prepared",
+        "exported",
+        "failed_closed",
+        "blocked_mvp"
+      ]
+    },
+    "delete_review_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "review_required",
+        "approved",
+        "denied",
+        "conflict_detected",
+        "blocked_mvp"
+      ]
+    },
+    "preservation_hold_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "required",
+        "active",
+        "conflict_with_delete",
+        "released",
+        "blocked_mvp"
+      ]
+    },
+    "conflict_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "delete_proof_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "export_package_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "checked_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "mismatch_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "tenant_mismatch",
+          "customer_context_mismatch",
+          "task_mismatch",
+          "worker_mismatch",
+          "action_type_mismatch",
+          "tool_scope_mismatch",
+          "decision_scope_hash_mismatch",
+          "approval_binding_mismatch",
+          "token_verification_mismatch",
+          "nonce_replayed",
+          "decision_expired",
+          "decision_stale",
+          "decision_revoked",
+          "blocked_mvp",
+          "tainted_input",
+          "missing_expiry",
+          "ambiguous_timestamp"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "denial_evidence_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^ev-[A-Za-z0-9._:-]+$"
+    },
+    "pre_action_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "post_action_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "replay_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "redaction_profile_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "hash_algorithm": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "sha256",
+        "sha512",
+        null
+      ]
+    },
+    "content_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "parent_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "chain_position": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "export_manifest_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "raw_content_included": {
+      "type": "boolean",
+      "const": false
+    },
+    "secret_material_included": {
+      "type": "boolean",
+      "const": false
+    },
+    "data_classification": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "customer_confidential",
+        "sensitive_hr",
+        "sensitive_finance",
+        "sensitive_legal",
+        "sensitive_medical",
+        "secret"
+      ]
+    },
+    "redaction_level": {
+      "type": "string",
+      "enum": [
+        "none",
+        "metadata_only",
+        "payload_redacted",
+        "secret_redacted"
+      ]
+    },
+    "retention_class": {
+      "type": "string",
+      "minLength": 1
+    },
+    "export_eligible": {
+      "type": "boolean"
+    },
+    "delete_policy_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reconciliation_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "reconciled",
+        "missing_ref",
+        "mismatched_binding",
+        "stale_decision",
+        "replay_mismatch",
+        "evidence_missing",
+        "coordinator_mismatch",
+        "cross_tenant_blocked",
+        "blocked_mvp",
+        null
+      ]
+    },
+    "reconciliation_failure_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reconciliation_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "canonical_approval_chain_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_approval_binding_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_guardian_decision_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_token_verification_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_replay_record_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_transaction_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "replay_check_result": {
+            "const": "valid_first_use"
+          }
+        },
+        "required": [
+          "replay_check_result"
+        ]
+      },
+      "then": {
+        "properties": {
+          "environment": {
+            "enum": [
+              "mock",
+              "dry_run"
+            ]
+          },
+          "replay_record_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "replay_artifact_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "decision_nonce": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hash_algorithm": {
+            "type": "string",
+            "minLength": 1
+          },
+          "content_hash": {
+            "type": "string",
+            "minLength": 1
+          },
+          "chain_position": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "denial_evidence_ref": {
+            "const": null
+          },
+          "pre_action_evidence_refs": {
+            "maxItems": 0
+          },
+          "mismatch_reasons": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_check_result": {
+            "enum": [
+              "replay_denied",
+              "expired",
+              "stale",
+              "revoked",
+              "scope_mismatch",
+              "tenant_mismatch",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "replay_check_result"
+        ]
+      },
+      "then": {
+        "properties": {
+          "denial_evidence_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pre_action_evidence_refs": {
+            "minItems": 1
+          },
+          "mismatch_reasons": {
+            "minItems": 1
+          },
+          "reason_codes": {
+            "minItems": 1
+          },
+          "evidence_reason_codes": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_check_result": {
+            "const": "expired"
+          }
+        },
+        "required": [
+          "replay_check_result"
+        ]
+      },
+      "then": {
+        "properties": {
+          "mismatch_reasons": {
+            "contains": {
+              "const": "decision_expired"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_check_result": {
+            "const": "stale"
+          }
+        },
+        "required": [
+          "replay_check_result"
+        ]
+      },
+      "then": {
+        "properties": {
+          "mismatch_reasons": {
+            "contains": {
+              "const": "decision_stale"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_check_result": {
+            "const": "replay_denied"
+          }
+        },
+        "required": [
+          "replay_check_result"
+        ]
+      },
+      "then": {
+        "properties": {
+          "mismatch_reasons": {
+            "contains": {
+              "const": "nonce_replayed"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_check_result": {
+            "const": "blocked_mvp"
+          }
+        },
+        "required": [
+          "replay_check_result"
+        ]
+      },
+      "then": {
+        "properties": {
+          "environment": {
+            "const": "blocked_mvp"
+          },
+          "mismatch_reasons": {
+            "contains": {
+              "const": "blocked_mvp"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "token_verification_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "token_verification_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "approval_binding_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_record_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "replay_record_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "replay_artifact_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "hash_algorithm": {
+            "type": "string",
+            "minLength": 1
+          },
+          "content_hash": {
+            "type": "string",
+            "minLength": 1
+          },
+          "chain_position": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "const": "reconciled"
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reconciliation_failure_reasons": {
+            "maxItems": 0
+          },
+          "reconciliation_evidence_refs": {
+            "minItems": 1
+          },
+          "canonical_approval_binding_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonical_guardian_decision_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonical_token_verification_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonical_replay_record_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "enum": [
+              "missing_ref",
+              "mismatched_binding",
+              "stale_decision",
+              "replay_mismatch",
+              "evidence_missing",
+              "coordinator_mismatch",
+              "cross_tenant_blocked",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reconciliation_failure_reasons": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "enum": [
+              "cross_tenant_blocked",
+              "blocked_mvp",
+              "stale_decision"
+            ]
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "replay_check_result": {
+            "not": {
+              "const": "valid_first_use"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reason_code_status": {
+            "enum": [
+              "unknown",
+              "blocked"
+            ]
+          }
+        },
+        "required": [
+          "reason_code_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "replay_check_result": {
+            "not": {
+              "const": "valid_first_use"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reason_code_status": {
+            "const": "deprecated"
+          },
+          "deprecated_reason_code_policy": {
+            "enum": [
+              "fail_closed",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "reason_code_status",
+          "deprecated_reason_code_policy"
+        ]
+      },
+      "then": {
+        "properties": {
+          "replay_check_result": {
+            "not": {
+              "const": "valid_first_use"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "contract_name": "approval.request",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "dry_run",
+  "correlation_id": "corr-email-draft-001",
+  "causation_id": "task-email-draft-001",
+  "idempotency_key": "idem-approval-email-draft-001",
+  "approval_request_id": "apr-email-draft-001",
+  "task_id": "task-email-draft-001",
+  "guardian_decision_id": "gd-email-send-requires-approval-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:30:00Z"
+  },
+  "requested_by": {
+    "actor_type": "worker",
+    "actor_id": "arc-admin-01"
+  },
+  "action_class": "external_message_send",
+  "risk_tier": "high",
+  "data_classification": "customer_confidential",
+  "requested_scope": {
+    "external_effect": "send_external_message",
+    "resource_refs": [
+      "draft-message-ref-customer-reply-001",
+      "recipient-ref-external-contact-001"
+    ],
+    "allowed_operations": [
+      "operator_review_draft",
+      "dry_run_send_path"
+    ],
+    "prohibited_operations": [
+      "send_without_operator_action",
+      "modify_customer_record"
+    ],
+    "max_uses": 1
+  },
+  "scope_hash": "hash-ref-approval-scope-email-001",
+  "reason": "External email draft is ready for operator review; no live send occurs in Phase 0.",
+  "status": "pending_review",
+  "approval_result": "pending",
+  "approver_roles": [
+    "operator",
+    "approver"
+  ],
+  "policy_version": "policy-phase0-v1",
+  "evidence_required": true,
+  "evidence_artifact_ids": [
+    "ev-approval-email-draft-001"
+  ],
+  "expires_at": "2026-05-18T22:00:00Z",
+  "created_at": "2026-05-18T21:30:00Z",
+  "approver_operator_id": null,
+  "decided_at": null,
+  "denial_reason": null,
+  "approval_token_id": null
+}

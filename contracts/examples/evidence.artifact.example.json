@@ -1,0 +1,99 @@
+{
+  "contract_name": "evidence.artifact",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-file-delete-deny-001",
+  "causation_id": "gd-file-delete-deny-001",
+  "idempotency_key": "idem-evidence-file-delete-001",
+  "artifact_id": "ev-file-delete-deny-001",
+  "artifact_type": "denial",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T21:25:01Z"
+  },
+  "actor": {
+    "actor_type": "guardian",
+    "actor_id": "guardian-phase0"
+  },
+  "subject": {
+    "subject_type": "tool_invocation",
+    "subject_id": "tool-file-delete-001"
+  },
+  "action_class": "file_delete",
+  "risk_tier": "blocked",
+  "data_classification": "customer_confidential",
+  "guardian_decision_id": "gd-file-delete-deny-001",
+  "approval_request_id": null,
+  "approval_token_id": null,
+  "replay_record_id": "rr-file-delete-deny-001",
+  "related_transaction_id": "txn-file-delete-deny-001",
+  "related_coordinator_event_ids": [
+    "coord-ev-file-delete-001"
+  ],
+  "related_replay_record_ids": [
+    "rr-file-delete-deny-001"
+  ],
+  "related_ledger_entry_ids": [
+    "ledger-entry-file-delete-denial-001"
+  ],
+  "related_evidence_artifact_ids": [
+    "ev-file-delete-deny-001"
+  ],
+  "related_export_manifest_ids": [],
+  "linkage_status": "blocked_mvp",
+  "linkage_failure_reasons": [
+    "blocked_action_class_file_delete"
+  ],
+  "canonical_tenant_id": "tenant-lab-001",
+  "canonical_correlation_id": "corr-file-delete-deny-001",
+  "canonical_idempotency_key": "idem-evidence-file-delete-001",
+  "canonical_decision_nonce": "decision-nonce-file-delete-001",
+  "canonical_action_type": "file_delete",
+  "canonical_tool_scope": null,
+  "canonical_worker_id": "arc-admin-01",
+  "canonical_task_id": "task-file-delete-001",
+  "replay_artifact_id": "ev-file-delete-deny-001",
+  "denial_evidence_ref": "ev-file-delete-deny-001",
+  "pre_action_evidence_refs": [
+    "ev-file-delete-deny-001"
+  ],
+  "post_action_evidence_refs": [],
+  "export_manifest_refs": [],
+  "redaction_profile_ref": "metadata_only",
+  "hash_algorithm": "sha256",
+  "content_hash": "hash-ref-evidence-content-001",
+  "parent_evidence_refs": [],
+  "chain_position": 1,
+  "raw_content_included": false,
+  "secret_material_included": false,
+  "policy_version": "policy-phase0-v1",
+  "policy_snapshot_hash": "hash-ref-policy-snapshot-001",
+  "redaction_status": "metadata_only",
+  "redaction_profile": "operator_safe_summary",
+  "redacted_fields": [
+    "raw_tool_input",
+    "file_name",
+    "file_content"
+  ],
+  "retention_class": "evidence_retained",
+  "retention_policy_ref": "retention-rule-phase0-evidence",
+  "retention_expires_at": null,
+  "delete_eligible": false,
+  "storage_ref": {
+    "location_ref": "evidence-store-ref-file-delete-deny-001",
+    "contains_sensitive_payload": false,
+    "secret_material_present": false
+  },
+  "payload_hash": "hash-ref-evidence-payload-001",
+  "integrity_ref": "integrity-ref-evidence-chain-001",
+  "previous_artifact_id": null,
+  "access_control_ref": "access-control-ref-operator-security-review",
+  "export_eligible": true,
+  "export_redaction_profile": "customer_safe_summary",
+  "summary": "Guardian denied an unapproved file deletion request and recorded metadata-only evidence.",
+  "created_at": "2026-05-18T21:25:01Z"
+}

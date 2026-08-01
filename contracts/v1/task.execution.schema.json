@@ -1,0 +1,822 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/task.execution.schema.json",
+  "title": "Task Execution Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "task_id",
+    "task_class",
+    "status",
+    "producer",
+    "requested_by",
+    "assigned_worker_id",
+    "data_classification",
+    "risk_tier",
+    "execution_mode",
+    "task_scope",
+    "required_tool_packs",
+    "model_route_id",
+    "policy_version",
+    "guardian_decision_id",
+    "approval_required",
+    "approval_request_id",
+    "approval_token_id",
+    "evidence_artifact_ids",
+    "retry_policy",
+    "timeout_at",
+    "failure_behavior",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "task.execution"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task_class": {
+      "type": "string",
+      "enum": [
+        "document_summary",
+        "ticket_classification",
+        "email_draft",
+        "form_preparation",
+        "diagnostic_gathering",
+        "file_organization",
+        "customer_service_draft",
+        "it_health_check",
+        "external_message_send",
+        "file_mutation",
+        "customer_record_update",
+        "software_update",
+        "remediation",
+        "regulated_system_access",
+        "blocked_mvp_action"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "task_created",
+        "classified",
+        "assigned_to_worker",
+        "accepted",
+        "rejected",
+        "in_progress",
+        "needs_approval",
+        "draft_ready",
+        "blocked",
+        "denied",
+        "failed",
+        "blocked_evidence_unavailable",
+        "completed_mock",
+        "evidence_recorded",
+        "cancelled",
+        "timed_out"
+      ]
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "operator_console",
+            "supervisor",
+            "worker",
+            "guardian",
+            "helper_agent"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "requested_by": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor_type",
+        "actor_id"
+      ],
+      "properties": {
+        "actor_type": {
+          "type": "string",
+          "enum": [
+            "operator",
+            "supervisor",
+            "worker",
+            "helper_agent"
+          ]
+        },
+        "actor_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "assigned_worker_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "data_classification": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "customer_confidential",
+        "sensitive_hr",
+        "sensitive_finance",
+        "sensitive_legal",
+        "sensitive_medical",
+        "secret"
+      ]
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "blocked"
+      ]
+    },
+    "execution_mode": {
+      "type": "string",
+      "enum": [
+        "plan_only",
+        "read_only",
+        "draft_only",
+        "mock_only",
+        "approval_required_write",
+        "blocked_mvp"
+      ]
+    },
+    "task_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "description",
+        "external_effect",
+        "allowed_actions",
+        "blocked_actions",
+        "target_resource_refs"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "external_effect": {
+          "type": "string",
+          "enum": [
+            "none",
+            "draft_only",
+            "approval_required",
+            "blocked_mvp"
+          ]
+        },
+        "allowed_actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "blocked_actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "target_resource_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "required_tool_packs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "document_read",
+          "draft_workspace",
+          "ticket_triage",
+          "file_organize",
+          "it_diagnostics_read_only",
+          "mock_connector_readiness"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "model_route_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "model_route_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "selected",
+        "degraded",
+        "denied",
+        "blocked_mvp",
+        "unavailable",
+        null
+      ]
+    },
+    "model_route_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "model_route_unavailable",
+          "model_route_blocked_mvp",
+          "model_route_tainted_input_denied",
+          "model_route_privileged_requires_approval",
+          "model_route_provider_blocked_mvp",
+          "model_route_local_execution_blocked_mvp",
+          "model_route_rbac_blocked",
+          "model_route_device_untrusted",
+          "model_route_fallback_denied",
+          "health_unknown",
+          "health_degraded",
+          "health_blocked"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approval_required": {
+      "type": "boolean"
+    },
+    "approval_request_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_chain_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "binding_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_result_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_token_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "evidence_artifact_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "retry_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_attempts",
+        "retry_on_worker_offline",
+        "retry_on_model_unavailable"
+      ],
+      "properties": {
+        "max_attempts": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "retry_on_worker_offline": {
+          "type": "boolean"
+        },
+        "retry_on_model_unavailable": {
+          "type": "boolean"
+        }
+      }
+    },
+    "timeout_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "failure_behavior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "on_approval_timeout",
+        "on_worker_offline",
+        "on_evidence_failure"
+      ],
+      "properties": {
+        "on_approval_timeout": {
+          "type": "string",
+          "enum": [
+            "block_task",
+            "expire_request",
+            "escalate_to_operator"
+          ]
+        },
+        "on_worker_offline": {
+          "type": "string",
+          "enum": [
+            "requeue",
+            "block_task",
+            "escalate_to_operator"
+          ]
+        },
+        "on_evidence_failure": {
+          "type": "string",
+          "enum": [
+            "block_task",
+            "quarantine_worker",
+            "escalate_to_operator"
+          ]
+        }
+      }
+    },
+    "result_summary": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "failure_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "taint_ref_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "bound_action_type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_tool_scope": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "resource_refs",
+        "allowed_operations",
+        "prohibited_operations"
+      ],
+      "properties": {
+        "resource_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "allowed_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prohibited_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "token_verification_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "evidence_failure_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "blocked_reason_code": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "approval_missing",
+        "approval_denied",
+        "blocked_mvp",
+        "evidence_writer_unavailable",
+        "tainted_input",
+        "guardian_denied",
+        "worker_quarantined",
+        null
+      ]
+    },
+    "failure_code": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "none",
+        "approval_timeout",
+        "worker_offline",
+        "model_unavailable",
+        "evidence_failure",
+        "policy_denial",
+        "unexpected_error",
+        null
+      ]
+    },
+    "incident_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "blocked_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "operator_visible": {
+      "type": "boolean"
+    },
+    "runbook_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "needs_approval"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "approval_required": {
+            "const": true
+          },
+          "approval_request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approval_token_id": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "blocked",
+              "denied",
+              "failed",
+              "blocked_evidence_unavailable",
+              "cancelled",
+              "timed_out"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "failure_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "operator_visible": {
+            "const": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "blocked_evidence_unavailable"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "evidence_failure_id",
+          "blocked_reason_code",
+          "blocked_at",
+          "runbook_ref"
+        ],
+        "properties": {
+          "approval_token_id": {
+            "const": null
+          },
+          "evidence_failure_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "blocked_reason_code": {
+            "const": "evidence_writer_unavailable"
+          },
+          "failure_code": {
+            "const": "evidence_failure"
+          },
+          "blocked_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "runbook_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "execution_mode": {
+            "const": "approval_required_write"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "approval_required": {
+            "const": true
+          },
+          "approval_request_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "risk_tier": {
+            "const": "high"
+          },
+          "status": {
+            "enum": [
+              "assigned_to_worker",
+              "accepted",
+              "in_progress",
+              "draft_ready",
+              "completed_mock",
+              "evidence_recorded"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "approval_required": {
+            "const": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "model_route_status": {
+            "enum": [
+              "denied",
+              "blocked_mvp",
+              "unavailable"
+            ]
+          }
+        },
+        "required": [
+          "model_route_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "not": {
+              "enum": [
+                "completed_mock",
+                "evidence_recorded"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "completed_mock",
+              "evidence_recorded"
+            ]
+          },
+          "approval_required": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "approval_token_id",
+          "token_verification_id",
+          "approval_result_id"
+        ],
+        "properties": {
+          "approval_token_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "token_verification_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approval_result_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "anyOf": [
+          {
+            "properties": {
+              "task_class": {
+                "const": "blocked_mvp_action"
+              }
+            }
+          },
+          {
+            "properties": {
+              "risk_tier": {
+                "const": "blocked"
+              }
+            }
+          },
+          {
+            "properties": {
+              "execution_mode": {
+                "const": "blocked_mvp"
+              }
+            }
+          }
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "const": "blocked"
+          },
+          "approval_required": {
+            "const": false
+          },
+          "approval_request_id": {
+            "const": null
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "blocked_reason_code": {
+            "const": "blocked_mvp"
+          }
+        }
+      }
+    }
+  ]
+}

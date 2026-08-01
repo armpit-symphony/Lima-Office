@@ -1,0 +1,62 @@
+{
+  "contract_name": "model.route",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-model-route-tainted-denied-001",
+  "causation_id": "task-privileged-001",
+  "idempotency_key": "idem-model-route-tainted-denied-001",
+  "model_route_id": "mr-tainted-denied-001",
+  "task_id": "task-privileged-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-24T22:25:00Z"
+  },
+  "requested_by": {
+    "actor_type": "supervisor",
+    "actor_id": "supervisor-lab-001"
+  },
+  "route_policy_version": "route-policy-phase1a-v1",
+  "route_mode": "mock_only",
+  "model_role": "governance_review",
+  "route_status": "denied",
+  "route_reason_codes": [
+    "model_route_tainted_input_denied",
+    "model_route_privileged_requires_approval"
+  ],
+  "taint_status": "tainted",
+  "data_class": "sensitive_legal",
+  "risk_tier": "high",
+  "approval_required": true,
+  "rbac_context_ref": "rbac-context-ref-privileged-001",
+  "session_policy_ref": "session-policy-ref-privileged-001",
+  "device_trust_ref": "device-trust-ref-privileged-001",
+  "worker_attestation_ref": "worker-attestation-ref-privileged-001",
+  "attestation_result_ref": "attestation-result-ref-privileged-001",
+  "appraisal_policy_ref": "appraisal-policy-ref-privileged-001",
+  "update_rollback_ref": "update-rollback-ref-privileged-001",
+  "worker_capability_refs": [
+    "capability-ref-governance-review-001"
+  ],
+  "fallback_allowed": false,
+  "policy_version": "policy-phase1a-v1",
+  "fallback_policy": null,
+  "fallback_reason_codes": [],
+  "provider_ref": {
+    "provider_ref_type": "mock_only",
+    "placeholder_ref": "provider-placeholder-mock-003",
+    "live_call": false
+  },
+  "local_model_bundle_ref": null,
+  "evidence_refs": [
+    "ev-model-route-tainted-denied-001"
+  ],
+  "policy_refs": [
+    "policy.model_routing_defaults.phase1a",
+    "policy.prompt_injection.phase1a"
+  ],
+  "created_at": "2026-05-24T22:25:00Z"
+}

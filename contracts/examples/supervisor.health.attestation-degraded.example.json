@@ -1,0 +1,93 @@
+{
+  "contract_name": "supervisor.health",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-supervisor-health-attestation-degraded-001",
+  "causation_id": "worker-attestation-expired-001",
+  "idempotency_key": "idem-supervisor-health-attestation-degraded-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-25T16:10:00Z"
+  },
+  "supervisor_id": "supervisor-lab-001",
+  "generated_at": "2026-05-25T16:10:00Z",
+  "mode": "mock",
+  "worker_count": 4,
+  "worker_state_counts": {
+    "healthy": 2,
+    "degraded": 1,
+    "quarantined": 1
+  },
+  "task_state_counts": {
+    "draft_ready": 3,
+    "blocked": 1
+  },
+  "guardian_decision_counts": {
+    "allowed": 5,
+    "denied": 2
+  },
+  "evidence_status_counts": {
+    "healthy": 6,
+    "degraded": 1
+  },
+  "stale_heartbeat_count": 1,
+  "quarantined_worker_count": 1,
+  "revoked_worker_count": 0,
+  "blocked_task_count": 1,
+  "denied_action_count": 2,
+  "degraded_component_count": 2,
+  "health_status": "degraded",
+  "reasons": [
+    "attestation_failed",
+    "update_rollback_required",
+    "health_degraded"
+  ],
+  "health_domain": "supervisor",
+  "health_reason_codes": [
+    "attestation_failed",
+    "update_rollback_required",
+    "health_degraded"
+  ],
+  "route_health_counts": {
+    "degraded": 2,
+    "blocked_mvp": 1
+  },
+  "model_route_status_counts": {
+    "selected": 3,
+    "degraded": 2,
+    "blocked_mvp": 1
+  },
+  "operator_visible": true,
+  "evidence_refs": [
+    "ev-supervisor-health-attestation-degraded-001"
+  ],
+  "policy_refs": [
+    "policy.worker_attestation.phase0",
+    "policy.signed_update_rollback.phase0"
+  ],
+  "related_contract_refs": [
+    "worker.attestation:wa-expired-001",
+    "update.rollback:ur-runtime-rollback-001",
+    "worker.heartbeat:hb-arc-003-0201"
+  ],
+  "data_classification": "internal",
+  "redaction_level": "metadata_only",
+  "raw_customer_content_present": false,
+  "secret_material_present": false,
+  "policy_version": "policy-phase1a-v1",
+  "reason_codes": [
+    "attestation_expired",
+    "update_rollback_required"
+  ],
+  "reason_code_registry_refs": [
+    "reason.code.registry:attestation_expired",
+    "reason.code.registry:update_rollback_required"
+  ],
+  "unknown_reason_code_policy": "fail_closed",
+  "deprecated_reason_code_policy": "allow_with_warning",
+  "reason_code_status": "active"
+}

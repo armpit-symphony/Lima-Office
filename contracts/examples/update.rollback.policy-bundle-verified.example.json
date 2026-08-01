@@ -1,0 +1,39 @@
+{
+  "contract_name": "update.rollback",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-update-policy-verified-001",
+  "causation_id": "governance-update-record-001",
+  "idempotency_key": "idem-update-policy-verified-001",
+  "producer": {
+    "component": "field_it_reviewer",
+    "produced_at": "2026-05-25T15:20:00Z"
+  },
+  "update_id": "ur-policy-verified-001",
+  "worker_id": "worker-arc-001",
+  "deployment_id": "wd-001",
+  "artifact_type": "policy_bundle",
+  "update_status": "verified",
+  "update_channel": "manual_review",
+  "policy_version": "policy-phase1a-v1",
+  "artifact_hash": "sha256:policy-bundle-verified-001",
+  "signer_ref": "signer-placeholder-policy-001",
+  "signing_key_ref": "signing-key-placeholder-policy-001",
+  "provenance_ref": "provenance-placeholder-policy-001",
+  "transparency_log_ref": "transparency-log-placeholder-policy-001",
+  "rollback_target_ref": null,
+  "rollback_reason_codes": [],
+  "verification_reason_codes": [],
+  "model_route_policy_refs": [],
+  "evidence_refs": [
+    "ev-update-policy-verified-001"
+  ],
+  "created_at": "2026-05-25T15:20:00Z",
+  "verified_at": "2026-05-25T15:21:00Z",
+  "applied_at": null,
+  "rolled_back_at": null
+}

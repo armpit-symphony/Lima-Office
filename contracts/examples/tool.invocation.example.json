@@ -1,0 +1,69 @@
+{
+  "contract_name": "tool.invocation",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-file-delete-deny-001",
+  "causation_id": "gd-file-delete-deny-001",
+  "idempotency_key": "idem-tool-file-delete-001",
+  "tool_invocation_id": "tool-file-delete-001",
+  "task_id": "task-file-cleanup-001",
+  "producer": {
+    "component": "worker",
+    "produced_at": "2026-05-18T21:24:55Z"
+  },
+  "actor": {
+    "actor_type": "worker",
+    "actor_id": "arc-file-clerk-01"
+  },
+  "requested_tool": {
+    "tool_type": "file",
+    "tool_name": "file.delete",
+    "tool_version": "contract-only"
+  },
+  "execution_mode": "blocked_mvp",
+  "dry_run": true,
+  "side_effect_class": "blocked_mvp",
+  "sandbox_profile": "blocked",
+  "capability_lease_id": "cap-lease-file-001",
+  "tool_scope": {
+    "resource_refs": [
+      "file-ref-archive-candidate-001"
+    ],
+    "allowed_operations": [],
+    "prohibited_operations": [
+      "delete_file",
+      "overwrite_file",
+      "unrestricted_filesystem"
+    ],
+    "file_scope": "delete_blocked",
+    "network_scope": "none",
+    "connector_scope": "none"
+  },
+  "risk_tier": "blocked",
+  "data_classification": "customer_confidential",
+  "policy_result": "deny",
+  "policy_version": "policy-phase0-v1",
+  "guardian_decision_id": "gd-file-delete-deny-001",
+  "approval_required": false,
+  "approval_token_id": null,
+  "evidence_required": true,
+  "evidence_artifact_ids": [
+    "ev-file-delete-deny-001",
+    "ev-tool-file-delete-001"
+  ],
+  "input_artifact_refs": [
+    "tool-input-ref-file-delete-001"
+  ],
+  "output_artifact_refs": [],
+  "timeout_seconds": 30,
+  "rollback_available": false,
+  "status": "denied",
+  "denial_reason": "Unapproved file deletion is blocked for the MVP.",
+  "denial_code": "approval_missing",
+  "requested_at": "2026-05-18T21:24:55Z",
+  "completed_at": null
+}

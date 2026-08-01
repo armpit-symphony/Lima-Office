@@ -1,0 +1,480 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/connector.revocation_drill.schema.json",
+  "title": "Connector Revocation Drill Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "policy_version",
+    "revocation_drill_id",
+    "connector_id",
+    "provider_profile_id",
+    "connector_readiness_id",
+    "connector_consent_id",
+    "drill_status",
+    "drill_type",
+    "expected_outcome",
+    "actual_outcome",
+    "evidence_refs",
+    "reason_codes",
+    "created_at",
+    "completed_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "connector.revocation_drill"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "security_reviewer",
+            "operator_console"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "revocation_drill_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "connector_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider_profile_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "connector_readiness_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "connector_consent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "drill_status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "running",
+        "passed",
+        "failed",
+        "failed_closed",
+        "blocked_mvp"
+      ]
+    },
+    "drill_type": {
+      "type": "string",
+      "enum": [
+        "revocation_verification",
+        "disable_switch_verification",
+        "scope_revocation",
+        "token_rotation_placeholder",
+        "outbound_block",
+        "prompt_injection_block",
+        "cross_tenant_block"
+      ]
+    },
+    "expected_outcome": {
+      "type": "string",
+      "enum": [
+        "connector_disabled",
+        "connector_revoked",
+        "action_blocked",
+        "evidence_required",
+        "failed_closed",
+        "blocked_mvp"
+      ]
+    },
+    "actual_outcome": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reason_code_registry_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "unknown_reason_code_policy": {
+      "type": "string",
+      "enum": [
+        "fail_closed",
+        "display_unknown",
+        "blocked_mvp"
+      ]
+    },
+    "deprecated_reason_code_policy": {
+      "type": "string",
+      "enum": [
+        "allow_with_warning",
+        "fail_closed",
+        "blocked_mvp"
+      ]
+    },
+    "reason_code_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "deprecated",
+        "unknown",
+        "blocked"
+      ]
+    },
+    "acceptance_score_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reconciliation_slo_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "score_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "blocked_mvp",
+        "not_ready",
+        "review_required",
+        "approved_for_lab",
+        "degraded",
+        "revoked",
+        "failed_closed",
+        null
+      ]
+    },
+    "cadence_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "planned",
+        "current",
+        "stale",
+        "missed",
+        "failed_closed",
+        "blocked_mvp",
+        null
+      ]
+    },
+    "connector_ownership_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_escalation_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "ownership_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "proposed",
+        "assigned",
+        "active",
+        "stale",
+        "transferred",
+        "revoked",
+        "blocked_mvp",
+        "failed_closed",
+        null
+      ]
+    },
+    "source_of_truth_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "declared",
+        "verified_placeholder",
+        "stale",
+        "missing",
+        "conflicted",
+        "failed_closed",
+        "blocked_mvp",
+        null
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "drill_status": {
+            "const": "passed"
+          }
+        },
+        "required": [
+          "drill_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "completed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "drill_status": {
+            "enum": [
+              "failed",
+              "failed_closed"
+            ]
+          }
+        },
+        "required": [
+          "drill_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason_codes": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "drill_status": {
+            "const": "blocked_mvp"
+          }
+        },
+        "required": [
+          "drill_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "expected_outcome": {
+            "enum": [
+              "blocked_mvp",
+              "failed_closed",
+              "action_blocked"
+            ]
+          },
+          "actual_outcome": {
+            "not": {
+              "const": "connector_usable"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "drill_type": {
+            "const": "cross_tenant_block"
+          }
+        },
+        "required": [
+          "drill_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "actual_outcome": {
+            "not": {
+              "const": "connector_usable"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reason_code_status": {
+            "enum": [
+              "unknown",
+              "blocked"
+            ]
+          }
+        },
+        "required": [
+          "reason_code_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "drill_status": {
+            "not": {
+              "const": "passed"
+            }
+          }
+        }
+      }
+    },
+    {
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "api_key"
+            ]
+          },
+          {
+            "required": [
+              "oauth_token"
+            ]
+          },
+          {
+            "required": [
+              "refresh_token"
+            ]
+          },
+          {
+            "required": [
+              "access_token"
+            ]
+          },
+          {
+            "required": [
+              "private_key"
+            ]
+          },
+          {
+            "required": [
+              "password"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "contract_name": "approval.token",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "dry_run",
+  "correlation_id": "corr-email-draft-001",
+  "causation_id": "apr-email-draft-001",
+  "idempotency_key": "idem-token-email-draft-001",
+  "approval_token_id": "apt-email-draft-001",
+  "approval_request_id": "apr-email-draft-001",
+  "guardian_decision_id": "gd-email-send-requires-approval-001",
+  "task_id": "task-email-draft-001",
+  "bound_task_id": "task-email-draft-001",
+  "bound_action_class": "external_message_send",
+  "bound_resource_refs": [
+    "draft-message-ref-customer-reply-001",
+    "recipient-ref-external-contact-001"
+  ],
+  "approver_operator_id": "operator-lab-001",
+  "approver_role_ref": "approver",
+  "action_class": "external_message_send",
+  "risk_tier": "high",
+  "data_classification": "customer_confidential",
+  "scope": {
+    "resource_refs": [
+      "draft-message-ref-customer-reply-001",
+      "recipient-ref-external-contact-001"
+    ],
+    "allowed_operations": [
+      "dry_run_send_path"
+    ],
+    "prohibited_operations": [
+      "send_without_operator_action",
+      "reuse_token"
+    ]
+  },
+  "scope_hash": "hash-ref-approved-scope-email-001",
+  "status": "issued",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:35:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "issued_at": "2026-05-18T21:35:00Z",
+  "expires_at": "2026-05-18T21:50:00Z",
+  "single_use": true,
+  "token_digest_ref": "token-digest-ref-email-draft-001",
+  "replay_nonce_ref": "nonce-ref-email-draft-001",
+  "token_binding_ref": "binding-ref-email-draft-task-resource-001",
+  "max_uses": 1,
+  "used_count": 0,
+  "evidence_artifact_id": "ev-token-email-draft-001",
+  "evidence_artifact_ids": [
+    "ev-token-email-draft-001"
+  ],
+  "used_at": null,
+  "revoked_at": null,
+  "revocation_reason": null
+}

@@ -1,0 +1,67 @@
+{
+  "contract_name": "model.route",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-model-route-local-degraded-001",
+  "causation_id": "task-local-planned-001",
+  "idempotency_key": "idem-model-route-local-degraded-001",
+  "model_route_id": "mr-local-degraded-001",
+  "task_id": "task-local-planned-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-24T22:35:00Z"
+  },
+  "requested_by": {
+    "actor_type": "worker",
+    "actor_id": "arc-file-clerk-01"
+  },
+  "route_policy_version": "route-policy-phase1a-v1",
+  "route_mode": "local_planned",
+  "model_role": "worker_classification",
+  "route_status": "degraded",
+  "route_reason_codes": [
+    "model_route_unavailable",
+    "model_route_fallback_denied"
+  ],
+  "taint_status": "clean",
+  "data_class": "internal",
+  "risk_tier": "medium",
+  "approval_required": false,
+  "rbac_context_ref": "rbac-context-ref-local-001",
+  "session_policy_ref": "session-policy-ref-local-001",
+  "device_trust_ref": "device-trust-ref-local-001",
+  "worker_attestation_ref": "worker-attestation-ref-local-001",
+  "attestation_result_ref": "attestation-result-ref-local-001",
+  "appraisal_policy_ref": "appraisal-policy-ref-local-001",
+  "update_rollback_ref": "update-rollback-ref-local-001",
+  "worker_capability_refs": [
+    "capability-ref-worker-classification-001"
+  ],
+  "fallback_allowed": true,
+  "policy_version": "policy-phase1a-v1",
+  "fallback_policy": "fallback-policy-block-and-review",
+  "fallback_reason_codes": [
+    "model_route_fallback_denied"
+  ],
+  "provider_ref": {
+    "provider_ref_type": "none",
+    "placeholder_ref": "provider-placeholder-none-001",
+    "live_call": false
+  },
+  "local_model_bundle_ref": {
+    "bundle_ref": "local-model-bundle-placeholder-003",
+    "execution_enabled": false
+  },
+  "evidence_refs": [
+    "ev-model-route-local-degraded-001"
+  ],
+  "policy_refs": [
+    "policy.model_routing_defaults.phase1a",
+    "policy.worker_capability.phase1a"
+  ],
+  "created_at": "2026-05-24T22:35:00Z"
+}

@@ -1,0 +1,57 @@
+{
+  "contract_name": "governance.breakglass",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-breakglass-001",
+  "causation_id": null,
+  "idempotency_key": "idem-breakglass-001",
+  "breakglass_id": "breakglass-blocked-001",
+  "requester_identity_ref": "operator-ref-001",
+  "emergency_approver_identity_ref": null,
+  "reason_code": "breakglass_blocked_mvp",
+  "requested_scope": [
+    "incident_review"
+  ],
+  "blocked_action_classes": [
+    "external_send",
+    "live_connector",
+    "production_touch",
+    "remediation_execution",
+    "software_install_update",
+    "regulated_system_action",
+    "unrestricted_file_browser_network",
+    "cross_tenant_access"
+  ],
+  "expiry": {
+    "requested_at": "2026-05-22T21:10:00Z",
+    "expires_at": null,
+    "ttl_policy_ref": "ttl-policy-not-selected",
+    "renewal_allowed": false
+  },
+  "post_use_review_required": true,
+  "revocation_state": "not_applicable_blocked",
+  "incident_ref": "incident-ref-placeholder-001",
+  "policy_refs": [
+    "policy.breakglass.phase0"
+  ],
+  "status": "denied_mvp",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-22T21:10:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "guardian_decision_id": "gd-breakglass-001",
+  "evidence_refs": [
+    "ev-breakglass-denied-001"
+  ],
+  "reason_codes": [
+    "breakglass_blocked_mvp"
+  ],
+  "denial_reason": "Breakglass is metadata-only and blocked for MVP.",
+  "created_at": "2026-05-22T21:10:00Z",
+  "updated_at": "2026-05-22T21:10:00Z"
+}

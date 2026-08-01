@@ -1,0 +1,405 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/governance.device_trust.schema.json",
+  "title": "Governance Device Trust Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "policy_version",
+    "device_trust_id",
+    "device_ref",
+    "actor_ref",
+    "actor_type",
+    "device_type",
+    "trust_status",
+    "posture_requirements",
+    "attestation_refs",
+    "attestation_result_ref",
+    "lineage_refs",
+    "authority_refs",
+    "allowed_permissions",
+    "blocked_permissions",
+    "evidence_refs",
+    "reason_codes",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "governance.device_trust"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "operator_console",
+            "supervisor",
+            "security_reviewer",
+            "field_it_reviewer"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "device_trust_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "device_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "actor_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "actor_type": {
+      "type": "string",
+      "enum": [
+        "sparkpit_operator",
+        "customer_admin",
+        "approver",
+        "field_it",
+        "auditor_readonly",
+        "security_reviewer",
+        "worker_owner",
+        "arc_worker_node",
+        "supervisor_service",
+        "helper_agent"
+      ]
+    },
+    "device_type": {
+      "type": "string",
+      "enum": [
+        "operator_endpoint",
+        "worker_node",
+        "supervisor_server",
+        "helper_agent_host"
+      ]
+    },
+    "trust_status": {
+      "type": "string",
+      "enum": [
+        "trusted",
+        "untrusted",
+        "attestation_required",
+        "attestation_failed",
+        "blocked_mvp"
+      ]
+    },
+    "posture_requirements": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "managed_device_placeholder",
+          "device_posture_required_for_privileged",
+          "attested_worker_placeholder",
+          "disk_encryption_placeholder",
+          "patch_posture_placeholder"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "attestation_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "attestation_result_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "lineage_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "authority_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "allowed_permissions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "view_supervisor_health",
+          "view_worker_fleet",
+          "view_task_queue",
+          "view_guardian_decisions",
+          "view_evidence_metadata",
+          "request_approval",
+          "approve_low_risk_task",
+          "approve_privileged_task",
+          "deny_task",
+          "request_customer_export",
+          "request_customer_delete",
+          "approve_lima_it_diagnostic",
+          "approve_lima_it_remediation",
+          "update_rollback_approval",
+          "receive_privileged_task_metadata"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "blocked_permissions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "approve_privileged_task",
+          "approve_lima_it_remediation",
+          "request_customer_delete",
+          "update_rollback_approval",
+          "breakglass_request_review",
+          "receive_privileged_task_metadata"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "trust_status": {
+            "const": "untrusted"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "allowed_permissions": {
+            "items": {
+              "enum": [
+                "view_supervisor_health",
+                "view_worker_fleet",
+                "view_task_queue",
+                "view_guardian_decisions",
+                "view_evidence_metadata"
+              ]
+            }
+          },
+          "blocked_permissions": {
+            "contains": {
+              "const": "approve_privileged_task"
+            }
+          },
+          "reason_codes": {
+            "contains": {
+              "const": "device_untrusted"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "trust_status": {
+            "const": "attestation_required"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "attestation_refs": {
+            "minItems": 1
+          },
+          "attestation_result_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason_codes": {
+            "contains": {
+              "const": "attestation_required"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "trust_status": {
+            "const": "attestation_failed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "blocked_permissions": {
+            "contains": {
+              "const": "receive_privileged_task_metadata"
+            }
+          },
+          "attestation_result_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason_codes": {
+            "contains": {
+              "enum": [
+                "attestation_failed",
+                "trust_root_failed"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "trust_status": {
+            "const": "blocked_mvp"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "reason_codes": {
+            "contains": {
+              "const": "privileged_action_blocked"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "actor_type": {
+            "const": "arc_worker_node"
+          },
+          "trust_status": {
+            "enum": [
+              "attestation_required",
+              "attestation_failed"
+            ]
+          }
+        },
+        "required": [
+          "actor_type",
+          "trust_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "blocked_permissions": {
+            "contains": {
+              "const": "receive_privileged_task_metadata"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

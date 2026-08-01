@@ -1,0 +1,45 @@
+{
+  "contract_name": "sla.slo",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-slo-heartbeat-001",
+  "causation_id": "hb-file-001",
+  "idempotency_key": "idem-slo-heartbeat-001",
+  "measurement_id": "slo-worker-heartbeat-age-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:16:00Z"
+  },
+  "service_level_type": "lab_slo",
+  "lab_target": true,
+  "contractual_sla": false,
+  "production_commitment": false,
+  "metric_name": "worker_heartbeat_age_seconds",
+  "measurement_source": "supervisor_observed",
+  "target_type": "maximum",
+  "target_value": 120,
+  "measurement_window": "rolling_5_minutes",
+  "observed_value": 2,
+  "status": "within_target",
+  "breach_severity": "none",
+  "owner_role": "operator",
+  "alert_route": "operator_dashboard",
+  "data_classification": "internal",
+  "risk_tier": "low",
+  "policy_version": "policy-phase0-v1",
+  "guardian_decision_id": "gd-slo-heartbeat-001",
+  "evidence_artifact_id": "ev-slo-heartbeat-001",
+  "evidence_artifact_ids": [
+    "ev-slo-heartbeat-001"
+  ],
+  "evidence_required_on_breach": true,
+  "failure_behavior": {
+    "on_warning": "show_operator_warning",
+    "on_breach": "create_incident",
+    "on_no_data": "create_incident"
+  },
+  "measured_at": "2026-05-18T21:16:00Z"
+}

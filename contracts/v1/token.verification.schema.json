@@ -1,0 +1,760 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/token.verification.schema.json",
+  "title": "Token Verification Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "token_verification_id",
+    "approval_token_id",
+    "approval_request_id",
+    "task_id",
+    "action_class",
+    "actor",
+    "presented_scope_hash",
+    "approved_scope_hash",
+    "scope_match_result",
+    "token_status_observed",
+    "verification_result",
+    "fail_closed",
+    "can_proceed",
+    "denial_reason",
+    "guardian_decision_id",
+    "policy_version",
+    "evidence_artifact_ids",
+    "checked_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "token.verification"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "guardian",
+            "supervisor"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "token_verification_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approval_token_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_request_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_chain_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "binding_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_result_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "action_class": {
+      "type": "string",
+      "enum": [
+        "external_message_send",
+        "form_submit",
+        "file_delete",
+        "file_overwrite",
+        "customer_record_update",
+        "sensitive_data_access"
+      ]
+    },
+    "token_use_policy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "one_time",
+        "bounded_window",
+        "blocked_mvp",
+        null
+      ]
+    },
+    "nonce_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Opaque replay-protection reference. Do not store nonce secret material."
+    },
+    "bound_tenant_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_task_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_action_type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_tool_scope": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "resource_refs",
+        "allowed_operations",
+        "prohibited_operations"
+      ],
+      "properties": {
+        "resource_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "allowed_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prohibited_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "bound_worker_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_requester_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bound_approver_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor_type",
+        "actor_id"
+      ],
+      "properties": {
+        "actor_type": {
+          "type": "string",
+          "enum": [
+            "operator",
+            "supervisor",
+            "worker"
+          ]
+        },
+        "actor_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "presented_scope_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approved_scope_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "scope_match_result": {
+      "type": "string",
+      "enum": [
+        "match",
+        "mismatch",
+        "missing",
+        "ambiguous"
+      ]
+    },
+    "token_status_observed": {
+      "type": "string",
+      "enum": [
+        "active",
+        "used",
+        "expired",
+        "revoked",
+        "missing",
+        "ambiguous"
+      ]
+    },
+    "verification_result": {
+      "type": "string",
+      "enum": [
+        "valid",
+        "expired",
+        "revoked",
+        "used",
+        "replayed",
+        "mismatched",
+        "missing",
+        "ambiguous",
+        "wrong_scope"
+      ]
+    },
+    "fail_closed": {
+      "type": "boolean"
+    },
+    "can_proceed": {
+      "type": "boolean"
+    },
+    "denial_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "mismatch_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "replay_record_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "replay_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "denial_evidence_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^ev-[A-Za-z0-9._:-]+$"
+    },
+    "pre_action_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "post_action_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "export_manifest_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "redaction_profile_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "hash_algorithm": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "sha256",
+        "sha512",
+        null
+      ]
+    },
+    "content_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "parent_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "chain_position": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "raw_content_included": {
+      "type": "boolean",
+      "const": false
+    },
+    "secret_material_included": {
+      "type": "boolean",
+      "const": false
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_artifact_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "reconciliation_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "reconciled",
+        "missing_ref",
+        "mismatched_binding",
+        "stale_decision",
+        "replay_mismatch",
+        "evidence_missing",
+        "coordinator_mismatch",
+        "cross_tenant_blocked",
+        "blocked_mvp",
+        null
+      ]
+    },
+    "reconciliation_failure_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reconciliation_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "canonical_approval_chain_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_approval_binding_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_guardian_decision_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_token_verification_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_replay_record_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_transaction_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "checked_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "verification_result": {
+            "const": "valid"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "approval_token_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approval_request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "presented_scope_hash": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approved_scope_hash": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scope_match_result": {
+            "const": "match"
+          },
+          "token_status_observed": {
+            "const": "active"
+          },
+          "fail_closed": {
+            "const": false
+          },
+          "can_proceed": {
+            "const": true
+          },
+          "denial_reason": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "verification_result": {
+            "not": {
+              "const": "valid"
+            }
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "denial_reason"
+        ],
+        "properties": {
+          "fail_closed": {
+            "const": true
+          },
+          "can_proceed": {
+            "const": false
+          },
+          "denial_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "verification_result": {
+            "const": "missing"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "approval_token_id": {
+            "const": null
+          },
+          "approval_request_id": {
+            "const": null
+          },
+          "presented_scope_hash": {
+            "const": null
+          },
+          "approved_scope_hash": {
+            "const": null
+          },
+          "scope_match_result": {
+            "const": "missing"
+          },
+          "token_status_observed": {
+            "const": "missing"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "verification_result": {
+            "const": "expired"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "token_status_observed": {
+            "const": "expired"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "verification_result": {
+            "const": "revoked"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "token_status_observed": {
+            "const": "revoked"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "const": "reconciled"
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reconciliation_failure_reasons": {
+            "maxItems": 0
+          },
+          "reconciliation_evidence_refs": {
+            "minItems": 1
+          },
+          "approval_chain_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "binding_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonical_approval_chain_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonical_approval_binding_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonical_guardian_decision_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonical_token_verification_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "enum": [
+              "missing_ref",
+              "mismatched_binding",
+              "stale_decision",
+              "replay_mismatch",
+              "evidence_missing",
+              "coordinator_mismatch",
+              "cross_tenant_blocked",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reconciliation_failure_reasons": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "enum": [
+              "cross_tenant_blocked",
+              "blocked_mvp",
+              "stale_decision"
+            ]
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "can_proceed": {
+            "const": false
+          },
+          "fail_closed": {
+            "const": true
+          },
+          "verification_result": {
+            "not": {
+              "const": "valid"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

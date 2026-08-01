@@ -1,0 +1,88 @@
+{
+  "contract_name": "governance.audit_export",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-audit-export-001",
+  "causation_id": null,
+  "idempotency_key": "idem-audit-export-001",
+  "producer": {
+    "component": "compliance_reviewer",
+    "produced_at": "2026-05-22T21:15:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "export_request_id": "audit-export-placeholder-001",
+  "request_type": "audit_export",
+  "requester_identity_ref": "operator-ref-001",
+  "approver_identity_ref": null,
+  "scope": {
+    "tenant_scope_confirmed": true,
+    "starts_at": "2026-05-01T00:00:00Z",
+    "ends_at": "2026-05-22T21:15:00Z",
+    "resource_scope_refs": [
+      "resource-scope-worker-records",
+      "resource-scope-guardian-decisions"
+    ]
+  },
+  "record_classes": [
+    "guardian_decisions",
+    "approvals",
+    "evidence_artifacts",
+    "worker_records",
+    "governance_records"
+  ],
+  "redaction_profile": "export_redacted",
+  "non_exportable_classes": [
+    "credentials",
+    "raw_prompts",
+    "raw_model_responses",
+    "raw_connector_payloads",
+    "raw_tool_output",
+    "raw_customer_files",
+    "out_of_scope_tenant_data"
+  ],
+  "delete_request": {
+    "delete_requested": false,
+    "delete_scope_ref": null,
+    "delete_approved": false,
+    "delete_proof_ref": null
+  },
+  "evidence_preservation_conflict": "not_evaluated",
+  "status": "review_required",
+  "export_review_status": "review_required",
+  "delete_review_status": "not_requested",
+  "redaction_status": "required",
+  "preservation_hold_status": "none",
+  "reason_codes": [
+    "export_delete_review_required"
+  ],
+  "reconciliation_reason_codes": [],
+  "evidence_reason_codes": [],
+  "export_delete_conflict_codes": [],
+  "retention_policy_refs": [
+    "retention-rule-phase0-evidence"
+  ],
+  "redaction_profile_ref": "export_redacted",
+  "policy_refs": [
+    "policy.audit_export_customer_exit.phase0",
+    "policy.retention_redaction.phase0"
+  ],
+  "conflict_evidence_refs": [],
+  "delete_proof_refs": [],
+  "export_manifest_refs": [
+    "export-manifest-ref-placeholder-001"
+  ],
+  "export_package_refs": [],
+  "guardian_decision_id": "gd-audit-export-001",
+  "evidence_refs": [
+    "ev-audit-export-requested-001"
+  ],
+  "blocked_reason": null,
+  "created_at": "2026-05-22T21:15:00Z",
+  "updated_at": "2026-05-22T21:15:00Z",
+  "raw_content_included": false,
+  "secret_material_included": false
+}

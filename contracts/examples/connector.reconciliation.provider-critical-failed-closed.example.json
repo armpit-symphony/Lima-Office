@@ -1,0 +1,45 @@
+{
+  "contract_name": "connector.reconciliation",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-connector-reconcile-004",
+  "causation_id": "corr-connector-reconcile-001",
+  "idempotency_key": "idem-connector-reconcile-004",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-25T22:30:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "connector_reconciliation_id": "connector-reconcile-004",
+  "connector_id": "connector-rmm-metadata-001",
+  "provider_profile_id": "provider-profile-rmm-001",
+  "connector_readiness_id": "connector-readiness-rmm-001",
+  "scope_review_id": "connector-scope-review-rmm-001",
+  "connector_trust_id": "connector-trust-rmm-001",
+  "connector_consent_id": "connector-consent-rmm-001",
+  "revocation_drill_id": "connector-revocation-drill-rmm-001",
+  "tool_invocation_id": "tool-invocation-rmm-001",
+  "approval_binding_id": null,
+  "guardian_decision_id": null,
+  "reconciliation_status": "failed_closed",
+  "drift_classes": [
+    "provider_critical_but_ready",
+    "disable_switch_missing_but_ready",
+    "revocation_drill_failed_but_connector_enabled"
+  ],
+  "reason_codes": [
+    "connector_reconciliation_drift",
+    "provider_critical_but_ready",
+    "disable_switch_missing_but_ready",
+    "revocation_drill_failed_but_enabled"
+  ],
+  "evidence_refs": [
+    "ev-connector-reconcile-004"
+  ],
+  "created_at": "2026-05-25T22:30:00Z",
+  "resolved_at": null
+}

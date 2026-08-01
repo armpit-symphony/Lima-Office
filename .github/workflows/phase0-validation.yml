@@ -1,0 +1,44 @@
+name: Phase validation
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    name: Contract and docs validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install validation dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Validate contract schemas and examples
+        run: python scripts/validate-contracts.py --require-jsonschema --check-formats --warnings-as-errors
+
+      - name: Check reason-code conformance
+        run: python scripts/check-reason-codes.py
+
+      - name: Check local Markdown links
+        run: python scripts/check-doc-links.py
+
+      - name: Run Phase 1A runtime tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Compile Python modules
+        run: python -m compileall lima_office scripts tests
+
+      - name: Check whitespace errors
+        run: git diff --check

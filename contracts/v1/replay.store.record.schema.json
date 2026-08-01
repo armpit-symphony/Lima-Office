@@ -1,0 +1,918 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/replay.store.record.schema.json",
+  "title": "Replay Store Record Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "policy_version",
+    "replay_record_id",
+    "decision_nonce",
+    "guardian_decision_id",
+    "approval_binding_id",
+    "approval_token_id",
+    "token_verification_id",
+    "action_type",
+    "tool_scope",
+    "nonce_status",
+    "atomicity_status",
+    "related_transaction_id",
+    "related_coordinator_event_ids",
+    "related_ledger_entry_ids",
+    "related_evidence_artifact_ids",
+    "related_export_manifest_ids",
+    "linkage_status",
+    "linkage_failure_reasons",
+    "canonical_tenant_id",
+    "canonical_correlation_id",
+    "canonical_idempotency_key",
+    "canonical_decision_nonce",
+    "canonical_action_type",
+    "canonical_tool_scope",
+    "canonical_worker_id",
+    "canonical_task_id",
+    "consumed_at",
+    "checked_at",
+    "evidence_refs",
+    "failure_reason",
+    "created_at",
+    "raw_content_included",
+    "secret_material_included"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "replay.store.record"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "guardian",
+            "supervisor"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "replay_record_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "replay_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "decision_nonce": {
+      "type": "string",
+      "minLength": 1
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approval_binding_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_token_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "token_verification_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "action_type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tool_scope": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "resource_refs",
+        "allowed_operations",
+        "prohibited_operations"
+      ],
+      "properties": {
+        "resource_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "allowed_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prohibited_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "nonce_status": {
+      "type": "string",
+      "enum": [
+        "reserved",
+        "consumed",
+        "replay_denied",
+        "expired",
+        "revoked",
+        "failed"
+      ]
+    },
+    "atomicity_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "committed",
+        "rolled_back",
+        "failed_closed"
+      ]
+    },
+    "related_transaction_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "related_coordinator_event_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "related_ledger_entry_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "related_evidence_artifact_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "related_export_manifest_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "linkage_status": {
+      "type": "string",
+      "enum": [
+        "linked",
+        "missing_ref",
+        "mismatched_tenant",
+        "mismatched_scope",
+        "mismatched_nonce",
+        "drift_detected",
+        "blocked_mvp"
+      ]
+    },
+    "linkage_failure_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "canonical_tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_decision_nonce": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_action_type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_tool_scope": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "resource_refs",
+        "allowed_operations",
+        "prohibited_operations"
+      ],
+      "properties": {
+        "resource_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "allowed_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prohibited_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "canonical_worker_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_task_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_chain_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reconciliation_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "reconciled",
+        "missing_ref",
+        "mismatched_binding",
+        "stale_decision",
+        "replay_mismatch",
+        "evidence_missing",
+        "coordinator_mismatch",
+        "cross_tenant_blocked",
+        "blocked_mvp",
+        null
+      ]
+    },
+    "reconciliation_failure_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reconciliation_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "canonical_approval_chain_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_approval_binding_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_guardian_decision_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_token_verification_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_replay_record_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_transaction_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "consumed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "checked_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "denial_evidence_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^ev-[A-Za-z0-9._:-]+$"
+    },
+    "failure_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "hash_algorithm": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "sha256",
+        "sha512",
+        null
+      ]
+    },
+    "content_hash": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "parent_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[A-Za-z0-9._:-]+$"
+      },
+      "uniqueItems": true
+    },
+    "chain_position": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "export_manifest_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "raw_content_included": {
+      "type": "boolean",
+      "const": false
+    },
+    "secret_material_included": {
+      "type": "boolean",
+      "const": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "nonce_status": {
+            "const": "consumed"
+          }
+        },
+        "required": [
+          "nonce_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "consumed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "atomicity_status": {
+            "const": "committed"
+          },
+          "failure_reason": {
+            "const": null
+          },
+          "related_transaction_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "related_coordinator_event_ids": {
+            "minItems": 1
+          },
+          "related_ledger_entry_ids": {
+            "minItems": 1
+          },
+          "related_evidence_artifact_ids": {
+            "minItems": 1
+          },
+          "linkage_status": {
+            "const": "linked"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "nonce_status": {
+            "const": "reserved"
+          }
+        },
+        "required": [
+          "nonce_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "consumed_at": {
+            "const": null
+          },
+          "atomicity_status": {
+            "const": "pending"
+          },
+          "failure_reason": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "nonce_status": {
+            "const": "replay_denied"
+          }
+        },
+        "required": [
+          "nonce_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "denial_evidence_ref": {
+            "type": "string",
+            "pattern": "^ev-[A-Za-z0-9._:-]+$"
+          },
+          "evidence_refs": {
+            "minItems": 1
+          },
+          "consumed_at": {
+            "const": null
+          },
+          "atomicity_status": {
+            "enum": [
+              "committed",
+              "failed_closed"
+            ]
+          },
+          "related_evidence_artifact_ids": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "nonce_status": {
+            "enum": [
+              "expired",
+              "revoked"
+            ]
+          }
+        },
+        "required": [
+          "nonce_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "denial_evidence_ref": {
+            "type": "string",
+            "pattern": "^ev-[A-Za-z0-9._:-]+$"
+          },
+          "failure_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "nonce_status": {
+            "const": "failed"
+          }
+        },
+        "required": [
+          "nonce_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "failure_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "atomicity_status": {
+            "const": "failed_closed"
+          }
+        },
+        "required": [
+          "atomicity_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "failure_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "atomicity_status": {
+            "const": "rolled_back"
+          }
+        },
+        "required": [
+          "atomicity_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "failure_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "consumed_at": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "replay_artifact_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "replay_artifact_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "hash_algorithm": {
+            "type": "string",
+            "minLength": 1
+          },
+          "content_hash": {
+            "type": "string",
+            "minLength": 1
+          },
+          "chain_position": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "linkage_status": {
+            "const": "linked"
+          }
+        },
+        "required": [
+          "linkage_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "linkage_failure_reasons": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "linkage_status": {
+            "enum": [
+              "missing_ref",
+              "mismatched_tenant",
+              "mismatched_scope",
+              "mismatched_nonce",
+              "drift_detected",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "linkage_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "linkage_failure_reasons": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "linkage_status": {
+            "const": "mismatched_tenant"
+          }
+        },
+        "required": [
+          "linkage_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "nonce_status": {
+            "enum": [
+              "reserved",
+              "replay_denied",
+              "expired",
+              "revoked",
+              "failed"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "const": "reconciled"
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reconciliation_failure_reasons": {
+            "maxItems": 0
+          },
+          "reconciliation_evidence_refs": {
+            "minItems": 1
+          },
+          "canonical_approval_binding_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonical_guardian_decision_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonical_token_verification_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonical_replay_record_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "enum": [
+              "missing_ref",
+              "mismatched_binding",
+              "stale_decision",
+              "replay_mismatch",
+              "evidence_missing",
+              "coordinator_mismatch",
+              "cross_tenant_blocked",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reconciliation_failure_reasons": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconciliation_status": {
+            "enum": [
+              "cross_tenant_blocked",
+              "blocked_mvp",
+              "stale_decision"
+            ]
+          }
+        },
+        "required": [
+          "reconciliation_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "nonce_status": {
+            "not": {
+              "const": "consumed"
+            }
+          },
+          "linkage_status": {
+            "not": {
+              "const": "linked"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "contract_name": "supervisor.health",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant_acme",
+  "customer_context_id": "cust_acme_primary",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-supervisor-health-attestation-lineage-blocked-001",
+  "causation_id": "lineage-worker-002-revoked",
+  "idempotency_key": "idem-supervisor-health-attestation-lineage-blocked-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-24T23:40:00Z"
+  },
+  "supervisor_id": "supervisor-lab-001",
+  "generated_at": "2026-05-24T23:40:00Z",
+  "mode": "mock",
+  "worker_count": 4,
+  "worker_state_counts": {
+    "healthy": 2,
+    "degraded": 1,
+    "quarantined": 1
+  },
+  "task_state_counts": {
+    "draft_ready": 2,
+    "blocked": 2
+  },
+  "guardian_decision_counts": {
+    "allowed": 3,
+    "denied": 3
+  },
+  "evidence_status_counts": {
+    "healthy": 6,
+    "degraded": 1
+  },
+  "stale_heartbeat_count": 0,
+  "quarantined_worker_count": 1,
+  "revoked_worker_count": 0,
+  "blocked_task_count": 2,
+  "denied_action_count": 3,
+  "degraded_component_count": 2,
+  "health_status": "blocked",
+  "reasons": [
+    "attestation_lineage_revoked",
+    "revocation_propagation_pending",
+    "health_blocked"
+  ],
+  "health_domain": "supervisor",
+  "health_reason_codes": [
+    "attestation_lineage_revoked",
+    "revocation_propagation_pending",
+    "health_blocked"
+  ],
+  "route_health_counts": {
+    "blocked_mvp": 1,
+    "denied": 2
+  },
+  "model_route_status_counts": {
+    "selected": 2,
+    "denied": 2
+  },
+  "operator_visible": true,
+  "evidence_refs": [
+    "evidence:artifact:supervisor-health-attestation-lineage-blocked-001"
+  ],
+  "policy_refs": [
+    "policy.attestation.lineage.phase1a",
+    "policy.worker_attestation.phase0"
+  ],
+  "related_contract_refs": [
+    "attestation.result.lineage:lineage-worker-002-revoked",
+    "worker.lifecycle:wle-worker-002-quarantine",
+    "model.route:route-worker-002-03"
+  ],
+  "data_classification": "internal",
+  "redaction_level": "metadata_only",
+  "raw_customer_content_present": false,
+  "secret_material_present": false,
+  "policy_version": "policy-phase1a-v1",
+  "reason_codes": [
+    "attestation_lineage_revoked",
+    "revocation_propagation_pending"
+  ],
+  "reason_code_registry_refs": [
+    "reason.code.registry:attestation_lineage_revoked",
+    "reason.code.registry:revocation_propagation_pending"
+  ],
+  "unknown_reason_code_policy": "fail_closed",
+  "deprecated_reason_code_policy": "allow_with_warning",
+  "reason_code_status": "active"
+}

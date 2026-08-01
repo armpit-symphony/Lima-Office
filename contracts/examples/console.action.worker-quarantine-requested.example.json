@@ -1,0 +1,44 @@
+{
+  "contract_name": "console.action",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-console-action-quarantine-001",
+  "causation_id": null,
+  "idempotency_key": "idem-console-action-quarantine-001",
+  "console_action_id": "console-action-worker-quarantine-001",
+  "actor_ref": "security-reviewer-ref-001",
+  "role": "security_reviewer",
+  "action_type": "worker_quarantine_requested",
+  "action_mode": "review_request",
+  "related_contract_refs": [
+    "worker-lifecycle-ref-arc-file-01",
+    "worker-heartbeat-ref-arc-file-01",
+    "incident-ref-worker-001"
+  ],
+  "policy_refs": [
+    "policy.console_ux.phase0",
+    "policy.worker_quarantine_reenrollment.phase0"
+  ],
+  "risk_tier": "high",
+  "runtime_effect": false,
+  "approval_request_id": null,
+  "guardian_decision_id": "guardian-decision-ref-worker-quarantine-001",
+  "status": "requested",
+  "producer": {
+    "component": "operator_console",
+    "produced_at": "2026-05-22T22:20:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "evidence_refs": [
+    "ev-console-action-worker-quarantine-001"
+  ],
+  "reason_codes": [
+    "worker_quarantined"
+  ],
+  "denial_reason": null,
+  "created_at": "2026-05-22T22:20:00Z"
+}

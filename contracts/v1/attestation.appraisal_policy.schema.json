@@ -1,0 +1,343 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/attestation.appraisal_policy.schema.json",
+  "title": "Attestation Appraisal Policy Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "appraisal_policy_id",
+    "policy_status",
+    "required_reference_value_types",
+    "required_endorsement_types",
+    "required_evidence_types",
+    "freshness_seconds",
+    "clock_skew_allowance_seconds",
+    "fail_closed_on_missing_reference",
+    "fail_closed_on_missing_endorsement",
+    "fail_closed_on_stale_evidence",
+    "applies_to_worker_roles",
+    "applies_to_action_types",
+    "approved_by_ref",
+    "authority_refs",
+    "evidence_refs",
+    "reason_codes",
+    "policy_version",
+    "created_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "attestation.appraisal_policy"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "operator_console",
+            "security_reviewer",
+            "field_it_reviewer"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "appraisal_policy_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "approved",
+        "active",
+        "deprecated",
+        "revoked",
+        "blocked_mvp"
+      ]
+    },
+    "required_reference_value_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "os_image_hash",
+          "arc_runtime_hash",
+          "policy_bundle_hash",
+          "model_bundle_hash",
+          "config_hash",
+          "update_artifact_hash",
+          "rollback_target_hash"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "required_endorsement_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "hardware_vendor_placeholder",
+          "os_vendor_placeholder",
+          "sparkpit_operator_placeholder",
+          "customer_admin_placeholder"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "required_evidence_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "metadata_only",
+          "tpm_quote_placeholder",
+          "secure_boot_placeholder",
+          "runtime_hash_manifest",
+          "policy_hash_manifest",
+          "model_hash_manifest"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "freshness_seconds": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "clock_skew_allowance_seconds": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "fail_closed_on_missing_reference": {
+      "type": "boolean"
+    },
+    "fail_closed_on_missing_endorsement": {
+      "type": "boolean"
+    },
+    "fail_closed_on_stale_evidence": {
+      "type": "boolean"
+    },
+    "applies_to_worker_roles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "applies_to_action_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "approved_by_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "authority_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "approved_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "revoked_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "policy_status": {
+            "const": "active"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "approved_by_ref",
+          "approved_at",
+          "required_reference_value_types",
+          "required_endorsement_types",
+          "required_evidence_types",
+          "evidence_refs"
+        ],
+        "properties": {
+          "approved_by_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approved_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "required_reference_value_types": {
+            "minItems": 1
+          },
+          "required_endorsement_types": {
+            "minItems": 1
+          },
+          "required_evidence_types": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "policy_status": {
+            "const": "revoked"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "revoked_at",
+          "reason_codes"
+        ],
+        "properties": {
+          "revoked_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reason_codes": {
+            "minItems": 1,
+            "contains": {
+              "const": "appraisal_policy_revoked"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "policy_status": {
+            "const": "blocked_mvp"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "approved_at": {
+            "type": "null"
+          },
+          "approved_by_ref": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}

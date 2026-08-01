@@ -1,0 +1,35 @@
+{
+  "contract_name": "connector.revocation_drill",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-revocation-drill-002",
+  "causation_id": "corr-provider-profile-rmm-001",
+  "idempotency_key": "idem-revocation-drill-002",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-25T21:12:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "revocation_drill_id": "connector-revocation-drill-002",
+  "connector_id": "connector-rmm-placeholder-001",
+  "provider_profile_id": "provider-profile-rmm-001",
+  "connector_readiness_id": "connector-readiness-rmm-001",
+  "connector_consent_id": "connector-consent-rmm-001",
+  "drill_status": "failed_closed",
+  "drill_type": "disable_switch_verification",
+  "expected_outcome": "failed_closed",
+  "actual_outcome": "disable_switch_missing_failed_closed",
+  "evidence_refs": [
+    "ev-revocation-drill-002"
+  ],
+  "reason_codes": [
+    "connector_disable_switch_missing",
+    "connector_revocation_drill_failed"
+  ],
+  "created_at": "2026-05-25T21:12:00Z",
+  "completed_at": "2026-05-25T21:13:00Z"
+}

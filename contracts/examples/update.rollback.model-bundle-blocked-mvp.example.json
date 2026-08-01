@@ -1,0 +1,44 @@
+{
+  "contract_name": "update.rollback",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-update-model-blocked-001",
+  "causation_id": "model-route-policy-001",
+  "idempotency_key": "idem-update-model-blocked-001",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-25T15:25:00Z"
+  },
+  "update_id": "ur-model-blocked-001",
+  "worker_id": "worker-arc-002",
+  "deployment_id": "wd-002",
+  "artifact_type": "model_bundle",
+  "update_status": "blocked_mvp",
+  "update_channel": "blocked",
+  "policy_version": "policy-phase1a-v1",
+  "artifact_hash": null,
+  "signer_ref": null,
+  "signing_key_ref": null,
+  "provenance_ref": null,
+  "transparency_log_ref": null,
+  "rollback_target_ref": null,
+  "rollback_reason_codes": [],
+  "verification_reason_codes": [
+    "update_blocked_mvp",
+    "model_bundle_untrusted"
+  ],
+  "model_route_policy_refs": [
+    "policy.model_routing_defaults.phase1a"
+  ],
+  "evidence_refs": [
+    "ev-update-model-blocked-001"
+  ],
+  "created_at": "2026-05-25T15:25:00Z",
+  "verified_at": null,
+  "applied_at": null,
+  "rolled_back_at": null
+}

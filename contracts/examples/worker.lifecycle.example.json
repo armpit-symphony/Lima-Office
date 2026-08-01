@@ -1,0 +1,90 @@
+{
+  "contract_name": "worker.lifecycle",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-worker-admin-001",
+  "causation_id": null,
+  "idempotency_key": "idem-worker-admin-001",
+  "lifecycle_event_id": "wle-admin-001",
+  "worker_id": "arc-admin-01",
+  "worker_role": "admin_arc_worker",
+  "lifecycle_state": "quarantined",
+  "lifecycle_event": "quarantine_applied",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:10:00Z"
+  },
+  "device_identity_ref": "device-identity-ref-arc-admin-01",
+  "channel_identity_ref": "channel-identity-ref-arc-admin-01",
+  "identity_verification": "verified",
+  "attestation_status": "not_required_phase0",
+  "capability_lease_id": "cap-lease-admin-001",
+  "capability_manifest_version": "arc-admin-manifest-1",
+  "capability_manifest_hash_ref": "hash-ref-cap-admin-001",
+  "tool_pack_scope": {
+    "scope_version": "tool-scope-admin-1",
+    "allowed_tool_packs": [
+      "document_read",
+      "draft_workspace",
+      "it_diagnostics_read_only"
+    ],
+    "blocked_tool_packs": [
+      "unrestricted_browser",
+      "unrestricted_filesystem",
+      "unrestricted_network",
+      "live_connector_write",
+      "production_remediation",
+      "payment_or_regulated_system"
+    ],
+    "file_access": "draft_workspace",
+    "network_access": "local_supervisor_only",
+    "connector_access": "mock_readiness_only",
+    "max_concurrent_tasks": 2
+  },
+  "model_options": {
+    "allowed_routes": [
+      "local_model"
+    ],
+    "blocked_routes": [
+      "unknown_provider",
+      "unreviewed_provider",
+      "provider_with_secret_in_prompt"
+    ],
+    "local_model_status": "available"
+  },
+  "model_route_posture": "mock_only",
+  "data_classification": "internal",
+  "risk_tier": "medium",
+  "health_state": "quarantined",
+  "approval_state": "not_required",
+  "quarantine_state": "quarantined",
+  "quarantine_reason_code": "evidence_writer_failed",
+  "quarantined_at": "2026-05-18T21:09:00Z",
+  "quarantined_by": "operator-lab-001",
+  "release_required_by_role": "security_reviewer",
+  "released_at": null,
+  "revocation_generation": 1,
+  "active_task_disposition": "cancel_and_requeue",
+  "approval_tokens_revoked": true,
+  "capability_lease_revoked": true,
+  "heartbeat_interval_seconds": 60,
+  "missed_heartbeat_count": 0,
+  "policy_version": "policy-phase0-v1",
+  "guardian_decision_id": "gd-quarantine-admin-001",
+  "evidence_artifact_ids": [
+    "ev-worker-quarantine-001"
+  ],
+  "registered_at": "2026-05-18T20:00:00Z",
+  "approved_by_operator_id": "operator-lab-001",
+  "last_heartbeat_at": "2026-05-18T21:08:30Z",
+  "quarantine_reason": "Evidence writer failed closed during lab heartbeat review.",
+  "revoked_at": null,
+  "replacement_worker_id": null,
+  "failure_reason": "ledger_unavailable",
+  "created_at": "2026-05-18T21:09:00Z",
+  "updated_at": "2026-05-18T21:10:00Z"
+}

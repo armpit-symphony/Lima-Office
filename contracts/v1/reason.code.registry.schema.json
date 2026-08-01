@@ -1,0 +1,313 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/reason.code.registry.schema.json",
+  "title": "Reason Code Registry Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "policy_version",
+    "taxonomy_version",
+    "registry_id",
+    "reason_code",
+    "category",
+    "status",
+    "severity",
+    "visibility",
+    "description",
+    "evidence_required",
+    "fail_closed_required",
+    "introduced_in",
+    "deprecated_in",
+    "replaced_by",
+    "aliases",
+    "created_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "reason.code.registry"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "operator_console",
+            "supervisor",
+            "security_reviewer",
+            "compliance_reviewer"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "registry_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reason_code": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "reconciliation",
+        "linkage",
+        "evidence",
+        "export_delete",
+        "governance",
+        "guardian",
+        "replay",
+        "approval_binding",
+        "transaction",
+        "health",
+        "blocked_mvp",
+        "tenant_isolation"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "deprecated",
+        "blocked",
+        "reserved"
+      ]
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "info",
+        "warning",
+        "degraded",
+        "blocked",
+        "critical"
+      ]
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "operator_visible",
+        "auditor_visible",
+        "internal_only"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_required": {
+      "type": "boolean"
+    },
+    "fail_closed_required": {
+      "type": "boolean"
+    },
+    "introduced_in": {
+      "type": "string",
+      "minLength": 1
+    },
+    "deprecated_in": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "replaced_by": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*$"
+      },
+      "uniqueItems": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "active"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "deprecated_in": {
+            "const": null
+          },
+          "replaced_by": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "deprecated"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "deprecated_in": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "anyOf": [
+          {
+            "properties": {
+              "replaced_by": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          {
+            "properties": {
+              "aliases": {
+                "minItems": 1
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "blocked"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "fail_closed_required": {
+            "const": true
+          },
+          "severity": {
+            "enum": [
+              "blocked",
+              "critical"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "reserved"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence_required": {
+            "const": false
+          },
+          "replaced_by": {
+            "const": null
+          },
+          "aliases": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
+}

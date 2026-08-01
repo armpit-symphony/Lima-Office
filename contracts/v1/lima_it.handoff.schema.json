@@ -1,0 +1,552 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/lima_it.handoff.schema.json",
+  "title": "LIMA IT Handoff Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "handoff_id",
+    "task_id",
+    "incident_id",
+    "handoff_type",
+    "status",
+    "producer",
+    "requested_by",
+    "operator_owner",
+    "handoff_owner_role",
+    "target_system_ref",
+    "data_classification",
+    "risk_tier",
+    "read_only_diagnostic",
+    "diagnostic_scope",
+    "remediation_authorized",
+    "remediation_scope",
+    "policy_version",
+    "guardian_decision_id",
+    "approval_required",
+    "approval_request_id",
+    "approval_token_id",
+    "evidence_artifact_ids",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "lima_it.handoff"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "handoff_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "incident_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "handoff_type": {
+      "type": "string",
+      "enum": [
+        "health_check",
+        "diagnostic_triage",
+        "helpdesk_triage",
+        "remediation_request",
+        "incident_escalation"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "requested",
+        "awaiting_approval",
+        "diagnostic_ready",
+        "remediation_approval_required",
+        "blocked",
+        "denied",
+        "completed_mock",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "guardian",
+            "operator_console",
+            "lima_it_bridge"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "requested_by": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor_type",
+        "actor_id"
+      ],
+      "properties": {
+        "actor_type": {
+          "type": "string",
+          "enum": [
+            "operator",
+            "supervisor",
+            "worker",
+            "helper_agent",
+            "guardian"
+          ]
+        },
+        "actor_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "target_system_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "operator_owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "handoff_owner_role": {
+      "type": "string",
+      "enum": [
+        "operator",
+        "field_it_reviewer",
+        "supervisor_admin"
+      ]
+    },
+    "data_classification": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "customer_confidential",
+        "sensitive_hr",
+        "sensitive_finance",
+        "sensitive_legal",
+        "sensitive_medical",
+        "secret"
+      ]
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "blocked"
+      ]
+    },
+    "read_only_diagnostic": {
+      "type": "boolean"
+    },
+    "diagnostic_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "allowed_read_only_checks",
+        "prohibited_actions"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "read_only_diagnostics",
+            "metadata_only",
+            "not_requested"
+          ]
+        },
+        "allowed_read_only_checks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "prohibited_actions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "remediation_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requested",
+        "requested_actions",
+        "approval_required",
+        "production_system_touch"
+      ],
+      "properties": {
+        "requested": {
+          "type": "boolean"
+        },
+        "requested_actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "approval_required": {
+          "type": "boolean"
+        },
+        "production_system_touch": {
+          "type": "string",
+          "enum": [
+            "none",
+            "future_requires_approval",
+            "blocked_mvp"
+          ]
+        }
+      }
+    },
+    "remediation_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approval_required": {
+      "type": "boolean"
+    },
+    "approval_request_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_token_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "denial_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "failure_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "failure_code": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "none",
+        "approval_missing",
+        "approval_denied",
+        "blocked_mvp",
+        "evidence_failure",
+        "diagnostic_unavailable",
+        "unexpected_error",
+        null
+      ]
+    },
+    "operator_message": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "rollback_plan_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "runbook_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "remediation_request_authorized": {
+      "type": "boolean"
+    },
+    "remediation_execution_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "evidence_artifact_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "remediation_execution_authorized": {
+          "const": false
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "handoff_type": {
+            "enum": [
+              "health_check",
+              "diagnostic_triage",
+              "helpdesk_triage"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "read_only_diagnostic": {
+            "const": true
+          },
+          "remediation_authorized": {
+            "const": false
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "remediation_scope": {
+            "properties": {
+              "requested": {
+                "const": false
+              },
+              "approval_required": {
+                "const": false
+              },
+              "production_system_touch": {
+                "const": "none"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "anyOf": [
+          {
+            "properties": {
+              "handoff_type": {
+                "const": "remediation_request"
+              }
+            }
+          },
+          {
+            "properties": {
+              "remediation_scope": {
+                "properties": {
+                  "requested": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "requested"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "then": {
+        "required": [
+          "rollback_plan_ref",
+          "runbook_ref"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "awaiting_approval",
+              "remediation_approval_required",
+              "blocked",
+              "denied",
+              "cancelled"
+            ]
+          },
+          "approval_required": {
+            "const": true
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "remediation_authorized": {
+            "const": false
+          },
+          "remediation_request_authorized": {
+            "const": false
+          },
+          "remediation_execution_authorized": {
+            "const": false
+          },
+          "remediation_scope": {
+            "properties": {
+              "requested": {
+                "const": true
+              },
+              "approval_required": {
+                "const": true
+              }
+            }
+          },
+          "rollback_plan_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "runbook_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "remediation_scope": {
+            "properties": {
+              "production_system_touch": {
+                "const": "blocked_mvp"
+              }
+            },
+            "required": [
+              "production_system_touch"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "denial_reason"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "blocked",
+              "denied"
+            ]
+          },
+          "remediation_authorized": {
+            "const": false
+          },
+          "approval_token_id": {
+            "const": null
+          },
+          "denial_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
+}

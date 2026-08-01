@@ -1,0 +1,730 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/governance.connector_consent.schema.json",
+  "title": "Governance Connector Consent Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "connector_consent_id",
+    "connector_id",
+    "connector_type",
+    "connector_owner_ref",
+    "consent_grantor_ref",
+    "consent_status",
+    "scope_review_status",
+    "requested_scopes",
+    "approved_scopes",
+    "blocked_scopes",
+    "secrets_ref",
+    "secret_material_present",
+    "live_access_enabled",
+    "revocation",
+    "rotation_placeholder",
+    "data_classification",
+    "prompt_injection_review",
+    "provider_profile_ref",
+    "connector_readiness_ref",
+    "scope_review_ref",
+    "revocation_drill_refs",
+    "policy_refs",
+    "status",
+    "producer",
+    "policy_version",
+    "guardian_decision_id",
+    "evidence_refs",
+    "reason_codes",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "governance.connector_consent"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "connector_consent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "connector_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "connector_type": {
+      "type": "string",
+      "enum": [
+        "email",
+        "calendar",
+        "file_storage",
+        "ticketing",
+        "crm",
+        "chat",
+        "phone_text",
+        "browser",
+        "rmm_it",
+        "cloud_provider",
+        "payment",
+        "legal_regulated",
+        "blocked_mvp"
+      ]
+    },
+    "connector_owner_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "consent_grantor_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "consent_status": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "requested",
+        "granted_placeholder",
+        "revoked",
+        "expired",
+        "blocked"
+      ]
+    },
+    "scope_review_status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "review_required",
+        "approved_placeholder",
+        "changes_required",
+        "blocked"
+      ]
+    },
+    "requested_scopes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "approved_scopes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "blocked_scopes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "secrets_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "secret_material_present": {
+      "type": "boolean",
+      "const": false
+    },
+    "live_access_enabled": {
+      "type": "boolean",
+      "const": false
+    },
+    "revocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revocation_status",
+        "revoked_at",
+        "revoked_by_ref",
+        "revocation_evidence_ref"
+      ],
+      "properties": {
+        "revocation_status": {
+          "type": "string",
+          "enum": [
+            "not_applicable",
+            "requested",
+            "revoked",
+            "verification_required",
+            "blocked"
+          ]
+        },
+        "revoked_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "revoked_by_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "revocation_evidence_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "rotation_placeholder": {
+      "type": "string",
+      "enum": [
+        "not_selected",
+        "required_before_live",
+        "blocked"
+      ]
+    },
+    "data_classification": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "customer_confidential",
+        "sensitive_hr",
+        "sensitive_finance",
+        "sensitive_legal",
+        "sensitive_medical",
+        "secret"
+      ]
+    },
+    "prompt_injection_review": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "required_before_live",
+        "reviewed_mock_only",
+        "blocked"
+      ]
+    },
+    "provider_profile_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_readiness_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "scope_review_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_ownership_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connector_escalation_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "ownership_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "proposed",
+        "assigned",
+        "active",
+        "stale",
+        "transferred",
+        "revoked",
+        "blocked_mvp",
+        "failed_closed",
+        null
+      ]
+    },
+    "source_of_truth_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "declared",
+        "verified_placeholder",
+        "stale",
+        "missing",
+        "conflicted",
+        "failed_closed",
+        "blocked_mvp",
+        null
+      ]
+    },
+    "revocation_drill_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "policy_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "mock_ready",
+        "revoked",
+        "blocked",
+        "future_live_review_required"
+      ]
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "operator_console",
+            "supervisor",
+            "security_reviewer",
+            "connector_owner"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "reason_code_registry_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "unknown_reason_code_policy": {
+      "type": "string",
+      "enum": [
+        "fail_closed",
+        "display_unknown",
+        "blocked_mvp"
+      ]
+    },
+    "deprecated_reason_code_policy": {
+      "type": "string",
+      "enum": [
+        "allow_with_warning",
+        "fail_closed",
+        "blocked_mvp"
+      ]
+    },
+    "reason_code_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "deprecated",
+        "unknown",
+        "blocked"
+      ]
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "blocked_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "blocked"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "blocked_reason"
+        ],
+        "properties": {
+          "blocked_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consent_status": {
+            "const": "revoked"
+          }
+        },
+        "required": [
+          "consent_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "enum": [
+              "revoked",
+              "blocked"
+            ]
+          },
+          "revocation": {
+            "properties": {
+              "revocation_status": {
+                "const": "revoked"
+              },
+              "revoked_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "revoked_by_ref": {
+                "type": "string",
+                "minLength": 1
+              },
+              "revocation_evidence_ref": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "revocation_status",
+              "revoked_at",
+              "revoked_by_ref",
+              "revocation_evidence_ref"
+            ]
+          },
+          "reason_codes": {
+            "contains": {
+              "const": "connector_revoked"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "mock_ready"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "consent_status": {
+            "enum": [
+              "requested",
+              "granted_placeholder"
+            ]
+          },
+          "scope_review_status": {
+            "enum": [
+              "review_required",
+              "approved_placeholder"
+            ]
+          },
+          "scope_review_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provider_profile_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "connector_readiness_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "connector_type": {
+            "enum": [
+              "browser",
+              "rmm_it",
+              "payment",
+              "legal_regulated",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "connector_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "enum": [
+              "blocked",
+              "future_live_review_required"
+            ]
+          },
+          "reason_codes": {
+            "contains": {
+              "const": "connector_live_blocked_mvp"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consent_status": {
+            "const": "revoked"
+          }
+        },
+        "required": [
+          "consent_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "revocation_drill_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "rotation_placeholder": {
+            "const": "required_before_live"
+          }
+        },
+        "required": [
+          "rotation_placeholder"
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "not": {
+              "const": "mock_ready"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reason_code_status": {
+            "enum": [
+              "unknown",
+              "blocked"
+            ]
+          }
+        },
+        "required": [
+          "reason_code_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "not": {
+              "const": "mock_ready"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reason_code_status": {
+            "const": "deprecated"
+          },
+          "deprecated_reason_code_policy": {
+            "enum": [
+              "fail_closed",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "reason_code_status",
+          "deprecated_reason_code_policy"
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "not": {
+              "const": "mock_ready"
+            }
+          }
+        }
+      }
+    },
+    {
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "api_key"
+            ]
+          },
+          {
+            "required": [
+              "oauth_token"
+            ]
+          },
+          {
+            "required": [
+              "refresh_token"
+            ]
+          },
+          {
+            "required": [
+              "access_token"
+            ]
+          },
+          {
+            "required": [
+              "private_key"
+            ]
+          },
+          {
+            "required": [
+              "password"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

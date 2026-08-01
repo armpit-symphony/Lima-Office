@@ -1,0 +1,38 @@
+{
+  "contract_name": "approval.result",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-prod-touch-deny-001",
+  "causation_id": "apr-prod-touch-001",
+  "idempotency_key": "idem-approval-result-prod-touch-001",
+  "approval_result_id": "apres-prod-touch-denied-001",
+  "approval_request_id": "apr-prod-touch-001",
+  "task_id": "task-prod-touch-001",
+  "guardian_decision_id": "gd-prod-touch-block-mvp-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:44:00Z"
+  },
+  "result": "denied",
+  "result_reason_code": "blocked_mvp",
+  "approver_operator_id": null,
+  "approver_role_ref": null,
+  "action_class": "production_server_touch",
+  "risk_tier": "blocked",
+  "data_classification": "customer_confidential",
+  "requested_scope_hash": "hash-ref-prod-touch-request-001",
+  "approved_scope_hash": null,
+  "approval_token_id": null,
+  "blocked_mvp_action": true,
+  "denial_reason": "Production server touch is blocked for the Phase 0 MVP contract set.",
+  "fresh_operator_intent_ref": null,
+  "policy_version": "policy-phase0-v1",
+  "evidence_artifact_ids": [
+    "ev-prod-touch-denied-001"
+  ],
+  "decided_at": "2026-05-18T21:44:00Z"
+}

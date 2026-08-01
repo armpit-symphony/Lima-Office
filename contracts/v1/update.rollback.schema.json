@@ -1,0 +1,436 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/update.rollback.schema.json",
+  "title": "Update Rollback Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "producer",
+    "update_id",
+    "worker_id",
+    "deployment_id",
+    "artifact_type",
+    "update_status",
+    "update_channel",
+    "policy_version",
+    "evidence_refs",
+    "created_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "update.rollback"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "supervisor",
+            "field_it_reviewer",
+            "security_reviewer",
+            "operator_console"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "update_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "worker_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "deployment_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_type": {
+      "type": "string",
+      "enum": [
+        "policy_bundle",
+        "arc_runtime_bundle",
+        "model_bundle",
+        "config_bundle",
+        "supervisor_policy_snapshot"
+      ]
+    },
+    "update_status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "staged",
+        "verified",
+        "applied",
+        "failed",
+        "rolled_back",
+        "blocked_mvp"
+      ]
+    },
+    "update_channel": {
+      "type": "string",
+      "enum": [
+        "manual_review",
+        "staged_planned",
+        "blocked"
+      ]
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "signer_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "signing_key_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "provenance_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "transparency_log_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "rollback_target_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "rollback_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "verification_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "model_route_policy_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "verified_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "applied_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "rolled_back_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "update_status": {
+            "enum": [
+              "verified",
+              "applied"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "artifact_hash",
+          "signer_ref",
+          "signing_key_ref",
+          "provenance_ref",
+          "evidence_refs"
+        ],
+        "properties": {
+          "artifact_hash": {
+            "type": "string",
+            "minLength": 1
+          },
+          "signer_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "signing_key_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provenance_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "update_status": {
+            "const": "verified"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "verified_at"
+        ],
+        "properties": {
+          "verified_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "update_status": {
+            "const": "applied"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "verified_at",
+          "applied_at"
+        ],
+        "properties": {
+          "verified_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "applied_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "update_status": {
+            "const": "rolled_back"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "rollback_target_ref",
+          "rolled_back_at",
+          "rollback_reason_codes",
+          "evidence_refs"
+        ],
+        "properties": {
+          "rollback_target_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rolled_back_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rollback_reason_codes": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "update_status": {
+            "const": "failed"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "verification_reason_codes",
+          "evidence_refs"
+        ],
+        "properties": {
+          "verification_reason_codes": {
+            "minItems": 1
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "update_status": {
+            "const": "blocked_mvp"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "applied_at": {
+            "type": "null"
+          },
+          "verification_reason_codes": {
+            "contains": {
+              "const": "update_blocked_mvp"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "artifact_type": {
+            "const": "model_bundle"
+          },
+          "update_status": {
+            "enum": [
+              "verified",
+              "applied",
+              "failed",
+              "blocked_mvp"
+            ]
+          }
+        },
+        "required": [
+          "artifact_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "model_route_policy_refs": {
+            "minItems": 1
+          }
+        },
+        "required": [
+          "model_route_policy_refs"
+        ]
+      }
+    }
+  ]
+}

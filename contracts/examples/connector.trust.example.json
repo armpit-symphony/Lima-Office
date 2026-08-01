@@ -1,0 +1,60 @@
+{
+  "contract_name": "connector.trust",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "mock",
+  "correlation_id": "corr-connector-email-001",
+  "causation_id": null,
+  "idempotency_key": "idem-connector-email-001",
+  "connector_id": "mock-email-connector-001",
+  "connector_type": "email",
+  "connector_state": "mock_ready",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:05:00Z"
+  },
+  "mock_only": true,
+  "live_access_enabled": false,
+  "allowed_scopes": [
+    "mock_read",
+    "draft_create"
+  ],
+  "blocked_scopes": [
+    "send_message",
+    "delete_file",
+    "overwrite_file",
+    "modify_customer_record",
+    "admin_scope",
+    "payment_action",
+    "production_remediation"
+  ],
+  "data_classifications": [
+    "internal",
+    "customer_confidential"
+  ],
+  "secrets_ref": null,
+  "secret_material_present": false,
+  "consent_status": "not_required_mock",
+  "consent_ref": null,
+  "scope_review_status": "approved_for_mock",
+  "scope_review_ref": "scope-review-ref-mock-email-001",
+  "prompt_injection_exposure": "metadata_only",
+  "risk_tier": "medium",
+  "data_classification": "internal",
+  "revocation_status": "not_applicable_mock",
+  "policy_version": "policy-phase0-v1",
+  "guardian_decision_id": "gd-connector-email-001",
+  "evidence_artifact_id": "ev-connector-email-001",
+  "evidence_artifact_ids": [
+    "ev-connector-email-001"
+  ],
+  "created_at": "2026-05-18T21:05:00Z",
+  "updated_at": "2026-05-18T21:05:00Z",
+  "failure_behavior": {
+    "on_scope_mismatch": "block_connector",
+    "on_missing_consent": "block_connector",
+    "on_secret_exposure": "create_incident"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "contract_name": "connector.escalation",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-connector-escalation-001",
+  "causation_id": "corr-connector-ownership-002",
+  "idempotency_key": "idem-connector-escalation-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-26T03:15:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "connector_escalation_id": "connector-escalation-001",
+  "connector_id": "connector-rmm-metadata-001",
+  "ownership_ref": "connector-ownership-002",
+  "escalation_type": "stale_owner",
+  "escalation_status": "opened",
+  "escalation_owner_ref": "actor.security-reviewer.001",
+  "due_at_placeholder": "2026-05-27T03:15:00Z",
+  "evidence_refs": [
+    "ev-connector-escalation-001"
+  ],
+  "reason_codes": [
+    "connector_owner_stale"
+  ],
+  "created_at": "2026-05-26T03:15:00Z",
+  "acknowledged_at": null,
+  "resolved_at": null
+}

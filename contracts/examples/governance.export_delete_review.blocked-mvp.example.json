@@ -1,0 +1,52 @@
+{
+  "contract_name": "governance.export_delete_review",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-export-delete-review-blocked-mvp-001",
+  "causation_id": "gov-export-delete-req-002",
+  "idempotency_key": "idem-export-delete-review-blocked-mvp-001",
+  "producer": {
+    "component": "operator_console",
+    "produced_at": "2026-05-24T18:25:00Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "review_id": "review-export-delete-003",
+  "request_type": "export_and_delete",
+  "requester_ref": "operator:operator-lab-001",
+  "reviewer_ref": "compliance:reviewer-lab-001",
+  "target_refs": [
+    "export-delete-combined-scope-001"
+  ],
+  "data_classes": [
+    "customer_confidential"
+  ],
+  "retention_policy_refs": [
+    "retention-rule-phase0-evidence"
+  ],
+  "redaction_profile_ref": null,
+  "preservation_hold_status": "blocked_mvp",
+  "export_review_status": "blocked_mvp",
+  "delete_review_status": "blocked_mvp",
+  "conflict_codes": [
+    "export_delete_blocked_mvp"
+  ],
+  "decision": "blocked_mvp",
+  "reason_codes": [
+    "export_delete_blocked_mvp",
+    "blocked_mvp_authorization_attempt"
+  ],
+  "evidence_refs": [
+    "ev-export-delete-blocked-mvp-001"
+  ],
+  "conflict_evidence_refs": [],
+  "delete_proof_refs": [],
+  "export_manifest_refs": [],
+  "created_at": "2026-05-24T18:24:00Z",
+  "reviewed_at": "2026-05-24T18:25:00Z",
+  "raw_content_included": false,
+  "secret_material_included": false
+}

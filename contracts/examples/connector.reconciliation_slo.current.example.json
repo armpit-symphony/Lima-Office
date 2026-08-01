@@ -1,0 +1,35 @@
+{
+  "contract_name": "connector.reconciliation_slo",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-connector-slo-001",
+  "causation_id": "corr-connector-reconcile-001",
+  "idempotency_key": "idem-connector-slo-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-26T01:20:00Z"
+  },
+  "policy_version": "policy-phase1a-v1",
+  "reconciliation_slo_id": "connector-slo-001",
+  "connector_id": "connector-email-meta-001",
+  "provider_profile_id": "provider-profile-email-001",
+  "connector_readiness_id": "connector-readiness-email-001",
+  "reconciliation_id": "connector-reconcile-001",
+  "owner_ref": "security-reviewer-ref-001",
+  "cadence_status": "current",
+  "cadence_seconds_placeholder": 86400,
+  "last_reconciled_at": "2026-05-26T01:00:00Z",
+  "next_due_at": "2026-05-27T01:00:00Z",
+  "revocation_propagation_status": "not_required",
+  "disable_switch_verification_status": "verified_placeholder",
+  "evidence_refs": [
+    "ev-connector-slo-001"
+  ],
+  "reason_codes": [],
+  "created_at": "2026-05-26T01:20:00Z",
+  "updated_at": "2026-05-26T01:20:00Z"
+}

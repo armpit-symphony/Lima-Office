@@ -1,0 +1,49 @@
+{
+  "contract_name": "approval.chain",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-lima-it-remediation-blocked-001",
+  "causation_id": "task-lima-it-remediation-001",
+  "idempotency_key": "idem-chain-lima-it-remediation-blocked-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T21:44:30Z"
+  },
+  "policy_version": "policy-phase0-v1",
+  "approval_chain_id": "chain-lima-it-remediation-blocked-001",
+  "chain_status": "lima_it_remediation_blocked",
+  "expected_runtime_result": "blocked_mvp",
+  "approval_binding_ref": "bind-lima-it-remediation-blocked-001",
+  "records": [
+    {
+      "contract_name": "guardian.decision",
+      "record_id": "gd-lima-it-remediation-block-mvp-001",
+      "schema_ref": "guardian.decision",
+      "summary": "Guardian blocks LIMA IT remediation execution in MVP."
+    },
+    {
+      "contract_name": "approval.result",
+      "record_id": "apres-lima-it-remediation-denied-001",
+      "schema_ref": "approval.result",
+      "summary": "Denied result produces no usable token."
+    },
+    {
+      "contract_name": "approval.binding",
+      "record_id": "bind-lima-it-remediation-blocked-001",
+      "schema_ref": "approval.binding",
+      "summary": "Binding remains blocked_mvp for remediation."
+    }
+  ],
+  "blocked_work": [
+    "real_remediation",
+    "production_operation"
+  ],
+  "evidence_refs": [
+    "ev-lima-it-remediation-blocked-001"
+  ],
+  "created_at": "2026-05-18T21:44:30Z"
+}

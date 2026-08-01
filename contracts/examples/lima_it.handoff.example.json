@@ -1,0 +1,61 @@
+{
+  "contract_name": "lima_it.handoff",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-lima-it-health-001",
+  "causation_id": "task-it-health-001",
+  "idempotency_key": "idem-lima-it-health-001",
+  "handoff_id": "handoff-health-check-001",
+  "task_id": "task-it-health-001",
+  "incident_id": null,
+  "handoff_type": "health_check",
+  "status": "diagnostic_ready",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:22:00Z"
+  },
+  "requested_by": {
+    "actor_type": "operator",
+    "actor_id": "operator-lab-001"
+  },
+  "operator_owner": "operator-lab-001",
+  "handoff_owner_role": "field_it_reviewer",
+  "target_system_ref": "lab-supervisor-health-ref",
+  "data_classification": "internal",
+  "risk_tier": "medium",
+  "read_only_diagnostic": true,
+  "diagnostic_scope": {
+    "mode": "read_only_diagnostics",
+    "allowed_read_only_checks": [
+      "supervisor_service_state",
+      "worker_heartbeat_summary",
+      "evidence_writer_status"
+    ],
+    "prohibited_actions": [
+      "run_remediation",
+      "install_update_software",
+      "touch_production_server"
+    ]
+  },
+  "remediation_authorized": false,
+  "remediation_scope": {
+    "requested": false,
+    "requested_actions": [],
+    "approval_required": false,
+    "production_system_touch": "none"
+  },
+  "policy_version": "policy-phase0-v1",
+  "guardian_decision_id": "gd-lima-it-health-001",
+  "approval_required": false,
+  "approval_request_id": null,
+  "approval_token_id": null,
+  "evidence_artifact_ids": [
+    "ev-lima-it-health-001"
+  ],
+  "created_at": "2026-05-18T21:22:00Z",
+  "updated_at": "2026-05-18T21:22:00Z"
+}

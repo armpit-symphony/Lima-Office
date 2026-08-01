@@ -1,0 +1,72 @@
+{
+  "contract_name": "attestation.result.lineage",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant_acme",
+  "customer_context_id": "cust_acme_primary",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-att-lineage-revoked-001",
+  "causation_id": "attres-worker-002",
+  "idempotency_key": "idem-att-lineage-revoked-001",
+  "producer": {
+    "component": "security_reviewer",
+    "produced_at": "2026-05-24T22:10:00Z"
+  },
+  "lineage_id": "lineage-worker-002-revoked",
+  "worker_id": "arc_worker_02",
+  "deployment_id": "deploy-worker-002",
+  "attestation_result_id": "attres-worker-002",
+  "attestation_id": "attestation-worker-002",
+  "appraisal_policy_id": "apol-worker-default-v1",
+  "reference_value_refs": [
+    "attestation.reference_value:refv-model-2026-05-24"
+  ],
+  "endorsement_refs": [
+    "attestation.endorsement:endorsement-worker-node-002"
+  ],
+  "device_trust_ref": "governance.device_trust:dtrust-worker-002",
+  "worker_lifecycle_ref": "worker.lifecycle:wle-worker-002-quarantine",
+  "worker_heartbeat_ref": "worker.heartbeat:hb-arc-002-0242",
+  "model_route_refs": [
+    "model.route:route-worker-002-03"
+  ],
+  "update_rollback_refs": [
+    "update.rollback:update-worker-002-rollback"
+  ],
+  "transaction_refs": [
+    "transaction.boundary:txn-attestation-worker-002"
+  ],
+  "ledger_entry_refs": [
+    "evidence.ledger.entry:ledger-attestation-worker-002"
+  ],
+  "lineage_status": "revoked",
+  "revocation_propagation_status": "pending",
+  "trust_effect": "revoked",
+  "reason_codes": [
+    "attestation_lineage_revoked",
+    "revocation_propagation_pending"
+  ],
+  "evidence_refs": [
+    "evidence:artifact:attestation-lineage-revoked-001"
+  ],
+  "policy_version": "policy.attestation.lineage.phase1a.v1",
+  "created_at": "2026-05-24T22:10:00Z",
+  "updated_at": "2026-05-24T22:15:00Z",
+  "expires_at": "2026-05-24T22:00:00Z",
+  "lineage_refs": [
+    "attestation.result:attres-worker-002"
+  ],
+  "authority_refs": [
+    "attestation.authority:authority-verifier-owner-001"
+  ],
+  "revocation_propagation_refs": [
+    "evidence.ledger.entry:ledger-propagation-worker-002"
+  ],
+  "appraisal_result_refs": [
+    "attestation.result:attres-worker-002"
+  ],
+  "trust_effect_refs": [
+    "governance.device_trust:dtrust-worker-002"
+  ]
+}

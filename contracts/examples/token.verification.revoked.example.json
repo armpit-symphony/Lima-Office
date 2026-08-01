@@ -1,0 +1,39 @@
+{
+  "contract_name": "token.verification",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-recon-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "blocked_mvp",
+  "correlation_id": "corr-token-revoked-001",
+  "causation_id": "apt-email-revoked-001",
+  "idempotency_key": "idem-token-verify-revoked-001",
+  "producer": {
+    "component": "guardian",
+    "produced_at": "2026-05-18T21:55:00Z"
+  },
+  "token_verification_id": "tv-email-revoked-001",
+  "approval_token_id": "apt-email-revoked-001",
+  "approval_request_id": "apr-email-revoked-001",
+  "task_id": "task-email-draft-003",
+  "action_class": "external_message_send",
+  "actor": {
+    "actor_type": "supervisor",
+    "actor_id": "supervisor-lab-001"
+  },
+  "presented_scope_hash": "hash-ref-revoked-scope-email-001",
+  "approved_scope_hash": "hash-ref-revoked-scope-email-001",
+  "scope_match_result": "match",
+  "token_status_observed": "revoked",
+  "verification_result": "revoked",
+  "fail_closed": true,
+  "can_proceed": false,
+  "denial_reason": "Approval token was revoked after worker quarantine.",
+  "guardian_decision_id": "gd-token-revoked-deny-001",
+  "policy_version": "policy-phase0-v1",
+  "evidence_artifact_ids": [
+    "ev-token-revoked-001"
+  ],
+  "checked_at": "2026-05-18T22:06:00Z"
+}

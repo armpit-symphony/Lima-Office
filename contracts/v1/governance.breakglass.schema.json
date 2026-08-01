@@ -1,0 +1,336 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/governance.breakglass.schema.json",
+  "title": "Governance Breakglass Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name",
+    "contract_version",
+    "schema_version",
+    "taxonomy_version",
+    "tenant_id",
+    "customer_context_id",
+    "environment",
+    "correlation_id",
+    "causation_id",
+    "idempotency_key",
+    "breakglass_id",
+    "requester_identity_ref",
+    "emergency_approver_identity_ref",
+    "reason_code",
+    "requested_scope",
+    "blocked_action_classes",
+    "expiry",
+    "post_use_review_required",
+    "revocation_state",
+    "incident_ref",
+    "policy_refs",
+    "status",
+    "producer",
+    "policy_version",
+    "guardian_decision_id",
+    "evidence_refs",
+    "reason_codes",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "contract_name": {
+      "type": "string",
+      "const": "governance.breakglass"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "phase0_lab",
+        "mock",
+        "dry_run",
+        "blocked_mvp"
+      ]
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "breakglass_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requester_identity_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "emergency_approver_identity_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reason_code": {
+      "type": "string",
+      "enum": [
+        "identity_provider_outage",
+        "security_containment",
+        "evidence_preservation",
+        "worker_revoke",
+        "breakglass_blocked_mvp"
+      ]
+    },
+    "requested_scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "operator_access_restore",
+          "worker_quarantine",
+          "worker_revoke",
+          "evidence_preservation",
+          "incident_review"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "blocked_action_classes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "external_send",
+          "live_connector",
+          "production_touch",
+          "remediation_execution",
+          "software_install_update",
+          "regulated_system_action",
+          "unrestricted_file_browser_network",
+          "cross_tenant_access"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "expiry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requested_at",
+        "expires_at",
+        "ttl_policy_ref",
+        "renewal_allowed"
+      ],
+      "properties": {
+        "requested_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "ttl_policy_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "renewal_allowed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "post_use_review_required": {
+      "type": "boolean"
+    },
+    "revocation_state": {
+      "type": "string",
+      "enum": [
+        "not_applicable_blocked",
+        "pending",
+        "revoked",
+        "expired",
+        "unknown_blocked"
+      ]
+    },
+    "incident_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "policy_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "requested",
+        "denied_mvp",
+        "blocked",
+        "expired",
+        "revoked",
+        "post_review_required"
+      ]
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "produced_at"
+      ],
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "operator_console",
+            "supervisor",
+            "guardian",
+            "security_reviewer"
+          ]
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "guardian_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "denial_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "environment": {
+          "const": "blocked_mvp"
+        },
+        "status": {
+          "enum": [
+            "denied_mvp",
+            "blocked"
+          ]
+        },
+        "reason_code": {
+          "const": "breakglass_blocked_mvp"
+        },
+        "reason_codes": {
+          "contains": {
+            "const": "breakglass_blocked_mvp"
+          }
+        },
+        "revocation_state": {
+          "const": "not_applicable_blocked"
+        },
+        "emergency_approver_identity_ref": {
+          "const": null
+        },
+        "expiry": {
+          "properties": {
+            "renewal_allowed": {
+              "const": false
+            }
+          }
+        },
+        "post_use_review_required": {
+          "const": true
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "denied_mvp",
+              "blocked"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "denial_reason"
+        ],
+        "properties": {
+          "denial_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
+}

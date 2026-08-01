@@ -1,0 +1,81 @@
+{
+  "contract_name": "helper.scope",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-helper-memory-001",
+  "causation_id": "task-email-draft-001",
+  "idempotency_key": "idem-helper-memory-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-05-18T21:30:00Z"
+  },
+  "helper_scope_id": "hs-memory-helper-001",
+  "helper_agent_id": "helper-memory-review-01",
+  "helper_role": "memory_helper",
+  "parent_supervisor_id": "supervisor-lab-001",
+  "delegated_by_actor": {
+    "actor_type": "supervisor",
+    "actor_id": "supervisor-lab-001"
+  },
+  "supervisor_side_only": true,
+  "independent_worker": false,
+  "allowed_task_classes": [
+    "email_draft",
+    "customer_service_draft"
+  ],
+  "allowed_tool_packs": [
+    "document_read",
+    "draft_workspace"
+  ],
+  "blocked_tool_packs": [
+    "unrestricted_browser",
+    "unrestricted_filesystem",
+    "unrestricted_network",
+    "live_connector_write",
+    "production_remediation",
+    "payment_or_regulated_system"
+  ],
+  "data_classifications_allowed": [
+    "internal",
+    "customer_confidential"
+  ],
+  "connector_access": "none",
+  "network_scope": "local_supervisor_only",
+  "file_scope": "none",
+  "memory_scope": {
+    "tenant_namespace": "tenant-lab-001",
+    "read_allowed": true,
+    "write_summary_allowed": true,
+    "delete_or_export_allowed": false,
+    "raw_content_allowed": false
+  },
+  "may_request_approval_token": false,
+  "approval_required_capabilities": [
+    "sensitive_memory_review"
+  ],
+  "blocked_capabilities": [
+    "external_send",
+    "file_delete",
+    "file_overwrite",
+    "customer_record_update",
+    "software_install_update",
+    "production_remediation",
+    "production_server_touch",
+    "payment_or_regulated_system",
+    "cross_tenant_memory",
+    "unrestricted_tool_execution"
+  ],
+  "status": "active",
+  "lease_expires_at": "2026-05-18T22:30:00Z",
+  "revoked_at": null,
+  "revocation_reason": null,
+  "guardian_decision_id": "gd-helper-memory-001",
+  "policy_version": "policy-phase0-v1",
+  "evidence_artifact_ids": [
+    "ev-helper-memory-001"
+  ],
+  "created_at": "2026-05-18T21:31:00Z"
+}
