@@ -32,32 +32,86 @@
     "runtime_authority_blocked",
     "executable",
     "execution_allowed",
-    "side_effects_allowed"
+    "side_effects_allowed",
+    "execution_grant"
   ],
   "properties": {
-    "contract_name": {"type": "string", "const": "operator.control_plane.response"},
-    "contract_version": {"type": "string", "const": "1.0.0"},
-    "schema_version": {"type": "string", "const": "1.0.0"},
-    "taxonomy_version": {"type": "string", "const": "taxonomy-recon-v1"},
-    "tenant_id": {"type": "string", "minLength": 1},
-    "customer_context_id": {"type": "string", "minLength": 1},
-    "environment": {"type": "string", "const": "phase0_lab"},
-    "correlation_id": {"type": "string", "minLength": 1},
-    "causation_id": {"type": ["string", "null"]},
-    "idempotency_key": {"type": "string", "minLength": 1},
+    "contract_name": {
+      "type": "string",
+      "const": "operator.control_plane.response"
+    },
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "taxonomy_version": {
+      "type": "string",
+      "const": "taxonomy-recon-v1"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "const": "phase0_lab"
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
     "producer": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["component", "produced_at"],
+      "required": [
+        "component",
+        "produced_at"
+      ],
       "properties": {
-        "component": {"type": "string", "const": "supervisor"},
-        "produced_at": {"type": "string", "format": "date-time"}
+        "component": {
+          "type": "string",
+          "const": "supervisor"
+        },
+        "produced_at": {
+          "type": "string",
+          "format": "date-time"
+        }
       }
     },
-    "policy_version": {"type": "string", "minLength": 1},
-    "request_id": {"type": "string", "minLength": 1},
-    "actor_id": {"type": "string", "minLength": 1},
-    "worker_id": {"type": "string", "minLength": 1},
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "actor_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "worker_id": {
+      "type": "string",
+      "minLength": 1
+    },
     "status": {
       "type": "string",
       "enum": [
@@ -86,7 +140,10 @@
       ]
     },
     "guardian": {
-      "type": ["object", "null"],
+      "type": [
+        "object",
+        "null"
+      ],
       "additionalProperties": false,
       "required": [
         "decision_id",
@@ -98,20 +155,44 @@
         "expires_at"
       ],
       "properties": {
-        "decision_id": {"type": "string", "minLength": 1},
+        "decision_id": {
+          "type": "string",
+          "minLength": 1
+        },
         "decision": {
           "type": "string",
-          "enum": ["allow_with_evidence", "requires_approval", "deny"]
+          "enum": [
+            "allow_with_evidence",
+            "requires_approval",
+            "deny"
+          ]
         },
-        "approval_required": {"type": "boolean"},
-        "policy_version": {"type": "string", "minLength": 1},
-        "policy_snapshot_hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
-        "request_binding": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
-        "expires_at": {"type": "string", "format": "date-time"}
+        "approval_required": {
+          "type": "boolean"
+        },
+        "policy_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "policy_snapshot_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "request_binding": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        }
       }
     },
     "lima": {
-      "type": ["object", "null"],
+      "type": [
+        "object",
+        "null"
+      ],
       "additionalProperties": false,
       "required": [
         "decision_id",
@@ -129,7 +210,10 @@
         "side_effects_allowed"
       ],
       "properties": {
-        "decision_id": {"type": "string", "minLength": 1},
+        "decision_id": {
+          "type": "string",
+          "minLength": 1
+        },
         "status": {
           "type": "string",
           "enum": [
@@ -139,15 +223,37 @@
             "denied"
           ]
         },
-        "allowed": {"type": "boolean"},
-        "requires_approval": {"type": "boolean"},
+        "allowed": {
+          "type": "boolean"
+        },
+        "requires_approval": {
+          "type": "boolean"
+        },
         "risk_level": {
           "type": "string",
-          "enum": ["low", "medium", "high", "critical", "blocked"]
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical",
+            "blocked"
+          ]
         },
-        "reason_codes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
-        "source_policy": {"type": "string", "const": "guardian_core.policy"},
-        "guardian_decision_id": {"type": "string", "minLength": 1},
+        "reason_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "source_policy": {
+          "type": "string",
+          "const": "guardian_core.policy"
+        },
+        "guardian_decision_id": {
+          "type": "string",
+          "minLength": 1
+        },
         "guardian_binding_hash": {
           "type": "string",
           "pattern": "^sha256:[a-f0-9]{64}$"
@@ -156,39 +262,105 @@
           "type": "string",
           "const": "reference_only_non_authorizing"
         },
-        "executable": {"type": "boolean", "const": false},
-        "execution_allowed": {"type": "boolean", "const": false},
-        "side_effects_allowed": {"type": "boolean", "const": false}
+        "executable": {
+          "type": "boolean",
+          "const": false
+        },
+        "execution_allowed": {
+          "type": "boolean",
+          "const": false
+        },
+        "side_effects_allowed": {
+          "type": "boolean",
+          "const": false
+        }
       }
     },
-    "assignment_id": {"type": ["string", "null"]},
+    "assignment_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "assignment_status": {
-      "type": ["string", "null"],
-      "enum": ["acknowledged", "rejected", null]
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "acknowledged",
+        "rejected",
+        null
+      ]
     },
     "evidence": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["event_id", "event_type", "outcome", "reason_codes", "created_at"],
+        "required": [
+          "event_id",
+          "event_type",
+          "outcome",
+          "reason_codes",
+          "created_at"
+        ],
         "properties": {
-          "event_id": {"type": "string", "minLength": 1},
-          "event_type": {"type": "string", "minLength": 1},
-          "outcome": {"type": "string", "minLength": 1},
+          "event_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "outcome": {
+            "type": "string",
+            "minLength": 1
+          },
           "reason_codes": {
             "type": "array",
-            "items": {"type": "string"},
+            "items": {
+              "type": "string"
+            },
             "uniqueItems": true
           },
-          "created_at": {"type": "string", "format": "date-time"}
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       }
     },
-    "reason_codes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
-    "runtime_authority_blocked": {"type": "boolean", "const": true},
-    "executable": {"type": "boolean", "const": false},
-    "execution_allowed": {"type": "boolean", "const": false},
-    "side_effects_allowed": {"type": "boolean", "const": false}
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "runtime_authority_blocked": {
+      "type": "boolean",
+      "const": true
+    },
+    "executable": {
+      "type": "boolean",
+      "const": false
+    },
+    "execution_allowed": {
+      "type": "boolean",
+      "const": false
+    },
+    "side_effects_allowed": {
+      "type": "boolean",
+      "const": false
+    },
+    "execution_grant": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Single-use execution grant issued by the governed kernel, or null when no grant was issued. LIMA owns the inner contract; the Arc consumer re-validates it independently before honouring it."
+    }
   }
 }

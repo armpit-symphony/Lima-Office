@@ -324,6 +324,10 @@ class OperatorControlPlaneService:
             ),
             "evidence": evidence,
             "reason_codes": [str(code) for code in result.get("reason_codes") or []],
+            # Null unless the operator opted in and every issuance gate passed.
+            # This is the only field in the response that can carry authority,
+            # and the consumer re-validates it before honouring it.
+            "execution_grant": result.get("execution_grant"),
             "runtime_authority_blocked": True,
             "executable": False,
             "execution_allowed": False,
