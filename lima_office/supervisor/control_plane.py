@@ -55,7 +55,21 @@ CALLER_FIELDS = frozenset(
 )
 LIMA_GUARDIAN_SOURCE_POLICY = "guardian_core.policy"
 GUARDIAN_BINDING_MODE = "reference_only_non_authorizing"
+# Only read-only capabilities may ever be granted in this slice. Anything that
+# writes, sends, or deletes stays non-executing regardless of operator opt-in.
+EXECUTABLE_CAPABILITIES = frozenset({"document_read"})
+EXECUTION_GRANT_TTL_SECONDS = 120
 logger = logging.getLogger(__name__)
+
+
+def load_execution_grant_issuer() -> Callable[..., Any] | None:
+    """Load the grant issuer if the pinned LIMA provides one; absence denies."""
+
+    try:
+        from lima.runtime import issue_execution_grant
+    except (ImportError, ModuleNotFoundError):
+        return None
+    return issue_execution_grant
 
 
 def load_lima_runner() -> Callable[[dict[str, Any]], Any] | None:
@@ -88,6 +102,8 @@ class SupervisorControlPlane:
         ) = None,
         policy_version: str = "guardian-policy-lab-v1",
         require_authenticated_workers: bool = False,
+        execution_opt_in: bool = False,
+        execution_grant_issuer: Callable[..., Any] | None = None,
         clock: Callable[[], datetime] | None = None,
     ) -> None:
         if not tenant_id or not customer_context_id:
@@ -104,6 +120,11 @@ class SupervisorControlPlane:
         self.worker_health_refreshers = dict(worker_health_refreshers or {})
         self.policy_version = policy_version
         self.require_authenticated_workers = require_authenticated_workers
+        # Default off. A grant is never issued unless an operator turned this
+        # on for this deployment, and Arc independently refuses to honour a
+        # grant unless its own opt-in is on.
+        self.execution_opt_in = bool(execution_opt_in)
+        self.execution_grant_issuer = execution_grant_issuer
         self.clock = clock or (lambda: datetime.now(timezone.utc))
 
     def submit(self, raw_request: Mapping[str, Any]) -> dict[str, Any]:
@@ -484,9 +505,66 @@ class SupervisorControlPlane:
             raw = self.lima_runner(payload)
             decision = raw.to_dict() if hasattr(raw, "to_dict") else dict(raw)
             self._validate_lima_decision(request, decision, guardian_decision)
+            # Retained only so an execution grant can be minted from the exact
+            # request and decision objects that were just validated. The
+            # decision itself still authorizes nothing.
+            self._last_governed_call = (payload, raw)
             return decision
         except Exception:
+            self._last_governed_call = None
             return None
+
+    def _issue_execution_grant(
+        self,
+        request: dict[str, Any],
+        capability: str,
+        worker_id: str,
+    ) -> dict[str, Any] | None:
+        """Mint one single-use grant, or return None and stay non-executing.
+
+        Every gate here is independent, and any one of them failing leaves the
+        request exactly as non-executing as it was before.
+        """
+
+        if not self.execution_opt_in:
+            return None
+        if capability not in EXECUTABLE_CAPABILITIES:
+            return None
+        issuer = self.execution_grant_issuer
+        if issuer is None:
+            return None
+        call = getattr(self, "_last_governed_call", None)
+        if call is None:
+            return None
+        payload, governed_decision = call
+
+        try:
+            grant = issuer(
+                payload,
+                governed_decision,
+                capability=capability,
+                side_effects_allowed=False,
+                ttl_seconds=EXECUTION_GRANT_TTL_SECONDS,
+            )
+        except Exception:
+            logger.exception("Execution grant issuance failed closed")
+            return None
+
+        reserved = self.evidence_store.reserve_execution_grant(
+            tenant_id=grant.bound_tenant_id,
+            worker_id=grant.bound_worker_id,
+            grant_id=grant.grant_id,
+            nonce=grant.nonce,
+            request_id=request["request_id"],
+            expires_at=grant.expires_at,
+            created_at=self._now(),
+        )
+        if not reserved:
+            logger.warning("Execution grant replay rejected before assignment")
+            return None
+        if grant.bound_worker_id != worker_id:
+            return None
+        return grant.to_dict()
 
     @classmethod
     def _validate_lima_decision(
@@ -591,6 +669,24 @@ class SupervisorControlPlane:
         endpoint = self.worker_endpoints.get(worker_id)
         if endpoint is None:
             raise WorkerStateError("Arc worker preview endpoint is unavailable")
+
+        execution_grant = self._issue_execution_grant(request, capability, worker_id)
+        if execution_grant is not None:
+            parent_event_id = self.evidence_store.append_event(
+                self._event(
+                    request,
+                    event_type="execution_grant_issued",
+                    component="supervisor",
+                    outcome="allowed_dry_run",
+                    summary=(
+                        "Single-use execution grant issued for a read-only "
+                        "capability under operator opt-in."
+                    ),
+                    decision_id=lima_decision["decision_id"],
+                    guardian_decision_id=guardian_decision["decision_id"],
+                    parent_event_id=parent_event_id,
+                )
+            )["event_id"]
 
         created_at = self._now()
         assignment_id = f"assignment:{uuid4().hex}"
@@ -771,6 +867,7 @@ class SupervisorControlPlane:
             guardian_decision=guardian_decision,
             lima_decision=lima_decision,
             assignment=acknowledgement,
+            execution_grant=execution_grant if acknowledged else None,
             reason_codes=list(acknowledgement_event["reason_codes"]),
         )
 
@@ -961,6 +1058,7 @@ class SupervisorControlPlane:
         guardian_decision: dict[str, Any] | None = None,
         lima_decision: dict[str, Any] | None = None,
         assignment: dict[str, Any] | None = None,
+        execution_grant: dict[str, Any] | None = None,
         reason_codes: list[str] | None = None,
     ) -> dict[str, Any]:
         return {
@@ -974,6 +1072,11 @@ class SupervisorControlPlane:
             "guardian": self._public_guardian(guardian_decision),
             "lima": self._public_lima(lima_decision),
             "assignment": assignment,
+            # Separate from the assignment preview on purpose. The preview
+            # contract is non-executing and stays that way; the grant is the
+            # only object that carries authority, and it is None unless the
+            # operator opted in and every issuance gate passed.
+            "execution_grant": execution_grant,
             "reason_codes": reason_codes or [],
             "evidence": self.evidence_store.events_for_request(
                 request["request_id"],

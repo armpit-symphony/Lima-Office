@@ -81,6 +81,56 @@ class SQLiteEvidenceStore:
         except sqlite3.Error as exc:
             raise EvidenceWriteError("request reservation failed closed") from exc
 
+    def reserve_execution_grant(
+        self,
+        *,
+        tenant_id: str,
+        worker_id: str,
+        grant_id: str,
+        nonce: str,
+        request_id: str,
+        expires_at: str,
+        created_at: str,
+    ) -> bool:
+        """Consume an execution grant exactly once.
+
+        The governed kernel keeps no state, so single-use enforcement lives
+        here. Returns False if this grant identity was already consumed.
+        """
+
+        self._require_writable()
+        try:
+            with self._connection:
+                self._connection.execute(
+                    """
+                    INSERT INTO execution_grant_consumptions (
+                        tenant_id,
+                        worker_id,
+                        grant_id,
+                        nonce,
+                        request_id,
+                        expires_at,
+                        created_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        tenant_id,
+                        worker_id,
+                        grant_id,
+                        nonce,
+                        request_id,
+                        expires_at,
+                        created_at,
+                    ),
+                )
+            return True
+        except sqlite3.IntegrityError:
+            return False
+        except sqlite3.Error as exc:
+            raise EvidenceWriteError(
+                "execution grant reservation failed closed"
+            ) from exc
+
     def append_event(self, event: dict[str, Any]) -> dict[str, Any]:
         event = self.validator.validate(event, "control_plane.event")
         self._require_writable()
@@ -311,6 +361,17 @@ class SQLiteEvidenceStore:
 
                 CREATE INDEX IF NOT EXISTS control_plane_events_request
                 ON control_plane_events (tenant_id, request_id, sequence_id);
+
+                CREATE TABLE IF NOT EXISTS execution_grant_consumptions (
+                    tenant_id TEXT NOT NULL,
+                    worker_id TEXT NOT NULL,
+                    grant_id TEXT NOT NULL,
+                    nonce TEXT NOT NULL,
+                    request_id TEXT NOT NULL,
+                    expires_at TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    PRIMARY KEY (tenant_id, worker_id, grant_id, nonce)
+                );
 
                 CREATE TABLE IF NOT EXISTS worker_channel_messages (
                     tenant_id TEXT NOT NULL,
