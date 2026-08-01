@@ -79,6 +79,7 @@ class SupervisorControlPlane:
         lima_runner: Callable[[dict[str, Any]], Any] | None,
         worker_endpoints: Mapping[str, ArcWorkerPreviewEndpoint],
         policy_version: str = "guardian-policy-lab-v1",
+        require_authenticated_workers: bool = False,
         clock: Callable[[], datetime] | None = None,
     ) -> None:
         if not tenant_id or not customer_context_id:
@@ -93,6 +94,7 @@ class SupervisorControlPlane:
         self.lima_runner = lima_runner
         self.worker_endpoints = dict(worker_endpoints)
         self.policy_version = policy_version
+        self.require_authenticated_workers = require_authenticated_workers
         self.clock = clock or (lambda: datetime.now(timezone.utc))
 
     def submit(self, raw_request: Mapping[str, Any]) -> dict[str, Any]:
@@ -495,6 +497,10 @@ class SupervisorControlPlane:
         if capability is None:
             raise UnsafeRuntimeActionError("no Arc preview capability exists for action")
         worker = self.registry.require_assignable(worker_id, request["tenant_id"])
+        if self.require_authenticated_workers and not worker.authenticated:
+            raise WorkerStateError(
+                "operational control-plane routing requires authenticated Arc registration"
+            )
         if capability not in worker.capabilities:
             raise WorkerStateError("Arc worker lacks the required preview capability")
         endpoint = self.worker_endpoints.get(worker_id)

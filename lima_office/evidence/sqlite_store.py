@@ -152,6 +152,89 @@ class SQLiteEvidenceStore:
         ).fetchone()
         return str(row["event_id"]) if row is not None else None
 
+    def reserve_channel_message(self, envelope: dict[str, Any]) -> None:
+        """Atomically reject replayed authenticated worker messages."""
+
+        envelope = self.validator.validate(envelope, "worker.channel.envelope")
+        self._require_writable()
+        try:
+            with self._connection:
+                self._connection.execute(
+                    """
+                    INSERT INTO worker_channel_messages (
+                        tenant_id,
+                        worker_id,
+                        key_id,
+                        message_id,
+                        nonce,
+                        message_type,
+                        payload_hash,
+                        expires_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        envelope["tenant_id"],
+                        envelope["worker_id"],
+                        envelope["key_id"],
+                        envelope["message_id"],
+                        envelope["nonce"],
+                        envelope["message_type"],
+                        envelope["payload_hash"],
+                        envelope["expires_at"],
+                    ),
+                )
+        except sqlite3.IntegrityError as exc:
+            raise EvidenceWriteError("authenticated worker message replay rejected") from exc
+        except sqlite3.Error as exc:
+            raise EvidenceWriteError("worker channel reservation failed closed") from exc
+
+    def upsert_worker_record(self, worker: dict[str, Any]) -> None:
+        """Persist a redacted worker inventory/health snapshot."""
+
+        forbidden = {"shared_key", "signature", "credentials", "provider_token"}
+        if forbidden.intersection(worker):
+            raise EvidenceWriteError("worker record contains forbidden credential material")
+        self._require_writable()
+        encoded = json.dumps(worker, sort_keys=True, separators=(",", ":"))
+        try:
+            with self._connection:
+                self._connection.execute(
+                    """
+                    INSERT INTO worker_records (
+                        tenant_id,
+                        worker_id,
+                        state,
+                        updated_at,
+                        worker_json
+                    ) VALUES (?, ?, ?, ?, ?)
+                    ON CONFLICT (tenant_id, worker_id) DO UPDATE SET
+                        state = excluded.state,
+                        updated_at = excluded.updated_at,
+                        worker_json = excluded.worker_json
+                    """,
+                    (
+                        worker["tenant_id"],
+                        worker["worker_id"],
+                        worker["state"],
+                        worker["updated_at"],
+                        encoded,
+                    ),
+                )
+        except (KeyError, sqlite3.Error) as exc:
+            raise EvidenceWriteError("worker record write failed closed") from exc
+
+    def worker_records(self, tenant_id: str) -> list[dict[str, Any]]:
+        rows = self._connection.execute(
+            """
+            SELECT worker_json
+            FROM worker_records
+            WHERE tenant_id = ?
+            ORDER BY worker_id
+            """,
+            (tenant_id,),
+        ).fetchall()
+        return [json.loads(str(row["worker_json"])) for row in rows]
+
     def _create_schema(self) -> None:
         with self._connection:
             self._connection.executescript(
@@ -187,6 +270,28 @@ class SQLiteEvidenceStore:
 
                 CREATE INDEX IF NOT EXISTS control_plane_events_request
                 ON control_plane_events (tenant_id, request_id, sequence_id);
+
+                CREATE TABLE IF NOT EXISTS worker_channel_messages (
+                    tenant_id TEXT NOT NULL,
+                    worker_id TEXT NOT NULL,
+                    key_id TEXT NOT NULL,
+                    message_id TEXT NOT NULL,
+                    nonce TEXT NOT NULL,
+                    message_type TEXT NOT NULL,
+                    payload_hash TEXT NOT NULL,
+                    expires_at TEXT NOT NULL,
+                    PRIMARY KEY (tenant_id, worker_id, key_id, message_id),
+                    UNIQUE (tenant_id, worker_id, key_id, nonce)
+                );
+
+                CREATE TABLE IF NOT EXISTS worker_records (
+                    tenant_id TEXT NOT NULL,
+                    worker_id TEXT NOT NULL,
+                    state TEXT NOT NULL,
+                    updated_at TEXT NOT NULL,
+                    worker_json TEXT NOT NULL,
+                    PRIMARY KEY (tenant_id, worker_id)
+                );
                 """
             )
 

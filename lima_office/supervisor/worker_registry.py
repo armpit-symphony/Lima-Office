@@ -1,4 +1,4 @@
-"""In-memory mock Arc worker registry."""
+"""Bounded single-tenant Arc worker registry."""
 
 from __future__ import annotations
 
@@ -32,14 +32,37 @@ class WorkerRecord:
     model_hash: str = "hash-ref-phase1a-model"
     heartbeat: dict[str, Any] | None = None
     missed_heartbeat_count: int = 0
+    authenticated: bool = False
+    channel_identity_ref: str | None = None
+    boot_id: str | None = None
+    worker_version: str | None = None
+    last_heartbeat_sequence: int | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def can_accept_task(self) -> bool:
         return self.state in ASSIGNABLE_STATES
 
+    def to_record(self, *, updated_at: str) -> dict[str, Any]:
+        return {
+            "worker_id": self.worker_id,
+            "tenant_id": self.tenant_id,
+            "role": self.role,
+            "capabilities": list(self.capabilities),
+            "state": self.state,
+            "policy_hash": self.policy_hash,
+            "model_hash": self.model_hash,
+            "missed_heartbeat_count": self.missed_heartbeat_count,
+            "authenticated": self.authenticated,
+            "channel_identity_ref": self.channel_identity_ref,
+            "boot_id": self.boot_id,
+            "worker_version": self.worker_version,
+            "last_heartbeat_sequence": self.last_heartbeat_sequence,
+            "updated_at": updated_at,
+        }
+
 
 class WorkerRegistry:
-    """Stores mock worker records in memory only."""
+    """Stores the active 1-8 worker view; durable snapshots live in SQLite."""
 
     def __init__(self, max_workers: int = MAX_ARC_WORKERS) -> None:
         if max_workers < 1 or max_workers > MAX_ARC_WORKERS:
@@ -57,6 +80,59 @@ class WorkerRegistry:
         capabilities: list[str] | tuple[str, ...],
         policy_hash: str = "hash-ref-phase1a-policy",
         model_hash: str = "hash-ref-phase1a-model",
+    ) -> WorkerRecord:
+        return self._register_worker(
+            worker_id=worker_id,
+            tenant_id=tenant_id,
+            role=role,
+            capabilities=capabilities,
+            policy_hash=policy_hash,
+            model_hash=model_hash,
+            authenticated=False,
+        )
+
+    def register_authenticated_worker(
+        self,
+        *,
+        worker_id: str,
+        tenant_id: str,
+        role: str,
+        capabilities: list[str] | tuple[str, ...],
+        channel_identity_ref: str,
+        boot_id: str,
+        worker_version: str,
+        policy_hash: str,
+    ) -> WorkerRecord:
+        if not channel_identity_ref or not boot_id or not worker_version:
+            raise WorkerStateError(
+                "authenticated worker channel, boot, and version identities are required"
+            )
+        return self._register_worker(
+            worker_id=worker_id,
+            tenant_id=tenant_id,
+            role=role,
+            capabilities=capabilities,
+            policy_hash=policy_hash,
+            model_hash="not_available_non_executing",
+            authenticated=True,
+            channel_identity_ref=channel_identity_ref,
+            boot_id=boot_id,
+            worker_version=worker_version,
+        )
+
+    def _register_worker(
+        self,
+        *,
+        worker_id: str,
+        tenant_id: str,
+        role: str,
+        capabilities: list[str] | tuple[str, ...],
+        policy_hash: str,
+        model_hash: str,
+        authenticated: bool,
+        channel_identity_ref: str | None = None,
+        boot_id: str | None = None,
+        worker_version: str | None = None,
     ) -> WorkerRecord:
         if not worker_id or not tenant_id:
             raise WorkerStateError("worker_id and tenant_id are required")
@@ -76,9 +152,34 @@ class WorkerRegistry:
             capabilities=tuple(capabilities),
             policy_hash=policy_hash,
             model_hash=model_hash,
+            authenticated=authenticated,
+            channel_identity_ref=channel_identity_ref,
+            boot_id=boot_id,
+            worker_version=worker_version,
         )
         self._workers[worker_id] = record
         self._tenant_id = tenant_id
+        return record
+
+    def restore_authenticated_worker(self, payload: dict[str, Any]) -> WorkerRecord:
+        if payload.get("authenticated") is not True:
+            raise WorkerStateError("only authenticated worker records may be restored")
+        record = self.register_authenticated_worker(
+            worker_id=str(payload["worker_id"]),
+            tenant_id=str(payload["tenant_id"]),
+            role=str(payload["role"]),
+            capabilities=tuple(payload["capabilities"]),
+            channel_identity_ref=str(payload["channel_identity_ref"]),
+            boot_id=str(payload["boot_id"]),
+            worker_version=str(payload["worker_version"]),
+            policy_hash=str(payload["policy_hash"]),
+        )
+        record.state = str(payload["state"])
+        record.missed_heartbeat_count = int(payload["missed_heartbeat_count"])
+        sequence = payload.get("last_heartbeat_sequence")
+        record.last_heartbeat_sequence = (
+            int(sequence) if isinstance(sequence, int) else None
+        )
         return record
 
     def get(self, worker_id: str) -> WorkerRecord:
@@ -118,6 +219,19 @@ class WorkerRegistry:
 
     def update_heartbeat(self, worker_id: str, heartbeat: dict[str, Any]) -> WorkerRecord:
         worker = self.require_worker(worker_id, heartbeat.get("tenant_id"))
+        boot_id = heartbeat.get("boot_id")
+        sequence = heartbeat.get("heartbeat_sequence")
+        if not isinstance(boot_id, str) or not isinstance(sequence, int):
+            raise WorkerStateError("heartbeat boot identity and sequence are required")
+        if worker.boot_id == boot_id:
+            if (
+                worker.last_heartbeat_sequence is not None
+                and sequence <= worker.last_heartbeat_sequence
+            ):
+                raise WorkerStateError("heartbeat sequence replay rejected")
+        else:
+            worker.boot_id = boot_id
+            worker.last_heartbeat_sequence = None
         lifecycle_state = heartbeat.get("lifecycle_state")
         health_state = heartbeat.get("health_state")
         proposed_state = worker.state
@@ -135,6 +249,7 @@ class WorkerRegistry:
         worker.heartbeat = heartbeat
         missed = heartbeat.get("missed_heartbeat_count")
         worker.missed_heartbeat_count = missed if isinstance(missed, int) else worker.missed_heartbeat_count
+        worker.last_heartbeat_sequence = sequence
         return worker
 
     def summary(self) -> dict[str, Any]:

@@ -4,7 +4,18 @@
 
 LIMA Office OS is a governed small-business office control plane. The first viable target is one customer/tenant with one Supervisor Server, 1-8 Arc worker mini PCs, optional 1-4 supervisor-side helper agents, Guardian gates, and future LIMA IT handoff.
 
-Phase 0 architecture is documentation-only. It defines planes, trust boundaries, contracts, and acceptance gates before runtime implementation.
+Phase 0 defines the contracts and trust boundaries. The approved lab slice now
+implements one non-executing operating path: authenticated Arc registration and
+heartbeat, mandatory Guardian, LIMA governed decision, durable SQLite evidence,
+and an Arc assignment acknowledgement. It grants no execution authority and is
+not production-ready.
+
+The first transport is short-lived HMAC-authenticated metadata over an explicit
+foreground, loopback-only Arc endpoint. Channel keys are injected by the lab
+operator, never stored in evidence, and represented only by an opaque key ID.
+Replay identities and worker health snapshots persist in SQLite. Private-LAN
+deployment remains blocked on a reviewed confidentiality and device-key
+provisioning design.
 
 ## Architecture Planes
 

@@ -1,4 +1,4 @@
-"""Mock worker heartbeat intake."""
+"""Validated worker heartbeat intake."""
 
 from __future__ import annotations
 
@@ -14,11 +14,18 @@ STALE_HEARTBEAT_SECONDS = 180
 
 
 class HeartbeatService:
-    """Validates heartbeat-shaped payloads and updates the in-memory registry."""
+    """Validates heartbeat payloads and updates the active registry view."""
 
-    def __init__(self, registry: WorkerRegistry, validator: ContractValidator) -> None:
+    def __init__(
+        self,
+        registry: WorkerRegistry,
+        validator: ContractValidator,
+        *,
+        require_authenticated: bool = False,
+    ) -> None:
         self.registry = registry
         self.validator = validator
+        self.require_authenticated = require_authenticated
         self.stale_threshold_seconds = STALE_HEARTBEAT_SECONDS
 
     def accept(self, payload: dict[str, Any]) -> dict[str, Any]:
@@ -27,6 +34,8 @@ class HeartbeatService:
         if not isinstance(worker_id, str):
             raise WorkerStateError("heartbeat worker_id is required")
         worker = self.registry.require_worker(worker_id, heartbeat.get("tenant_id"))
+        if self.require_authenticated and not worker.authenticated:
+            raise WorkerStateError("unauthenticated worker heartbeat is forbidden")
         if heartbeat.get("worker_id") != worker.worker_id:
             raise WorkerStateError("heartbeat worker identity mismatch")
         self.registry.update_heartbeat(worker_id, heartbeat)

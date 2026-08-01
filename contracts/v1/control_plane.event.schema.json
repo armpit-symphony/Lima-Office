@@ -69,6 +69,8 @@
         "lima_decision",
         "assignment_preview",
         "worker_acknowledgement",
+        "worker_registration",
+        "worker_heartbeat",
         "denial",
         "failure",
         "approval_requested",
