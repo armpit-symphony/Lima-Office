@@ -13,7 +13,11 @@ from lima_office.contracts import ContractLoader, ContractValidator
 from lima_office.evidence.sqlite_store import SQLiteEvidenceStore
 from lima_office.guardian.authority import GuardianCoreAuthority
 
-from .control_plane import SupervisorControlPlane, load_lima_runner
+from .control_plane import (
+    SupervisorControlPlane,
+    load_execution_grant_issuer,
+    load_lima_runner,
+)
 from .operator_channel import OperatorChannel
 from .operator_service import (
     OperatorControlPlaneService,
@@ -78,6 +82,15 @@ def _parser() -> argparse.ArgumentParser:
         help=(
             "Read one hex-encoded ephemeral worker key per binding from "
             "stdin after the operator key, in binding order."
+        ),
+    )
+    parser.add_argument(
+        "--execution-opt-in",
+        action="store_true",
+        help=(
+            "Operator opt-in for issuing execution grants. Off unless passed. "
+            "Even with it, only read-only capabilities are grantable, and the "
+            "Arc consumer must independently opt in before anything runs."
         ),
     )
     return parser
@@ -221,6 +234,8 @@ def main(argv: list[str] | None = None) -> int:
             worker_health_refreshers=worker_refreshers,
             policy_version=args.policy_version,
             require_authenticated_workers=True,
+            execution_opt_in=args.execution_opt_in,
+            execution_grant_issuer=load_execution_grant_issuer(),
         )
         service = OperatorControlPlaneService(
             channel=operator_channel,

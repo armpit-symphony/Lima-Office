@@ -82,6 +82,11 @@ jobs:
           python scripts/arc-operator-supervisor-smoke.py \
             --arc-source "$GITHUB_WORKSPACE/arc-bot-shell"
 
+      - name: Prove the execution grant path and every opt-in gate
+        run: >-
+          python scripts/arc-execution-grant-smoke.py
+          --arc-source "$GITHUB_WORKSPACE/arc-bot-shell"
+
       - name: Prove one, two, and eight foreground Arc workers
         shell: bash
         run: |
