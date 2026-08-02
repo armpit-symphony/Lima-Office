@@ -8,11 +8,15 @@ the checker and the bumper can never disagree about either question.
 Commit hashes in docs, audits, proof packets, and test fixtures are historical
 evidence rather than live pins. Nothing here reads or rewrites them: a site is
 only ever touched when the lock names it explicitly.
+
+A pin the files agree on is still not a pin the interpreter is running, so this
+module also reports what is actually installed. See ``installed_package``.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
+import importlib.metadata
 import json
 from pathlib import Path
 import re
@@ -199,6 +203,93 @@ def load_lock(root: Path | None = None) -> Lock:
             raise LockError("lock: every operational path must be a non-empty string")
         operational = tuple(raw_paths)
     return Lock(version=version, dependencies=parsed, operational_paths=operational)
+
+
+@dataclass(frozen=True)
+class InstalledPackage:
+    """What the running interpreter actually has installed for one package."""
+
+    name: str
+    version: str
+    commit: str | None
+    origin: str | None
+    requested_revision: str | None = None
+
+    @property
+    def described_origin(self) -> str:
+        if self.commit is not None:
+            return f"commit {self.commit[:7]}"
+        if self.origin is not None:
+            return self.origin
+        return "an unrecorded source"
+
+
+def installed_package(package_name: str) -> InstalledPackage | None:
+    """Report what the interpreter has installed, or None if it has nothing.
+
+    pip records the resolved commit in ``direct_url.json`` (PEP 610) whenever a
+    distribution is installed from a VCS URL. That file is the only honest
+    answer to "which commit is actually importable right now": a version string
+    cannot distinguish two builds of the same release candidate, which is
+    exactly the confusion this repository has to rule out.
+
+    ``commit`` is None when the package is installed but not from a VCS pin -
+    an editable local checkout, for instance, whose contents this tool cannot
+    vouch for.
+
+    ``requested_revision`` is what the install actually asked for. A caller that
+    needs to prove the install was pinned by commit rather than by a moving ref
+    must compare it too: ``@main`` that happens to resolve to the right commit
+    today records the right ``commit`` and the wrong intent.
+    """
+
+    try:
+        distribution = importlib.metadata.distribution(package_name)
+    except importlib.metadata.PackageNotFoundError:
+        return None
+    version = distribution.version
+    raw = distribution.read_text("direct_url.json")
+    if not raw:
+        return InstalledPackage(
+            name=package_name, version=version, commit=None, origin=None
+        )
+    try:
+        payload = json.loads(raw)
+    except json.JSONDecodeError:
+        return InstalledPackage(
+            name=package_name, version=version, commit=None, origin=None
+        )
+    if not isinstance(payload, dict):
+        return InstalledPackage(
+            name=package_name, version=version, commit=None, origin=None
+        )
+    url = payload.get("url")
+    origin = url if isinstance(url, str) else None
+    vcs_info = payload.get("vcs_info")
+    if not isinstance(vcs_info, dict):
+        if payload.get("dir_info"):
+            origin = f"a local checkout at {origin}" if origin else "a local checkout"
+        return InstalledPackage(
+            name=package_name, version=version, commit=None, origin=origin
+        )
+    requested = vcs_info.get("requested_revision")
+    requested_revision = requested if isinstance(requested, str) else None
+    commit = vcs_info.get("commit_id")
+    if not isinstance(commit, str) or not COMMIT_PATTERN.match(commit):
+        return InstalledPackage(
+            name=package_name,
+            version=version,
+            commit=None,
+            origin=origin,
+            requested_revision=requested_revision,
+        )
+    return InstalledPackage(
+        name=package_name,
+        version=version,
+        commit=commit,
+        origin=origin,
+        requested_revision=requested_revision,
+    )
 
 
 def read_site_text(root: Path, site: Site) -> str:
