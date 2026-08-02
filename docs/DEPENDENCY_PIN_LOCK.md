@@ -27,15 +27,15 @@ here reads or touches them. `check-stack-pins.py` only ever visits paths the
 lock names explicitly, and a test asserts no evidence path is registered as a
 site.
 
-## The two checks
+## The three checks
 
 They catch different failures and run in different places.
 
-| | Consistency | Currency |
-|---|---|---|
-| Question | Do all copies of a pin agree? | Is the pin still the right one? |
-| Needs network | No | Yes |
-| Where | Every pull request, blocking | Scheduled weekday job |
+| | Consistency | Currency | Installation |
+|---|---|---|---|
+| Question | Do all copies of a pin agree? | Is the pin still the right one? | Is the interpreter running it? |
+| Needs network | No | Yes | No |
+| Where | Every pull request, blocking | Scheduled weekday job | Lab job, before tests |
 
 Currency deliberately does not block pull requests. Whether Arc merged
 something this morning has nothing to do with whether the change under review
@@ -43,6 +43,15 @@ is correct, and a dependency's merge should never turn this repository red.
 
 A pin can pass consistency and fail currency at the same time — that is
 exactly the state that caused the last incident.
+
+A pin can also pass both and still be wrong where it counts. Every file can
+agree with the lock while the interpreter imports a different commit entirely,
+because Arc-Bot-shell freezes `lima-runtime` at a commit this repository has
+tracked past. `scripts/check-exact-governed-stack-pins.py` is the installation
+check the lab job runs; `check-stack-pins.py --check-installed` is the portable
+form that names the offending interpreter. Both resolve what is installed
+through the same helper, so they cannot disagree. Each repository needs its own
+environment: [ENVIRONMENT.md](ENVIRONMENT.md).
 
 ## Policies
 

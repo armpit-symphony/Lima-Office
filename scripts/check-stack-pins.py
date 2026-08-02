@@ -11,6 +11,15 @@ different checks:
   ``--check-currency`` and runs on a schedule instead of blocking review. An
   unrelated merge in a dependency must never turn this repository's pull
   request CI red.
+* Installation - every file agrees, and the interpreter is importing something
+  else entirely. Arc-Bot-shell and Lima-Office pin lima-runtime to different
+  commits deliberately, so one shared interpreter can only ever satisfy one of
+  them, and the loser's tests pass against the wrong runtime without saying so.
+  That check needs an environment rather than a repository, so it lives behind
+  ``--check-installed`` and belongs in front of a test run.
+
+This file is byte-identical in both repositories on purpose. Keep it that way:
+nothing here may describe one of them as "this" repository.
 
 The unregistered scan covers operational paths only. Commit hashes in audits,
 proof packets, and fixtures are evidence of what was true at the time; this
@@ -50,6 +59,14 @@ def _parser() -> argparse.ArgumentParser:
         help=(
             "Also contact each dependency repository and report pins that are "
             "not their main. Requires network access."
+        ),
+    )
+    parser.add_argument(
+        "--check-installed",
+        action="store_true",
+        help=(
+            "Also prove the running interpreter has each pinned package "
+            "installed at the locked commit. Offline. Run this before tests."
         ),
     )
     return parser
@@ -168,6 +185,50 @@ def _currency(lock: stack_pins.Lock) -> tuple[list[str], list[str]]:
     return failures, notes
 
 
+def _installed(lock: stack_pins.Lock) -> tuple[list[str], list[str]]:
+    """Return (failures, notes) after comparing the environment with the lock.
+
+    Only dependencies the lock describes as packages are checked. The rest are
+    rollback targets and superseded baselines: real pins that appear in files
+    but are never installed, so an interpreter that lacks them is correct.
+    """
+
+    failures: list[str] = []
+    notes: list[str] = []
+    for dependency in lock.dependencies:
+        if dependency.package_name is None:
+            notes.append(
+                f"{dependency.name}: not a package, nothing to install"
+            )
+            continue
+        found = stack_pins.installed_package(dependency.package_name)
+        if found is None:
+            failures.append(
+                f"{dependency.name}: {dependency.package_name} is not installed "
+                f"in {sys.executable}; create this repository's own environment "
+                "and install it there"
+            )
+            continue
+        if found.commit is None:
+            failures.append(
+                f"{dependency.name}: {dependency.package_name} is installed from "
+                f"{found.described_origin}, so its commit cannot be verified "
+                f"against the lock's {dependency.commit[:7]}"
+            )
+            continue
+        if found.commit != dependency.commit:
+            failures.append(
+                f"{dependency.name}: {sys.executable} imports "
+                f"{found.commit[:7]}, the lock pins {dependency.commit[:7]}; "
+                "this interpreter belongs to another repository or is stale"
+            )
+            continue
+        notes.append(
+            f"{dependency.name}: installed {found.commit[:7]} matches the lock"
+        )
+    return failures, notes
+
+
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
@@ -183,9 +244,14 @@ def main(argv: list[str] | None = None) -> int:
     failures = stack_pins.check_sites(lock, root)
     failures.extend(_unregistered(lock, root))
     notes: list[str] = []
+    if args.check_installed:
+        installed_failures, installed_notes = _installed(lock)
+        failures.extend(installed_failures)
+        notes.extend(installed_notes)
     if args.check_currency:
-        currency_failures, notes = _currency(lock)
+        currency_failures, currency_notes = _currency(lock)
         failures.extend(currency_failures)
+        notes.extend(currency_notes)
 
     print("Dependency pin lock")
     print(f"- lock version: {lock.version}")
@@ -193,6 +259,9 @@ def main(argv: list[str] | None = None) -> int:
     print(f"- sites verified: {site_count}")
     print(f"- operational files scanned: {len(_operational_files(root, lock))}")
     print(f"- currency checked: {'yes' if args.check_currency else 'no'}")
+    print(f"- installation checked: {'yes' if args.check_installed else 'no'}")
+    if args.check_installed:
+        print(f"- interpreter: {sys.executable}")
     for dependency in lock.dependencies:
         print(
             f"  {dependency.name} {dependency.commit[:7]} "
