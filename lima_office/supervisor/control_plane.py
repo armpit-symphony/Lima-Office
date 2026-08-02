@@ -127,6 +127,42 @@ class SupervisorControlPlane:
         self.execution_grant_issuer = execution_grant_issuer
         self.clock = clock or (lambda: datetime.now(timezone.utc))
 
+    def _permitted_resource_types(self) -> frozenset[str]:
+        """Resource types the guardian.decision contract admits.
+
+        Read from the contract rather than restated here, so the check cannot
+        drift from the schema it is protecting. An empty set means the schema
+        does not constrain resource_type, and the check does nothing.
+        """
+
+        cached = getattr(self, "_resource_type_cache", None)
+        if cached is not None:
+            return cached
+
+        def find(node: Any) -> list[str] | None:
+            if isinstance(node, dict):
+                candidate = node.get("properties", {}).get("resource_type")
+                if isinstance(candidate, dict) and "enum" in candidate:
+                    return [str(value) for value in candidate["enum"]]
+                for value in node.values():
+                    found = find(value)
+                    if found:
+                        return found
+            elif isinstance(node, list):
+                for value in node:
+                    found = find(value)
+                    if found:
+                        return found
+            return None
+
+        try:
+            schema = self.validator.loader.get_schema("guardian.decision")
+            permitted = frozenset(find(schema) or ())
+        except Exception:  # pragma: no cover - absent schema disables the check
+            permitted = frozenset()
+        self._resource_type_cache = permitted
+        return permitted
+
     def submit(self, raw_request: Mapping[str, Any]) -> dict[str, Any]:
         """Run the entire request synchronously and stop before execution."""
 
@@ -142,6 +178,32 @@ class SupervisorControlPlane:
             )
             self.evidence_store.append_event(event)
             return self._result(request, status="denied", reason_codes=["nonce_replay_denied"])
+
+        permitted = self._permitted_resource_types()
+        resource_type = request["resource"]["resource_type"]
+        if permitted and resource_type not in permitted:
+            # Checked before Guardian is asked anything. Left to fall through,
+            # this fails inside guardian.decision contract validation and is
+            # reported as recon_missing_guardian_decision, which blames the
+            # Guardian authority for a request that was never admissible.
+            self.evidence_store.append_event(
+                self._event(
+                    request,
+                    event_type="denial",
+                    component="supervisor",
+                    outcome="denied",
+                    summary=(
+                        f"resource_type {resource_type!r} is not permitted by the "
+                        "guardian.decision contract."
+                    ),
+                    reason_codes=["request_resource_type_not_permitted"],
+                )
+            )
+            return self._result(
+                request,
+                status="denied",
+                reason_codes=["request_resource_type_not_permitted"],
+            )
 
         request_event = self.evidence_store.append_event(
             self._event(

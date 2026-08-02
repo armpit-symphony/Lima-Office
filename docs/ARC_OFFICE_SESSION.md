@@ -70,17 +70,20 @@ Worth knowing before it costs you an hour.
 `folder`, `worker_status`, `draft_message`, `terminal`, `credential_ref`, and
 others — but **not** `document`.
 
-A request naming `document` is denied *before Guardian produces any decision*,
-and surfaces as:
+A request naming `document` is denied, and says why:
 
 ```
 status     : denied
-denied for : recon_missing_guardian_decision
+denied for : request_resource_type_not_permitted
 ```
 
-That reason code describes the reconciliation symptom rather than the cause,
-which is a poor diagnostic for what is really "unsupported resource_type". The
-session uses `file` for documents, which is the correct member.
+The Supervisor checks `resource_type` against the contract before asking
+Guardian anything, so an inadmissible request is refused on its own terms. It
+previously fell through into `guardian.decision` contract validation and was
+reported as `recon_missing_guardian_decision`, which blamed the Guardian
+authority for a request that was never admissible.
+
+The session uses `file` for documents, which is the correct member.
 
 Note that `scripts/arc-operator-supervisor-smoke.py` reads a document while
 passing `resource_type=worker_status`. That is valid and it works, but it
@@ -98,6 +101,7 @@ opt-in when the actual cause was the request itself. Check `status` and
 
 | Reason | Meaning |
 |---|---|
+| `request_resource_type_not_permitted` | `resource_type` is not a member of the guardian.decision contract |
 | `execution_grant_absent` | No grant arrived — Supervisor opt-in off, or the capability is not grantable |
 | `arc_execution_opt_in_disabled` | Grant arrived, Arc opt-in off |
 | `document_root_not_configured` | Arc has nothing it may read |
