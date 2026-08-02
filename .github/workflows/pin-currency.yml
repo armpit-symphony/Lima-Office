@@ -1,0 +1,32 @@
+name: Dependency pin currency
+
+# Deliberately not a pull request check. Whether a dependency has merged
+# something new is unrelated to whether the pull request under review is
+# correct, so treating it as a blocking check would turn this repository red
+# for reasons no reviewer here can act on. It runs on a schedule instead, so
+# drift is noticed on its own terms rather than as a surprise mid-review.
+
+on:
+  schedule:
+    - cron: "17 13 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  currency:
+    name: Report pins that are behind main
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compare every pin with its dependency main
+        run: python scripts/check-stack-pins.py --check-currency

@@ -1,22 +1,27 @@
 #!/usr/bin/env python3
-"""Fail closed unless the lab uses the reviewed Guardian and LIMA source pins."""
+"""Fail closed unless the lab uses the reviewed Guardian and LIMA source pins.
+
+The expected identities come from ``stack.lock.json`` rather than a private
+copy, so this check and the installed requirements cannot drift apart.
+"""
 
 from __future__ import annotations
 
+import importlib.util
 import json
 from importlib import metadata
+from pathlib import Path
+import sys
 
 
-EXPECTED = {
-    "guardian-suite": {
-        "version": "1.0.0",
-        "commit": "69e843218c521b913edcec404dea6b7be8c64f06",
-    },
-    "lima-runtime": {
-        "version": "0.1.0rc1",
-        "commit": "0718af23570ed631ed4af4c7d9d8b0db82075648",
-    },
-}
+_HELPER = Path(__file__).resolve().parent / "stack_pins.py"
+_spec = importlib.util.spec_from_file_location("stack_pins", _HELPER)
+assert _spec is not None and _spec.loader is not None
+stack_pins = importlib.util.module_from_spec(_spec)
+# Registered before execution because dataclasses resolves annotations through
+# sys.modules, and a module loaded purely from a path is not there yet.
+sys.modules["stack_pins"] = stack_pins
+_spec.loader.exec_module(stack_pins)
 
 
 def _direct_url(distribution: metadata.Distribution) -> dict[str, object]:
@@ -27,17 +32,29 @@ def _direct_url(distribution: metadata.Distribution) -> dict[str, object]:
 
 
 def main() -> int:
-    for package, expected in EXPECTED.items():
+    lock = stack_pins.load_lock()
+    installed = [
+        dependency
+        for dependency in lock.dependencies
+        if dependency.package_name is not None
+    ]
+    if not installed:
+        raise SystemExit("the lock declares no installed packages to verify")
+
+    for dependency in installed:
+        package = dependency.package_name
         distribution = metadata.distribution(package)
         version = distribution.version
         direct_url = _direct_url(distribution)
         vcs_info = direct_url.get("vcs_info")
         commit = vcs_info.get("commit_id") if isinstance(vcs_info, dict) else None
-        requested = vcs_info.get("requested_revision") if isinstance(vcs_info, dict) else None
+        requested = (
+            vcs_info.get("requested_revision") if isinstance(vcs_info, dict) else None
+        )
         if (
-            version != expected["version"]
-            or commit != expected["commit"]
-            or requested != expected["commit"]
+            version != dependency.package_version
+            or commit != dependency.commit
+            or requested != dependency.commit
         ):
             raise SystemExit(
                 f"{package} identity mismatch: version={version!r}, "
