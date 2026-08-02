@@ -37,14 +37,6 @@ sys.modules["stack_pins"] = stack_pins
 _spec.loader.exec_module(stack_pins)
 
 
-OPERATIONAL_GLOBS = (
-    "requirements*.txt",
-    ".github/workflows/*.yml",
-    ".github/workflows/*.yaml",
-    "scripts/*.py",
-)
-
-
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
@@ -63,9 +55,9 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _operational_files(root: Path) -> list[Path]:
+def _operational_files(root: Path, lock: stack_pins.Lock) -> list[Path]:
     found: set[Path] = set()
-    for pattern in OPERATIONAL_GLOBS:
+    for pattern in lock.operational_paths:
         found.update(path for path in root.glob(pattern) if path.is_file())
     return sorted(found)
 
@@ -80,7 +72,7 @@ def _unregistered(lock: stack_pins.Lock, root: Path) -> list[str]:
 
     spans = stack_pins.registered_spans(lock, root)
     failures: list[str] = []
-    for path in _operational_files(root):
+    for path in _operational_files(root, lock):
         relative = path.relative_to(root).as_posix()
         known = spans.get(relative, [])
         for match in stack_pins.COMMIT_SHAPED.finditer(_read(path)):
@@ -110,7 +102,7 @@ def _remote_main(url: str) -> str | None:
 def _is_ancestor_of_main(url: str, commit: str) -> bool | None:
     """Return whether the pin is reachable from the dependency's main."""
 
-    with tempfile.TemporaryDirectory(prefix="lima-office-pin-check-") as raw:
+    with tempfile.TemporaryDirectory(prefix="stack-pin-check-") as raw:
         work = Path(raw)
         commands = (
             ["git", "init", "--quiet", str(work)],
@@ -182,7 +174,7 @@ def main(argv: list[str] | None = None) -> int:
         root = stack_pins.repository_root()
         lock = stack_pins.load_lock(root)
     except stack_pins.LockError as exc:
-        print("LIMA Office dependency pin lock")
+        print("Dependency pin lock")
         print(f"- lock error: {exc}")
         print("Result: FAIL")
         return 1
@@ -195,11 +187,11 @@ def main(argv: list[str] | None = None) -> int:
         currency_failures, notes = _currency(lock)
         failures.extend(currency_failures)
 
-    print("LIMA Office dependency pin lock")
+    print("Dependency pin lock")
     print(f"- lock version: {lock.version}")
     print(f"- dependencies pinned: {len(lock.dependencies)}")
     print(f"- sites verified: {site_count}")
-    print(f"- operational files scanned: {len(_operational_files(root))}")
+    print(f"- operational files scanned: {len(_operational_files(root, lock))}")
     print(f"- currency checked: {'yes' if args.check_currency else 'no'}")
     for dependency in lock.dependencies:
         print(

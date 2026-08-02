@@ -1,4 +1,4 @@
-"""Loader and site resolver for the LIMA Office dependency pin lock.
+"""Loader and site resolver for the dependency pin lock.
 
 Every live dependency pin in this repository is declared once in
 ``stack.lock.json`` and duplicated into one or more sites. This module is the
@@ -60,12 +60,21 @@ class Dependency:
         return f"https://github.com/{self.repo}.git"
 
 
+DEFAULT_OPERATIONAL_PATHS = (
+    "requirements*.txt",
+    ".github/workflows/*.yml",
+    ".github/workflows/*.yaml",
+    "scripts/*.py",
+)
+
+
 @dataclass(frozen=True)
 class Lock:
     """The parsed contents of ``stack.lock.json``."""
 
     version: str
     dependencies: tuple[Dependency, ...]
+    operational_paths: tuple[str, ...] = DEFAULT_OPERATIONAL_PATHS
 
     def dependency(self, name: str) -> Dependency:
         for dependency in self.dependencies:
@@ -180,15 +189,24 @@ def load_lock(root: Path | None = None) -> Lock:
     parsed = tuple(
         _parse_dependency(name, value) for name, value in sorted(dependencies.items())
     )
-    return Lock(version=version, dependencies=parsed)
+    raw_paths = raw.get("operational_paths")
+    if raw_paths is None:
+        operational = DEFAULT_OPERATIONAL_PATHS
+    else:
+        if not isinstance(raw_paths, list) or not raw_paths:
+            raise LockError("lock: 'operational_paths' must be a non-empty list")
+        if not all(isinstance(entry, str) and entry for entry in raw_paths):
+            raise LockError("lock: every operational path must be a non-empty string")
+        operational = tuple(raw_paths)
+    return Lock(version=version, dependencies=parsed, operational_paths=operational)
 
 
 def read_site_text(root: Path, site: Site) -> str:
     """Read a site verbatim, leaving its line endings untouched.
 
-    ``requirements-lab.txt`` uses CRLF. Reading through universal newlines and
-    writing back would silently rewrite every line ending in the file, so the
-    bumper would produce a diff far larger than the pin it was asked to move.
+    Some pin sites use CRLF. Reading through universal newlines and writing
+    back would silently rewrite every line ending in the file, so the bumper
+    would produce a diff far larger than the pin it was asked to move.
     """
 
     path = root / site.path
