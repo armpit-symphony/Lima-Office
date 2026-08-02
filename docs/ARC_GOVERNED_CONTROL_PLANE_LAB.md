@@ -18,6 +18,11 @@ and remains only a possible future operator/evidence display.
 
 ## Pinned lab dependencies
 
+These commits are duplicated from [`stack.lock.json`](../stack.lock.json), the
+single source of truth for every live pin. Move them with
+`python scripts/bump-pin.py`, never by hand; see
+[the dependency pin lock](DEPENDENCY_PIN_LOCK.md).
+
 - Guardian Suite:
   `69e843218c521b913edcec404dea6b7be8c64f06`
 - LIMA AI OS:

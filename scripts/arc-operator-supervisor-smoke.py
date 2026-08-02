@@ -141,6 +141,7 @@ def _start_supervisor(
     supervisor_db: Path,
     operator_key: bytes,
     worker_key: bytes,
+    execution_opt_in: bool = False,
 ) -> tuple[subprocess.Popen[str], dict[str, Any]]:
     process = subprocess.Popen(
         [
@@ -171,6 +172,7 @@ def _start_supervisor(
             "guardian-policy-lab-v1",
             "--operator-key-stdin",
             "--worker-key-stdin",
+            *(["--execution-opt-in"] if execution_opt_in else []),
         ],
         cwd=office_source,
         stdin=subprocess.PIPE,
@@ -216,6 +218,8 @@ def _run_operator(
     action: str = "safe_read",
     resource_type: str = "worker_status",
     resource_id: str = "arc-worker-001",
+    execute_granted_capability: bool = False,
+    document_root: Path | None = None,
 ) -> dict[str, Any]:
     completed = subprocess.run(
         [
@@ -247,6 +251,12 @@ def _run_operator(
             "--replay-db",
             str(replay_db),
             "--operator-key-stdin",
+            *(
+                ["--execute-granted-capability"]
+                if execute_granted_capability
+                else []
+            ),
+            *(["--document-root", str(document_root)] if document_root else []),
         ],
         cwd=arc_source,
         input=operator_key.hex() + "\n",

@@ -1,0 +1,68 @@
+{
+  "lock_version": "1.0.0",
+  "purpose": "Single source of truth for every live dependency pin in LIMA Office. A pin recorded here is duplicated into one or more sites; scripts/check-stack-pins.py proves every site agrees with this file, and scripts/bump-pin.py moves them together. Commit hashes recorded in docs, audits, proof packets, and test fixtures are historical evidence, not live pins, and are deliberately absent from this lock.",
+  "policies": {
+    "tracking": "Expected to equal the dependency's main. Drift is reported by the scheduled currency job.",
+    "frozen": "Deliberately held behind main. Requires a written reason."
+  },
+  "dependencies": {
+    "guardian-suite": {
+      "repo": "armpit-symphony/LIMA-Guardian-Suite",
+      "commit": "69e843218c521b913edcec404dea6b7be8c64f06",
+      "policy": "tracking",
+      "reason": "",
+      "package": {
+        "name": "guardian-suite",
+        "version": "1.0.0"
+      },
+      "sites": [
+        {
+          "path": "requirements-lab.txt",
+          "pattern": "LIMA-Guardian-Suite\\.git@(?P<commit>[0-9a-f]{40})",
+          "occurrences": 1
+        },
+        {
+          "path": "docs/ARC_GOVERNED_CONTROL_PLANE_LAB.md",
+          "pattern": "Guardian Suite:\\s*`(?P<commit>[0-9a-f]{40})`",
+          "occurrences": 1
+        }
+      ]
+    },
+    "lima-runtime": {
+      "repo": "armpit-symphony/LIMA-AI-OS",
+      "commit": "0718af23570ed631ed4af4c7d9d8b0db82075648",
+      "policy": "tracking",
+      "reason": "",
+      "package": {
+        "name": "lima-runtime",
+        "version": "0.1.0rc1"
+      },
+      "sites": [
+        {
+          "path": "requirements-lab.txt",
+          "pattern": "LIMA-AI-OS\\.git@(?P<commit>[0-9a-f]{40})",
+          "occurrences": 1
+        },
+        {
+          "path": "docs/ARC_GOVERNED_CONTROL_PLANE_LAB.md",
+          "pattern": "LIMA AI OS:\\s*`(?P<commit>[0-9a-f]{40})`",
+          "occurrences": 1
+        }
+      ]
+    },
+    "arc-bot-shell": {
+      "repo": "armpit-symphony/Arc-Bot-shell",
+      "commit": "65fedf83a58a3f96b4bd126d5f624c32d8ede727",
+      "policy": "tracking",
+      "reason": "",
+      "package": null,
+      "sites": [
+        {
+          "path": ".github/workflows/phase0-validation.yml",
+          "pattern": "repository: armpit-symphony/Arc-Bot-shell\\s+ref: (?P<commit>[0-9a-f]{40})",
+          "occurrences": 1
+        }
+      ]
+    }
+  }
+}
