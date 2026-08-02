@@ -8,6 +8,21 @@ It is not production-ready. It does not contain live connectors, executable
 runtime dispatch, hidden background jobs, approval enforcement for live
 actions, production server control, or customer-system mutation.
 
+## Running a governed session
+
+One command brings up an Arc worker and a Supervisor and takes repeated
+requests at a prompt:
+
+```bash
+python scripts/arc-office-session.py --arc-source /path/to/Arc-Bot-shell   --document-root /path/to/documents   --execution-opt-in --execute-granted-capability --emit-document-content
+```
+
+Both opt-ins are off unless passed, and the launcher hands them to the
+processes that own them rather than deciding anything itself. See
+[docs/ARC_OFFICE_SESSION.md](docs/ARC_OFFICE_SESSION.md), which also covers a
+trap worth knowing: `resource_type` is enumerated by contract and `document`
+is not a member, so a document is a `file`.
+
 ## What LIMA Office OS Is
 
 LIMA Office OS is intended to coordinate guarded AI office work for one small business at a time. It is designed around:
