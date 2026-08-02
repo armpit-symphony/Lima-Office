@@ -41,6 +41,15 @@ UNKNOWN_REASON_CODE_POLICIES = frozenset({"fail_closed", "display_unknown", "blo
 DEPRECATED_REASON_CODE_POLICIES = frozenset({"allow_with_warning", "fail_closed", "blocked_mvp"})
 
 REASON_CODE_REGISTRY: dict[str, dict[str, Any]] = {
+    "request_resource_type_not_permitted": {
+        "category": "reconciliation",
+        "status": "active",
+        "severity": "blocked",
+        "visibility": "operator_visible",
+        "evidence_required": True,
+        "fail_closed_required": True,
+        "aliases": [],
+    },
     "recon_missing_guardian_decision": {
         "category": "reconciliation",
         "status": "active",

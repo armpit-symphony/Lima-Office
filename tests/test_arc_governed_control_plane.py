@@ -221,6 +221,68 @@ class ArcGovernedControlPlaneTests(unittest.TestCase):
             "idempotency_key": idempotency_key,
         }
 
+    def test_unpermitted_resource_type_is_denied_by_name(self) -> None:
+        """A request the contract cannot admit must say so."""
+
+        request = self._request()
+        request["resource_type"] = "document"
+        result = self._control_plane().submit(request)
+
+        self.assertEqual("denied", result["status"])
+        self.assertEqual(
+            ["request_resource_type_not_permitted"],
+            result["reason_codes"],
+        )
+
+    def test_unpermitted_resource_type_never_reaches_guardian(self) -> None:
+        """Guardian must not be blamed for a request that was inadmissible."""
+
+        class _SpyGuardian:
+            def __init__(self) -> None:
+                self.calls = 0
+
+            def evaluate(self, request: dict[str, object]) -> dict[str, object]:
+                self.calls += 1
+                raise AssertionError("Guardian was asked about a bad request")
+
+        spy = _SpyGuardian()
+        request = self._request()
+        request["resource_type"] = "document"
+        result = self._control_plane(guardian=spy).submit(request)
+
+        self.assertEqual(0, spy.calls)
+        self.assertEqual(
+            ["request_resource_type_not_permitted"],
+            result["reason_codes"],
+        )
+
+    def test_a_genuinely_unavailable_guardian_still_reports_its_own_code(self) -> None:
+        """The new check must not swallow real Guardian failures."""
+
+        result = self._control_plane(guardian=UnavailableGuardian()).submit(
+            self._request()
+        )
+
+        self.assertEqual("denied", result["status"])
+        self.assertEqual(["recon_missing_guardian_decision"], result["reason_codes"])
+
+    def test_permitted_resource_types_come_from_the_contract(self) -> None:
+        permitted = self._control_plane()._permitted_resource_types()
+
+        self.assertIn("file", permitted)
+        self.assertIn("worker_status", permitted)
+        # The value that produced the misleading diagnostic.
+        self.assertNotIn("document", permitted)
+
+    def test_a_file_resource_type_is_admitted(self) -> None:
+        request = self._request()
+        request["resource_type"] = "file"
+        request["resource_id"] = "report.txt"
+        result = self._control_plane().submit(request)
+
+        self.assertEqual("acknowledged", result["status"])
+        self.assertEqual([], result["reason_codes"])
+
     def test_safe_read_reaches_arc_acknowledgement_and_persists_evidence(self) -> None:
         result = self._control_plane().submit(self._request())
 

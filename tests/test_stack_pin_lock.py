@@ -181,6 +181,26 @@ class LockValidationTests(unittest.TestCase):
         with self.assertRaises(stack_pins.LockError):
             self._load(mutate)
 
+    def test_operational_paths_default_when_absent(self):
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            _write_fixture(root, _fixture_lock())
+            self.assertEqual(
+                stack_pins.DEFAULT_OPERATIONAL_PATHS,
+                stack_pins.load_lock(root).operational_paths,
+            )
+
+    def test_operational_paths_can_be_declared(self):
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            lock = _fixture_lock()
+            lock["operational_paths"] = ["requirements*.txt"]
+            _write_fixture(root, lock)
+            self.assertEqual(
+                ("requirements*.txt",),
+                stack_pins.load_lock(root).operational_paths,
+            )
+
 
 class DriftDetectionTests(unittest.TestCase):
     """Each way a pin can drift must be caught, not merely be possible."""
