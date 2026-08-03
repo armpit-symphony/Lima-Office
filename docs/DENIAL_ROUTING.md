@@ -108,6 +108,53 @@ Every deployment has at least a system manager and an Executive manager/GM,
 plus the Human terminator, so ladder validation enforces a minimum ladder and
 not merely a well-formed one.
 
+## The ladder contract
+
+`lima_office/runtime/escalation.py`. A ladder is refused at load rather than
+accepted and degraded — a deployment whose escalation path cannot terminate
+must fail to start.
+
+Configuration arrives from an IDE or UI and is untrusted input like any other.
+Nothing in the loader repairs a malformed ladder.
+
+### Invariants
+
+| Invariant | Why |
+|---|---|
+| Ends in a `human` tier | Every other rung is automated and may defer. Human is the only termination guarantee. |
+| Exactly one terminal tier, and it is last | Two terminators, or one in the middle, means escalation can route past the person. |
+| Tiers contiguous and ascending from 1 | Movement is upward only; gaps make "the rung above" ambiguous. |
+| `next_tier` refuses sideways or downward moves | Monotonic movement is what makes termination structural rather than hoped for. |
+| Contains `system_manager` and `executive` kinds | The floor every deployment has. |
+| Each rung permits strictly more than the one below | A rung with equal authority denies for the same reason; the ladder would buy hops, not decisions. |
+| Only the terminal tier may hold `*` | Unbounded authority belongs to a person, not an automated role. |
+| Role labels unique, case-insensitively | Two rungs called "Manager" cannot be told apart in evidence. |
+
+The strict-superset rule is the one that prevents escalation theatre. Without
+it a customer can configure four rungs that all refuse identically, and the
+only thing they have bought is three hops before a person sees the request
+anyway.
+
+### Labels and kinds
+
+`role` is the customer's text. `kind` is what the system reasons about.
+
+A customer may name a rung "Supervisor" — and LIMA Office already has a
+Supervisor control plane that issues grants. Those are different things. The
+split keeps the customer's vocabulary while leaving contracts and evidence
+unambiguous, and `escalation_record()` always emits the rung and the role
+together:
+
+```json
+{
+  "record_type": "escalation",
+  "from": {"escalation_tier": 1, "role": "Supervisor", "kind": "system_manager"},
+  "to":   {"escalation_tier": 2, "role": "general manager", "kind": "executive"},
+  "reason_codes": ["outbound_missing_approval"],
+  "terminal": false
+}
+```
+
 ## Naming
 
 "Supervisor" is both a customer-chosen role label and a LIMA Office component
