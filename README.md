@@ -23,6 +23,21 @@ processes that own them rather than deciding anything itself. See
 trap worth knowing: `resource_type` is enumerated by contract and `document`
 is not a member, so a document is a `file`.
 
+## When a request is denied
+
+A denied request is not one thing, and the difference decides whether a shell
+may correct it, retry it, escalate it, or must stop. The escalation ladder is
+automated up to the Human rung, so escalating a policy denial to a higher
+machine is authority shopping — the same failure as auto-retry with a different
+decider.
+
+Reason codes therefore carry a disposition: `forbidden`, `escalatable`,
+`correctable`, or `retry_with_fresh_decision`. Unclassified codes are
+`forbidden`, so a denial nobody has classified stops rather than looping. See
+[docs/DENIAL_ROUTING.md](docs/DENIAL_ROUTING.md), which also sets the boundary
+between the ladder a customer configures and the denials only the system may
+classify.
+
 ## What LIMA Office OS Is
 
 LIMA Office OS is intended to coordinate guarded AI office work for one small business at a time. It is designed around:

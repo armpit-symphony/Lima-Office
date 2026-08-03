@@ -40,6 +40,72 @@ REASON_CODE_SEVERITIES = frozenset({"info", "warning", "degraded", "blocked", "c
 UNKNOWN_REASON_CODE_POLICIES = frozenset({"fail_closed", "display_unknown", "blocked_mvp"})
 DEPRECATED_REASON_CODE_POLICIES = frozenset({"allow_with_warning", "fail_closed", "blocked_mvp"})
 
+# What a shell may do about a denial.
+#
+# Category, severity and fail_closed_required cannot answer this. In this
+# registry prompt_injection_suspected and decision_expired are identical on all
+# three - category guardian, severity blocked, fail_closed_required True - and
+# they demand opposite handling. One must never be retried or escalated; the
+# other only needs a fresh decision.
+#
+# The distinction matters most because the escalation ladder is automated.
+# Escalating a policy denial to a higher automated authority is authority
+# shopping: structurally the same failure as auto-retry, with a different
+# decider. Forbidden exists to make that impossible rather than discouraged.
+DENIAL_DISPOSITIONS = frozenset(
+    {
+        # No tier may permit it. Terminal: never retried, never escalated.
+        "forbidden",
+        # This authority may not permit it; a higher tier might.
+        "escalatable",
+        # The request itself was inadmissible. Correct it, resubmit same tier.
+        "correctable",
+        # The request was fine and no authority refused; the decision aged out.
+        "retry_with_fresh_decision",
+    }
+)
+
+# Unclassified codes are forbidden. The cost of a missing classification is
+# then a denial that stops, never one that loops against a gate or climbs the
+# ladder carrying an injection attempt.
+DEFAULT_DENIAL_DISPOSITION = "forbidden"
+
+# Most restrictive first. A denial carrying several reason codes takes the most
+# restrictive disposition among them: correcting a malformed field does not
+# make a co-occurring forbidden reason go away.
+DENIAL_DISPOSITION_PRECEDENCE = (
+    "forbidden",
+    "escalatable",
+    "retry_with_fresh_decision",
+    "correctable",
+)
+
+# Explicit classifications. Everything absent here is forbidden by default.
+# Codes are listed even when they match the default, so that reclassifying one
+# later is a deliberate edit to this table rather than an invisible omission.
+DENIAL_DISPOSITION_OVERRIDES: dict[str, str] = {
+    # Inadmissible on its face; the shell can fix it and ask again.
+    "request_resource_type_not_permitted": "correctable",
+    # The decision aged out. Nothing was refused.
+    "decision_expired": "retry_with_fresh_decision",
+    "decision_stale": "retry_with_fresh_decision",
+    # Missing an approval is precisely what the ladder exists to obtain.
+    "outbound_missing_approval": "escalatable",
+    # Adversarial input. Escalating these would hand an attacker a target with
+    # more authority at every rung, so they terminate.
+    "prompt_injection_suspected": "forbidden",
+    "tainted_input": "forbidden",
+    "connector_prompt_injection_risk": "forbidden",
+    "connector_prompt_injection_blocked": "forbidden",
+    "tainted_connector_payload_blocked": "forbidden",
+    "model_route_tainted_input_denied": "forbidden",
+    # Integrity failures. A different authority must not be asked to bless a
+    # decision that does not match the request it was issued for.
+    "guardian_decision_mismatch": "forbidden",
+    "decision_scope_hash_mismatch": "forbidden",
+    "decision_revoked": "forbidden",
+}
+
 REASON_CODE_REGISTRY: dict[str, dict[str, Any]] = {
     "request_resource_type_not_permitted": {
         "category": "reconciliation",
@@ -2134,6 +2200,59 @@ def validate_registry_entry_metadata(reason_code: str) -> dict[str, Any]:
     if severity not in REASON_CODE_SEVERITIES:
         raise PolicyDenyError(f"invalid reason severity for {reason_code}: {severity}")
     return metadata
+
+
+def denial_disposition(reason_code: str, *, allow_alias: bool = True) -> str:
+    """Return what a shell may do about a denial carrying this reason code.
+
+    An unknown code is forbidden rather than an error: a shell that cannot
+    classify a denial must stop, not guess. Callers that need unknown codes
+    rejected should validate them separately.
+    """
+
+    if not isinstance(reason_code, str) or not reason_code:
+        return DEFAULT_DENIAL_DISPOSITION
+    canonical = reason_code
+    if canonical not in REASON_CODE_REGISTRY and allow_alias:
+        canonical = ALIAS_TO_CANONICAL.get(reason_code, reason_code)
+    return DENIAL_DISPOSITION_OVERRIDES.get(canonical, DEFAULT_DENIAL_DISPOSITION)
+
+
+def denial_disposition_for_set(reason_codes: Any, *, allow_alias: bool = True) -> str:
+    """Return the most restrictive disposition across several reason codes.
+
+    A denial rarely carries one reason. Correcting a malformed field does not
+    dissolve a forbidden reason that arrived alongside it, so the most
+    restrictive disposition present governs the whole denial.
+
+    An empty set is forbidden: a denial with no stated reason is the least
+    explicable kind, and is not something to retry or escalate.
+    """
+
+    if isinstance(reason_codes, str) or not isinstance(reason_codes, (list, tuple, set, frozenset)):
+        return DEFAULT_DENIAL_DISPOSITION
+    found = {
+        denial_disposition(code, allow_alias=allow_alias) for code in reason_codes
+    }
+    if not found:
+        return DEFAULT_DENIAL_DISPOSITION
+    for disposition in DENIAL_DISPOSITION_PRECEDENCE:
+        if disposition in found:
+            return disposition
+    return DEFAULT_DENIAL_DISPOSITION
+
+
+def may_escalate(reason_codes: Any, *, allow_alias: bool = True) -> bool:
+    """Whether this denial may enter the escalation ladder at all.
+
+    This is the system-owned half of the boundary. Customers configure the
+    ladder's shape - how many tiers, what they are called, who fills them -
+    but never which denials may climb it. Without that line the org-structure
+    editor becomes a way to walk an injection attempt up to progressively
+    higher automated authority.
+    """
+
+    return denial_disposition_for_set(reason_codes, allow_alias=allow_alias) == "escalatable"
 
 
 def normalize_reason_code(
