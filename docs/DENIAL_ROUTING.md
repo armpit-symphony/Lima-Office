@@ -108,6 +108,65 @@ Every deployment has at least a system manager and an Executive manager/GM,
 plus the Human terminator, so ladder validation enforces a minimum ladder and
 not merely a well-formed one.
 
+## The ladder contract
+
+`lima_office/runtime/escalation.py`. A ladder is refused at load rather than
+accepted and degraded — a deployment whose escalation path cannot terminate
+must fail to start.
+
+Configuration arrives from an IDE or UI and is untrusted input like any other.
+Nothing in the loader repairs a malformed ladder.
+
+### The ladder is a failsafe chain, not a permission hierarchy
+
+Arc bot is fed SOP and trained in its job until it can do that job accurately
+on its own. The rungs above it exist to catch what it cannot yet handle —
+at minimum a system manager and a GM — before anything reaches a person.
+
+That is why **two rungs may hold identical authority**. What differs between
+them is knowledge and review, not permission. A rule requiring each rung to
+permit strictly more than the one below would forbid exactly the arrangements
+this system is for: peer reviewers, regional managers, a second pair of eyes
+on the same class of work.
+
+### Invariants
+
+| Invariant | Why |
+|---|---|
+| The last rung is `human` | Every rung below it may defer. The last one cannot, which is the only guarantee an escalation terminates. |
+| The last rung's permit scope is `*` | It decides everything that reaches it; a bound there would be a lie. |
+| Tiers contiguous and ascending from 1 | Movement is upward only; gaps make "the rung above" ambiguous. |
+| `next_tier` refuses sideways or downward moves | Monotonic movement is what makes termination structural rather than hoped for. |
+| Contains `system_manager` and `executive` kinds | The failsafes before human intervention, at minimum. |
+| No rung permits **less** than the one below | Escalating into narrower authority cannot resolve what the lower rung already refused. |
+| `*` only on `human` rungs | Unbounded authority belongs to a person, not an automated role. |
+| Role labels unique, case-insensitively | Two rungs called "Manager" cannot be told apart in evidence. |
+
+Several human rungs are allowed — a department head who escalates to an owner
+is still a chain of people — and a human rung below the last may hold a bounded
+scope. Deferral is decided by **position**, not by kind: only the last rung
+cannot pass a decision upward.
+
+### Labels and kinds
+
+`role` is the customer's text. `kind` is what the system reasons about.
+
+A customer may name a rung "Supervisor" — and LIMA Office already has a
+Supervisor control plane that issues grants. Those are different things. The
+split keeps the customer's vocabulary while leaving contracts and evidence
+unambiguous, and `escalation_record()` always emits the rung and the role
+together:
+
+```json
+{
+  "record_type": "escalation",
+  "from": {"escalation_tier": 1, "role": "Supervisor", "kind": "system_manager"},
+  "to":   {"escalation_tier": 2, "role": "general manager", "kind": "executive"},
+  "reason_codes": ["outbound_missing_approval"],
+  "terminal": false
+}
+```
+
 ## Naming
 
 "Supervisor" is both a customer-chosen role label and a LIMA Office component
