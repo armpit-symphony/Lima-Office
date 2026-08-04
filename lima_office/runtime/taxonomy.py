@@ -86,6 +86,12 @@ DENIAL_DISPOSITION_PRECEDENCE = (
 DENIAL_DISPOSITION_OVERRIDES: dict[str, str] = {
     # Inadmissible on its face; the shell can fix it and ask again.
     "request_resource_type_not_permitted": "correctable",
+    # Arc asked for a document that is not there. Nothing refused it; it looked
+    # in the wrong place, and an SOP can teach it the right one.
+    "document_not_found": "correctable",
+    # Arc has no document root. It cannot configure itself out of this, so a
+    # rung above it has to.
+    "document_root_not_configured": "escalatable",
     # The decision aged out. Nothing was refused.
     "decision_expired": "retry_with_fresh_decision",
     "decision_stale": "retry_with_fresh_decision",
@@ -107,6 +113,29 @@ DENIAL_DISPOSITION_OVERRIDES: dict[str, str] = {
 }
 
 REASON_CODE_REGISTRY: dict[str, dict[str, Any]] = {
+    # Arc reports this when the resource it was granted does not exist. The
+    # governed path worked and nothing refused anything: Arc asked for the
+    # wrong thing, which is the most ordinary teachable mistake there is.
+    "document_not_found": {
+        "category": "reconciliation",
+        "status": "active",
+        "severity": "blocked",
+        "visibility": "operator_visible",
+        "evidence_required": True,
+        "fail_closed_required": True,
+        "aliases": [],
+    },
+    # Arc has nothing it may read. Arc cannot fix its own configuration, so
+    # this is one for a rung above it rather than something to retry.
+    "document_root_not_configured": {
+        "category": "reconciliation",
+        "status": "active",
+        "severity": "blocked",
+        "visibility": "operator_visible",
+        "evidence_required": True,
+        "fail_closed_required": True,
+        "aliases": [],
+    },
     "request_resource_type_not_permitted": {
         "category": "reconciliation",
         "status": "active",

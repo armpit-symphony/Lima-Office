@@ -51,6 +51,15 @@ refused rather than merely discouraged. `autonomy_rate` — the share of
 attempts Arc finished with nobody else involved — is the measure of whether
 training is working. See [docs/SOP_TRAINING.md](docs/SOP_TRAINING.md).
 
+## Working a queue of tasks
+
+A task manager queues jobs; Arc works them through the real governed path, and
+what comes back decides whether the task finished, retries at the same rung,
+climbs to the next, or stops. Retries are bounded, a rung that receives an
+escalation starts with a full budget, and at the last rung the task waits for
+the person rather than moving. See [docs/TASK_SEAM.md](docs/TASK_SEAM.md), and
+`scripts/arc-task-seam-smoke.py` to watch it against real processes.
+
 ## What LIMA Office OS Is
 
 LIMA Office OS is intended to coordinate guarded AI office work for one small business at a time. It is designed around:
