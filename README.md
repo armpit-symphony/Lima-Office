@@ -38,6 +38,19 @@ Reason codes therefore carry a disposition: `forbidden`, `escalatable`,
 between the ladder a customer configures and the denials only the system may
 classify.
 
+## Training Arc toward doing the job alone
+
+Arc bot is fed SOP and trained until it can do its job accurately on its own,
+so every shortfall is a fact about what it has not been taught yet. Denials
+Arc can be taught past become SOP gaps; an operator can also author SOP
+directly, teaching Arc a job before it fails at one.
+
+Denials that exist to stop something never become gaps. Teaching Arc past a
+`forbidden` denial would be teaching it to defeat a control, so that record is
+refused rather than merely discouraged. `autonomy_rate` — the share of
+attempts Arc finished with nobody else involved — is the measure of whether
+training is working. See [docs/SOP_TRAINING.md](docs/SOP_TRAINING.md).
+
 ## What LIMA Office OS Is
 
 LIMA Office OS is intended to coordinate guarded AI office work for one small business at a time. It is designed around:
