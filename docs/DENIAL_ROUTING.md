@@ -117,23 +117,35 @@ must fail to start.
 Configuration arrives from an IDE or UI and is untrusted input like any other.
 Nothing in the loader repairs a malformed ladder.
 
+### The ladder is a failsafe chain, not a permission hierarchy
+
+Arc bot is fed SOP and trained in its job until it can do that job accurately
+on its own. The rungs above it exist to catch what it cannot yet handle —
+at minimum a system manager and a GM — before anything reaches a person.
+
+That is why **two rungs may hold identical authority**. What differs between
+them is knowledge and review, not permission. A rule requiring each rung to
+permit strictly more than the one below would forbid exactly the arrangements
+this system is for: peer reviewers, regional managers, a second pair of eyes
+on the same class of work.
+
 ### Invariants
 
 | Invariant | Why |
 |---|---|
-| Ends in a `human` tier | Every other rung is automated and may defer. Human is the only termination guarantee. |
-| Exactly one terminal tier, and it is last | Two terminators, or one in the middle, means escalation can route past the person. |
+| The last rung is `human` | Every rung below it may defer. The last one cannot, which is the only guarantee an escalation terminates. |
+| The last rung's permit scope is `*` | It decides everything that reaches it; a bound there would be a lie. |
 | Tiers contiguous and ascending from 1 | Movement is upward only; gaps make "the rung above" ambiguous. |
 | `next_tier` refuses sideways or downward moves | Monotonic movement is what makes termination structural rather than hoped for. |
-| Contains `system_manager` and `executive` kinds | The floor every deployment has. |
-| Each rung permits strictly more than the one below | A rung with equal authority denies for the same reason; the ladder would buy hops, not decisions. |
-| Only the terminal tier may hold `*` | Unbounded authority belongs to a person, not an automated role. |
+| Contains `system_manager` and `executive` kinds | The failsafes before human intervention, at minimum. |
+| No rung permits **less** than the one below | Escalating into narrower authority cannot resolve what the lower rung already refused. |
+| `*` only on `human` rungs | Unbounded authority belongs to a person, not an automated role. |
 | Role labels unique, case-insensitively | Two rungs called "Manager" cannot be told apart in evidence. |
 
-The strict-superset rule is the one that prevents escalation theatre. Without
-it a customer can configure four rungs that all refuse identically, and the
-only thing they have bought is three hops before a person sees the request
-anyway.
+Several human rungs are allowed — a department head who escalates to an owner
+is still a chain of people — and a human rung below the last may hold a bounded
+scope. Deferral is decided by **position**, not by kind: only the last rung
+cannot pass a decision upward.
 
 ### Labels and kinds
 

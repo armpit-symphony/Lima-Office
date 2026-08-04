@@ -1,11 +1,19 @@
 """The escalation ladder: customer-shaped, system-constrained.
 
 A denial that may not be answered where it arose climbs a ladder of
-authorities. In the LIMA office ecosystem every rung below the last is
-automated - Arc bot, the supervisor role, manager, GM - and **Human is the
-only rung that cannot defer**. Human is therefore the sole guarantee that an
-escalation terminates, and that guarantee has to be structural rather than
-conventional.
+authorities. The ladder is a **failsafe chain**, not a permission hierarchy.
+
+Arc bot is fed SOP and trained in its job until it can do that job accurately
+on its own. The rungs above it are the failsafes that catch what it cannot yet
+handle - at minimum a system manager and a GM - before anything reaches a
+person. Two rungs may hold identical authority and still both be worth having,
+because what differs between them is knowledge and review, not permission.
+Requiring each rung to permit strictly more than the one below would forbid
+exactly the arrangements this system is for.
+
+**The last rung is human and cannot defer.** Every rung below it may. That is
+the sole guarantee an escalation terminates, and it has to be structural rather
+than conventional.
 
 The ladder's shape is customer configuration, authored through an IDE or UI:
 how many tiers, what they are called, who fills them. Its invariants are not.
@@ -62,7 +70,11 @@ class EscalationLadderError(PolicyDenyError):
 
 @dataclass(frozen=True)
 class EscalationTier:
-    """One rung. ``role`` is the customer's label; ``kind`` is the contract."""
+    """One rung. ``role`` is the customer's label; ``kind`` is the contract.
+
+    A rung does not know whether it is last: that is a property of the ladder
+    it sits in, not of the rung. ``EscalationLadder`` decides who terminates.
+    """
 
     tier: int
     role: str
@@ -85,40 +97,33 @@ class EscalationTier:
             raise EscalationLadderError(
                 f"tier {self.tier} must declare what it may permit"
             )
-        if self.is_terminal and self.may_permit != frozenset({UNBOUNDED_PERMIT_SCOPE}):
-            raise EscalationLadderError(
-                "the terminal tier's permit scope is unbounded; declare "
-                f"{UNBOUNDED_PERMIT_SCOPE!r}"
-            )
-        if not self.is_terminal and UNBOUNDED_PERMIT_SCOPE in self.may_permit:
+        if UNBOUNDED_PERMIT_SCOPE in self.may_permit and not self.is_human:
             raise EscalationLadderError(
                 f"tier {self.tier} is automated and may not hold an unbounded "
-                "permit scope"
+                f"permit scope; {UNBOUNDED_PERMIT_SCOPE!r} belongs to a person"
             )
 
     @property
-    def is_terminal(self) -> bool:
+    def is_human(self) -> bool:
         return self.kind == TERMINAL_TIER_KIND
-
-    @property
-    def may_defer(self) -> bool:
-        """Only a person cannot pass the decision upward."""
-
-        return not self.is_terminal
 
     def permits(self, action_class: str) -> bool:
         if UNBOUNDED_PERMIT_SCOPE in self.may_permit:
             return True
         return action_class in self.may_permit
 
-    def to_dict(self) -> dict[str, Any]:
-        """Evidence shape. Tier and role travel together, always."""
+    def to_dict(self, *, may_defer: bool) -> dict[str, Any]:
+        """Evidence shape. Tier and role travel together, always.
+
+        ``may_defer`` is supplied by the ladder because only the ladder knows
+        which rung is last.
+        """
 
         return {
             "escalation_tier": self.tier,
             "role": self.role,
             "kind": self.kind,
-            "may_defer": self.may_defer,
+            "may_defer": may_defer,
             "may_permit": sorted(self.may_permit),
         }
 
@@ -144,44 +149,61 @@ class EscalationLadder:
         if len(set(roles)) != len(roles):
             raise EscalationLadderError("two tiers share a role label")
 
-        terminal = [tier for tier in self.tiers if tier.is_terminal]
-        if not terminal:
+        # The last rung terminates, whatever it is called. Several human rungs
+        # are allowed - a manager who escalates to a director is still a chain
+        # of people - but the one that cannot defer must be a person.
+        if not self.tiers[-1].is_human:
             raise EscalationLadderError(
                 "a ladder must end in a human tier; without one an escalation "
                 "between automated authorities never terminates"
             )
-        if len(terminal) > 1:
-            raise EscalationLadderError("a ladder may have only one terminal tier")
-        if not self.tiers[-1].is_terminal:
+        if self.tiers[-1].may_permit != frozenset({UNBOUNDED_PERMIT_SCOPE}):
             raise EscalationLadderError(
-                f"the human tier must be last, found it at tier "
-                f"{terminal[0].tier} of {len(self.tiers)}"
+                "the last rung decides everything that reaches it; declare its "
+                f"permit scope as {UNBOUNDED_PERMIT_SCOPE!r}"
             )
 
         present = {tier.kind for tier in self.tiers}
         missing = REQUIRED_TIER_KINDS - present
         if missing:
             raise EscalationLadderError(
-                "every deployment needs at least a system manager, an "
-                f"executive, and a human tier; missing {sorted(missing)}"
+                "the failsafes before human intervention are at least a system "
+                f"manager and an executive; missing {sorted(missing)}"
             )
 
-        # Each rung must be able to decide something the one below could not.
-        # Otherwise it denies for the same reason and the ladder buys nothing
-        # but hops before a person sees it anyway.
+        # Authority may repeat between rungs. Arc bot is trained toward doing a
+        # job on its own, and the rungs above it are failsafes that differ by
+        # knowledge and review rather than by permission - two reviewers with
+        # identical authority are a legitimate arrangement, not a mistake.
+        #
+        # A rung that permits strictly less than the one below it is still
+        # refused: escalating into narrower authority cannot resolve anything
+        # the lower rung had already refused.
         for lower, upper in zip(self.tiers, self.tiers[1:]):
-            if upper.is_terminal:
+            if upper.permits(UNBOUNDED_PERMIT_SCOPE) or UNBOUNDED_PERMIT_SCOPE in upper.may_permit:
                 continue
-            if not upper.may_permit > lower.may_permit:
+            if not upper.may_permit >= lower.may_permit:
+                narrowed = sorted(lower.may_permit - upper.may_permit)
                 raise EscalationLadderError(
-                    f"tier {upper.tier} ({upper.role}) must permit strictly more "
-                    f"than tier {lower.tier} ({lower.role}); as configured it "
-                    "would deny for the same reason"
+                    f"tier {upper.tier} ({upper.role}) permits less than tier "
+                    f"{lower.tier} ({lower.role}); escalating into narrower "
+                    f"authority cannot resolve {narrowed}"
                 )
 
     @property
     def terminal_tier(self) -> EscalationTier:
+        """The last rung. It decides; it cannot defer."""
+
         return self.tiers[-1]
+
+    def may_defer(self, number: int) -> bool:
+        """Whether this rung may pass the decision upward.
+
+        Position decides this, not kind. A human rung with another rung above
+        it may still defer; only the last one may not.
+        """
+
+        return self.tier(number).tier != len(self.tiers)
 
     def tier(self, number: int) -> EscalationTier:
         for candidate in self.tiers:
@@ -222,7 +244,10 @@ class EscalationLadder:
         return {
             "tier_count": len(self.tiers),
             "terminal_role": self.terminal_tier.role,
-            "tiers": [tier.to_dict() for tier in self.tiers],
+            "tiers": [
+                tier.to_dict(may_defer=self.may_defer(tier.tier))
+                for tier in self.tiers
+            ],
         }
 
 
@@ -313,10 +338,11 @@ def escalation_record(
 
     origin = ladder.tier(from_tier)
     destination = ladder.next_tier(from_tier)
+    destination_may_defer = ladder.may_defer(destination.tier)
     return {
         "record_type": "escalation",
-        "from": origin.to_dict(),
-        "to": destination.to_dict(),
+        "from": origin.to_dict(may_defer=ladder.may_defer(origin.tier)),
+        "to": destination.to_dict(may_defer=destination_may_defer),
         "reason_codes": sorted(str(code) for code in reason_codes),
-        "terminal": destination.is_terminal,
+        "terminal": not destination_may_defer,
     }

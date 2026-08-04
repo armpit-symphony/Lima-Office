@@ -70,21 +70,25 @@ class TerminationTests(unittest.TestCase):
                 )
             )
 
-    def test_only_one_terminal_tier_is_allowed(self):
-        with self.assertRaises(EscalationLadderError):
-            EscalationLadder(
-                tiers=(
-                    _tier(1, "lead", "system_manager", "routine"),
-                    _tier(2, "gm", "executive", "routine", "elevated"),
-                    _human(3, "owner"),
-                    _human(4, "founder"),
-                )
-            )
+    def test_several_human_rungs_are_allowed_if_the_last_one_is_human(self):
+        """A manager escalating to a director is still a chain of people."""
 
-    def test_the_terminal_tier_cannot_defer(self):
+        ladder = EscalationLadder(
+            tiers=(
+                _tier(1, "lead", "system_manager", "routine"),
+                _tier(2, "gm", "executive", "routine"),
+                _human(3, "department head"),
+                _human(4, "owner"),
+            )
+        )
+        self.assertTrue(ladder.may_defer(3))
+        self.assertFalse(ladder.may_defer(4))
+
+    def test_deferral_is_decided_by_position_not_by_kind(self):
         ladder = default_ladder()
-        self.assertFalse(ladder.terminal_tier.may_defer)
-        self.assertTrue(ladder.tier(1).may_defer)
+        self.assertTrue(ladder.may_defer(1))
+        self.assertTrue(ladder.may_defer(2))
+        self.assertFalse(ladder.may_defer(len(ladder.tiers)))
 
     def test_the_terminal_tier_cannot_escalate_further(self):
         ladder = default_ladder()
@@ -142,22 +146,52 @@ class FloorTests(unittest.TestCase):
         )
 
 
-class AuthorityMustIncreaseTests(unittest.TestCase):
-    """A rung that cannot decide more denies for the same reason."""
+class AuthorityMayRepeatTests(unittest.TestCase):
+    """Rungs are failsafes, not a permission hierarchy.
 
-    def test_equal_authority_between_rungs_is_refused(self):
-        with self.assertRaises(EscalationLadderError) as caught:
-            EscalationLadder(
-                tiers=(
-                    _tier(1, "lead", "system_manager", "routine"),
-                    _tier(2, "gm", "executive", "routine"),
-                    _human(3),
-                )
+    Arc bot is trained toward doing its job on its own; the rungs above it
+    catch what it cannot yet handle. Two reviewers with identical authority
+    differ by knowledge and review, which is a legitimate arrangement rather
+    than a misconfiguration.
+    """
+
+    def test_equal_authority_between_rungs_is_allowed(self):
+        ladder = EscalationLadder(
+            tiers=(
+                _tier(1, "lead", "system_manager", "routine"),
+                _tier(2, "gm", "executive", "routine"),
+                _human(3),
             )
-        self.assertIn("strictly more", str(caught.exception))
+        )
+        self.assertEqual(3, len(ladder.tiers))
 
-    def test_narrower_authority_above_is_refused(self):
-        with self.assertRaises(EscalationLadderError):
+    def test_several_peer_rungs_with_identical_authority_are_allowed(self):
+        """The arrangement the previous strict rule wrongly forbade."""
+
+        ladder = EscalationLadder(
+            tiers=(
+                _tier(1, "east lead", "system_manager", "routine"),
+                _tier(2, "west lead", "automated", "routine"),
+                _tier(3, "gm", "executive", "routine"),
+                _human(4),
+            )
+        )
+        self.assertEqual(4, len(ladder.tiers))
+
+    def test_widening_authority_is_still_allowed(self):
+        ladder = EscalationLadder(
+            tiers=(
+                _tier(1, "lead", "system_manager", "routine"),
+                _tier(2, "gm", "executive", "routine", "elevated"),
+                _human(3),
+            )
+        )
+        self.assertEqual(2, len(ladder.tier(2).may_permit))
+
+    def test_narrowing_authority_above_is_still_refused(self):
+        """Escalating into less authority cannot resolve the refusal."""
+
+        with self.assertRaises(EscalationLadderError) as caught:
             EscalationLadder(
                 tiers=(
                     _tier(1, "lead", "system_manager", "routine", "elevated"),
@@ -165,18 +199,7 @@ class AuthorityMustIncreaseTests(unittest.TestCase):
                     _human(3),
                 )
             )
-
-    def test_overlapping_but_not_superset_authority_is_refused(self):
-        """Different is not the same as greater."""
-
-        with self.assertRaises(EscalationLadderError):
-            EscalationLadder(
-                tiers=(
-                    _tier(1, "lead", "system_manager", "routine"),
-                    _tier(2, "gm", "executive", "elevated"),
-                    _human(3),
-                )
-            )
+        self.assertIn("elevated", str(caught.exception))
 
     def test_first_tier_permitting_finds_the_lowest_competent_rung(self):
         ladder = default_ladder()
@@ -185,7 +208,9 @@ class AuthorityMustIncreaseTests(unittest.TestCase):
 
     def test_an_unrecognised_action_class_lands_on_the_human(self):
         ladder = default_ladder()
-        self.assertTrue(ladder.first_tier_permitting("something_novel").is_terminal)
+        self.assertEqual(
+            ladder.terminal_tier, ladder.first_tier_permitting("something_novel")
+        )
 
 
 class PermitScopeTests(unittest.TestCase):
@@ -196,9 +221,31 @@ class PermitScopeTests(unittest.TestCase):
             _tier(1, "lead", "system_manager", UNBOUNDED_PERMIT_SCOPE)
         self.assertIn("unbounded", str(caught.exception))
 
-    def test_the_human_tier_must_be_unbounded(self):
-        with self.assertRaises(EscalationLadderError):
-            _tier(1, "owner", "human", "routine")
+    def test_a_human_rung_below_the_last_may_be_bounded(self):
+        """A department head who can approve some things, not everything."""
+
+        ladder = EscalationLadder(
+            tiers=(
+                _tier(1, "lead", "system_manager", "routine"),
+                _tier(2, "gm", "executive", "routine"),
+                _tier(3, "department head", "human", "routine", "elevated"),
+                _human(4, "owner"),
+            )
+        )
+        self.assertNotIn(UNBOUNDED_PERMIT_SCOPE, ladder.tier(3).may_permit)
+
+    def test_the_last_rung_must_be_unbounded(self):
+        """It decides everything that reaches it; a bound would be a lie."""
+
+        with self.assertRaises(EscalationLadderError) as caught:
+            EscalationLadder(
+                tiers=(
+                    _tier(1, "lead", "system_manager", "routine"),
+                    _tier(2, "gm", "executive", "routine"),
+                    _tier(3, "owner", "human", "routine"),
+                )
+            )
+        self.assertIn("decides everything", str(caught.exception))
 
     def test_a_tier_with_no_declared_authority_is_refused(self):
         with self.assertRaises(EscalationLadderError):
