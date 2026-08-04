@@ -30,6 +30,7 @@ from typing import Any, Iterable, Mapping, Sequence
 
 from lima_office.runtime.errors import PolicyDenyError
 from lima_office.runtime.taxonomy import (
+    DENIAL_DISPOSITIONS,
     denial_disposition_for_set,
 )
 
@@ -37,6 +38,35 @@ from lima_office.runtime.taxonomy import (
 # Where a gap came from. Both shapes are the same record because both feed the
 # same training loop: one observed by the system, one written by a person.
 GAP_SOURCES = frozenset({"escalation", "operator_authored"})
+
+# Authored SOP has no denial behind it, so it has no denial disposition. The
+# value is named here rather than left as a bare string, so a caller switching
+# on disposition has a set to enumerate.
+NOT_APPLICABLE_DISPOSITION = "not_applicable"
+GAP_DISPOSITIONS = DENIAL_DISPOSITIONS | {NOT_APPLICABLE_DISPOSITION}
+
+# Metadata carries references, never material. A gap says what was attempted
+# and why it stopped; the document, prompt, payload and output stay where they
+# already live under their own controls.
+#
+# Enforced rather than documented, because a free-form mapping is exactly where
+# a body ends up when someone is debugging in a hurry.
+_MATERIAL_KEY_FRAGMENTS = (
+    "payload",
+    "content",
+    "body",
+    "prompt",
+    "output",
+    "transcript",
+    "message",
+    "text",
+    "excerpt",
+    "snippet",
+)
+
+# Long enough for a ref, an id, a path or a short label. Not long enough to be
+# somewhere a document ends up by accident.
+MAX_METADATA_VALUE_LENGTH = 200
 
 # A gap is open until someone writes the instruction that closes it, and
 # retired once Arc demonstrably does the job without it.
@@ -60,6 +90,52 @@ TEACHABLE_DISPOSITIONS = frozenset({"correctable", "escalatable"})
 
 class SopGapError(PolicyDenyError):
     """The gap record is unusable and must not be stored."""
+
+
+def validate_gap_metadata(metadata: Any) -> dict[str, Any]:
+    """Return metadata that carries references only, or refuse it.
+
+    The record's whole claim is that it holds what was attempted and why it
+    stopped, never the material. A free-form mapping is where that claim goes
+    to die, so the boundary is checked rather than asserted in a docstring.
+    """
+
+    if metadata is None:
+        return {}
+    if not isinstance(metadata, Mapping):
+        raise SopGapError("gap metadata must be an object")
+
+    checked: dict[str, Any] = {}
+    for key, value in metadata.items():
+        if not isinstance(key, str) or not key.strip():
+            raise SopGapError("gap metadata keys must be non-empty strings")
+        folded = key.casefold()
+        for fragment in _MATERIAL_KEY_FRAGMENTS:
+            if fragment in folded:
+                raise SopGapError(
+                    f"gap metadata key {key!r} looks like material; a gap "
+                    "records references, not the document, prompt or output"
+                )
+        if isinstance(value, bool) or value is None:
+            checked[key] = value
+            continue
+        if isinstance(value, (int, float)):
+            checked[key] = value
+            continue
+        if isinstance(value, str):
+            if len(value) > MAX_METADATA_VALUE_LENGTH:
+                raise SopGapError(
+                    f"gap metadata {key!r} is {len(value)} characters; values "
+                    f"are capped at {MAX_METADATA_VALUE_LENGTH} so a body "
+                    "cannot be stored here"
+                )
+            checked[key] = value
+            continue
+        raise SopGapError(
+            f"gap metadata {key!r} must be a string, number, boolean or null; "
+            "nested structures can hide material"
+        )
+    return checked
 
 
 def is_teachable(reason_codes: Iterable[str]) -> bool:
@@ -102,6 +178,12 @@ class SopGap:
                 f"unknown gap source {self.source!r}; expected one of "
                 f"{sorted(GAP_SOURCES)}"
             )
+        if self.disposition not in GAP_DISPOSITIONS:
+            raise SopGapError(
+                f"unknown gap disposition {self.disposition!r}; expected one of "
+                f"{sorted(GAP_DISPOSITIONS)}"
+            )
+        object.__setattr__(self, "metadata", validate_gap_metadata(self.metadata))
         if self.status not in GAP_STATUSES:
             raise SopGapError(
                 f"unknown gap status {self.status!r}; expected one of "
@@ -155,6 +237,44 @@ class SopGap:
             resolved_by_role=resolved_by_role.strip(),
             instruction=instruction.strip(),
             metadata=dict(self.metadata),
+        )
+
+    def with_retirement(self, *, retired_by_role: str, demonstrated_by: str) -> "SopGap":
+        """Close the loop: Arc now does this job without the failsafe.
+
+        Only an instructed gap may retire. Retiring an open one would claim a
+        job was learned when nothing was ever taught, and the autonomy rate
+        would improve without anything having improved.
+
+        ``demonstrated_by`` is the reference to the evidence that Arc did it
+        alone, so a retirement can be checked rather than taken on trust.
+        """
+
+        if self.status != "instructed":
+            raise SopGapError(
+                f"only an instructed gap may retire; this one is {self.status!r} "
+                "and nothing has been taught yet"
+            )
+        if not isinstance(retired_by_role, str) or not retired_by_role.strip():
+            raise SopGapError("record who retired the gap")
+        if not isinstance(demonstrated_by, str) or not demonstrated_by.strip():
+            raise SopGapError(
+                "a retirement needs the evidence reference showing Arc did it alone"
+            )
+        metadata = dict(self.metadata)
+        metadata["retirement_evidence_ref"] = demonstrated_by.strip()
+        return SopGap(
+            gap_id=self.gap_id,
+            task_ref=self.task_ref,
+            capability=self.capability,
+            reason_codes=self.reason_codes,
+            disposition=self.disposition,
+            source=self.source,
+            status="retired",
+            escalated_to_tier=self.escalated_to_tier,
+            resolved_by_role=retired_by_role.strip(),
+            instruction=self.instruction,
+            metadata=metadata,
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -217,7 +337,10 @@ def gap_from_denial(
         disposition=denial_disposition_for_set(codes),
         source="escalation",
         escalated_to_tier=escalated_to_tier,
-        metadata=dict(metadata or {}),
+        # Passed through rather than coerced: dict() on a non-mapping raises
+        # TypeError, which would escape instead of the SopGapError the caller
+        # is prepared for.
+        metadata=metadata,
     )
 
 
@@ -243,47 +366,71 @@ def operator_authored_gap(
         task_ref=task_ref,
         capability=capability,
         reason_codes=(),
-        disposition="not_applicable",
+        disposition=NOT_APPLICABLE_DISPOSITION,
         source="operator_authored",
         status="instructed",
         resolved_by_role=authored_by_role,
         instruction=instruction.strip(),
-        metadata=dict(metadata or {}),
+        metadata=metadata,
     )
 
 
 def training_progress(
     *,
     completed_alone: int,
+    stopped_short: int,
     gaps: Iterable[SopGap],
 ) -> dict[str, Any]:
     """How close Arc is to doing the job on its own.
 
-    ``autonomy_rate`` is the share of attempts Arc finished without anyone
-    else being involved. It is the number to watch: training is working when
-    it rises, and an SOP that was written but never retired a gap shows up as
-    instructed gaps that never fall.
+    Two different quantities, kept separate on purpose:
 
-    Counts only, deliberately. Nothing here reads an instruction body.
+    * ``stopped_short`` counts **occurrences** - every time Arc could not
+      finish alone.
+    * ``gaps`` are **distinct** things to teach. Ids are derived, so twenty
+      identical failures collapse to one gap.
+
+    An earlier signature took only ``gaps`` and inferred attempts from its
+    length. That is right if the caller passes occurrences and quietly wrong if
+    it passes a gap store - which is the natural thing to pass, given ids
+    deduplicate. Twenty failures and eight successes would have reported 89%
+    autonomy instead of 29%. The counts are now separate so neither reading is
+    silent.
+
+    ``autonomy_rate`` is the share of attempts Arc finished with nobody else
+    involved. Training is working when it rises. An SOP written but never
+    retiring anything shows up as instructed gaps that never fall: instruction
+    written is not job learned.
+
+    Counts only. Nothing here reads an instruction body.
     """
 
-    if not isinstance(completed_alone, int) or isinstance(completed_alone, bool):
-        raise SopGapError("completed_alone must be an integer")
-    if completed_alone < 0:
-        raise SopGapError("completed_alone cannot be negative")
+    for name, value in (
+        ("completed_alone", completed_alone),
+        ("stopped_short", stopped_short),
+    ):
+        if not isinstance(value, int) or isinstance(value, bool):
+            raise SopGapError(f"{name} must be an integer")
+        if value < 0:
+            raise SopGapError(f"{name} cannot be negative")
 
-    observed = [gap for gap in gaps]
-    open_gaps = sum(1 for gap in observed if gap.status == "open")
-    instructed = sum(1 for gap in observed if gap.status == "instructed")
-    retired = sum(1 for gap in observed if gap.status == "retired")
-    attempts = completed_alone + len(observed)
+    observed = list(gaps)
+    distinct = {gap.gap_id for gap in observed}
+    if stopped_short < len(distinct):
+        raise SopGapError(
+            f"stopped_short is {stopped_short} but there are {len(distinct)} "
+            "distinct gaps; every gap came from at least one occurrence"
+        )
+
+    attempts = completed_alone + stopped_short
     return {
         "record_type": "sop_training_progress",
         "completed_alone": completed_alone,
-        "gap_count": len(observed),
-        "open_gaps": open_gaps,
-        "instructed_gaps": instructed,
-        "retired_gaps": retired,
+        "stopped_short": stopped_short,
+        "gap_count": len(distinct),
+        "open_gaps": sum(1 for gap in observed if gap.status == "open"),
+        "instructed_gaps": sum(1 for gap in observed if gap.status == "instructed"),
+        "retired_gaps": sum(1 for gap in observed if gap.status == "retired"),
         "attempts": attempts,
         "autonomy_rate": (completed_alone / attempts) if attempts else None,
     }

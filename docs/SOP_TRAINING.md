@@ -57,6 +57,17 @@ open ──with_instruction()──▶ instructed ──▶ retired
 A gap marked beyond `open` without an instruction is refused, so the status
 cannot claim progress that did not happen.
 
+Only an **instructed** gap may retire. Retiring an open one would claim a job
+was learned when nothing was ever taught, and the autonomy rate would improve
+without anything having improved. Retirement also requires an evidence
+reference showing Arc did the job alone, so it can be checked rather than
+taken on trust:
+
+```python
+gap.with_retirement(retired_by_role="system manager",
+                    demonstrated_by="evidence://run/9001")
+```
+
 ## Identity: one shortfall, not twenty records
 
 `gap_id_for()` derives the id from task, capability and reason codes rather
@@ -67,12 +78,23 @@ make the backlog look worse than it is.
 ## The number to watch
 
 ```python
-training_progress(completed_alone=8, gaps=[...])
-# {"attempts": 10, "autonomy_rate": 0.8, "open_gaps": 1, ...}
+training_progress(completed_alone=8, stopped_short=2, gaps=[...])
+# {"attempts": 10, "autonomy_rate": 0.8, "gap_count": 2, "open_gaps": 1, ...}
 ```
 
 `autonomy_rate` is the share of attempts Arc finished with nobody else
 involved. Training is working when it rises.
+
+**Occurrences and distinct gaps are separate arguments on purpose.**
+`stopped_short` counts every time Arc could not finish alone; `gaps` are the
+distinct things to teach, and ids are derived so twenty identical failures
+collapse to one. Inferring attempts from the length of the gap list is right
+only if the caller passes occurrences, and quietly wrong if it passes a gap
+store — which is the natural thing to pass. Twenty failures against eight
+successes would have read as 89% autonomy instead of 29%.
+
+A `stopped_short` lower than the number of distinct gaps is refused: every gap
+came from at least one occurrence.
 
 It also exposes the failure that is easy to miss: SOPs written but never
 retiring anything show up as `instructed_gaps` that never fall. Instruction
@@ -84,9 +106,20 @@ same as nothing achieved.
 ## What a gap never contains
 
 A gap records **what was attempted and why it stopped**, never the material:
-no task payload, document body, prompt, or model output. Same boundary the
-diagnostics surfaces keep, and `training_progress` reports counts only —
-nothing in it reads an instruction body.
+no task payload, document body, prompt, or model output.
+
+`metadata` is where that boundary would otherwise be lost, so it is enforced
+rather than documented — a free-form mapping is exactly where a body ends up
+when someone is debugging in a hurry. `validate_gap_metadata` refuses:
+
+- keys containing `payload`, `content`, `body`, `prompt`, `output`,
+  `transcript`, `message`, `text`, `excerpt`, `snippet`
+- string values longer than `MAX_METADATA_VALUE_LENGTH` (200), so renaming a
+  key is not a way around the check
+- nested dicts, lists and tuples, which can hide material below the key check
+
+References, ids, paths, numbers and flags all pass. `training_progress`
+reports counts only and never reads an instruction body.
 
 ## Related
 
