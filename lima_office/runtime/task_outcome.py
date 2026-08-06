@@ -23,7 +23,8 @@ to learn to not need anyone next time.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+import dataclasses
+from dataclasses import dataclass
 from typing import Any, Iterable, Mapping, Sequence
 
 from lima_office.runtime.errors import PolicyDenyError
@@ -42,6 +43,10 @@ TASK_OUTCOME_STATUSES = frozenset({"completed", "retry", "escalated", "blocked"}
 # A denial that keeps arriving is not resolved by arriving again. The cap is
 # small on purpose: retrying is only ever correcting a malformed request or
 # refreshing an aged decision, and neither should need many goes.
+#
+# It only ever applies to an attempt that will differ from the last one. A
+# retry with nothing changed is the auto-retry this system rejects, however
+# many times it is capped at.
 DEFAULT_MAX_ATTEMPTS = 3
 
 
@@ -143,6 +148,7 @@ def route_task_outcome(
     reason_codes: Sequence[str] = (),
     ladder: EscalationLadder,
     max_attempts: int = DEFAULT_MAX_ATTEMPTS,
+    instruction: str | None = None,
     metadata: Mapping[str, Any] | None = None,
 ) -> TaskOutcome:
     """Decide what happens to a task after one governed attempt.
@@ -151,6 +157,14 @@ def route_task_outcome(
     happened. It is taken at face value only when no reason codes arrived with
     it: a result claiming both is contradictory, and the safe reading of a
     contradiction is the denial.
+
+    ``instruction`` is the SOP already known for this task and capability, if
+    there is one. It decides whether a ``correctable`` denial may be retried at
+    all: retrying with nothing to correct with produces a byte-identical
+    request that fails byte-identically, which is the auto-retry this system
+    rejects wearing a better name. Without an instruction the gap is opened and
+    the task climbs, so a rung above supplies the SOP; with one, the next
+    attempt will genuinely differ and is worth making.
     """
 
     if not isinstance(attempt, TaskAttempt):
@@ -215,7 +229,9 @@ def route_task_outcome(
             note="no rung may permit this; not escalated and not retried",
         )
 
-    if disposition in {"correctable", "retry_with_fresh_decision"}:
+    if disposition == "retry_with_fresh_decision":
+        # Refreshing the decision is itself the change, so the next attempt
+        # differs without anyone having to teach Arc anything.
         if attempt.attempt < max_attempts:
             return TaskOutcome(
                 task_ref=attempt.task_ref,
@@ -225,8 +241,8 @@ def route_task_outcome(
                 gap=gap,
                 next_attempt=attempt.next_try(),
                 note=(
-                    f"attempt {attempt.attempt} of {max_attempts} at tier "
-                    f"{attempt.tier}"
+                    f"fresh decision, attempt {attempt.attempt} of "
+                    f"{max_attempts} at tier {attempt.tier}"
                 ),
             )
         return _escalate(
@@ -236,6 +252,45 @@ def route_task_outcome(
             gap=gap,
             ladder=ladder,
             note=f"unresolved after {max_attempts} attempts at tier {attempt.tier}",
+        )
+
+    if disposition == "correctable":
+        taught = isinstance(instruction, str) and bool(instruction.strip())
+        if not taught:
+            # Nothing to correct with. Retrying would send the same request
+            # again and get the same answer, so the gap opens and the task
+            # climbs to a rung that can supply the SOP.
+            return _escalate(
+                attempt,
+                codes=codes,
+                disposition=disposition,
+                gap=gap,
+                ladder=ladder,
+                note="no instruction to correct with yet",
+            )
+        if attempt.attempt < max_attempts:
+            return TaskOutcome(
+                task_ref=attempt.task_ref,
+                status="retry",
+                reason_codes=codes,
+                disposition=disposition,
+                gap=gap,
+                next_attempt=attempt.next_try(),
+                note=(
+                    f"correcting with the known SOP, attempt {attempt.attempt} "
+                    f"of {max_attempts} at tier {attempt.tier}"
+                ),
+            )
+        return _escalate(
+            attempt,
+            codes=codes,
+            disposition=disposition,
+            gap=gap,
+            ladder=ladder,
+            note=(
+                f"still failing after {max_attempts} attempts with the known "
+                "SOP; the instruction may be wrong"
+            ),
         )
 
     return _escalate(
@@ -278,19 +333,9 @@ def _escalate(
     destination = ladder.next_tier(attempt.tier)
     escalated_gap = gap
     if gap is not None:
-        escalated_gap = SopGap(
-            gap_id=gap.gap_id,
-            task_ref=gap.task_ref,
-            capability=gap.capability,
-            reason_codes=gap.reason_codes,
-            disposition=gap.disposition,
-            source=gap.source,
-            status=gap.status,
-            escalated_to_tier=destination.tier,
-            resolved_by_role=gap.resolved_by_role,
-            instruction=gap.instruction,
-            metadata=gap.metadata,
-        )
+        # replace() rather than rebuilding field by field: a new field on
+        # SopGap would otherwise be dropped here silently, on every escalation.
+        escalated_gap = dataclasses.replace(gap, escalated_to_tier=destination.tier)
     return TaskOutcome(
         task_ref=attempt.task_ref,
         status="escalated",

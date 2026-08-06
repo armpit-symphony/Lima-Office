@@ -127,12 +127,20 @@ def _run_task(
 
 
 def _route(result: dict[str, Any], *, task_ref: str) -> Any:
+    """Route on everything that was said, not only the first thing said.
+
+    The Supervisor and Arc report separately, and an earlier version used Arc's
+    reason only when the Supervisor had none. That discards half the answer: an
+    Arc-side forbidden reason arriving beside a Supervisor-side escalatable one
+    would have climbed the ladder. Both are collected so most-restrictive-wins
+    can do the job it exists for.
+    """
+
     execution = result.get("execution") or {}
     reason_codes = list(result.get("reason_codes") or [])
-    if not reason_codes:
-        code = execution.get("reason_code")
-        if code:
-            reason_codes = [code]
+    code = execution.get("reason_code")
+    if code and code not in reason_codes:
+        reason_codes.append(code)
     return route_task_outcome(
         TaskAttempt(task_ref=task_ref, capability="document_read"),
         performed=bool(execution.get("performed")),

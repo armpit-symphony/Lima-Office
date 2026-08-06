@@ -27,16 +27,32 @@ without a lab, and cannot differ between the lab and production.
 | Denial disposition | Outcome | Gap? |
 |---|---|---|
 | *(none — performed)* | `completed` | no |
-| `correctable` | `retry` at the same rung, bounded | **yes** |
+| `correctable`, **no SOP known** | `escalated` to the next rung | **yes** |
+| `correctable`, **SOP known** | `retry` at the same rung, bounded | **yes** |
 | `retry_with_fresh_decision` | `retry` at the same rung, bounded | no |
 | `escalatable` | `escalated` to the next rung | **yes** |
 | `forbidden` | `blocked` — never retried, never escalated | no |
 
-Retries are capped at `DEFAULT_MAX_ATTEMPTS` (3). A denial that keeps arriving
-is not resolved by arriving again, and retrying only ever means correcting a
-malformed request or refreshing an aged decision — neither should need many
-goes. When the budget runs out the task escalates rather than stopping, because
-running out of attempts is itself a thing a rung above should see.
+### A retry must change something
+
+A `correctable` denial means Arc built the request wrong. It does **not** mean
+sending the same request again: with nothing to correct with, the next attempt
+is byte-identical and fails byte-identically. That is the auto-retry this
+system rejects, wearing a better name, and capping it at three does not make it
+something else.
+
+So a first-time `correctable` denial is not retried at all. The gap opens and
+the task climbs, so a rung above can supply the SOP. Once an instruction is
+known, the next attempt will genuinely differ and is worth making — which is
+the model: **teach it, then it succeeds alone.**
+
+`retry_with_fresh_decision` still retries without an SOP, because refreshing
+the decision *is* the change.
+
+Retries are capped at `DEFAULT_MAX_ATTEMPTS` (3). When the budget runs out the
+task escalates rather than stopping — running out of attempts is itself a thing
+a rung above should see, and if it was failing *with* a known SOP, the note
+says the instruction may be wrong.
 
 A rung that receives an escalated task starts with a **full** attempt budget.
 It has not tried yet, and charging it for the previous rung's attempts would

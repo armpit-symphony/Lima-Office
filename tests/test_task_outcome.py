@@ -114,11 +114,31 @@ class ForbiddenNeverClimbsTests(unittest.TestCase):
 class RetryTests(unittest.TestCase):
     """Correcting a request or refreshing a decision stays at the same rung."""
 
-    def test_a_correctable_denial_retries_at_the_same_tier(self):
+    def test_a_correctable_denial_with_nothing_to_correct_with_escalates(self):
+        """Retrying an identical request is the auto-retry this system rejects.
+
+        Without an instruction the next attempt would be byte-identical and
+        fail byte-identically. The gap opens and the task climbs so a rung
+        above can supply the SOP.
+        """
+
         outcome = _route(codes=[CORRECTABLE])
+        self.assertEqual("escalated", outcome.status)
+        self.assertIn("no instruction to correct with", outcome.note)
+        self.assertIsNotNone(outcome.gap)
+
+    def test_a_correctable_denial_retries_once_an_sop_is_known(self):
+        outcome = _route(codes=[CORRECTABLE], instruction="Reports live in archive/.")
         self.assertEqual("retry", outcome.status)
         self.assertEqual(2, outcome.next_attempt.attempt)
         self.assertEqual(1, outcome.next_attempt.tier)
+
+    def test_a_blank_instruction_does_not_count_as_taught(self):
+        for instruction in ("", "   ", None):
+            with self.subTest(instruction=instruction):
+                self.assertEqual(
+                    "escalated", _route(codes=[CORRECTABLE], instruction=instruction).status
+                )
 
     def test_a_stale_decision_retries(self):
         outcome = _route(codes=[STALE])
@@ -136,13 +156,24 @@ class RetryTests(unittest.TestCase):
         self.assertIsNotNone(gap)
         self.assertEqual("open", gap.status)
 
-    def test_retries_are_bounded_then_escalate(self):
-        outcome = _route(_attempt(attempt=DEFAULT_MAX_ATTEMPTS), codes=[CORRECTABLE])
+    def test_refresh_retries_are_bounded_then_escalate(self):
+        outcome = _route(_attempt(attempt=DEFAULT_MAX_ATTEMPTS), codes=[STALE])
         self.assertEqual("escalated", outcome.status)
         self.assertIn("unresolved after", outcome.note)
 
+    def test_a_known_sop_that_keeps_failing_escalates_and_says_so(self):
+        """The SOP may simply be wrong, and a rung above should hear that."""
+
+        outcome = _route(
+            _attempt(attempt=DEFAULT_MAX_ATTEMPTS),
+            codes=[CORRECTABLE],
+            instruction="Reports live in archive/.",
+        )
+        self.assertEqual("escalated", outcome.status)
+        self.assertIn("instruction may be wrong", outcome.note)
+
     def test_a_single_attempt_budget_escalates_immediately(self):
-        outcome = _route(codes=[CORRECTABLE], max_attempts=1)
+        outcome = _route(codes=[STALE], max_attempts=1)
         self.assertEqual("escalated", outcome.status)
 
     def test_an_invalid_attempt_budget_is_refused(self):
@@ -258,25 +289,36 @@ class AttemptTests(unittest.TestCase):
 class WalkToRestTests(unittest.TestCase):
     """The whole journey, not only one step of it."""
 
-    def test_a_task_corrected_on_the_second_try_completes(self):
+    def test_a_refreshed_decision_succeeding_on_the_second_try_completes(self):
         outcomes = run_to_rest(
             _attempt(),
-            answers=[(False, [CORRECTABLE]), (True, [])],
+            answers=[(False, [STALE]), (True, [])],
             ladder=default_ladder(),
         )
         self.assertEqual(["retry", "completed"], [o.status for o in outcomes])
 
-    def test_a_persistent_correctable_failure_climbs_then_waits(self):
-        """Three tries, escalate, three more, escalate, then a person."""
+    def test_an_untaught_correctable_failure_climbs_on_every_rung(self):
+        """No retries at all without an SOP: one hop per rung, then a person."""
+
+        outcomes = run_to_rest(
+            _attempt(),
+            answers=[(False, [CORRECTABLE])] * 5,
+            ladder=default_ladder(),
+        )
+        self.assertEqual(
+            ["escalated", "escalated", "blocked"], [o.status for o in outcomes]
+        )
+        self.assertIn("cannot defer", outcomes[-1].note)
+
+    def test_the_walk_reaches_a_person_faster_than_it_used_to(self):
+        """Nine identical answers were needed before; three suffice now."""
 
         outcomes = run_to_rest(
             _attempt(),
             answers=[(False, [CORRECTABLE])] * 9,
             ladder=default_ladder(),
         )
-        self.assertEqual("blocked", outcomes[-1].status)
-        self.assertIn("cannot defer", outcomes[-1].note)
-        self.assertEqual(3, sum(1 for o in outcomes if o.status == "escalated") + 1)
+        self.assertEqual(3, len(outcomes))
 
     def test_a_forbidden_denial_ends_the_walk_at_once(self):
         outcomes = run_to_rest(
