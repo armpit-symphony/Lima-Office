@@ -2,6 +2,23 @@
 
 This document defines what the current Phase 1A runtime scaffolding is allowed
 to represent and what remains blocked.
+## Approved physical-PC test exception (2026-08-20)
+
+The operator explicitly approved one later bounded lab exception to the Phase
+1A no-service/no-UI baseline: `scripts/arc-runtime-harness.py` may run one real
+Arc worker and one real Supervisor behind a loopback-only Training/Working UI.
+
+The exception is limited to the already-proven `document_read` grant path,
+server-side SOP-gap persistence, task-outcome routing, training counters, and
+sanitized harness evidence. Training is the default. Working mode requires the
+Supervisor opt-in, Arc opt-in, and a document root at startup.
+
+This exception does not approve production hosting, LAN access, connectors,
+external sends, file mutation, model calls, remediation, unrestricted network
+access, device/robotics control, hidden jobs, or any other runtime expansion.
+The detailed boundary and runbook are in
+[`ARC_RUNTIME_HARNESS.md`](ARC_RUNTIME_HARNESS.md).
+
 
 ## Phase 1A Runtime State
 
@@ -33,7 +50,8 @@ external services, production operations, or customer-system mutation.
 - No real IT remediation.
 - No production server touch.
 - No software install/update execution.
-- No durable database, queue, web server, scheduler, daemon, or UI.
+- No durable database, queue, web server, scheduler, daemon, or UI except the
+  explicitly bounded loopback Arc physical-PC test harness above.
 - No browser automation.
 - No external model provider calls.
 - No unrestricted browser, file, network, shell, connector, or tool access.

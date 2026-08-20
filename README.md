@@ -6,6 +6,26 @@ The repo now contains one approved lab-only, non-executing Arc control-plane
 slice on top of the Phase 0 architecture and earlier mock runtime scaffolding.
 It is not production-ready. It does not contain live connectors, executable
 runtime dispatch, hidden background jobs, approval enforcement for live
+## Physical-PC test harness UI
+
+The first bounded operator UI now runs one Arc worker and one Supervisor on
+loopback with explicit **Training** and **Working** modes:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\arc-runtime-harness.py `
+  --arc-source C:\LIMA\Arc-Bot-shell `
+  --document-root C:\path\to\safe-test-documents `
+  --execution-opt-in --execute-granted-capability --emit-document-content
+```
+
+Training is the startup default and persists reviewed SOP instructions.
+Working mode remains unavailable unless both independent execution opt-ins and
+the bounded document root were supplied at startup. Its only executable
+capability is the existing Guardian-gated `document_read` path. Outcome routing,
+SOP gaps, training progress, and sanitized evidence are authoritative on the
+LIMA Office side, not in browser storage.
+
+See [the Arc physical runtime test harness](docs/ARC_RUNTIME_HARNESS.md).
 actions, production server control, or customer-system mutation.
 
 ## Running a governed session
