@@ -27,6 +27,16 @@ the Guardian-to-LIMA lineage survives restart. Private-LAN
 deployment remains blocked on a reviewed confidentiality and device/operator
 key provisioning design.
 
+A separately opted-in, loopback-only physical-PC harness may consume a
+single-use LIMA execution grant for exactly two Arc-local, side-effect-free
+capabilities: bounded non-recursive `document_list` and bounded
+`document_read`. The Supervisor and Arc opt-ins are independent, and Arc
+still resolves and contains every target under its configured test document
+root. The Supervisor/Guardian/LIMA path cannot list or read storage itself.
+The Office IDE validates Arc listing metadata again and persists counts and
+reason codes rather than names or content. This test lane does not relax the
+private-LAN or production blockers above.
+
 Arc is the primary lab operator surface. Its explicit `arc-workers --refresh`
 command requests no worker identities or authority. The Supervisor enumerates
 its server-owned 1-8 worker registry and derives one status preflight per

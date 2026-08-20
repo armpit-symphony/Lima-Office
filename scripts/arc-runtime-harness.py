@@ -193,6 +193,11 @@ class HarnessRequestHandler(BaseHTTPRequestHandler):
             elif self.path == "/api/training/escalation-ladder":
                 result = self.server.harness.configure_ladder(payload)
 
+            elif self.path == "/api/work/list":
+                result = self.server.harness.governed_list(
+                    task_ref=payload.get("task_ref"),
+                    resource_id=payload.get("resource_id"),
+                )
             elif self.path == "/api/work/read":
                 result = self.server.harness.governed_read(
                     task_ref=payload.get("task_ref"),

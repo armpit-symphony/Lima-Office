@@ -53,6 +53,7 @@ It is convenience around the real processes, not a shortcut through them.
 | Command | Effect |
 |---|---|
 | `read <path>` | Governed document read, relative to the document root |
+| `list [path]` | Governed, non-recursive names/type/size listing; defaults to root |
 | `status` | Read-only worker status request |
 | `info` | Identities, ports, and gate settings |
 | `help` | Command list |
@@ -105,6 +106,8 @@ opt-in when the actual cause was the request itself. Check `status` and
 | `execution_grant_absent` | No grant arrived — Supervisor opt-in off, or the capability is not grantable |
 | `arc_execution_opt_in_disabled` | Grant arrived, Arc opt-in off |
 | `document_root_not_configured` | Arc has nothing it may read |
+| `document_directory_not_found` | Listed relative directory does not exist |
+| `document_list_unavailable` | Arc could not safely enumerate the directory |
 | `document_not_utf8_text` | Read succeeded, text withheld as it is not UTF-8 |
 | `content_not_requested` | Read succeeded, `--emit-document-content` not passed |
 

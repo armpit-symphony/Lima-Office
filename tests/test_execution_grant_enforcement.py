@@ -30,12 +30,16 @@ from lima_office.supervisor.worker_registry import WorkerRegistry
 
 from test_arc_governed_control_plane import FakeGuardianDecider
 
-
 # Anchored to the real clock. The Guardian decision reference validates its own
 # expiry against datetime.now, not against an injected clock, so a hard-coded
 # timestamp would age into "guardian_binding is expired" and deny every request.
 FIXED_TIME = datetime.now(timezone.utc).replace(microsecond=0)
-CAPABILITIES = ["document_read", "it_diagnostics_read_only", "draft_workspace"]
+CAPABILITIES = [
+    "document_list",
+    "document_read",
+    "it_diagnostics_read_only",
+    "draft_workspace",
+]
 
 
 def _install_fake_guardian_core(action: str = "allow") -> list[ModuleType]:
@@ -215,6 +219,21 @@ class ExecutionGrantEnforcementTests(unittest.TestCase):
             [event["event_type"] for event in result["evidence"]],
         )
 
+    def test_opt_in_issues_a_distinct_document_list_grant(self) -> None:
+        result = self._control_plane(execution_opt_in=True).submit(
+            self._request(
+                action="safe_list",
+                request_id="request-list-grant-001",
+                idempotency_key="idem-list-grant-001",
+            )
+        )
+
+        grant = result["execution_grant"]
+        self.assertIsNotNone(grant)
+        self.assertEqual("document_list", grant["granted_capability"])
+        self.assertEqual("safe_list", grant["bound_action_type"])
+        self.assertIs(grant["side_effects_allowed"], False)
+
     def test_grant_does_not_relax_the_decision_or_the_result_flags(self) -> None:
         result = self._control_plane(execution_opt_in=True).submit(self._request())
 
@@ -239,7 +258,10 @@ class ExecutionGrantEnforcementTests(unittest.TestCase):
     # ------------------------------------------------------------------
 
     def test_only_read_only_capabilities_are_grantable(self) -> None:
-        self.assertEqual(EXECUTABLE_CAPABILITIES, frozenset({"document_read"}))
+        self.assertEqual(
+            EXECUTABLE_CAPABILITIES,
+            frozenset({"document_list", "document_read"}),
+        )
 
     def test_non_grantable_capability_yields_no_grant_even_with_opt_in(self) -> None:
         result = self._control_plane(execution_opt_in=True).submit(

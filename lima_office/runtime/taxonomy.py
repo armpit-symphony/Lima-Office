@@ -89,9 +89,11 @@ DENIAL_DISPOSITION_OVERRIDES: dict[str, str] = {
     # Arc asked for a document that is not there. Nothing refused it; it looked
     # in the wrong place, and an SOP can teach it the right one.
     "document_not_found": "correctable",
+    "document_directory_not_found": "correctable",
     # Arc has no document root. It cannot configure itself out of this, so a
     # rung above it has to.
     "document_root_not_configured": "escalatable",
+    "document_list_unavailable": "escalatable",
     # The decision aged out. Nothing was refused.
     "decision_expired": "retry_with_fresh_decision",
     "decision_stale": "retry_with_fresh_decision",
@@ -131,6 +133,24 @@ REASON_CODE_REGISTRY: dict[str, dict[str, Any]] = {
         "category": "reconciliation",
         "status": "active",
         "severity": "blocked",
+        "visibility": "operator_visible",
+        "evidence_required": True,
+        "fail_closed_required": True,
+        "aliases": [],
+    },
+    "document_directory_not_found": {
+        "category": "reconciliation",
+        "status": "active",
+        "severity": "blocked",
+        "visibility": "operator_visible",
+        "evidence_required": True,
+        "fail_closed_required": True,
+        "aliases": [],
+    },
+    "document_list_unavailable": {
+        "category": "health",
+        "status": "active",
+        "severity": "degraded",
         "visibility": "operator_visible",
         "evidence_required": True,
         "fail_closed_required": True,

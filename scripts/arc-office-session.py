@@ -47,6 +47,8 @@ HELP = """\
 Commands:
   read <path>       Governed document read. Prints the text when this session
                     was started with both opt-ins and a document root.
+  list [path]       Governed, non-recursive names-and-sizes listing. Defaults
+                    to the fixed document root.
   status            Read-only worker status request.
   info              Show session identities, ports, and gate settings.
   help              This text.
@@ -191,6 +193,7 @@ class ArcOfficeSession:
                 "--key-id", self.args.worker_key_id,
                 "--policy-version", self.args.policy_version,
                 "--capability", "document_read",
+                "--capability", "document_list",
                 "--capability", "it_diagnostics_read_only",
                 "--replay-db", str(self.session_dir / "worker-replay.db"),
                 "--channel-key-stdin",
@@ -316,8 +319,20 @@ def _summarize(output: str) -> str:
     lines.append(f"  grant      : {'issued' if isinstance(grant, dict) else 'none'}")
     lines.append(f"  performed  : {execution.get('performed')}")
     if execution.get("performed"):
-        lines.append(f"  bytes      : {execution.get('byte_count')}")
-        lines.append(f"  capability : {execution.get('capability')}")
+        capability = execution.get("capability")
+        lines.append(f"  capability : {capability}")
+        if capability == "document_list":
+            lines.append(
+                f"  entries    : {execution.get('entry_count')}/"
+                f"{execution.get('entry_limit')} · truncated={execution.get('truncated')}"
+            )
+            for entry in execution.get("entries") or []:
+                size = "-" if entry.get("byte_count") is None else entry["byte_count"]
+                lines.append(
+                    f"    [{entry.get('kind')}] {entry.get('relative_path')} ({size})"
+                )
+        elif execution.get("byte_count") is not None:
+            lines.append(f"  bytes      : {execution.get('byte_count')}")
     reason = execution.get("reason_code") or execution.get("content_reason_code")
     if reason:
         lines.append(f"  reason     : {reason}")
@@ -381,6 +396,12 @@ def _repl(session: ArcOfficeSession) -> int:
                     action="safe_read",
                     resource_type=DOCUMENT_RESOURCE_TYPE,
                     resource_id=argument,
+                )
+            elif command == "list":
+                output = session.request(
+                    action="safe_list",
+                    resource_type=DOCUMENT_RESOURCE_TYPE,
+                    resource_id=argument or ".",
                 )
             elif command == "status":
                 output = session.request(

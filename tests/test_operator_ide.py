@@ -28,8 +28,16 @@ class FakeSession:
         self.worker_port = 41001
         self.supervisor_port = 41002
         self.responses = list(responses or [])
+        self.requests: list[dict[str, str]] = []
 
     def request(self, *, action: str, resource_type: str, resource_id: str) -> str:
+        self.requests.append(
+            {
+                "action": action,
+                "resource_type": resource_type,
+                "resource_id": resource_id,
+            }
+        )
         return self.responses.pop(0)
 
 
@@ -78,6 +86,26 @@ def success_output(content: str) -> str:
         + "\n--- BEGIN DOCUMENT CONTENT 'report.txt' (1 bytes) ---\n"
         + content
         + "\n--- END DOCUMENT CONTENT ---\n"
+    )
+
+
+def listing_output(entries: list[dict[str, object]]) -> str:
+    return json.dumps(
+        {
+            "status": "acknowledged",
+            "decision_id": "decision:list-1",
+            "execution_grant": {"grant_id": "grant:list-1"},
+            "execution": {
+                "performed": True,
+                "capability": "document_list",
+                "resource_id": ".",
+                "entry_count": len(entries),
+                "entry_limit": 200,
+                "truncated": False,
+                "entries": entries,
+                "side_effects_performed": False,
+            },
+        }
     )
 
 
@@ -132,9 +160,7 @@ class OperatorIDEHarnessTests(unittest.TestCase):
         harness = self.harness([success_output(content)])
         harness.set_mode("working")
 
-        result = harness.governed_read(
-            task_ref="task:large", resource_id="large.txt"
-        )
+        result = harness.governed_read(task_ref="task:large", resource_id="large.txt")
         first = result["document_page"]
         second = harness.document_page(
             content_id=first["content_id"], offset=first["next_offset"]
@@ -206,7 +232,89 @@ class OperatorIDEHarnessTests(unittest.TestCase):
         restored = OperatorIDEHarness(
             FakeSession(self.root), reopened, arc_ide=FakeArcIDE()
         )
-        self.assertEqual("Owner", restored.state()["escalation_ladder"]["terminal_role"])
+        self.assertEqual(
+            "Owner", restored.state()["escalation_ladder"]["terminal_role"]
+        )
+
+    def test_governed_listing_is_sanitized_routed_and_not_persisted(self):
+        entries = [
+            {
+                "name": "report.txt",
+                "relative_path": r"C:\private\report.txt",
+                "kind": "file",
+                "byte_count": 12,
+            },
+            {
+                "name": "team",
+                "relative_path": "/outside/team",
+                "kind": "directory",
+                "byte_count": None,
+            },
+        ]
+        session = FakeSession(self.root, [listing_output(entries)])
+        harness = OperatorIDEHarness(session, self.store, arc_ide=self.arc)
+        harness.set_mode("working")
+
+        result = harness.governed_list(task_ref="task:list", resource_id=".")
+
+        self.assertEqual(
+            [{"action": "safe_list", "resource_type": "file", "resource_id": "."}],
+            session.requests,
+        )
+        self.assertTrue(result["execution"]["performed"])
+        self.assertEqual(
+            ["report.txt", "team"],
+            [entry["relative_path"] for entry in result["execution"]["entries"]],
+        )
+        self.assertEqual(
+            ["document_list", "document_read"],
+            harness.state()["allowed_working_capabilities"],
+        )
+        evidence = json.dumps(self.store.recent_events())
+        self.assertNotIn("report.txt", evidence)
+        self.assertNotIn(r"C:\private", evidence)
+
+    def test_malformed_listing_fails_closed_without_exposing_entries(self):
+        session = FakeSession(
+            self.root,
+            [
+                listing_output(
+                    [
+                        {
+                            "name": "bad\nname.txt",
+                            "relative_path": "bad\nname.txt",
+                            "kind": "file",
+                            "byte_count": 1,
+                        }
+                    ]
+                )
+            ],
+        )
+        harness = OperatorIDEHarness(session, self.store, arc_ide=self.arc)
+        harness.set_mode("working")
+
+        result = harness.governed_list(task_ref="task:bad-list", resource_id=".")
+
+        self.assertFalse(result["execution"]["performed"])
+        self.assertEqual([], result["execution"]["entries"])
+        self.assertIn("arc_listing_malformed", result["reason_codes"])
+        self.assertEqual("blocked", result["outcome"]["status"])
+
+    def test_listing_requires_working_mode_and_a_safe_relative_directory(self):
+        session = FakeSession(self.root)
+        harness = OperatorIDEHarness(session, self.store, arc_ide=self.arc)
+
+        with self.assertRaises(HarnessBoundaryError):
+            harness.governed_list(task_ref="task:list", resource_id=".")
+        harness.set_mode("working")
+        for directory in ("../outside", r"C:\outside", ".hidden"):
+            with self.subTest(directory=directory):
+                with self.assertRaises(HarnessBoundaryError):
+                    harness.governed_list(
+                        task_ref="task:list",
+                        resource_id=directory,
+                    )
+        self.assertEqual([], session.requests)
 
 
 if __name__ == "__main__":

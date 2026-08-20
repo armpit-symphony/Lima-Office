@@ -13,6 +13,7 @@ ASSIGNABLE_STATES = {"registered", "healthy"}
 BLOCKING_STATES = {"offline", "quarantined", "revoked", "replaced"}
 ALLOWED_CAPABILITIES = {
     "document_read",
+    "document_list",
     "draft_workspace",
     "ticket_triage",
     "file_organize",

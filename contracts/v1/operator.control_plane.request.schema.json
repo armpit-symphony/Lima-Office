@@ -55,6 +55,7 @@
       "type": "string",
       "enum": [
         "safe_read",
+        "safe_list",
         "status",
         "external_write",
         "shell",

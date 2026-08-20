@@ -4,7 +4,7 @@ Status: bounded physical-PC test lane. Not production-ready.
 
 The runtime harness starts one real Arc worker, one real LIMA Office
 Supervisor, and a localhost-only operator UI. It is the first usable bridge
-between the proven governed document-read path and the SOP/outcome-routing
+between the proven governed document path and the SOP/outcome-routing
 stack.
 
 ## Start it on Windows
@@ -48,10 +48,13 @@ Working mode is refused unless all of these were fixed at process startup:
 2. Arc `--execute-granted-capability`.
 3. A bounded `--document-root`.
 
-The only working capability exposed by this harness is `document_read` through
-the existing real operator CLI, Supervisor, Guardian decision, single-use
-grant, and Arc grant-consumption path. The harness controller does not read the
-file itself.
+The only working capabilities exposed by this harness are bounded
+`document_list` and `document_read`. Each request travels through the
+existing real operator CLI, Supervisor classification, Guardian decision,
+single-use LIMA grant, and Arc grant-consumption path. A list is non-recursive
+and returns at most 200 visible, non-symlink names with type and file size. It
+returns no content or absolute paths. The harness controller neither lists the
+directory nor reads the file itself.
 
 Every returned result is handed to `route_task_outcome`. Correctable denials
 open a durable SOP gap and escalate without blind retry. Successful work raises
@@ -84,7 +87,9 @@ Pass `--session-dir` to select an explicit test-state directory.
   browser origins.
 - Absolute paths, Windows drive paths, and `..` traversal are rejected before
   the Arc request is sent. Arc independently enforces document-root
-  containment and its 1 MiB read cap.
+  containment, its 1 MiB read cap, and its 200-entry listing cap. Hidden
+  directories are not listable; hidden entries, symlinks, special files, and
+  control-character names are excluded.
 - Ephemeral channel keys remain process memory only and reach child processes
   on stdin. They are not returned to the UI or stored in the harness database.
 - Connector writes, external sends, file mutation, unrestricted network

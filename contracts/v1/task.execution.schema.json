@@ -267,6 +267,7 @@
         "type": "string",
         "enum": [
           "document_read",
+          "document_list",
           "draft_workspace",
           "ticket_triage",
           "file_organize",

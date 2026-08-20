@@ -28,6 +28,7 @@ from .worker_registry import WorkerRecord, WorkerRegistry
 
 ACTION_CATEGORIES = {
     "safe_read": "informational",
+    "safe_list": "informational",
     "status": "informational",
     "external_write": "external_write",
     "shell": "shell",
@@ -37,6 +38,7 @@ ACTION_CATEGORIES = {
 }
 ACTION_CAPABILITIES = {
     "safe_read": "document_read",
+    "safe_list": "document_list",
     "status": "it_diagnostics_read_only",
     "external_write": "draft_workspace",
     "file_mutation": "file_organize",
@@ -57,7 +59,7 @@ LIMA_GUARDIAN_SOURCE_POLICY = "guardian_core.policy"
 GUARDIAN_BINDING_MODE = "reference_only_non_authorizing"
 # Only read-only capabilities may ever be granted in this slice. Anything that
 # writes, sends, or deletes stays non-executing regardless of operator opt-in.
-EXECUTABLE_CAPABILITIES = frozenset({"document_read"})
+EXECUTABLE_CAPABILITIES = frozenset({"document_list", "document_read"})
 EXECUTION_GRANT_TTL_SECONDS = 120
 logger = logging.getLogger(__name__)
 

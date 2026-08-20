@@ -155,6 +155,7 @@ class GuardianCoreAuthority:
     def _action_class(action: str) -> str:
         return {
             "safe_read": "lima_it_diagnostic",
+            "safe_list": "lima_it_diagnostic",
             "status": "lima_it_diagnostic",
             "external_write": "tool_invocation",
             "file_mutation": "tool_invocation",
@@ -170,6 +171,7 @@ class GuardianCoreAuthority:
         action = str(request["action"])
         policy_by_action: dict[str, tuple[str, str, str, str, str, bool]] = {
             "safe_read": ("arc_status_preview", "read", "arc_status", "allow", "read", False),
+            "safe_list": ("arc_document_list", "read", "file", "allow", "read", False),
             "status": ("arc_status_preview", "read", "arc_status", "allow", "read", False),
             "external_write": (
                 "arc_external_write_preview",

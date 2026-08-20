@@ -18,6 +18,13 @@ the HMAC envelope. The request cannot carry actor role or action-category
 authority. The Supervisor derives both and returns a signed, redacted evidence
 summary with every execution flag fixed false.
 
+The explicit physical-PC test lane adds exactly two grantable, read-only
+document capabilities: `document_list` for bounded discovery and
+`document_read` for bounded content access. Their signed operator actions are
+`safe_list` and `safe_read`. The action enums, worker registration,
+assignment, lifecycle, task-execution, and helper-scope capability enums move
+together. Neither member authorizes mutation, send, connector, or network work.
+
 The governed Arc path may add `guardian_binding_hash` only to the durable
 `control_plane.event` emitted for an accepted LIMA decision. It hashes the
 exact non-authorizing Guardian reference already verified by the Supervisor;
