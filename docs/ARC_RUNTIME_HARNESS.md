@@ -106,8 +106,33 @@ If a child process fails, the controller refuses new requests. Restart the
 harness and inspect the terminal plus the selected session directory. Do not
 delete evidence to make a failed test look clean.
 
+## Operator IDE wiring
+
+The default UI is now the Arc-owned operator IDE. It reads Arc's existing
+JSONL task and approval stores through an Arc adapter rather than copying queue
+state into LIMA Office. Arc's existing selector explains whether the next task
+is new work or a blocked task whose answer arrived.
+
+An approved Arc v0.6 record remains evidence-only
+(`execution_allowed=false`). The IDE can record the human decision and use it
+as a queue-resolution signal, but it cannot issue a Supervisor execution grant
+or bypass Guardian. An instructed Office SOP gap supplies the same explicit
+resolution signal by task reference.
+
+Training mode also accepts a customer escalation ladder. LIMA Office validates
+the existing structural invariants before replacing the durable configuration:
+system-manager and executive failsafes must exist, and a terminal human must
+decide everything reaching the last rung.
+
+Returned document content is divided into 8,000-character pages. At most four
+document buffers remain in process memory, never in the harness SQLite event
+ledger, and all buffers are cleared when the operator returns to Training mode.
+
+Use `--task-queue-path` and `--approval-path` to point the IDE at explicit
+Arc JSONL stores. Without them it uses Arc's standard local artifact paths.
+
 ## What this does not make ready
 
-This harness does not provide a general IDE, task-queue editor, customer ladder
-editor, approval console, local-model execution, connectors, outbound actions,
-or multi-worker fleet control. Those remain later bounded slices.
+This IDE is not a task-packet editor, local-model execution surface, connector
+console, outbound-action console, operator-authenticated network service, or
+multi-worker fleet controller. Those remain later bounded slices.

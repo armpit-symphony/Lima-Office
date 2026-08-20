@@ -57,3 +57,17 @@ This is an ADR-style decision log. Status values are `accepted`, `proposed`, or 
 - Decision: Marketing, pricing, financial projections, TAM, investor content, sales copy, and production claims are out of Phase 0 unless explicitly requested.
 - Rationale: The repo is an engineering baseline.
 - Consequence: README and docs use architecture/status language.
+
+## ADR-0009: Arc Owns Operator Queue Selection
+
+- Status: accepted
+- Decision: The physical test IDE consumes an Arc-owned adapter over Arc's
+  existing task queue, approval store, and task selector. LIMA Office supplies
+  governed outcome, SOP-resolution, escalation, and evidence state through a
+  narrow consumer port.
+- Rationale: Queue ordering and resume safety are shell behavior. Keeping them
+  in Arc prevents a browser or Office convenience layer from becoming a second
+  scheduler.
+- Consequence: Human approvals and instructed SOP gaps may mark a blocked task
+  ready for Arc selection, but neither signal is execution authority. Every
+  governed read still requires a fresh Supervisor decision and Arc grant.

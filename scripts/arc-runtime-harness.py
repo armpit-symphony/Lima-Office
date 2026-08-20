@@ -23,11 +23,12 @@ _session = importlib.util.module_from_spec(_spec)
 sys.modules["_arc_office_session"] = _session
 _spec.loader.exec_module(_session)
 
-from lima_office.runtime.operator_harness import (  # noqa: E402
-    HarnessBoundaryError,
-    HarnessStateStore,
-    RuntimeHarness,
+from lima_office.runtime.operator_harness import HarnessBoundaryError  # noqa: E402
+from lima_office.runtime.operator_ide import (  # noqa: E402
+    OperatorIDEHarness,
+    OperatorIDEStateStore,
 )
+
 
 
 MAX_REQUEST_BYTES = 64 * 1024
@@ -43,13 +44,25 @@ def _parser():
         "--ui-file",
         type=Path,
         default=None,
-        help="Arc-owned harness HTML. Defaults to <arc-source>/ui/arc_runtime_harness.html.",
+        help="Arc-owned IDE HTML. Defaults to <arc-source>/ui/arc_operator_ide.html.",
     )
     parser.add_argument(
         "--ui-port",
         type=int,
         default=8765,
         help="Loopback UI port (default: 8765).",
+    )
+    parser.add_argument(
+        "--task-queue-path",
+        type=Path,
+        default=None,
+        help="Optional Arc JSONL task queue; defaults to Arc's local queue.",
+    )
+    parser.add_argument(
+        "--approval-path",
+        type=Path,
+        default=None,
+        help="Optional Arc JSONL approval queue; defaults to Arc's local queue.",
     )
     return parser
 
@@ -73,7 +86,7 @@ class HarnessHTTPServer(ThreadingHTTPServer):
     def __init__(
         self,
         address: tuple[str, int],
-        harness: RuntimeHarness,
+        harness: OperatorIDEHarness,
         ui: bytes,
     ) -> None:
         self.harness = harness
@@ -171,6 +184,15 @@ class HarnessRequestHandler(BaseHTTPRequestHandler):
                     instruction=payload.get("instruction"),
                     authored_by_role=payload.get("authored_by_role"),
                 )
+            elif self.path == "/api/training/resolve-gap":
+                result = self.server.harness.resolve_gap(
+                    gap_id=payload.get("gap_id"),
+                    instruction=payload.get("instruction"),
+                    resolved_by_role=payload.get("resolved_by_role"),
+                )
+            elif self.path == "/api/training/escalation-ladder":
+                result = self.server.harness.configure_ladder(payload)
+
             elif self.path == "/api/work/read":
                 result = self.server.harness.governed_read(
                     task_ref=payload.get("task_ref"),
@@ -178,6 +200,19 @@ class HarnessRequestHandler(BaseHTTPRequestHandler):
                 )
             elif self.path == "/api/worker/status":
                 result = self.server.harness.worker_status()
+            elif self.path == "/api/work/content-page":
+                result = self.server.harness.document_page(
+                    content_id=payload.get("content_id"),
+                    offset=payload.get("offset"),
+                )
+            elif self.path == "/api/work/approval":
+                result = self.server.harness.decide_approval(
+                    approval_id=payload.get("approval_id"),
+                    decision=payload.get("decision"),
+                    operator_id=payload.get("operator_id"),
+                    reason=payload.get("reason"),
+                )
+
             else:
                 self._json(404, {"error": "not_found"})
                 return
@@ -206,27 +241,46 @@ def _resolve_args(args: Any) -> Any:
         if args.session_dir is not None
         else _default_session_dir().resolve()
     )
+    for name in ("task_queue_path", "approval_path"):
+        value = getattr(args, name)
+        if value is not None:
+            setattr(args, name, value.expanduser().resolve())
+
     args.session_dir.mkdir(parents=True, exist_ok=True)
     args.ui_file = (
         args.ui_file.expanduser().resolve()
         if args.ui_file is not None
-        else args.arc_source / "ui" / "arc_runtime_harness.html"
+        else args.arc_source / "ui" / "arc_operator_ide.html"
     )
     if not args.ui_file.is_file():
         raise SystemExit(f"Arc harness UI not found: {args.ui_file}")
     return args
 
 
+def _arc_operator_ide(args: Any) -> Any:
+    sys.path.insert(0, str(args.arc_source))
+    from arc_bot_shell.tasks import ArcOperatorIDE
+
+    return ArcOperatorIDE(
+        args.arc_source,
+        queue_path=args.task_queue_path,
+        approval_path=args.approval_path,
+    )
+
 def main(argv: list[str] | None = None) -> int:
     args = _resolve_args(_parser().parse_args(argv))
     ui = args.ui_file.read_bytes()
     session = _session.ArcOfficeSession(args, args.session_dir)
-    store: HarnessStateStore | None = None
+    store: OperatorIDEStateStore | None = None
     server: HarnessHTTPServer | None = None
+
+
     try:
         session.start()
-        store = HarnessStateStore(args.session_dir / "harness-state.db")
-        harness = RuntimeHarness(session, store)
+        store = OperatorIDEStateStore(args.session_dir / "harness-state.db")
+        harness = OperatorIDEHarness(
+            session, store, arc_ide=_arc_operator_ide(args)
+        )
         server = HarnessHTTPServer(("127.0.0.1", args.ui_port), harness, ui)
         host, port = server.server_address
         print(
