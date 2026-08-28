@@ -25,7 +25,7 @@ remediation, and production operation remain blocked.
 
 Validation completed on the development stack:
 
-- LIMA Office: 800 passed, 1 skipped.
+- LIMA Office: 805 passed, 1 skipped.
 - Arc: 685 passed, 2 skipped, plus 16 subtests.
 - Guardian: 75 passed.
 - Focused LIMA Runtime release-candidate checks: 5 passed.
@@ -35,19 +35,23 @@ Validation completed on the development stack:
 - A disposable Windows Arc operator smoke passed install, idempotent reinstall,
   start, status, stop, scheduled-task path, failed-upgrade rollback, uninstall,
   and data preservation.
+- Coordinated artifact 0.1.0-lab.1 was built from LIMA Office da58318 with
+  SHA-256 28259de768cde071fbd9b54773df5eed646993aa51ab68837ac5c648de083d1b.
+- The clean extracted artifact installed to a separate Windows test directory,
+  proved all four commit identities, passed its governed smoke workflow, served
+  Training mode on 127.0.0.1, returned a healthy loopback status, and stopped
+  without leaving a listener.
 
-### Not Yet Release-Ready
+### Not Yet Publicly Released
 
-- The coordinated Windows artifact builder, installer, launcher, and smoke
-  workflow exist locally but have not yet been installed from a clean merged
-  artifact.
-- No GitHub prerelease has been approved or published.
+- No GitHub tag or prerelease has been explicitly approved or published.
 - The localhost UI has no operator authentication and remains attended-lab-only.
 
 Exact stack coherence is now green locally: Office and Arc select Arc
 17ff82e, LIMA Runtime 4a59940, and Guardian 69e8432; both currency and
-installed-package provenance checks pass. The next gate is clean artifact
-installation and smoke validation. See
+installed-package provenance checks pass. The local artifact installation and
+smoke gates also pass. The remaining release gate is an explicit operator
+decision on creating a GitHub prerelease. See
 [Arc + LIMA Office Lab Preview Release Plan](docs/ARC_LIMA_OFFICE_LAB_PREVIEW_RELEASE_PLAN.md).
 
 ## Historical Status - May 2026
