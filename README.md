@@ -33,6 +33,10 @@ in [release/lab-preview](release/lab-preview/README.md). A built artifact remain
 a local lab candidate until its clean-install smoke passes and publication is
 explicitly approved.
 
+The verified attended Lab Preview is available as the
+[v0.1.0-lab.1 GitHub prerelease](https://github.com/armpit-symphony/Lima-Office/releases/tag/v0.1.0-lab.1).
+It remains localhost-only, unauthenticated, and not production-ready.
+
 ## Running a governed session
 
 One command brings up an Arc worker and a Supervisor and takes repeated
