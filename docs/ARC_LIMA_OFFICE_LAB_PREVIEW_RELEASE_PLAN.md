@@ -62,11 +62,11 @@ The preview is a coordinated stack, not four independent floating branches:
 
 The release manifest must record an exact commit for every unit. If any commit moves after validation, the affected release gates must be rerun.
 
-## Current blockers
+## Remaining preview limitations
 
-1. There is no approved or published GitHub prerelease for the four-unit stack.
-2. Operator authentication remains absent, so the preview is attended and localhost-only.
-3. Live models, connectors, customer data, and privileged actions remain blocked for this preview.
+1. Operator authentication remains absent, so the preview is attended and localhost-only.
+2. Live models, connectors, customer data, and privileged actions remain blocked for this preview.
+3. The prerelease is not approved for production or a customer pilot.
 
 ## Release gates
 
@@ -100,9 +100,9 @@ Status: passed locally with clean artifact 0.1.0-lab.1 on August 28, 2026.
 
 ### Gate 4 — Artifact and evidence review
 
-Status: passed locally. The ZIP checksum, manifest identities, fresh Windows
-install, governed smoke, Training-mode health response, and foreground shutdown
-were verified. Public artifact publication remains Gate 5.
+Status: passed. The ZIP checksum, manifest identities, fresh Windows install,
+governed smoke, Training-mode health response, foreground shutdown, public
+asset upload, and independent GitHub download were verified.
 
 - Build a versioned archive or installer.
 - Publish SHA-256 checksums and the exact dependency manifest.
@@ -113,6 +113,10 @@ were verified. Public artifact publication remains Gate 5.
 
 After Gates 1-4 pass, the operator must explicitly approve or reject creation of a version tag and downloadable prerelease. Passing tests alone does not authorize publication.
 
+Status: passed on August 28, 2026. The operator explicitly approved publication.
+Annotated tag v0.1.0-lab.1 and the GitHub prerelease are published at
+https://github.com/armpit-symphony/Lima-Office/releases/tag/v0.1.0-lab.1.
+
 ## Ordered work plan
 
 1. Complete: reconcile and document the exact four-unit commit set.
@@ -121,7 +125,7 @@ After Gates 1-4 pass, the operator must explicitly approve or reject creation of
 4. Complete: run coordinated test and smoke matrices against the selected commits.
 5. Complete: build and inspect the versioned artifact, checksum, and manifest.
 6. Complete: install and test the artifact on this Windows PC.
-7. Pending operator decision: approve or reject a public prerelease.
+7. Complete: publish the explicitly approved annotated tag and GitHub prerelease.
 
 ## Preview completion criterion
 

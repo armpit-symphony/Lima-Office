@@ -1,6 +1,6 @@
 # LIMA Office OS Status
 
-## Controlling Status Update - August 27, 2026
+## Controlling Status Update - August 28, 2026
 
 This section supersedes the historical May status below where the two conflict.
 
@@ -17,7 +17,7 @@ remediation, and production operation remain blocked.
 
 ### Verified Implementation Snapshot
 
-- LIMA Office main: ab46a8f
+- LIMA Office artifact commit: da58318
 - Arc main: 17ff82e
 - Guardian selected pin: 69e8432
 - LIMA Office selected LIMA Runtime pin: 4a59940
@@ -26,7 +26,7 @@ remediation, and production operation remain blocked.
 Validation completed on the development stack:
 
 - LIMA Office: 805 passed, 1 skipped.
-- Arc: 685 passed, 2 skipped, plus 16 subtests.
+- Arc: 686 passed, 2 skipped, plus 16 subtests.
 - Guardian: 75 passed.
 - Focused LIMA Runtime release-candidate checks: 5 passed.
 - LIMA Office two-worker and eight-worker smoke tests passed.
@@ -42,16 +42,27 @@ Validation completed on the development stack:
   Training mode on 127.0.0.1, returned a healthy loopback status, and stopped
   without leaving a listener.
 
-### Not Yet Publicly Released
+### Published Lab Prerelease
 
-- No GitHub tag or prerelease has been explicitly approved or published.
+- GitHub prerelease:
+  [v0.1.0-lab.1](https://github.com/armpit-symphony/Lima-Office/releases/tag/v0.1.0-lab.1).
+- The annotated tag peels to the tested LIMA Office artifact commit da58318.
+- The public ZIP, checksum, and manifest assets all report uploaded state.
+- A fresh GitHub download reproduced SHA-256
+  28259de768cde071fbd9b54773df5eed646993aa51ab68837ac5c648de083d1b.
+
+### Remaining Limitations
+
 - The localhost UI has no operator authentication and remains attended-lab-only.
+- This prerelease is not production-ready and is not approved for a customer pilot.
+- Live models, connectors, external sends, mutations, remediation, production
+  server access, robotics, LAN exposure, and customer data remain blocked.
 
 Exact stack coherence is now green locally: Office and Arc select Arc
 17ff82e, LIMA Runtime 4a59940, and Guardian 69e8432; both currency and
-installed-package provenance checks pass. The local artifact installation and
-smoke gates also pass. The remaining release gate is an explicit operator
-decision on creating a GitHub prerelease. See
+installed-package provenance checks pass. The local artifact installation,
+smoke gates, public asset upload, and independent download verification pass.
+See
 [Arc + LIMA Office Lab Preview Release Plan](docs/ARC_LIMA_OFFICE_LAB_PREVIEW_RELEASE_PLAN.md).
 
 ## Historical Status - May 2026
