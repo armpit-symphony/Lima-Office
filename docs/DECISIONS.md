@@ -71,3 +71,51 @@ This is an ADR-style decision log. Status values are `accepted`, `proposed`, or 
 - Consequence: Human approvals and instructed SOP gaps may mark a blocked task
   ready for Arc selection, but neither signal is execution authority. Every
   governed read still requires a fresh Supervisor decision and Arc grant.
+
+## ADR-0010: Exclude Sparkbot From The Arc + LIMA Office Lab Preview
+
+- Status: accepted
+- Date: 2026-08-27
+- Decision: The first Arc + LIMA Office Lab Preview will not depend on, embed,
+  package, or release-gate on Sparkbot. LIMA Office owns the Supervisor
+  experience and Arc owns bounded worker execution for this lane.
+- Rationale: The current LIMA Office and Arc stack already owns the task UI,
+  queue lifecycle, grants, evidence, and Windows worker lifecycle needed for a
+  bounded lab preview. Coupling Sparkbot into the preview would add another
+  application lifecycle without resolving a required preview capability.
+- Consequence: Sparkbot remains historical or research reference only. No
+  Sparkbot code, UI, CI job, package, or runtime service is required to complete
+  the preview. Reintroducing Sparkbot requires a future contract and explicit
+  architecture decision.
+
+## ADR-0011: Freeze The First Preview To Governed Document Listing And Reading
+
+- Status: accepted
+- Date: 2026-08-27
+- Decision: The first preview is limited to the current localhost
+  Training/Working experience and Guardian-governed document-list and
+  document-read operations using explicit grants and separate execution
+  opt-ins.
+- Rationale: This is the smallest end-to-end slice that proves Supervisor
+  admission, Arc dispatch, Guardian enforcement, evidence capture, restart
+  behavior, and Windows operation without introducing customer-impacting side
+  effects.
+- Consequence: Live models, connectors, outbound sends, file mutation, LAN
+  exposure, remediation, and customer data remain outside the preview. Adding
+  an excluded capability requires its own contract, threat review, tests, and
+  explicit approval. The preview must fail closed when grants or execution
+  opt-ins are absent, expired, malformed, or replayed.
+
+## ADR-0012: Use One LIMA Runtime Commit Across Office And Arc
+
+- Status: accepted
+- Date: 2026-08-27
+- Decision: The Lab Preview selects LIMA Runtime commit
+  4a599405961e786808ea7a7da71ecc65f7358e4f for both LIMA Office and Arc.
+  Guardian remains pinned to 69e843218c521b913edcec404dea6b7be8c64f06.
+- Rationale: A downloadable governed stack must have one runtime identity.
+  Separate Office and Arc LIMA pins made installation evidence ambiguous and
+  allowed each repository to pass against a different runtime.
+- Consequence: Arc's frozen-pin compatibility proof moves deliberately to the
+  coordinated preview commit. Every consumer keeps its own isolated
+  environment and must prove the installed package provenance before tests.

@@ -106,6 +106,13 @@ class RealRepositoryPinTests(unittest.TestCase):
         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
         self.assertIn("Result: PASS", result.stdout)
 
+    def test_currency_checker_defuses_disposable_git_cleanup_race(self):
+        """Scheduled currency checks must not fail after Git already succeeded."""
+
+        source = CHECKER.read_text(encoding="utf-8")
+        self.assertIn("maintenance.auto=false", source)
+        self.assertIn("ignore_cleanup_errors=True", source)
+
     def test_no_operational_file_holds_an_unregistered_pin(self):
         """A new pin site must be registered, not silently duplicated."""
 

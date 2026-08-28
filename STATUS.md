@@ -1,5 +1,57 @@
 # LIMA Office OS Status
 
+## Controlling Status Update - August 27, 2026
+
+This section supersedes the historical May status below where the two conflict.
+
+### Active Product Lane
+
+The active preview lane is LIMA Office Supervisor plus one to eight Arc workers
+for one attended, localhost tenant lab. Sparkbot is on the back burner and is
+not a dependency, operator shell, package component, or release gate.
+
+The preview scope is frozen to Training/Working mode, the governed task
+lifecycle, and bounded document-list and document-read operations. Live models,
+connectors, external sends, file mutation, customer data, LAN exposure,
+remediation, and production operation remain blocked.
+
+### Verified Implementation Snapshot
+
+- LIMA Office main: ab46a8f
+- Arc main: 17ff82e
+- Guardian selected pin: 69e8432
+- LIMA Office selected LIMA Runtime pin: 4a59940
+- Current LIMA Runtime main: 4a59940
+
+Validation completed on the development stack:
+
+- LIMA Office: 800 passed, 1 skipped.
+- Arc: 685 passed, 2 skipped, plus 16 subtests.
+- Guardian: 75 passed.
+- Focused LIMA Runtime release-candidate checks: 5 passed.
+- LIMA Office two-worker and eight-worker smoke tests passed.
+- An attended Arc/Office session passed governed document list/read with
+  grants, content withholding, and no side effects.
+- A disposable Windows Arc operator smoke passed install, idempotent reinstall,
+  start, status, stop, scheduled-task path, failed-upgrade rollback, uninstall,
+  and data preservation.
+
+### Not Yet Release-Ready
+
+- The coordinated Windows artifact builder, installer, launcher, and smoke
+  workflow exist locally but have not yet been installed from a clean merged
+  artifact.
+- No GitHub prerelease has been approved or published.
+- The localhost UI has no operator authentication and remains attended-lab-only.
+
+Exact stack coherence is now green locally: Office and Arc select Arc
+17ff82e, LIMA Runtime 4a59940, and Guardian 69e8432; both currency and
+installed-package provenance checks pass. The next gate is clean artifact
+installation and smoke validation. See
+[Arc + LIMA Office Lab Preview Release Plan](docs/ARC_LIMA_OFFICE_LAB_PREVIEW_RELEASE_PLAN.md).
+
+## Historical Status - May 2026
+
 Date: May 26, 2026
 
 ## Current checkpoint

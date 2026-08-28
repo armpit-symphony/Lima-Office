@@ -12,9 +12,8 @@ different checks:
   unrelated merge in a dependency must never turn this repository's pull
   request CI red.
 * Installation - every file agrees, and the interpreter is importing something
-  else entirely. Arc-Bot-shell and Lima-Office pin lima-runtime to different
-  commits deliberately, so one shared interpreter can only ever satisfy one of
-  them, and the loser's tests pass against the wrong runtime without saying so.
+  else entirely. Each repository needs an isolated environment that proves the
+  installed package came from its exact lock commit.
   That check needs an environment rather than a repository, so it lives behind
   ``--check-installed`` and belongs in front of a test run.
 
@@ -119,13 +118,20 @@ def _remote_main(url: str) -> str | None:
 def _is_ancestor_of_main(url: str, commit: str) -> bool | None:
     """Return whether the pin is reachable from the dependency's main."""
 
-    with tempfile.TemporaryDirectory(prefix="stack-pin-check-") as raw:
+    # Git 2.55 can leave an automatic maintenance process touching .git for a
+    # few milliseconds after fetch exits. Disable that work and tolerate only
+    # cleanup errors in this disposable reachability clone; the command results
+    # still fail closed below.
+    with tempfile.TemporaryDirectory(
+        prefix="stack-pin-check-", ignore_cleanup_errors=True
+    ) as raw:
         work = Path(raw)
         commands = (
-            ["git", "init", "--quiet", str(work)],
+            ["git", "-c", "maintenance.auto=false", "init", "--quiet", str(work)],
             ["git", "-C", str(work), "remote", "add", "origin", url],
             [
-                "git", "-C", str(work), "fetch", "--quiet",
+                "git", "-c", "maintenance.auto=false", "-C", str(work),
+                "fetch", "--quiet",
                 "--filter=tree:0", "origin", "main",
             ],
         )
@@ -134,8 +140,10 @@ def _is_ancestor_of_main(url: str, commit: str) -> bool | None:
             if result.returncode != 0:
                 return None
         result = subprocess.run(
-            ["git", "-C", str(work), "merge-base", "--is-ancestor", commit,
-             "FETCH_HEAD"],
+            [
+                "git", "-c", "maintenance.auto=false", "-C", str(work),
+                "merge-base", "--is-ancestor", commit, "FETCH_HEAD",
+            ],
             capture_output=True,
             text=True,
         )

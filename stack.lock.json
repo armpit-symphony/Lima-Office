@@ -30,7 +30,7 @@
     },
     "lima-runtime": {
       "repo": "armpit-symphony/LIMA-AI-OS",
-      "commit": "0718af23570ed631ed4af4c7d9d8b0db82075648",
+      "commit": "4a599405961e786808ea7a7da71ecc65f7358e4f",
       "policy": "tracking",
       "reason": "",
       "package": {
@@ -52,7 +52,7 @@
     },
     "arc-bot-shell": {
       "repo": "armpit-symphony/Arc-Bot-shell",
-      "commit": "27fcac7e06eddf60cc1fc230c52993a7053e1159",
+      "commit": "17ff82e04d4cef3e10ec0eb27ba27b2da5964e44",
       "policy": "tracking",
       "reason": "",
       "package": null,
