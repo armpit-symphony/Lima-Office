@@ -64,10 +64,9 @@ The release manifest must record an exact commit for every unit. If any commit m
 
 ## Current blockers
 
-1. The coordinated Windows artifact has not yet completed a clean extracted install and smoke run.
-2. There is no approved or published GitHub prerelease for the four-unit stack.
-3. Operator authentication remains absent, so the preview is attended and localhost-only.
-4. Live models, connectors, customer data, and privileged actions remain blocked for this preview.
+1. There is no approved or published GitHub prerelease for the four-unit stack.
+2. Operator authentication remains absent, so the preview is attended and localhost-only.
+3. Live models, connectors, customer data, and privileged actions remain blocked for this preview.
 
 ## Release gates
 
@@ -92,7 +91,7 @@ Status: passed locally against Arc 17ff82e, LIMA Runtime 4a59940, and Guardian 6
 
 ### Gate 3 — Windows operator package
 
-Status: packaging implementation complete; clean artifact install validation pending.
+Status: passed locally with clean artifact 0.1.0-lab.1 on August 28, 2026.
 
 - Install from a clean, versioned artifact on a disposable Windows environment.
 - Verify idempotent install, start, status, stop, upgrade rollback, and uninstall.
@@ -100,6 +99,10 @@ Status: packaging implementation complete; clean artifact install validation pen
 - Verify the preview does not require a model download or unrestricted network access.
 
 ### Gate 4 — Artifact and evidence review
+
+Status: passed locally. The ZIP checksum, manifest identities, fresh Windows
+install, governed smoke, Training-mode health response, and foreground shutdown
+were verified. Public artifact publication remains Gate 5.
 
 - Build a versioned archive or installer.
 - Publish SHA-256 checksums and the exact dependency manifest.
@@ -112,13 +115,13 @@ After Gates 1-4 pass, the operator must explicitly approve or reject creation of
 
 ## Ordered work plan
 
-1. Reconcile and document the exact four-unit commit set.
-2. Repair the dependency-currency workflows so a clean stack is green in CI.
-3. Refresh status, architecture links, and Windows operator instructions.
-4. Run coordinated clean test and smoke matrices against the selected commits.
-5. Build and inspect the versioned artifact, checksum, and release manifest.
-6. Test the artifact on this Windows PC or a disposable Windows environment.
-7. Present the evidence for an explicit prerelease decision.
+1. Complete: reconcile and document the exact four-unit commit set.
+2. Complete: repair dependency-currency workflows and make CI green.
+3. Complete: refresh status, architecture links, and Windows instructions.
+4. Complete: run coordinated test and smoke matrices against the selected commits.
+5. Complete: build and inspect the versioned artifact, checksum, and manifest.
+6. Complete: install and test the artifact on this Windows PC.
+7. Pending operator decision: approve or reject a public prerelease.
 
 ## Preview completion criterion
 
