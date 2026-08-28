@@ -13,8 +13,9 @@ structured operator request
   -> persisted evidence result
 ```
 
-Arc Bot is the product-facing worker. Sparkbot is not required by this slice
-and remains only a possible future operator/evidence display.
+Arc Bot is the product-facing worker. Sparkbot is excluded from this preview:
+it is not an operator shell, package component, runtime dependency, or release
+gate.
 
 ## Pinned lab dependencies
 
@@ -26,7 +27,7 @@ single source of truth for every live pin. Move them with
 - Guardian Suite:
   `69e843218c521b913edcec404dea6b7be8c64f06`
 - LIMA AI OS:
-  `0718af23570ed631ed4af4c7d9d8b0db82075648`
+  `4a599405961e786808ea7a7da71ecc65f7358e4f`
 - LIMA package:
   `lima-runtime==0.1.0rc1`
 - Supported LIMA API:

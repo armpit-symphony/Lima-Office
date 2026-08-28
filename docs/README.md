@@ -5,6 +5,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 ## Core Docs
 
 - [Current status](../STATUS.md)
+- [Arc + LIMA Office Lab Preview release plan](ARC_LIMA_OFFICE_LAB_PREVIEW_RELEASE_PLAN.md)
 - [Canonical baseline](BASELINE.md)
 - [Major baseline stabilization review](MAJOR_BASELINE_STABILIZATION_REVIEW.md)
 - [Architecture](ARCHITECTURE.md)

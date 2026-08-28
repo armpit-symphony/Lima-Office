@@ -2,6 +2,9 @@
 
 Status: bounded physical-PC test lane. Not production-ready.
 
+For the coordinated Windows package, see the
+[Lab Preview operator guide](../release/lab-preview/README.md).
+
 The runtime harness starts one real Arc worker, one real LIMA Office
 Supervisor, and a localhost-only operator UI. It is the first usable bridge
 between the proven governed document path and the SOP/outcome-routing

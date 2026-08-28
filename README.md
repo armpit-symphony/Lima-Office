@@ -28,6 +28,11 @@ LIMA Office side, not in browser storage.
 See [the Arc physical runtime test harness](docs/ARC_RUNTIME_HARNESS.md).
 actions, production server control, or customer-system mutation.
 
+The coordinated Windows preview builder and attended operator instructions are
+in [release/lab-preview](release/lab-preview/README.md). A built artifact remains
+a local lab candidate until its clean-install smoke passes and publication is
+explicitly approved.
+
 ## Running a governed session
 
 One command brings up an Arc worker and a Supervisor and takes repeated

@@ -1,10 +1,9 @@
 """Proofs that the interpreter runs the locked commit, not just the files.
 
 Every pin site can agree with the lock while the running interpreter imports
-something else entirely. That is not hypothetical in this stack: Arc-Bot-shell
-freezes lima-runtime at a commit this repository has tracked past, so one
-shared interpreter silently gives one of the two the wrong runtime, and the
-loser's tests pass anyway.
+something else entirely. Isolated repository environments keep that mismatch
+visible even while the coordinated preview currently selects one shared
+runtime commit.
 
 Two checks read the environment here. They must not become two answers, so
 these tests also hold the lab check to reading through the shared helper.
