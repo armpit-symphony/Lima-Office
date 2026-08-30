@@ -22,6 +22,7 @@ PAYLOAD_FILES = (
     "install-lab-preview.ps1",
     "start-lab-preview.ps1",
     "smoke-lab-preview.ps1",
+    "setup-local-model.ps1",
 )
 
 
@@ -100,9 +101,19 @@ def build_manifest(version: str, office_commit: str) -> dict:
             "tenant_mode": "single_tenant",
             "network_scope": "localhost_only",
         },
-        "allowed_capabilities": ["document_list", "document_read"],
+        "local_model": {
+            "provider": "ollama",
+            "default_model": "qwen2.5:7b",
+            "license": "Apache-2.0",
+            "network_scope": "loopback_only",
+            "separate_opt_ins_required": True,
+            "automatic_sop_save": False,
+            "bundled_model_weights": False,
+        },
+        "allowed_capabilities": ["document_list", "document_read", "local_model_preview"],
         "blocked_capabilities": [
-            "live_models",
+            "cloud_models",
+            "browser_automation",
             "connectors",
             "external_sends",
             "file_mutation",
@@ -161,7 +172,7 @@ def build_artifact(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--version", default="0.1.0-lab.1")
+    parser.add_argument("--version", default="0.1.0-lab.2")
     parser.add_argument("--output-dir", type=Path, default=ROOT / "dist")
     args = parser.parse_args()
     try:

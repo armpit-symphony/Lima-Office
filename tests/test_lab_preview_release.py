@@ -45,7 +45,11 @@ class LabPreviewReleaseTests(unittest.TestCase):
         self.assertFalse(manifest["production_ready"])
         self.assertFalse(manifest["customer_pilot_allowed"])
         self.assertFalse(manifest["operator_authentication"])
-        self.assertEqual(["document_list", "document_read"], manifest["allowed_capabilities"])
+        self.assertEqual(
+            ["document_list", "document_read", "local_model_preview"],
+            manifest["allowed_capabilities"],
+        )
+        self.assertTrue(manifest["local_model"]["separate_opt_ins_required"])
         self.assertEqual("localhost_only", manifest["topology"]["network_scope"])
         self.assertEqual(8, manifest["topology"]["arc_worker_max"])
         self.assertIn("hidden_background_actions", manifest["blocked_capabilities"])
@@ -70,6 +74,7 @@ class LabPreviewReleaseTests(unittest.TestCase):
                         "install-lab-preview.ps1",
                         "manifest.json",
                         "smoke-lab-preview.ps1",
+                        "setup-local-model.ps1",
                         "start-lab-preview.ps1",
                     },
                     set(archive.namelist()),
