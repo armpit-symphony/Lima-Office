@@ -9,10 +9,6 @@ from threading import RLock
 from typing import Any, Mapping, Protocol
 from uuid import uuid4
 
-from guardian_core import GuardianEvaluationRequest, evaluate_guardian_request
-from lima.contracts.governed_request import GovernedRequest
-from lima.contracts.guardian_decision_reference import GuardianDecisionReference
-from lima.runtime import issue_execution_grant, run_governed_request
 
 from lima_office.runtime.operator_harness import (
     HarnessBoundaryError,
@@ -124,6 +120,13 @@ class GovernedTrainingAssistant:
         }
 
     def draft(self, *, task_ref: Any, goal: Any) -> dict[str, Any]:
+        # The base Office package remains importable without the optional lab
+        # stack. These governed dependencies load only on an explicit draft.
+        from guardian_core import GuardianEvaluationRequest, evaluate_guardian_request
+        from lima.contracts.governed_request import GovernedRequest
+        from lima.contracts.guardian_decision_reference import GuardianDecisionReference
+        from lima.runtime import issue_execution_grant, run_governed_request
+
         task = _required_text(
             task_ref, name="task_ref", limit=MAX_REFERENCE_INPUT
         )
