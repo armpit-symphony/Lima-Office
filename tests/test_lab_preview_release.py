@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ast
 import hashlib
 import importlib.util
 import json
@@ -91,6 +92,32 @@ class LabPreviewReleaseTests(unittest.TestCase):
         self.assertNotIn("ollama pull", source.lower())
         self.assertIn("startup_registered = $false", source)
         self.assertIn("model_installed = $false", source)
+
+    def test_harness_main_owns_the_server_lifecycle(self):
+        source = (ROOT / "scripts" / "arc-runtime-harness.py").read_text(encoding="utf-8")
+        module = ast.parse(source)
+        top_level_functions = {
+            node.name: node for node in module.body if isinstance(node, ast.FunctionDef)
+        }
+        self.assertIn("_training_assistant", top_level_functions)
+        main = top_level_functions["main"]
+        calls = [node for node in ast.walk(main) if isinstance(node, ast.Call)]
+        self.assertTrue(
+            any(
+                isinstance(call.func, ast.Attribute)
+                and call.func.attr == "serve_forever"
+                for call in calls
+            )
+        )
+
+    def test_start_script_keeps_document_and_model_guards_separate(self):
+        source = (ROOT / "release" / "lab-preview" / "start-lab-preview.ps1").read_text(
+            encoding="utf-8"
+        )
+        document_denial = 'throw "Working mode requires an explicit safe document root."\n}'
+        model_guard = 'if (($LocalModelSupervisorOptIn -or $LocalModelArcOptIn)'
+        self.assertIn(document_denial, source)
+        self.assertLess(source.index(document_denial), source.index(model_guard))
 
 
 if __name__ == "__main__":

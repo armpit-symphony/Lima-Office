@@ -37,6 +37,9 @@ if ($EmitDocumentContent -and (-not $SupervisorExecutionOptIn -or -not $ArcExecu
     throw "Document content requires both execution opt-ins."
 }
 if (($SupervisorExecutionOptIn -or $ArcExecutionOptIn) -and [string]::IsNullOrWhiteSpace($DocumentRoot)) {
+    throw "Working mode requires an explicit safe document root."
+}
+
 if (($LocalModelSupervisorOptIn -or $LocalModelArcOptIn) -and -not $EnableLocalModel) {
     throw "Local-model opt-ins require -EnableLocalModel."
 }
@@ -48,8 +51,6 @@ if ([string]::IsNullOrWhiteSpace($LocalModelName) -or $LocalModelName -match "\s
 }
 if (($LocalModelSupervisorOptIn -xor $LocalModelArcOptIn) -and $EnableLocalModel) {
     Write-Warning "Local AI will remain disabled until both independent opt-ins are supplied."
-}
-    throw "Working mode requires an explicit safe document root."
 }
 
 $arguments = @(

@@ -305,8 +305,6 @@ def _arc_operator_ide(args: Any) -> Any:
         approval_path=args.approval_path,
     )
 
-def main(argv: list[str] | None = None) -> int:
-    args = _resolve_args(_parser().parse_args(argv))
 def _training_assistant(args: Any) -> GovernedTrainingAssistant | None:
     if not args.local_model_enabled:
         return None
@@ -325,6 +323,9 @@ def _training_assistant(args: Any) -> GovernedTrainingAssistant | None:
         worker_id=str(args.worker_id),
     )
 
+
+def main(argv: list[str] | None = None) -> int:
+    args = _resolve_args(_parser().parse_args(argv))
 
     ui = args.ui_file.read_bytes()
     session = _session.ArcOfficeSession(args, args.session_dir)
