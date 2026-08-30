@@ -52,7 +52,7 @@
     },
     "arc-bot-shell": {
       "repo": "armpit-symphony/Arc-Bot-shell",
-      "commit": "17ff82e04d4cef3e10ec0eb27ba27b2da5964e44",
+      "commit": "0cf71386e8dacaa855e1a21b75f189043c6c61b3",
       "policy": "tracking",
       "reason": "",
       "package": null,

@@ -25,8 +25,11 @@ _spec.loader.exec_module(_session)
 
 from lima_office.runtime.operator_harness import HarnessBoundaryError  # noqa: E402
 from lima_office.runtime.operator_ide import (  # noqa: E402
-    OperatorIDEHarness,
     OperatorIDEStateStore,
+)
+from lima_office.runtime.training_model import (  # noqa: E402
+    GovernedTrainingAssistant,
+    LocalModelOperatorIDEHarness,
 )
 
 
@@ -63,6 +66,31 @@ def _parser():
         type=Path,
         default=None,
         help="Optional Arc JSONL approval queue; defaults to Arc's local queue.",
+    )
+    parser.add_argument(
+        "--local-model-enabled",
+        action="store_true",
+        help="Configure the attended loopback Ollama SOP drafting surface.",
+    )
+    parser.add_argument(
+        "--local-model-endpoint",
+        default="http://127.0.0.1:11434",
+        help="Loopback-only Ollama base URL.",
+    )
+    parser.add_argument(
+        "--local-model-name",
+        default="qwen2.5:7b",
+        help="Explicit local Ollama model name.",
+    )
+    parser.add_argument(
+        "--local-model-supervisor-opt-in",
+        action="store_true",
+        help="Supervisor-side opt-in for local-model grants.",
+    )
+    parser.add_argument(
+        "--local-model-arc-opt-in",
+        action="store_true",
+        help="Arc-side opt-in for loopback local-model execution.",
     )
     return parser
 
@@ -184,6 +212,11 @@ class HarnessRequestHandler(BaseHTTPRequestHandler):
                     instruction=payload.get("instruction"),
                     authored_by_role=payload.get("authored_by_role"),
                 )
+            elif self.path == "/api/training/draft":
+                result = self.server.harness.draft_training(
+                    task_ref=payload.get("task_ref"),
+                    goal=payload.get("goal"),
+                )
             elif self.path == "/api/training/resolve-gap":
                 result = self.server.harness.resolve_gap(
                     gap_id=payload.get("gap_id"),
@@ -274,6 +307,25 @@ def _arc_operator_ide(args: Any) -> Any:
 
 def main(argv: list[str] | None = None) -> int:
     args = _resolve_args(_parser().parse_args(argv))
+def _training_assistant(args: Any) -> GovernedTrainingAssistant | None:
+    if not args.local_model_enabled:
+        return None
+    sys.path.insert(0, str(args.arc_source))
+    from arc_bot_shell.model import OllamaTrainingDraftExecutor
+
+    executor = OllamaTrainingDraftExecutor(
+        endpoint=args.local_model_endpoint,
+        model=args.local_model_name,
+        operator_opt_in=args.local_model_arc_opt_in,
+    )
+    return GovernedTrainingAssistant(
+        executor,
+        supervisor_opt_in=args.local_model_supervisor_opt_in,
+        tenant_id=str(args.tenant_id),
+        worker_id=str(args.worker_id),
+    )
+
+
     ui = args.ui_file.read_bytes()
     session = _session.ArcOfficeSession(args, args.session_dir)
     store: OperatorIDEStateStore | None = None
@@ -283,8 +335,9 @@ def main(argv: list[str] | None = None) -> int:
     try:
         session.start()
         store = OperatorIDEStateStore(args.session_dir / "harness-state.db")
-        harness = OperatorIDEHarness(
-            session, store, arc_ide=_arc_operator_ide(args)
+        harness = LocalModelOperatorIDEHarness(
+            session, store, arc_ide=_arc_operator_ide(args),
+            training_assistant=_training_assistant(args),
         )
         server = HarnessHTTPServer(("127.0.0.1", args.ui_port), harness, ui)
         host, port = server.server_address
@@ -296,6 +349,7 @@ def main(argv: list[str] | None = None) -> int:
                     "mode": harness.mode,
                     "working_ready": harness.working_ready,
                     "session_dir": str(args.session_dir),
+                    "local_model_ready": harness.state()["local_model"]["ready"],
                 }
             ),
             flush=True,
