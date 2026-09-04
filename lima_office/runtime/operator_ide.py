@@ -13,6 +13,7 @@ import json
 import unicodedata
 import uuid
 
+from lima_office.guardian.policy import GuardianPolicy
 from lima_office.runtime.escalation import EscalationLadder, load_ladder
 from lima_office.runtime.operator_harness import (
     HarnessBoundaryError,
@@ -24,8 +25,8 @@ from lima_office.runtime.operator_harness import (
     _reason_codes,
     parse_operator_output,
 )
-from lima_office.runtime.registration_practice import (
-    RegistrationPracticeError,
+from lima_office.runtime.registration_workflow import (
+    RegistrationWorkflowError,
     catalog as registration_catalog,
     run_scenario as run_registration_scenario,
     run_suite as run_registration_suite,
@@ -160,6 +161,16 @@ class OperatorIDEStateStore(HarnessStateStore):
                     issue_fields_json TEXT NOT NULL,
                     evidence_ref TEXT NOT NULL
                 );
+                CREATE TABLE IF NOT EXISTS registration_mock_reviews (
+                    review_id TEXT PRIMARY KEY,
+                    occurred_at TEXT NOT NULL,
+                    attempt_id TEXT NOT NULL UNIQUE,
+                    scenario_id TEXT NOT NULL,
+                    decision TEXT NOT NULL,
+                    outcome TEXT NOT NULL,
+                    guardian_decision_id TEXT,
+                    evidence_ref TEXT NOT NULL
+                );
                 """)
 
     def gap(self, gap_id: str):
@@ -263,6 +274,124 @@ class OperatorIDEStateStore(HarnessStateStore):
                 ),
             )
         return attempt_id, evidence_ref
+
+    def registration_attempt(self, attempt_id: str) -> dict[str, Any] | None:
+        with self._lock:
+            row = self._connection.execute(
+                """
+                SELECT attempt_id, occurred_at, scenario_id, score, passed,
+                       issue_fields_json, evidence_ref
+                FROM registration_practice_attempts WHERE attempt_id=?
+                """,
+                (attempt_id,),
+            ).fetchone()
+        if row is None:
+            return None
+        return {
+            "attempt_id": row["attempt_id"],
+            "occurred_at": row["occurred_at"],
+            "scenario_id": row["scenario_id"],
+            "score": int(row["score"]),
+            "passed": bool(row["passed"]),
+            "issue_fields": json.loads(row["issue_fields_json"]),
+            "evidence_ref": row["evidence_ref"],
+        }
+
+    def registration_review(self, attempt_id: str) -> dict[str, Any] | None:
+        with self._lock:
+            row = self._connection.execute(
+                """
+                SELECT review_id, occurred_at, attempt_id, scenario_id, decision,
+                       outcome, guardian_decision_id, evidence_ref
+                FROM registration_mock_reviews WHERE attempt_id=?
+                """,
+                (attempt_id,),
+            ).fetchone()
+        return dict(row) if row is not None else None
+
+    def record_registration_review(
+        self,
+        *,
+        attempt: Mapping[str, Any],
+        decision: str,
+        outcome: str,
+        guardian_decision_id: str | None,
+        request_evidence_ref: str,
+    ) -> dict[str, Any]:
+        """Persist a sanitized human review and localhost mock receipt."""
+
+        from lima_office.runtime.operator_harness import _utc_now
+
+        review_id = f"registration-review:{uuid.uuid4().hex}"
+        evidence_ref = f"harness-event:{uuid.uuid4().hex}"
+        occurred_at = _utc_now()
+        record = {
+            "review_id": review_id,
+            "occurred_at": occurred_at,
+            "attempt_id": str(attempt["attempt_id"]),
+            "scenario_id": str(attempt["scenario_id"]),
+            "decision": decision,
+            "outcome": outcome,
+            "guardian_decision_id": guardian_decision_id,
+            "evidence_ref": evidence_ref,
+            "request_evidence_ref": request_evidence_ref,
+            "mock_target": "localhost_test_range",
+            "mock_submission_performed": outcome == "mock_submitted",
+            "external_submission_allowed": False,
+            "external_side_effects": False,
+        }
+        evidence_payload = {
+            key: value
+            for key, value in record.items()
+            if key not in {"occurred_at", "evidence_ref"}
+        }
+        with self._lock, self._connection:
+            self._connection.execute(
+                """
+                INSERT INTO registration_mock_reviews
+                    (review_id, occurred_at, attempt_id, scenario_id, decision,
+                     outcome, guardian_decision_id, evidence_ref)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    review_id,
+                    occurred_at,
+                    record["attempt_id"],
+                    record["scenario_id"],
+                    decision,
+                    outcome,
+                    guardian_decision_id,
+                    evidence_ref,
+                ),
+            )
+            self._connection.execute(
+                "INSERT INTO harness_events VALUES (?, ?, ?, ?)",
+                (
+                    evidence_ref,
+                    occurred_at,
+                    "registration_mock_review_completed",
+                    json.dumps(evidence_payload, sort_keys=True, separators=(",", ":")),
+                ),
+            )
+        return record
+
+    def registration_review_summary(self) -> dict[str, int]:
+        with self._lock:
+            row = self._connection.execute(
+                """
+                SELECT COUNT(*) AS total,
+                       COALESCE(SUM(outcome='mock_submitted'), 0) AS mock_submitted,
+                       COALESCE(SUM(outcome='operator_rejected'), 0) AS rejected,
+                       COALESCE(SUM(outcome='blocked'), 0) AS blocked
+                FROM registration_mock_reviews
+                """
+            ).fetchone()
+        return {
+            "review_count": int(row["total"]),
+            "mock_submitted_count": int(row["mock_submitted"]),
+            "operator_rejected_count": int(row["rejected"]),
+            "mock_blocked_count": int(row["blocked"]),
+        }
 
     def registration_attempts(self, limit: int = 20) -> list[dict[str, Any]]:
         with self._lock:
@@ -396,7 +525,7 @@ class OperatorIDEHarness(RuntimeHarness):
                 )
             try:
                 result = run_registration_scenario(scenario_id)
-            except RegistrationPracticeError as exc:
+            except RegistrationWorkflowError as exc:
                 raise HarnessBoundaryError(str(exc)) from exc
             attempt_id, evidence_ref = self.store.record_registration_attempt(result)
         return {**result, "attempt_id": attempt_id, "evidence_ref": evidence_ref}
@@ -427,6 +556,75 @@ class OperatorIDEHarness(RuntimeHarness):
                 },
             )
         return {**suite, "results": recorded, "evidence_ref": suite_evidence}
+
+    def review_registration_practice(
+        self, *, attempt_id: Any, decision: Any
+    ) -> dict[str, Any]:
+        """Record human review and optionally create a Guardian-gated mock receipt."""
+
+        with self._lock:
+            if self.mode != TRAINING_MODE:
+                raise HarnessBoundaryError(
+                    "registration mock review requires training mode"
+                )
+            identifier = _required_text(attempt_id, name="attempt_id", limit=200)
+            selected = _required_text(decision, name="decision", limit=20).lower()
+            if selected not in {"approved", "rejected"}:
+                raise HarnessBoundaryError("decision must be approved or rejected")
+            attempt = self.store.registration_attempt(identifier)
+            if attempt is None:
+                raise HarnessBoundaryError("unknown registration practice attempt")
+            if self.store.registration_review(identifier) is not None:
+                raise HarnessBoundaryError("registration practice attempt is already reviewed")
+
+            request_evidence_ref = self.store.record_event(
+                "registration_mock_review_requested",
+                {
+                    "attempt_id": identifier,
+                    "scenario_id": attempt["scenario_id"],
+                    "decision": selected,
+                    "issue_fields": list(attempt["issue_fields"]),
+                    "synthetic_data_only": True,
+                    "mock_target": "localhost_test_range",
+                    "external_submission_allowed": False,
+                    "external_side_effects": False,
+                },
+            )
+            guardian = None
+            if selected == "rejected":
+                outcome = "operator_rejected"
+            else:
+                guardian = GuardianPolicy().decide(
+                    "mock_form_submission",
+                    {
+                        "tenant_id": str(self.session.args.tenant_id),
+                        "customer_context_id": "customer-context-main",
+                        "execution_mode": "mock_only",
+                        "external_effect": "none",
+                        "evidence_required": True,
+                        "evidence_artifact_ids": [
+                            attempt["evidence_ref"],
+                            request_evidence_ref,
+                        ],
+                        "synthetic_data_only": True,
+                        "operator_review_decision": selected,
+                        "unresolved_issue_count": len(attempt["issue_fields"]),
+                        "mock_target": "localhost_test_range",
+                    },
+                )
+                outcome = (
+                    "mock_submitted"
+                    if guardian["decision"] in {"allow", "allow_with_evidence"}
+                    else "blocked"
+                )
+            record = self.store.record_registration_review(
+                attempt=attempt,
+                decision=selected,
+                outcome=outcome,
+                guardian_decision_id=(guardian or {}).get("decision_id"),
+                request_evidence_ref=request_evidence_ref,
+            )
+        return {**record, "guardian_decision": (guardian or {}).get("decision")}
 
     def decide_approval(
         self,
@@ -656,10 +854,14 @@ class OperatorIDEHarness(RuntimeHarness):
             practice = registration_catalog()
             state["registration_practice"] = {
                 **self.store.registration_summary(),
+                **self.store.registration_review_summary(),
                 "scenario_count": len(practice["scenarios"]),
+                "template_count": len(practice["templates"]),
                 "recent_attempts": self.store.registration_attempts(limit=10),
                 "synthetic_data_only": True,
                 "submission_allowed": False,
+                "mock_target": "localhost_test_range",
+                "mock_submission_available": True,
                 "browser_automation_allowed": False,
                 "external_side_effects": False,
             }

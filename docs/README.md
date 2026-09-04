@@ -6,6 +6,8 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 
 - [Current status](../STATUS.md)
 - [Arc + LIMA Office Lab Preview release plan](ARC_LIMA_OFFICE_LAB_PREVIEW_RELEASE_PLAN.md)
+- [Lab 4 local form test range](LAB4_LOCAL_FORM_TEST_RANGE.md)
+- [Lab 3 registration training validation](LAB3_REGISTRATION_TRAINING_VALIDATION.md)
 - [Canonical baseline](BASELINE.md)
 - [Major baseline stabilization review](MAJOR_BASELINE_STABILIZATION_REVIEW.md)
 - [Architecture](ARCHITECTURE.md)

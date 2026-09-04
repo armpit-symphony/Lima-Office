@@ -22,6 +22,7 @@ DENIED_ACTIONS = {
 ALLOWED_MOCK_ACTIONS = {
     "internal_note",
     "mock_diagnostic",
+    "mock_form_submission",
     "read_only_diagnostic",
 }
 
@@ -87,6 +88,15 @@ class GuardianPolicy:
         schema_action_class = context.get("schema_action_class")
         if schema_action_class in BLOCKED_SCHEMA_ACTION_CLASSES:
             return f"Schema action class {schema_action_class} is blocked in Phase 1A."
+        if action == "mock_form_submission":
+            if context.get("synthetic_data_only") is not True:
+                return "Mock form submission requires fixed synthetic data."
+            if context.get("operator_review_decision") != "approved":
+                return "Mock form submission requires explicit human approval."
+            if context.get("unresolved_issue_count") != 0:
+                return "Mock form submission has unresolved fields."
+            if context.get("mock_target") != "localhost_test_range":
+                return "Mock form submission target is outside the localhost test range."
         if action in DENIED_ACTIONS:
             return DENIED_ACTIONS[action]
         if context.get("connector_live_access") or context.get("live_connector_enabled"):
