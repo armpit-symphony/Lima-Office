@@ -226,6 +226,11 @@ class HarnessRequestHandler(BaseHTTPRequestHandler):
                 )
             elif self.path == "/api/training/registration/run-suite":
                 result = self.server.harness.run_registration_practice_suite()
+            elif self.path == "/api/training/registration/review":
+                result = self.server.harness.review_registration_practice(
+                    attempt_id=payload.get("attempt_id"),
+                    decision=payload.get("decision"),
+                )
             elif self.path == "/api/training/resolve-gap":
                 result = self.server.harness.resolve_gap(
                     gap_id=payload.get("gap_id"),

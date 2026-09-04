@@ -52,12 +52,20 @@ class LabPreviewReleaseTests(unittest.TestCase):
                 "document_read",
                 "local_model_preview",
                 "registration_practice",
+                "registration_mock_review",
             ],
             manifest["allowed_capabilities"],
         )
         self.assertTrue(manifest["local_model"]["separate_opt_ins_required"])
-        self.assertEqual(5, manifest["registration_practice"]["scenario_count"])
+        self.assertEqual(25, manifest["registration_practice"]["scenario_count"])
+        self.assertEqual(3, manifest["registration_practice"]["template_count"])
+        self.assertTrue(
+            manifest["registration_practice"]["human_review_required"]
+        )
         self.assertFalse(manifest["registration_practice"]["submission_allowed"])
+        self.assertFalse(
+            manifest["registration_practice"]["external_submission_allowed"]
+        )
         self.assertEqual("localhost_only", manifest["topology"]["network_scope"])
         self.assertEqual(8, manifest["topology"]["arc_worker_max"])
         self.assertIn("hidden_background_actions", manifest["blocked_capabilities"])
@@ -134,13 +142,15 @@ class LabPreviewReleaseTests(unittest.TestCase):
             "/api/training/registration/catalog",
             "/api/training/registration/run",
             "/api/training/registration/run-suite",
+            "/api/training/registration/review",
         ):
             self.assertIn(route, source)
         self.assertNotIn("/api/training/registration/submit", source)
-        contract = (ROOT / "docs" / "REGISTRATION_PRACTICE_LAB.md").read_text(
+        contract = (ROOT / "docs" / "LAB4_LOCAL_FORM_TEST_RANGE.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("Form submission is always disabled", contract)
+        self.assertIn("There is no registration submit route", contract)
+        self.assertIn("Operator PIN/login work is deferred", contract)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,9 @@
 # Registration Practice Lab Contract
 
-Status: lab-only runtime contract for the attended LIMA Office + Arc preview.
+Status: lab.3 contract retained as validation history. The active expanded
+workflow is [Lab 4 Local Form Test Range](LAB4_LOCAL_FORM_TEST_RANGE.md).
+
+This is a lab-only runtime contract for the attended LIMA Office + Arc preview.
 It is not a production connector, browser driver, or customer-data workflow.
 
 ## Purpose

@@ -323,21 +323,22 @@ class OperatorIDEHarnessTests(unittest.TestCase):
         result = harness.run_registration_practice_suite()
         state = harness.state()["registration_practice"]
 
-        self.assertEqual(5, len(catalog["scenarios"]))
+        self.assertEqual(25, len(catalog["scenarios"]))
+        self.assertEqual(3, len(catalog["templates"]))
         self.assertEqual("passed", result["status"])
-        self.assertEqual(5, result["passed_count"])
+        self.assertEqual(25, result["passed_count"])
         self.assertEqual(0, result["failed_count"])
         self.assertEqual(100, result["average_score"])
         self.assertFalse(result["submission_allowed"])
         self.assertFalse(result["browser_automation_allowed"])
         self.assertFalse(result["external_side_effects"])
-        self.assertEqual(5, state["attempt_count"])
-        self.assertEqual(5, state["passed_count"])
-        self.assertEqual(5, len(state["recent_attempts"]))
+        self.assertEqual(25, state["attempt_count"])
+        self.assertEqual(25, state["passed_count"])
+        self.assertEqual(10, len(state["recent_attempts"]))
 
         evidence = json.dumps(self.store.recent_events())
-        self.assertNotIn("Jordan Example", evidence)
-        self.assertNotIn("jordan.example@example.test", evidence)
+        self.assertNotIn("Practice Person 01", evidence)
+        self.assertNotIn("practice01@example.test", evidence)
         self.assertIn("registration_practice_suite_completed", evidence)
 
         reopened = OperatorIDEStateStore(self.root / "state.db")
@@ -346,13 +347,15 @@ class OperatorIDEHarnessTests(unittest.TestCase):
             FakeSession(self.root), reopened, arc_ide=FakeArcIDE()
         )
         self.assertEqual(
-            5, restored.state()["registration_practice"]["attempt_count"]
+            25, restored.state()["registration_practice"]["attempt_count"]
         )
 
     def test_single_registration_practice_flags_gap_without_inventing(self):
         harness = self.harness()
 
-        result = harness.run_registration_practice(scenario_id="missing-phone")
+        result = harness.run_registration_practice(
+            scenario_id="service-intake-missing-phone-02"
+        )
 
         self.assertTrue(result["passed"])
         self.assertEqual("", result["prepared_fields"]["phone"])
@@ -362,6 +365,58 @@ class OperatorIDEHarnessTests(unittest.TestCase):
         self.assertFalse(result["external_side_effects"])
         self.assertTrue(result["attempt_id"].startswith("registration-practice:"))
         self.assertTrue(result["evidence_ref"].startswith("harness-event:"))
+
+    def test_human_approved_complete_draft_creates_only_local_mock_receipt(self):
+        harness = self.harness()
+        attempt = harness.run_registration_practice(
+            scenario_id="community-program-complete-01"
+        )
+
+        result = harness.review_registration_practice(
+            attempt_id=attempt["attempt_id"], decision="approved"
+        )
+        state = harness.state()["registration_practice"]
+
+        self.assertEqual("mock_submitted", result["outcome"])
+        self.assertEqual("allow_with_evidence", result["guardian_decision"])
+        self.assertTrue(result["mock_submission_performed"])
+        self.assertFalse(result["external_submission_allowed"])
+        self.assertFalse(result["external_side_effects"])
+        self.assertEqual(1, state["review_count"])
+        self.assertEqual(1, state["mock_submitted_count"])
+        evidence = json.dumps(self.store.recent_events())
+        self.assertIn("registration_mock_review_requested", evidence)
+        self.assertIn("registration_mock_review_completed", evidence)
+        self.assertNotIn("Practice Person 01", evidence)
+
+        with self.assertRaisesRegex(HarnessBoundaryError, "already reviewed"):
+            harness.review_registration_practice(
+                attempt_id=attempt["attempt_id"], decision="approved"
+            )
+
+    def test_unresolved_draft_is_guardian_blocked_and_rejection_is_recorded(self):
+        harness = self.harness()
+        incomplete = harness.run_registration_practice(
+            scenario_id="service-intake-missing-phone-02"
+        )
+        blocked = harness.review_registration_practice(
+            attempt_id=incomplete["attempt_id"], decision="approved"
+        )
+        complete = harness.run_registration_practice(
+            scenario_id="community-program-complete-01"
+        )
+        rejected = harness.review_registration_practice(
+            attempt_id=complete["attempt_id"], decision="rejected"
+        )
+
+        self.assertEqual("blocked", blocked["outcome"])
+        self.assertEqual("deny", blocked["guardian_decision"])
+        self.assertFalse(blocked["mock_submission_performed"])
+        self.assertEqual("operator_rejected", rejected["outcome"])
+        self.assertIsNone(rejected["guardian_decision"])
+        state = harness.state()["registration_practice"]
+        self.assertEqual(1, state["mock_blocked_count"])
+        self.assertEqual(1, state["operator_rejected_count"])
 
     def test_registration_practice_requires_training_mode(self):
         harness = self.harness()
@@ -375,6 +430,12 @@ class OperatorIDEHarnessTests(unittest.TestCase):
             HarnessBoundaryError, "registration practice requires training mode"
         ):
             harness.run_registration_practice_suite()
+        with self.assertRaisesRegex(
+            HarnessBoundaryError, "registration mock review requires training mode"
+        ):
+            harness.review_registration_practice(
+                attempt_id="registration-practice:none", decision="approved"
+            )
         self.assertEqual(
             0, harness.state()["registration_practice"]["attempt_count"]
         )

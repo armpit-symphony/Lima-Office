@@ -54,22 +54,29 @@ The AI can draft an SOP in Training mode. The draft is transient and is not
 saved until a human reviews it and clicks **Save instruction**. Use synthetic
 data only. No browser automation or form submission is included.
 
-## Run the synthetic registration curriculum
+## Run the localhost registration test range
 
 Start the local-AI training mode, open the printed localhost URL, and use the
-**Registration practice lab** panel. It contains five fixed fictional cases:
-a complete record, a missing phone, an invalid email, an invalid postal code,
-and contact consent not granted.
+**Registration workflow test range** panel. It contains 25 fixed fictional
+records across community-program, service-intake, and event-enrollment layouts.
+The cases repeat complete, missing-phone, invalid-email, invalid-postal, and
+no-consent conditions with reserved `.test` emails and fictional `555-01xx`
+phones.
 
-Use **Prepare practice form** for one case or **Run all 5** for the curriculum.
+Use **Prepare form** for one record or **Run all 25** for the complete range.
 Arc copies valid supplied values exactly, leaves missing or invalid fields
 blank, marks them `NEEDS_HUMAN_INPUT`, and records sanitized score/evidence
-summaries in the local harness database. The mock Submit control is always
+summaries in the local harness database.
+
+A complete form enables explicit **Approve localhost mock** or **Reject draft**
+review controls. Approval asks Guardian to evaluate a synthetic, evidence-bound,
+localhost-only mock action and creates only an internal receipt. Incomplete
+forms are Guardian-denied. **External submit blocked** remains permanently
 disabled, and the server has no registration-submit route.
 
 This is repeatable SOP practice, not model-weight fine-tuning. Do not enter real
 people's information. The curriculum has no browser, connector, customer-system
-write, or external-send capability.
+write, external submission, or external-send capability.
 
 ## Enable the bounded document lane
 
