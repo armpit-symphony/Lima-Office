@@ -2,8 +2,8 @@
 
 Validation date: 2026-09-03 (America/New_York)
 
-Status: source-candidate validation complete; packaging validation pending the
-final merged LIMA Office commit.
+Status: source and packaged-artifact validation complete; prerelease
+publication requires explicit approval of the final public assets.
 
 ## Training performed
 
@@ -35,6 +35,19 @@ final merged LIMA Office commit.
 - Browser automation performed: no.
 - Form submission performed: no.
 - External side effects performed: no.
+
+## Packaged-artifact validation
+
+The `0.1.0-lab.3` ZIP built from the merged Office commit was extracted and
+installed into fresh Windows directories. The installer verified the exact
+Arc, Guardian, and LIMA pins. The packaged smoke suite passed. The installed
+UI then repeated all five scenarios at 100%, generated and saved the guarded
+registration SOP, stopped, and restarted from the same SQLite state.
+
+The trained packaged installation is running attended on `127.0.0.1:8766`.
+It reports five passed practice attempts, zero failed attempts, one instructed
+SOP, local model ready, submission disabled, browser automation disabled, and
+external side effects false.
 
 ## Scenario coverage
 
