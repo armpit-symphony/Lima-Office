@@ -47,10 +47,17 @@ class LabPreviewReleaseTests(unittest.TestCase):
         self.assertFalse(manifest["customer_pilot_allowed"])
         self.assertFalse(manifest["operator_authentication"])
         self.assertEqual(
-            ["document_list", "document_read", "local_model_preview"],
+            [
+                "document_list",
+                "document_read",
+                "local_model_preview",
+                "registration_practice",
+            ],
             manifest["allowed_capabilities"],
         )
         self.assertTrue(manifest["local_model"]["separate_opt_ins_required"])
+        self.assertEqual(5, manifest["registration_practice"]["scenario_count"])
+        self.assertFalse(manifest["registration_practice"]["submission_allowed"])
         self.assertEqual("localhost_only", manifest["topology"]["network_scope"])
         self.assertEqual(8, manifest["topology"]["arc_worker_max"])
         self.assertIn("hidden_background_actions", manifest["blocked_capabilities"])
@@ -118,6 +125,22 @@ class LabPreviewReleaseTests(unittest.TestCase):
         model_guard = 'if (($LocalModelSupervisorOptIn -or $LocalModelArcOptIn)'
         self.assertIn(document_denial, source)
         self.assertLess(source.index(document_denial), source.index(model_guard))
+
+    def test_harness_exposes_bounded_registration_practice_routes(self):
+        source = (ROOT / "scripts" / "arc-runtime-harness.py").read_text(
+            encoding="utf-8"
+        )
+        for route in (
+            "/api/training/registration/catalog",
+            "/api/training/registration/run",
+            "/api/training/registration/run-suite",
+        ):
+            self.assertIn(route, source)
+        self.assertNotIn("/api/training/registration/submit", source)
+        contract = (ROOT / "docs" / "REGISTRATION_PRACTICE_LAB.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Form submission is always disabled", contract)
 
 
 if __name__ == "__main__":
