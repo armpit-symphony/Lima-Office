@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from collections.abc import Collection
 from typing import Any, Mapping, Protocol
+import json
 import unicodedata
 import uuid
 
@@ -22,6 +23,12 @@ from lima_office.runtime.operator_harness import (
     _required_text,
     _reason_codes,
     parse_operator_output,
+)
+from lima_office.runtime.registration_practice import (
+    RegistrationPracticeError,
+    catalog as registration_catalog,
+    run_scenario as run_registration_scenario,
+    run_suite as run_registration_suite,
 )
 from lima_office.runtime.task_outcome import TaskAttempt, route_task_outcome
 
@@ -138,12 +145,21 @@ class OperatorIDEStateStore(HarnessStateStore):
     def __init__(self, path):
         super().__init__(path)
         with self._lock, self._connection:
-            self._connection.execute("""
+            self._connection.executescript("""
                 CREATE TABLE IF NOT EXISTS harness_settings (
                     setting_name TEXT PRIMARY KEY,
                     setting_json TEXT NOT NULL,
                     updated_at TEXT NOT NULL
-                )
+                );
+                CREATE TABLE IF NOT EXISTS registration_practice_attempts (
+                    attempt_id TEXT PRIMARY KEY,
+                    occurred_at TEXT NOT NULL,
+                    scenario_id TEXT NOT NULL,
+                    score INTEGER NOT NULL,
+                    passed INTEGER NOT NULL,
+                    issue_fields_json TEXT NOT NULL,
+                    evidence_ref TEXT NOT NULL
+                );
                 """)
 
     def gap(self, gap_id: str):
@@ -179,8 +195,6 @@ class OperatorIDEStateStore(HarnessStateStore):
             )
 
     def setting(self, name: str) -> dict[str, Any] | None:
-        import json
-
         with self._lock:
             row = self._connection.execute(
                 "SELECT setting_json FROM harness_settings WHERE setting_name=?",
@@ -190,6 +204,108 @@ class OperatorIDEStateStore(HarnessStateStore):
             return None
         payload = json.loads(row["setting_json"])
         return payload if isinstance(payload, dict) else None
+
+    def record_registration_attempt(
+        self, result: Mapping[str, Any]
+    ) -> tuple[str, str]:
+        """Persist one sanitized practice summary and matching evidence event."""
+
+        from lima_office.runtime.operator_harness import _utc_now
+
+        scenario_id = str(result["scenario_id"])
+        score = int(result["score"])
+        passed = bool(result["passed"])
+        issue_fields = sorted(
+            str(issue["field"])
+            for issue in result.get("issues", ())
+            if isinstance(issue, Mapping) and issue.get("field")
+        )
+        attempt_id = f"registration-practice:{uuid.uuid4().hex}"
+        evidence_ref = f"harness-event:{uuid.uuid4().hex}"
+        occurred_at = _utc_now()
+        evidence_payload = {
+            "attempt_id": attempt_id,
+            "scenario_id": scenario_id,
+            "score": score,
+            "passed": passed,
+            "issue_fields": issue_fields,
+            "synthetic_data_only": True,
+            "submission_allowed": False,
+            "external_side_effects": False,
+        }
+        with self._lock, self._connection:
+            self._connection.execute(
+                """
+                INSERT INTO registration_practice_attempts
+                    (attempt_id, occurred_at, scenario_id, score, passed,
+                     issue_fields_json, evidence_ref)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    attempt_id,
+                    occurred_at,
+                    scenario_id,
+                    score,
+                    int(passed),
+                    json.dumps(issue_fields, separators=(",", ":")),
+                    evidence_ref,
+                ),
+            )
+            self._connection.execute(
+                "INSERT INTO harness_events VALUES (?, ?, ?, ?)",
+                (
+                    evidence_ref,
+                    occurred_at,
+                    "registration_practice_completed",
+                    json.dumps(
+                        evidence_payload, sort_keys=True, separators=(",", ":")
+                    ),
+                ),
+            )
+        return attempt_id, evidence_ref
+
+    def registration_attempts(self, limit: int = 20) -> list[dict[str, Any]]:
+        with self._lock:
+            rows = self._connection.execute(
+                """
+                SELECT attempt_id, occurred_at, scenario_id, score, passed,
+                       issue_fields_json, evidence_ref
+                FROM registration_practice_attempts
+                ORDER BY rowid DESC LIMIT ?
+                """,
+                (limit,),
+            ).fetchall()
+        return [
+            {
+                "attempt_id": row["attempt_id"],
+                "occurred_at": row["occurred_at"],
+                "scenario_id": row["scenario_id"],
+                "score": int(row["score"]),
+                "passed": bool(row["passed"]),
+                "issue_fields": json.loads(row["issue_fields_json"]),
+                "evidence_ref": row["evidence_ref"],
+            }
+            for row in rows
+        ]
+
+    def registration_summary(self) -> dict[str, Any]:
+        with self._lock:
+            row = self._connection.execute(
+                """
+                SELECT COUNT(*) AS total,
+                       COALESCE(SUM(passed), 0) AS passed,
+                       COALESCE(ROUND(AVG(score)), 0) AS average_score
+                FROM registration_practice_attempts
+                """
+            ).fetchone()
+        total = int(row["total"])
+        passed = int(row["passed"])
+        return {
+            "attempt_count": total,
+            "passed_count": passed,
+            "failed_count": total - passed,
+            "average_score": int(row["average_score"]),
+        }
 
 
 class OperatorIDEHarness(RuntimeHarness):
@@ -268,6 +384,49 @@ class OperatorIDEHarness(RuntimeHarness):
                 },
             )
         return {**rendered, "evidence_ref": event_id}
+
+    def registration_catalog(self) -> dict[str, Any]:
+        return registration_catalog()
+
+    def run_registration_practice(self, *, scenario_id: Any) -> dict[str, Any]:
+        with self._lock:
+            if self.mode != TRAINING_MODE:
+                raise HarnessBoundaryError(
+                    "registration practice requires training mode"
+                )
+            try:
+                result = run_registration_scenario(scenario_id)
+            except RegistrationPracticeError as exc:
+                raise HarnessBoundaryError(str(exc)) from exc
+            attempt_id, evidence_ref = self.store.record_registration_attempt(result)
+        return {**result, "attempt_id": attempt_id, "evidence_ref": evidence_ref}
+
+    def run_registration_practice_suite(self) -> dict[str, Any]:
+        with self._lock:
+            if self.mode != TRAINING_MODE:
+                raise HarnessBoundaryError(
+                    "registration practice requires training mode"
+                )
+            suite = run_registration_suite()
+            recorded: list[dict[str, Any]] = []
+            for result in suite["results"]:
+                attempt_id, evidence_ref = self.store.record_registration_attempt(result)
+                recorded.append(
+                    {**result, "attempt_id": attempt_id, "evidence_ref": evidence_ref}
+                )
+            suite_evidence = self.store.record_event(
+                "registration_practice_suite_completed",
+                {
+                    "scenario_count": suite["scenario_count"],
+                    "passed_count": suite["passed_count"],
+                    "failed_count": suite["failed_count"],
+                    "average_score": suite["average_score"],
+                    "synthetic_data_only": True,
+                    "submission_allowed": False,
+                    "external_side_effects": False,
+                },
+            )
+        return {**suite, "results": recorded, "evidence_ref": suite_evidence}
 
     def decide_approval(
         self,
@@ -493,5 +652,15 @@ class OperatorIDEHarness(RuntimeHarness):
                 "page_chars": DOCUMENT_PAGE_CHARS,
                 "persistence": "process_memory_only",
                 "buffer_count": len(self._documents),
+            }
+            practice = registration_catalog()
+            state["registration_practice"] = {
+                **self.store.registration_summary(),
+                "scenario_count": len(practice["scenarios"]),
+                "recent_attempts": self.store.registration_attempts(limit=10),
+                "synthetic_data_only": True,
+                "submission_allowed": False,
+                "browser_automation_allowed": False,
+                "external_side_effects": False,
             }
             return state

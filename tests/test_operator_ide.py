@@ -316,6 +316,69 @@ class OperatorIDEHarnessTests(unittest.TestCase):
                     )
         self.assertEqual([], session.requests)
 
+    def test_registration_practice_suite_is_durable_synthetic_and_blocked(self):
+        harness = self.harness()
+
+        catalog = harness.registration_catalog()
+        result = harness.run_registration_practice_suite()
+        state = harness.state()["registration_practice"]
+
+        self.assertEqual(5, len(catalog["scenarios"]))
+        self.assertEqual("passed", result["status"])
+        self.assertEqual(5, result["passed_count"])
+        self.assertEqual(0, result["failed_count"])
+        self.assertEqual(100, result["average_score"])
+        self.assertFalse(result["submission_allowed"])
+        self.assertFalse(result["browser_automation_allowed"])
+        self.assertFalse(result["external_side_effects"])
+        self.assertEqual(5, state["attempt_count"])
+        self.assertEqual(5, state["passed_count"])
+        self.assertEqual(5, len(state["recent_attempts"]))
+
+        evidence = json.dumps(self.store.recent_events())
+        self.assertNotIn("Jordan Example", evidence)
+        self.assertNotIn("jordan.example@example.test", evidence)
+        self.assertIn("registration_practice_suite_completed", evidence)
+
+        reopened = OperatorIDEStateStore(self.root / "state.db")
+        self.addCleanup(reopened.close)
+        restored = OperatorIDEHarness(
+            FakeSession(self.root), reopened, arc_ide=FakeArcIDE()
+        )
+        self.assertEqual(
+            5, restored.state()["registration_practice"]["attempt_count"]
+        )
+
+    def test_single_registration_practice_flags_gap_without_inventing(self):
+        harness = self.harness()
+
+        result = harness.run_registration_practice(scenario_id="missing-phone")
+
+        self.assertTrue(result["passed"])
+        self.assertEqual("", result["prepared_fields"]["phone"])
+        self.assertEqual("phone", result["issues"][0]["field"])
+        self.assertEqual("NEEDS_HUMAN_INPUT", result["issues"][0]["status"])
+        self.assertFalse(result["submission_allowed"])
+        self.assertFalse(result["external_side_effects"])
+        self.assertTrue(result["attempt_id"].startswith("registration-practice:"))
+        self.assertTrue(result["evidence_ref"].startswith("harness-event:"))
+
+    def test_registration_practice_requires_training_mode(self):
+        harness = self.harness()
+        harness.set_mode("working")
+
+        with self.assertRaisesRegex(
+            HarnessBoundaryError, "registration practice requires training mode"
+        ):
+            harness.run_registration_practice(scenario_id="complete-contact")
+        with self.assertRaisesRegex(
+            HarnessBoundaryError, "registration practice requires training mode"
+        ):
+            harness.run_registration_practice_suite()
+        self.assertEqual(
+            0, harness.state()["registration_practice"]["attempt_count"]
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

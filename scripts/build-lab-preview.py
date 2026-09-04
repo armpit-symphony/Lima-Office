@@ -110,7 +110,18 @@ def build_manifest(version: str, office_commit: str) -> dict:
             "automatic_sop_save": False,
             "bundled_model_weights": False,
         },
-        "allowed_capabilities": ["document_list", "document_read", "local_model_preview"],
+        "registration_practice": {
+            "scenario_count": 5,
+            "data_classification": "synthetic_fixture_only",
+            "deterministic_scoring": True,
+            "submission_allowed": False,
+            "browser_automation_allowed": False,
+            "external_side_effects": False,
+        },
+        "allowed_capabilities": [
+            "document_list", "document_read", "local_model_preview",
+            "registration_practice",
+        ],
         "blocked_capabilities": [
             "cloud_models",
             "browser_automation",
@@ -172,7 +183,7 @@ def build_artifact(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--version", default="0.1.0-lab.2")
+    parser.add_argument("--version", default="0.1.0-lab.3")
     parser.add_argument("--output-dir", type=Path, default=ROOT / "dist")
     args = parser.parse_args()
     try:

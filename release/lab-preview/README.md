@@ -54,6 +54,23 @@ The AI can draft an SOP in Training mode. The draft is transient and is not
 saved until a human reviews it and clicks **Save instruction**. Use synthetic
 data only. No browser automation or form submission is included.
 
+## Run the synthetic registration curriculum
+
+Start the local-AI training mode, open the printed localhost URL, and use the
+**Registration practice lab** panel. It contains five fixed fictional cases:
+a complete record, a missing phone, an invalid email, an invalid postal code,
+and contact consent not granted.
+
+Use **Prepare practice form** for one case or **Run all 5** for the curriculum.
+Arc copies valid supplied values exactly, leaves missing or invalid fields
+blank, marks them `NEEDS_HUMAN_INPUT`, and records sanitized score/evidence
+summaries in the local harness database. The mock Submit control is always
+disabled, and the server has no registration-submit route.
+
+This is repeatable SOP practice, not model-weight fine-tuning. Do not enter real
+people's information. The curriculum has no browser, connector, customer-system
+write, or external-send capability.
+
 ## Enable the bounded document lane
 
 Use test documents only. Both execution owners must opt in separately:

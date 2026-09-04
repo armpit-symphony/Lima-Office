@@ -186,6 +186,9 @@ class HarnessRequestHandler(BaseHTTPRequestHandler):
         if self.path == "/api/state":
             self._json(200, self.server.harness.state())
             return
+        if self.path == "/api/training/registration/catalog":
+            self._json(200, self.server.harness.registration_catalog())
+            return
         if self.path == "/api/health":
             self._json(
                 200,
@@ -217,6 +220,12 @@ class HarnessRequestHandler(BaseHTTPRequestHandler):
                     task_ref=payload.get("task_ref"),
                     goal=payload.get("goal"),
                 )
+            elif self.path == "/api/training/registration/run":
+                result = self.server.harness.run_registration_practice(
+                    scenario_id=payload.get("scenario_id"),
+                )
+            elif self.path == "/api/training/registration/run-suite":
+                result = self.server.harness.run_registration_practice_suite()
             elif self.path == "/api/training/resolve-gap":
                 result = self.server.harness.resolve_gap(
                     gap_id=payload.get("gap_id"),
