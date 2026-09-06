@@ -18,6 +18,7 @@ from lima_office.runtime.escalation import EscalationLadder, load_ladder
 from lima_office.runtime.operator_harness import (
     HarnessBoundaryError,
     HarnessStateStore,
+    MAX_REFERENCE_INPUT,
     RuntimeHarness,
     TRAINING_MODE,
     WORKING_MODE,
@@ -454,6 +455,64 @@ class OperatorIDEHarness(RuntimeHarness):
         self.store: OperatorIDEStateStore = store
         self.arc_ide = arc_ide
         self._documents: dict[str, str] = {}
+        self._office_inventory: dict[str, Any] | None = None
+        self._office_evidence: dict[str, Any] | None = None
+
+    def refresh_office_workers(self) -> dict[str, Any]:
+        """Explicitly refresh the authenticated Supervisor-owned inventory."""
+
+        with self._lock:
+            try:
+                result = self.session.refresh_workers()
+            except (RuntimeError, ValueError, OSError) as exc:
+                raise HarnessBoundaryError(
+                    "LIMA Office Supervisor worker inventory is unavailable"
+                ) from exc
+            self._office_inventory = dict(result)
+            event_id = self.store.record_event(
+                "office_worker_inventory_refreshed",
+                {
+                    "request_id": result.get("request_id"),
+                    "status": result.get("status"),
+                    "worker_count": result.get("worker_count"),
+                    "classification_authority": result.get(
+                        "classification_authority"
+                    ),
+                    "external_side_effects": False,
+                },
+            )
+        return {**result, "harness_evidence_ref": event_id}
+
+    def read_office_evidence(self, *, target_request_id: Any) -> dict[str, Any]:
+        """Explicitly request one Supervisor-redacted evidence trace."""
+
+        target = _required_text(
+            target_request_id,
+            name="target_request_id",
+            limit=MAX_REFERENCE_INPUT,
+        )
+        with self._lock:
+            try:
+                result = self.session.read_evidence(target_request_id=target)
+            except (RuntimeError, ValueError, OSError) as exc:
+                raise HarnessBoundaryError(
+                    "LIMA Office Supervisor evidence trace is unavailable"
+                ) from exc
+            self._office_evidence = dict(result)
+            event_id = self.store.record_event(
+                "office_evidence_trace_read",
+                {
+                    "request_id": result.get("request_id"),
+                    "target_request_id": target,
+                    "status": result.get("status"),
+                    "event_count": result.get("event_count"),
+                    "classification_authority": result.get(
+                        "classification_authority"
+                    ),
+                    "external_side_effects": False,
+                },
+            )
+        return {**result, "harness_evidence_ref": event_id}
 
     def set_mode(self, mode: Any) -> dict[str, Any]:
         result = super().set_mode(mode)
@@ -850,6 +909,24 @@ class OperatorIDEHarness(RuntimeHarness):
                 "page_chars": DOCUMENT_PAGE_CHARS,
                 "persistence": "process_memory_only",
                 "buffer_count": len(self._documents),
+            }
+            state["office_integration"] = {
+                "connected": bool(
+                    self.session.worker_port is not None
+                    and self.session.supervisor_port is not None
+                ),
+                "topology": {
+                    "supervisor_count": 1,
+                    "registered_worker_limit": 8,
+                    "current_worker_id": str(self.session.args.worker_id),
+                },
+                "classification_authority": "supervisor_server_derived",
+                "automatic_refresh": False,
+                "runtime_authority_blocked": True,
+                "execution_allowed": False,
+                "side_effects_allowed": False,
+                "inventory": self._office_inventory,
+                "evidence_trace": self._office_evidence,
             }
             practice = registration_catalog()
             state["registration_practice"] = {

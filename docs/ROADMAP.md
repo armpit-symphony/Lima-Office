@@ -58,6 +58,14 @@
 
 ### Deliverables
 
+Current lab implementation status (2026-09-06): the attended localhost preview
+runs one Supervisor and one Arc worker as real child processes. Arc now exposes
+an explicit operator-triggered Supervisor inventory refresh and a separately
+authorized redacted evidence-trace read. Both use the existing signed operator
+channel, Guardian and LIMA gates, durable Supervisor evidence, and fail-closed
+client validation. There is no automatic dashboard polling, connector access,
+external submission, or task-execution authority in this surface.
+
 - Phase 1A mock runtime scaffold for contract loading and validation.
 - In-memory mock worker registry, heartbeat intake, task queue, Guardian decisions, and evidence writer.
 - Runtime tests for fail-closed policy, validation, worker state, heartbeat, task, and evidence behavior.
@@ -75,6 +83,8 @@
 
 - 1 Supervisor Server and 1-3 lab workers represented.
 - Worker registration and heartbeat states are visible.
+- The localhost Arc UI can explicitly display the Supervisor-derived status of
+  the registered worker and a redacted trace for a known request ID.
 - Every task transition has a Guardian decision and evidence reference.
 - Valid contracts cannot be combined into unsafe flows across Guardian,
   approval, token, evidence, taint, worker, tool, memory, helper, or LIMA IT

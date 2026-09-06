@@ -4,6 +4,23 @@ This artifact installs one attended, localhost-only LIMA Office Supervisor and
 the Arc worker source selected by the release manifest. It is a test preview,
 not a customer pilot or production release.
 
+## One-click Arc controls
+
+After installation, open Start Arc.cmd in the installed directory. Restart
+Arc.cmd and Stop Arc.cmd preserve saved SOPs and training history. These
+launchers use port 8766 and opt into the already installed local Qwen preview;
+they never pull models or run tasks automatically. Ollama must be running.
+
+Enable Arc at login.cmd installs a per-user Startup shortcut. Disable Arc at
+login.cmd removes that shortcut. Login startup is optional and off by default.
+No administrator privileges or firewall changes are required.
+
+The UI shows release version and Arc source commit, with a modified-source
+marker for development installations. Export diagnostic/evidence bundle saves
+selected metadata and an evidence index without free-text content or secrets.
+Reset synthetic training history archives practice attempts and reviews after
+typed confirmation, retaining SOPs and all audit events.
+
 ## Verify
 
 Compare the ZIP SHA-256 with the adjacent checksum file before extraction.

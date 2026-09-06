@@ -23,6 +23,12 @@ PAYLOAD_FILES = (
     "start-lab-preview.ps1",
     "smoke-lab-preview.ps1",
     "setup-local-model.ps1",
+    "manage-arc-preview.ps1",
+    "Start Arc.cmd",
+    "Restart Arc.cmd",
+    "Stop Arc.cmd",
+    "Enable Arc at login.cmd",
+    "Disable Arc at login.cmd",
 )
 
 
@@ -188,7 +194,7 @@ def build_artifact(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--version", default="0.1.0-lab.4")
+    parser.add_argument("--version", default="0.1.0-lab.5")
     parser.add_argument("--output-dir", type=Path, default=ROOT / "dist")
     args = parser.parse_args()
     try:

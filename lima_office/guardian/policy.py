@@ -20,6 +20,7 @@ DENIED_ACTIONS = {
 }
 
 ALLOWED_MOCK_ACTIONS = {
+    "lab_support",
     "internal_note",
     "mock_diagnostic",
     "mock_form_submission",
@@ -85,6 +86,14 @@ class GuardianPolicy:
         return decision
 
     def _deny_reason(self, action: str, context: dict[str, Any]) -> str | None:
+        if action == "lab_support":
+            if context.get("scope") != "synthetic_registration_history" or context.get("preserve_sops") is not True:
+                return "Lab support requires a bounded scope and preserved SOPs."
+            operation = context.get("operation")
+            if operation not in {"diagnostic_export", "synthetic_history_reset", "service_stop"}:
+                return "Unknown lab support operation."
+            if operation == "synthetic_history_reset" and context.get("confirmed") is not True:
+                return "Synthetic history reset requires explicit confirmation."
         schema_action_class = context.get("schema_action_class")
         if schema_action_class in BLOCKED_SCHEMA_ACTION_CLASSES:
             return f"Schema action class {schema_action_class} is blocked in Phase 1A."

@@ -43,6 +43,12 @@ class GovernedSession(Protocol):
     def request(self, *, action: str, resource_type: str, resource_id: str) -> str:
         """Return the Arc operator CLI result for one governed request."""
 
+    def refresh_workers(self) -> dict[str, Any]:
+        """Return the authenticated Supervisor-owned worker inventory."""
+
+    def read_evidence(self, *, target_request_id: str) -> dict[str, Any]:
+        """Return one authenticated, redacted Supervisor evidence trace."""
+
 
 def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")

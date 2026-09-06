@@ -296,6 +296,55 @@ class ArcOfficeSession:
             return f"request failed\n{completed.stderr.strip()}"
         return completed.stdout
 
+    def _supervisor_client(self):
+        """Build the existing authenticated Arc client without persisting its key."""
+
+        self._alive()
+        arc_source = str(self.args.arc_source)
+        if arc_source not in sys.path:
+            sys.path.insert(0, arc_source)
+        from arc_bot_shell.control_plane.operator_client import (
+            ArcSupervisorPreflightClient,
+            OperatorResponseReplayStore,
+            SupervisorOperatorChannel,
+        )
+
+        replay_store = OperatorResponseReplayStore(
+            self.session_dir / "operator-replay.db"
+        )
+        channel = SupervisorOperatorChannel(
+            tenant_id=self.args.tenant_id,
+            customer_context_id=self.args.customer_context_id,
+            actor_id=self.args.operator_id,
+            key_id=self.args.operator_key_id,
+            shared_key=self._operator_key,
+            replay_store=replay_store,
+            policy_version=self.args.policy_version,
+        )
+        client = ArcSupervisorPreflightClient(
+            base_url=f"http://127.0.0.1:{self.supervisor_port}",
+            channel=channel,
+        )
+        return client, replay_store
+
+    def refresh_workers(self) -> dict[str, object]:
+        """Explicitly read the Supervisor-owned, non-executing worker inventory."""
+
+        client, replay_store = self._supervisor_client()
+        try:
+            return client.refresh_workers()
+        finally:
+            replay_store.close()
+
+    def read_evidence(self, *, target_request_id: str) -> dict[str, object]:
+        """Explicitly read one Guardian-authorized, redacted evidence trace."""
+
+        client, replay_store = self._supervisor_client()
+        try:
+            return client.read_evidence(target_request_id=target_request_id)
+        finally:
+            replay_store.close()
+
 
 def _summarize(output: str) -> str:
     """Turn one operator result into something readable at a prompt."""
