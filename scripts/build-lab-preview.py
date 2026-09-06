@@ -132,6 +132,11 @@ def build_manifest(version: str, office_commit: str) -> dict:
         "allowed_capabilities": [
             "document_list", "document_read", "local_model_preview",
             "registration_practice", "registration_mock_review",
+            "supervisor_worker_inventory_read",
+            "supervisor_evidence_trace_read",
+            "diagnostic_evidence_export",
+            "synthetic_history_reset",
+            "windows_lifecycle_controls",
         ],
         "blocked_capabilities": [
             "cloud_models",

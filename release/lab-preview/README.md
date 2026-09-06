@@ -21,6 +21,19 @@ selected metadata and an evidence index without free-text content or secrets.
 Reset synthetic training history archives practice attempts and reviews after
 typed confirmation, retaining SOPs and all audit events.
 
+## LIMA Office Supervisor view
+
+The Arc UI includes an explicit **Refresh Supervisor** control. It uses the
+signed operator channel to request the Supervisor-owned inventory and displays
+the authenticated worker's health and eligibility. It does not poll in the
+background.
+
+After **Check worker** creates a governed request ID, use **Read redacted
+evidence** to retrieve that request's Supervisor evidence trace. The read has
+its own Guardian and LIMA authorization chain and returns redacted event
+metadata only. Inventory and evidence views cannot execute tasks, grant
+runtime authority, or perform external side effects.
+
 ## Verify
 
 Compare the ZIP SHA-256 with the adjacent checksum file before extraction.
