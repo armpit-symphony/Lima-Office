@@ -53,6 +53,11 @@ class LabPreviewReleaseTests(unittest.TestCase):
                 "local_model_preview",
                 "registration_practice",
                 "registration_mock_review",
+                "supervisor_worker_inventory_read",
+                "supervisor_evidence_trace_read",
+                "diagnostic_evidence_export",
+                "synthetic_history_reset",
+                "windows_lifecycle_controls",
             ],
             manifest["allowed_capabilities"],
         )
