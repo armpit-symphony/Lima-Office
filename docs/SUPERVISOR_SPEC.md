@@ -161,6 +161,13 @@ The supervisor may use 1-4 helper agents for memory review, file organization, b
 
 ## Operator Dashboard
 
+The attended lab implements the first narrow dashboard slice inside the Arc
+operator UI: an explicit signed refresh of Supervisor-owned worker inventory
+and an explicit signed read of one redacted evidence trace. Cached results are
+process-memory projections only. Opening or refreshing ordinary Arc state does
+not contact these Supervisor endpoints, and neither operation can execute work
+or grant runtime authority.
+
 The dashboard should show:
 
 - Supervisor health.

@@ -119,3 +119,18 @@ This is an ADR-style decision log. Status values are `accepted`, `proposed`, or 
 - Consequence: Arc's frozen-pin compatibility proof moves deliberately to the
   coordinated preview commit. Every consumer keeps its own isolated
   environment and must prove the installed package provenance before tests.
+
+## ADR-0013: Project Supervisor Inventory And Evidence Into Arc Explicitly
+
+- Status: accepted
+- Date: 2026-09-06
+- Decision: The first LIMA Office integration panel in Arc reuses the signed
+  Supervisor operator channel for explicit worker-inventory refresh and
+  redacted evidence lookup. It does not create a second registry, poll in the
+  background, or expose execution controls.
+- Rationale: The Supervisor remains authoritative for worker classification and
+  evidence while Arc remains the bounded worker/operator surface. Explicit
+  foreground requests keep network activity visible and auditable.
+- Consequence: Results may be cached only in process memory for display. Every
+  refresh and evidence read traverses authentication, Guardian, LIMA, and
+  evidence gates and fails closed if any layer is unavailable.

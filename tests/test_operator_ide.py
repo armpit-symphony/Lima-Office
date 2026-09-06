@@ -29,6 +29,7 @@ class FakeSession:
         self.supervisor_port = 41002
         self.responses = list(responses or [])
         self.requests: list[dict[str, str]] = []
+        self.office_requests: list[dict[str, str]] = []
 
     def request(self, *, action: str, resource_type: str, resource_id: str) -> str:
         self.requests.append(
@@ -39,6 +40,42 @@ class FakeSession:
             }
         )
         return self.responses.pop(0)
+
+    def refresh_workers(self) -> dict[str, object]:
+        self.office_requests.append({"operation": "refresh_workers"})
+        return {
+            "request_id": "worker-inventory:test",
+            "status": "healthy",
+            "classification_authority": "supervisor_server_derived",
+            "worker_count": 1,
+            "workers": [
+                {
+                    "worker_id": "arc-worker-001",
+                    "state": "healthy",
+                    "eligible": True,
+                }
+            ],
+            "evidence_refs": ["evidence:inventory"],
+            "runtime_authority_blocked": True,
+            "execution_allowed": False,
+            "side_effects_allowed": False,
+        }
+
+    def read_evidence(self, *, target_request_id: str) -> dict[str, object]:
+        self.office_requests.append(
+            {"operation": "read_evidence", "target_request_id": target_request_id}
+        )
+        return {
+            "request_id": "evidence-query:test",
+            "target_request_id": target_request_id,
+            "status": "available",
+            "classification_authority": "supervisor_server_derived",
+            "event_count": 1,
+            "events": [{"event_type": "guardian_decision"}],
+            "runtime_authority_blocked": True,
+            "execution_allowed": False,
+            "side_effects_allowed": False,
+        }
 
 
 class FakeArcIDE:
@@ -122,6 +159,51 @@ class OperatorIDEHarnessTests(unittest.TestCase):
         return OperatorIDEHarness(
             FakeSession(self.root, responses), self.store, arc_ide=self.arc
         )
+
+    def test_office_integration_is_explicit_and_read_only(self):
+        session = FakeSession(self.root)
+        harness = OperatorIDEHarness(session, self.store, arc_ide=self.arc)
+
+        initial = harness.state()["office_integration"]
+        self.assertTrue(initial["connected"])
+        self.assertIsNone(initial["inventory"])
+        self.assertIsNone(initial["evidence_trace"])
+        self.assertFalse(initial["automatic_refresh"])
+        self.assertTrue(initial["runtime_authority_blocked"])
+        self.assertEqual(session.office_requests, [])
+
+        inventory = harness.refresh_office_workers()
+        self.assertEqual(inventory["worker_count"], 1)
+        self.assertTrue(inventory["workers"][0]["eligible"])
+        self.assertTrue(inventory["harness_evidence_ref"].startswith("harness-event:"))
+
+        evidence = harness.read_office_evidence(
+            target_request_id="operator-request:test"
+        )
+        self.assertEqual(evidence["status"], "available")
+        self.assertEqual(evidence["target_request_id"], "operator-request:test")
+        self.assertEqual(
+            session.office_requests,
+            [
+                {"operation": "refresh_workers"},
+                {
+                    "operation": "read_evidence",
+                    "target_request_id": "operator-request:test",
+                },
+            ],
+        )
+        state = harness.state()["office_integration"]
+        self.assertEqual(state["inventory"]["status"], "healthy")
+        self.assertEqual(state["evidence_trace"]["event_count"], 1)
+
+    def test_office_evidence_requires_bounded_request_identity(self):
+        session = FakeSession(self.root)
+        harness = OperatorIDEHarness(session, self.store, arc_ide=self.arc)
+        with self.assertRaises(HarnessBoundaryError):
+            harness.read_office_evidence(target_request_id="")
+        with self.assertRaises(HarnessBoundaryError):
+            harness.read_office_evidence(target_request_id="x" * 201)
+        self.assertEqual(session.office_requests, [])
 
     def test_resolving_observed_gap_produces_arc_resolution_ref(self):
         harness = self.harness(

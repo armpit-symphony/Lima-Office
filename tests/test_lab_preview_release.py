@@ -92,6 +92,12 @@ class LabPreviewReleaseTests(unittest.TestCase):
                         "smoke-lab-preview.ps1",
                         "setup-local-model.ps1",
                         "start-lab-preview.ps1",
+                        "manage-arc-preview.ps1",
+                        "Start Arc.cmd",
+                        "Restart Arc.cmd",
+                        "Stop Arc.cmd",
+                        "Enable Arc at login.cmd",
+                        "Disable Arc at login.cmd",
                     },
                     set(archive.namelist()),
                 )

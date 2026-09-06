@@ -6,6 +6,10 @@ from __future__ import annotations
 import importlib.util
 import json
 import os
+import hmac
+import re
+import subprocess
+import threading
 from pathlib import Path
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import shutil
@@ -35,6 +39,24 @@ from lima_office.runtime.training_model import (  # noqa: E402
 
 
 MAX_REQUEST_BYTES = 64 * 1024
+
+
+def _build_info(args: Any) -> dict:
+    result = {"version": "development", "arc_commit": "unknown", "source_modified": True}
+    if args.installation_info:
+        info = json.loads(args.installation_info.read_text(encoding="utf-8-sig"))
+        version = info.get("version", "")
+        if re.fullmatch(r"[0-9A-Za-z.-]{1,64}", version):
+            result["version"] = version
+    try:
+        commit = subprocess.check_output(["git", "-C", str(args.arc_source), "rev-parse", "HEAD"], text=True).strip()
+        if re.fullmatch(r"[0-9a-f]{40}", commit):
+            result["arc_commit"] = commit
+        dirty = subprocess.check_output(["git", "-C", str(args.arc_source), "status", "--porcelain", "--untracked-files=no"], text=True)
+        result["source_modified"] = bool(dirty.strip())
+    except (OSError, subprocess.CalledProcessError):
+        pass
+    return result
 
 
 def _parser():
@@ -92,6 +114,8 @@ def _parser():
         action="store_true",
         help="Arc-side opt-in for loopback local-model execution.",
     )
+    parser.add_argument("--installation-info", type=Path)
+    parser.add_argument("--lifecycle-token-file", type=Path)
     return parser
 
 
@@ -119,6 +143,8 @@ class HarnessHTTPServer(ThreadingHTTPServer):
     ) -> None:
         self.harness = harness
         self.ui = ui
+        self.build_info = {"version": "development", "arc_commit": "unknown", "source_modified": True}
+        self.lifecycle_token = None
         super().__init__(address, HarnessRequestHandler)
 
 
@@ -184,7 +210,7 @@ class HarnessRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(self.server.ui)
             return
         if self.path == "/api/state":
-            self._json(200, self.server.harness.state())
+            self._json(200, {**self.server.harness.state(), "build": self.server.build_info})
             return
         if self.path == "/api/training/registration/catalog":
             self._json(200, self.server.harness.registration_catalog())
@@ -207,6 +233,29 @@ class HarnessRequestHandler(BaseHTTPRequestHandler):
             return
         try:
             payload = self._read_json()
+            if self.path == "/api/support/export":
+                from lima_office.runtime.lab_support import diagnostic_bundle
+                body = diagnostic_bundle(self.server.harness, self.server.build_info)
+                self._headers(200, "application/zip", len(body))
+                self.wfile.write(body)
+                return
+            if self.path == "/api/support/reset":
+                from lima_office.runtime.lab_support import support_action
+                result = support_action(self.server.harness, "synthetic_history_reset",
+                    confirmed=payload.get("confirmation") == "RESET SYNTHETIC HISTORY")
+                self._json(200, result)
+                return
+            if self.path == "/api/lifecycle/stop":
+                token = payload.get("token")
+                expected = self.server.lifecycle_token
+                if not expected or not isinstance(token, str) or not hmac.compare_digest(token, expected):
+                    self._json(403, {"error": "lifecycle_token_required"})
+                    return
+                from lima_office.runtime.lab_support import support_action
+                support_action(self.server.harness, "service_stop")
+                self._json(200, {"status": "stopping"})
+                threading.Thread(target=self.server.shutdown, daemon=True).start()
+                return
             if self.path == "/api/mode":
                 result = self.server.harness.set_mode(payload.get("mode"))
             elif self.path == "/api/training/instruction":
@@ -252,6 +301,12 @@ class HarnessRequestHandler(BaseHTTPRequestHandler):
                 )
             elif self.path == "/api/worker/status":
                 result = self.server.harness.worker_status()
+            elif self.path == "/api/office/workers":
+                result = self.server.harness.refresh_office_workers()
+            elif self.path == "/api/office/evidence":
+                result = self.server.harness.read_office_evidence(
+                    target_request_id=payload.get("target_request_id")
+                )
             elif self.path == "/api/work/content-page":
                 result = self.server.harness.document_page(
                     content_id=payload.get("content_id"),
@@ -355,6 +410,12 @@ def main(argv: list[str] | None = None) -> int:
             training_assistant=_training_assistant(args),
         )
         server = HarnessHTTPServer(("127.0.0.1", args.ui_port), harness, ui)
+        server.build_info = _build_info(args)
+        if args.lifecycle_token_file:
+            token = args.lifecycle_token_file.read_text(encoding="utf-8-sig").strip()
+            if not re.fullmatch(r"[0-9a-f]{64}", token):
+                raise ValueError("invalid lifecycle token")
+            server.lifecycle_token = token
         host, port = server.server_address
         print(
             json.dumps(

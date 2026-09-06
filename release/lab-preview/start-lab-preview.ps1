@@ -58,6 +58,7 @@ $arguments = @(
     "--arc-source", $arcRoot,
     "--session-dir", (Join-Path $InstallRoot "data\runtime-harness"),
     "--ui-port", [string]$UiPort
+    "--installation-info", $manifest
 )
 if (-not [string]::IsNullOrWhiteSpace($DocumentRoot)) {
     $resolvedDocuments = [System.IO.Path]::GetFullPath($DocumentRoot)
