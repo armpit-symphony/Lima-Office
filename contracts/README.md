@@ -1,6 +1,6 @@
 # LIMA Office Contract Schemas
 
-This directory contains Phase 0 contract schemas and sanitized example objects for LIMA Office OS. These files are planning artifacts only. They do not implement runtime services, live connectors, model calls, tool execution, external messaging, or remediation.
+This directory contains Phase 0 contract schemas and sanitized example objects for LIMA Office OS. Most remain planning artifacts only. The attended lab implements only the explicitly documented runtime slices, including one Guardian-gated `supervisor.conversation.turn`, one deterministic helper review, tokenless synthetic task proposals, tokenless approval previews, a process-bound lab operator session, and creation of a pending-only synthetic review request; no contract by itself grants model, tool, connector, messaging, approval, dispatch, or remediation authority.
 
 ## Versioning
 
@@ -26,6 +26,8 @@ This directory contains Phase 0 contract schemas and sanitized example objects f
 ## Schema Location
 
 Version 1 schemas are in [v1](v1):
+
+- [operator.session.binding.schema.json](v1/operator.session.binding.schema.json)
 
 - [worker.lifecycle.schema.json](v1/worker.lifecycle.schema.json)
 - [worker.heartbeat.schema.json](v1/worker.heartbeat.schema.json)
@@ -65,15 +67,21 @@ Version 1 schemas are in [v1](v1):
 - [transaction.boundary.schema.json](v1/transaction.boundary.schema.json)
 - [transaction.coordinator.event.schema.json](v1/transaction.coordinator.event.schema.json)
 - [approval.request.schema.json](v1/approval.request.schema.json)
+- [approval.readiness.schema.json](v1/approval.readiness.schema.json)
 - [approval.result.schema.json](v1/approval.result.schema.json)
 - [approval.token.schema.json](v1/approval.token.schema.json)
 - [token.verification.schema.json](v1/token.verification.schema.json)
 - [approval.binding.schema.json](v1/approval.binding.schema.json)
 - [approval.chain.schema.json](v1/approval.chain.schema.json)
 - [model.route.schema.json](v1/model.route.schema.json)
+- [supervisor.conversation.turn.schema.json](v1/supervisor.conversation.turn.schema.json)
+- [supervisor.task.proposal.schema.json](v1/supervisor.task.proposal.schema.json)
+- [supervisor.approval.preview.schema.json](v1/supervisor.approval.preview.schema.json)
 - [tool.invocation.schema.json](v1/tool.invocation.schema.json)
 - [memory.access.schema.json](v1/memory.access.schema.json)
 - [helper.scope.schema.json](v1/helper.scope.schema.json)
+- [helper.assignment.schema.json](v1/helper.assignment.schema.json)
+- [helper.result.schema.json](v1/helper.result.schema.json)
 - [taint.ref.schema.json](v1/taint.ref.schema.json)
 - [connector.trust.schema.json](v1/connector.trust.schema.json)
 - [connector.readiness.schema.json](v1/connector.readiness.schema.json)
@@ -201,6 +209,8 @@ Sanitized example objects are in [examples](examples):
 - [transaction.coordinator.event.duplicate-request.example.json](examples/transaction.coordinator.event.duplicate-request.example.json)
 - [transaction.coordinator.event.reconciliation-completed.example.json](examples/transaction.coordinator.event.reconciliation-completed.example.json)
 - [approval.request.example.json](examples/approval.request.example.json)
+- [approval.readiness.blocked-owner-decision.example.json](examples/approval.readiness.blocked-owner-decision.example.json)
+- [approval.readiness.profile-a-lab-selected.example.json](examples/approval.readiness.profile-a-lab-selected.example.json)
 - [approval.result.approved.example.json](examples/approval.result.approved.example.json)
 - [approval.result.denied-blocked-mvp.example.json](examples/approval.result.denied-blocked-mvp.example.json)
 - [approval.token.example.json](examples/approval.token.example.json)
@@ -225,13 +235,20 @@ Sanitized example objects are in [examples](examples):
 - [model.route.mock-only-selected.example.json](examples/model.route.mock-only-selected.example.json)
 - [model.route.tainted-privileged-denied.example.json](examples/model.route.tainted-privileged-denied.example.json)
 - [model.route.subscription-planned-blocked-mvp.example.json](examples/model.route.subscription-planned-blocked-mvp.example.json)
+- [model.route.subscription-lab-readonly-selected.example.json](examples/model.route.subscription-lab-readonly-selected.example.json)
 - [model.route.local-planned-degraded.example.json](examples/model.route.local-planned-degraded.example.json)
+- [supervisor.conversation.turn.completed.example.json](examples/supervisor.conversation.turn.completed.example.json)
+- [supervisor.task.proposal.draft.example.json](examples/supervisor.task.proposal.draft.example.json)
+- [supervisor.approval.preview.ready.example.json](examples/supervisor.approval.preview.ready.example.json)
 - [tool.invocation.example.json](examples/tool.invocation.example.json)
 - [tool.invocation.tainted-input-denied.example.json](examples/tool.invocation.tainted-input-denied.example.json)
 - [memory.access.example.json](examples/memory.access.example.json)
 - [helper.scope.file-helper.example.json](examples/helper.scope.file-helper.example.json)
 - [helper.scope.memory-helper.example.json](examples/helper.scope.memory-helper.example.json)
 - [helper.scope.it-helper-readonly.example.json](examples/helper.scope.it-helper-readonly.example.json)
+- [helper.scope.office-operations-helper.example.json](examples/helper.scope.office-operations-helper.example.json)
+- [helper.assignment.registration-review.example.json](examples/helper.assignment.registration-review.example.json)
+- [helper.result.registration-review.example.json](examples/helper.result.registration-review.example.json)
 - [taint.ref.prompt-injection-email.example.json](examples/taint.ref.prompt-injection-email.example.json)
 - [connector.trust.example.json](examples/connector.trust.example.json)
 - [connector.readiness.email-approved-for-lab.example.json](examples/connector.readiness.email-approved-for-lab.example.json)

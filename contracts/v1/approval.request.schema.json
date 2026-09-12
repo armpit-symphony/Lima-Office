@@ -147,7 +147,8 @@
         "remediation",
         "sensitive_data_access",
         "production_server_touch",
-        "regulated_system_use"
+        "regulated_system_use",
+        "synthetic_form_preparation_review"
       ]
     },
     "risk_tier": {
@@ -168,7 +169,8 @@
         "sensitive_finance",
         "sensitive_legal",
         "sensitive_medical",
-        "secret"
+        "secret",
+        "synthetic_fixture_only"
       ]
     },
     "requested_scope": {
@@ -194,7 +196,8 @@
             "run_remediation",
             "access_sensitive_data",
             "touch_production_server",
-            "use_regulated_system"
+            "use_regulated_system",
+            "none"
           ]
         },
         "resource_refs": {
@@ -224,7 +227,7 @@
         },
         "max_uses": {
           "type": "integer",
-          "minimum": 1,
+          "minimum": 0,
           "maximum": 1
         }
       }
@@ -271,7 +274,8 @@
           "approver",
           "supervisor_admin",
           "field_it_reviewer",
-          "security_reviewer"
+          "security_reviewer",
+          "business_owner"
         ]
       },
       "uniqueItems": true
@@ -404,9 +408,117 @@
         "string",
         "null"
       ]
-    }
+    },
+    "source_approval_preview_id": {"type": "string", "minLength": 1},
+    "source_approval_preview_revision": {"type": "integer", "minimum": 1},
+    "source_approval_preview_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "operator_session_binding_id": {"type": "string", "minLength": 1},
+    "fresh_intent_evidence_ref": {"type": "string", "minLength": 1},
+    "approval_result_created": {"type": "boolean"},
+    "approval_binding_created": {"type": "boolean"},
+    "token_verification_performed": {"type": "boolean"},
+    "replay_record_created": {"type": "boolean"},
+    "assigned_worker_id": {"type": ["string", "null"]},
+    "arc_dispatch_allowed": {"type": "boolean"},
+    "arc_dispatched": {"type": "boolean"},
+    "external_side_effects": {"type": "boolean"}
   },
   "allOf": [
+    {
+      "if": {"properties": {"action_class": {"const": "synthetic_form_preparation_review"}}, "required": ["action_class"]},
+      "then": {
+        "required": [
+          "source_approval_preview_id", "source_approval_preview_revision",
+          "source_approval_preview_hash", "operator_session_binding_id",
+          "fresh_intent_evidence_ref", "approval_result_created",
+          "approval_binding_created", "token_verification_performed",
+          "replay_record_created", "assigned_worker_id", "arc_dispatch_allowed",
+          "arc_dispatched", "external_side_effects"
+        ],
+        "properties": {
+          "environment": {"const": "phase0_lab"},
+          "risk_tier": {"const": "medium"},
+          "data_classification": {"const": "synthetic_fixture_only"},
+          "status": {"enum": ["pending_review", "denied", "expired", "cancelled"]},
+          "approval_result": {"enum": ["pending", "denied", "expired", "cancelled"]},
+          "approval_token_id": {"const": null},
+          "approval_chain_id": {"const": null},
+          "binding_id": {"const": null},
+          "bound_worker_id": {"const": null},
+          "assigned_worker_id": {"const": null},
+          "approval_result_created": {"type": "boolean"},
+          "approval_binding_created": {"const": false},
+          "token_verification_performed": {"const": false},
+          "replay_record_created": {"const": false},
+          "arc_dispatch_allowed": {"const": false},
+          "arc_dispatched": {"const": false},
+          "external_side_effects": {"const": false},
+          "requested_scope": {"properties": {
+            "external_effect": {"const": "none"},
+            "allowed_operations": {"const": ["review_prepared_form_plan"]},
+            "max_uses": {"const": 0}
+          }}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action_class": {"const": "synthetic_form_preparation_review"},
+          "status": {"const": "pending_review"}
+        },
+        "required": ["action_class", "status"]
+      },
+      "then": {"properties": {
+        "approval_result": {"const": "pending"},
+        "approver_operator_id": {"const": null},
+        "decided_at": {"const": null},
+        "denial_reason": {"const": null},
+        "approval_result_created": {"const": false}
+      }}
+    },
+    {
+      "if": {
+        "properties": {
+          "action_class": {"const": "synthetic_form_preparation_review"},
+          "status": {"enum": ["denied", "expired", "cancelled"]}
+        },
+        "required": ["action_class", "status"]
+      },
+      "then": {
+        "required": ["decided_at"],
+        "properties": {
+          "approval_result_created": {"const": true},
+          "approval_token_id": {"const": null},
+          "approval_chain_id": {"const": null},
+          "binding_id": {"const": null},
+          "bound_worker_id": {"const": null},
+          "assigned_worker_id": {"const": null},
+          "approval_binding_created": {"const": false},
+          "token_verification_performed": {"const": false},
+          "replay_record_created": {"const": false},
+          "arc_dispatch_allowed": {"const": false},
+          "arc_dispatched": {"const": false},
+          "external_side_effects": {"const": false}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"action_class": {"const": "synthetic_form_preparation_review"}, "status": {"const": "denied"}}, "required": ["action_class", "status"]},
+      "then": {"properties": {"approval_result": {"const": "denied"}, "approver_operator_id": {"type": "string", "minLength": 1}, "denial_reason": {"type": "string", "minLength": 1}}}
+    },
+    {
+      "if": {"properties": {"action_class": {"const": "synthetic_form_preparation_review"}, "status": {"const": "cancelled"}}, "required": ["action_class", "status"]},
+      "then": {"properties": {"approval_result": {"const": "cancelled"}, "approver_operator_id": {"type": "string", "minLength": 1}, "denial_reason": {"type": "string", "minLength": 1}}}
+    },
+    {
+      "if": {"properties": {"action_class": {"const": "synthetic_form_preparation_review"}, "status": {"const": "expired"}}, "required": ["action_class", "status"]},
+      "then": {"properties": {"approval_result": {"const": "expired"}, "approver_operator_id": {"const": null}, "denial_reason": {"type": "string", "minLength": 1}}}
+    },
+    {
+      "if": {"properties": {"action_class": {"not": {"const": "synthetic_form_preparation_review"}}}, "required": ["action_class"]},
+      "then": {"properties": {"requested_scope": {"properties": {"max_uses": {"const": 1}}}}}
+    },
     {
       "if": {
         "properties": {

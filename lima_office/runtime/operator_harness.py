@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
+import hashlib
 import json
 from pathlib import Path, PurePath, PureWindowsPath
 import sqlite3
@@ -155,6 +156,32 @@ class HarnessStateStore:
                     metric_name TEXT PRIMARY KEY,
                     metric_value INTEGER NOT NULL
                 );
+                CREATE TABLE IF NOT EXISTS office_task_proposals (
+                    proposal_id TEXT PRIMARY KEY,
+                    source_helper_result_id TEXT NOT NULL UNIQUE,
+                    record_json TEXT NOT NULL,
+                    revision INTEGER NOT NULL,
+                    updated_at TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS office_approval_previews (
+                    approval_preview_id TEXT PRIMARY KEY,
+                    source_proposal_id TEXT NOT NULL UNIQUE,
+                    record_json TEXT NOT NULL,
+                    revision INTEGER NOT NULL,
+                    updated_at TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS office_pending_approval_requests (
+                    approval_request_id TEXT PRIMARY KEY,
+                    source_approval_preview_id TEXT NOT NULL UNIQUE,
+                    record_json TEXT NOT NULL,
+                    created_at TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS office_approval_results (
+                    approval_result_id TEXT PRIMARY KEY,
+                    approval_request_id TEXT NOT NULL UNIQUE,
+                    record_json TEXT NOT NULL,
+                    decided_at TEXT NOT NULL
+                );
                 """
             )
 
@@ -169,6 +196,299 @@ class HarnessStateStore:
             self._connection.execute(
                 "INSERT INTO harness_events VALUES (?, ?, ?, ?)",
                 (event_id, _utc_now(), event_type, encoded),
+            )
+        return event_id
+
+    def office_approval_preview(self, approval_preview_id: str) -> dict[str, Any] | None:
+        with self._lock:
+            row = self._connection.execute(
+                "SELECT record_json FROM office_approval_previews WHERE approval_preview_id=?",
+                (approval_preview_id,),
+            ).fetchone()
+        return json.loads(row["record_json"]) if row is not None else None
+
+    def office_pending_approval_request_for_preview(
+        self, approval_preview_id: str
+    ) -> dict[str, Any] | None:
+        with self._lock:
+            row = self._connection.execute(
+                "SELECT record_json FROM office_pending_approval_requests "
+                "WHERE source_approval_preview_id=?",
+                (approval_preview_id,),
+            ).fetchone()
+        return json.loads(row["record_json"]) if row is not None else None
+
+    def office_approval_request(self, approval_request_id: str) -> dict[str, Any] | None:
+        with self._lock:
+            row = self._connection.execute(
+                "SELECT record_json FROM office_pending_approval_requests "
+                "WHERE approval_request_id=?", (approval_request_id,)
+            ).fetchone()
+        return json.loads(row["record_json"]) if row is not None else None
+
+    def office_approval_result_for_request(
+        self, approval_request_id: str
+    ) -> dict[str, Any] | None:
+        with self._lock:
+            row = self._connection.execute(
+                "SELECT record_json FROM office_approval_results "
+                "WHERE approval_request_id=?", (approval_request_id,)
+            ).fetchone()
+        return json.loads(row["record_json"]) if row is not None else None
+
+    def office_approval_results(self, limit: int = 50) -> list[dict[str, Any]]:
+        bounded_limit = max(1, min(int(limit), 100))
+        with self._lock:
+            rows = self._connection.execute(
+                "SELECT record_json FROM office_approval_results "
+                "ORDER BY decided_at DESC, approval_result_id DESC LIMIT ?",
+                (bounded_limit,),
+            ).fetchall()
+        return [json.loads(row["record_json"]) for row in rows]
+
+    def commit_office_non_authorizing_approval_decision(
+        self, request: Mapping[str, Any], result: Mapping[str, Any], *,
+        expected_request_hash: str, event_id: str, event_type: str,
+        event_payload: Mapping[str, Any],
+    ) -> str:
+        request_record, result_record = dict(request), dict(result)
+        request_id = request_record.get("approval_request_id")
+        result_id = result_record.get("approval_result_id")
+        if not isinstance(request_id, str) or not request_id:
+            raise HarnessBoundaryError("approval_request_id is required")
+        if not isinstance(result_id, str) or not result_id:
+            raise HarnessBoundaryError("approval_result_id is required")
+        if result_record.get("approval_request_id") != request_id:
+            raise HarnessBoundaryError("approval result request mismatch")
+        if not isinstance(expected_request_hash, str) or not expected_request_hash:
+            raise HarnessBoundaryError("expected request hash is required")
+        if not isinstance(event_id, str) or not event_id.startswith("harness-event:"):
+            raise HarnessBoundaryError("a bounded harness event id is required")
+        encoded_request = json.dumps(request_record, sort_keys=True, separators=(",", ":"))
+        encoded_result = json.dumps(result_record, sort_keys=True, separators=(",", ":"))
+        encoded_event = json.dumps(dict(event_payload), sort_keys=True, separators=(",", ":"))
+        with self._lock, self._connection:
+            row = self._connection.execute(
+                "SELECT record_json FROM office_pending_approval_requests "
+                "WHERE approval_request_id=?", (request_id,)
+            ).fetchone()
+            if row is None:
+                raise HarnessBoundaryError("approval request was not found")
+            current = json.loads(row["record_json"])
+            current_encoded = json.dumps(current, sort_keys=True, separators=(",", ":"))
+            current_hash = "sha256:" + hashlib.sha256(current_encoded.encode()).hexdigest()
+            if current_hash != expected_request_hash:
+                raise HarnessBoundaryError("approval request changed; reload before deciding")
+            if current.get("status") != "pending_review":
+                raise HarnessBoundaryError("approval request is not pending review")
+            existing = self._connection.execute(
+                "SELECT 1 FROM office_approval_results WHERE approval_request_id=?",
+                (request_id,),
+            ).fetchone()
+            if existing is not None:
+                raise HarnessBoundaryError("approval result already exists")
+            self._connection.execute(
+                "INSERT INTO harness_events VALUES (?, ?, ?, ?)",
+                (event_id, _utc_now(), event_type, encoded_event),
+            )
+            self._connection.execute(
+                "INSERT INTO office_approval_results VALUES (?, ?, ?, ?)",
+                (result_id, request_id, encoded_result, result_record["decided_at"]),
+            )
+            self._connection.execute(
+                "UPDATE office_pending_approval_requests SET record_json=? "
+                "WHERE approval_request_id=?", (encoded_request, request_id)
+            )
+        return event_id
+
+    def office_pending_approval_requests(self, limit: int = 50) -> list[dict[str, Any]]:
+        bounded_limit = max(1, min(int(limit), 100))
+        with self._lock:
+            rows = self._connection.execute(
+                "SELECT record_json FROM office_pending_approval_requests "
+                "ORDER BY created_at DESC, approval_request_id DESC LIMIT ?",
+                (bounded_limit,),
+            ).fetchall()
+        return [json.loads(row["record_json"]) for row in rows]
+
+    def commit_office_pending_approval_request(
+        self,
+        request: Mapping[str, Any],
+        *,
+        event_id: str,
+        event_type: str,
+        event_payload: Mapping[str, Any],
+    ) -> str:
+        record = dict(request)
+        request_id = record.get("approval_request_id")
+        preview_id = record.get("source_approval_preview_id")
+        if not isinstance(request_id, str) or not request_id:
+            raise HarnessBoundaryError("approval_request_id is required")
+        if not isinstance(preview_id, str) or not preview_id:
+            raise HarnessBoundaryError("source_approval_preview_id is required")
+        if not isinstance(event_id, str) or not event_id.startswith("harness-event:"):
+            raise HarnessBoundaryError("a bounded harness event id is required")
+        encoded_record = json.dumps(record, sort_keys=True, separators=(",", ":"))
+        encoded_event = json.dumps(dict(event_payload), sort_keys=True, separators=(",", ":"))
+        with self._lock, self._connection:
+            existing = self._connection.execute(
+                "SELECT 1 FROM office_pending_approval_requests "
+                "WHERE approval_request_id=? OR source_approval_preview_id=?",
+                (request_id, preview_id),
+            ).fetchone()
+            if existing is not None:
+                raise HarnessBoundaryError("approval request already exists")
+            self._connection.execute(
+                "INSERT INTO harness_events VALUES (?, ?, ?, ?)",
+                (event_id, _utc_now(), event_type, encoded_event),
+            )
+            self._connection.execute(
+                "INSERT INTO office_pending_approval_requests VALUES (?, ?, ?, ?)",
+                (request_id, preview_id, encoded_record, _utc_now()),
+            )
+        return event_id
+
+    def office_approval_previews(self, limit: int = 50) -> list[dict[str, Any]]:
+        bounded_limit = max(1, min(int(limit), 100))
+        with self._lock:
+            rows = self._connection.execute(
+                """
+                SELECT record_json FROM office_approval_previews
+                ORDER BY updated_at DESC, approval_preview_id DESC LIMIT ?
+                """,
+                (bounded_limit,),
+            ).fetchall()
+        return [json.loads(row["record_json"]) for row in rows]
+
+    def commit_office_approval_preview(
+        self,
+        preview: Mapping[str, Any],
+        *,
+        event_id: str,
+        event_type: str,
+        event_payload: Mapping[str, Any],
+        expected_revision: int | None,
+    ) -> str:
+        record = dict(preview)
+        preview_id = record.get("approval_preview_id")
+        source_proposal_id = record.get("source_proposal_id")
+        revision = record.get("revision")
+        if not isinstance(preview_id, str) or not preview_id:
+            raise HarnessBoundaryError("approval_preview_id is required")
+        if not isinstance(source_proposal_id, str) or not source_proposal_id:
+            raise HarnessBoundaryError("source_proposal_id is required")
+        if not isinstance(revision, int) or isinstance(revision, bool) or revision < 1:
+            raise HarnessBoundaryError("approval preview revision must be a positive integer")
+        if not isinstance(event_id, str) or not event_id.startswith("harness-event:"):
+            raise HarnessBoundaryError("a bounded harness event id is required")
+        encoded_record = json.dumps(record, sort_keys=True, separators=(",", ":"))
+        encoded_event = json.dumps(
+            dict(event_payload), sort_keys=True, separators=(",", ":")
+        )
+        with self._lock, self._connection:
+            row = self._connection.execute(
+                "SELECT revision FROM office_approval_previews WHERE approval_preview_id=?",
+                (preview_id,),
+            ).fetchone()
+            current_revision = int(row["revision"]) if row is not None else None
+            if expected_revision is None:
+                if current_revision is not None:
+                    raise HarnessBoundaryError("approval preview already exists")
+            elif current_revision != expected_revision:
+                raise HarnessBoundaryError("approval preview revision conflict")
+            self._connection.execute(
+                "INSERT INTO harness_events VALUES (?, ?, ?, ?)",
+                (event_id, _utc_now(), event_type, encoded_event),
+            )
+            self._connection.execute(
+                """
+                INSERT INTO office_approval_previews
+                    (approval_preview_id, source_proposal_id, record_json, revision, updated_at)
+                VALUES (?, ?, ?, ?, ?)
+                ON CONFLICT(approval_preview_id) DO UPDATE SET
+                    source_proposal_id=excluded.source_proposal_id,
+                    record_json=excluded.record_json,
+                    revision=excluded.revision,
+                    updated_at=excluded.updated_at
+                """,
+                (preview_id, source_proposal_id, encoded_record, revision, _utc_now()),
+            )
+        return event_id
+
+    def office_proposal(self, proposal_id: str) -> dict[str, Any] | None:
+        with self._lock:
+            row = self._connection.execute(
+                "SELECT record_json FROM office_task_proposals WHERE proposal_id=?",
+                (proposal_id,),
+            ).fetchone()
+        return json.loads(row["record_json"]) if row is not None else None
+
+    def office_proposals(self, limit: int = 50) -> list[dict[str, Any]]:
+        bounded_limit = max(1, min(int(limit), 100))
+        with self._lock:
+            rows = self._connection.execute(
+                """
+                SELECT record_json FROM office_task_proposals
+                ORDER BY updated_at DESC, proposal_id DESC LIMIT ?
+                """,
+                (bounded_limit,),
+            ).fetchall()
+        return [json.loads(row["record_json"]) for row in rows]
+
+    def commit_office_proposal(
+        self,
+        proposal: Mapping[str, Any],
+        *,
+        event_id: str,
+        event_type: str,
+        event_payload: Mapping[str, Any],
+        expected_revision: int | None,
+    ) -> str:
+        proposal_record = dict(proposal)
+        proposal_id = proposal_record.get("proposal_id")
+        source_helper_result_id = proposal_record.get("source_helper_result_id")
+        revision = proposal_record.get("revision")
+        if not isinstance(proposal_id, str) or not proposal_id:
+            raise HarnessBoundaryError("proposal_id is required")
+        if not isinstance(revision, int) or isinstance(revision, bool) or revision < 1:
+            raise HarnessBoundaryError("proposal revision must be a positive integer")
+        if not isinstance(source_helper_result_id, str) or not source_helper_result_id:
+            raise HarnessBoundaryError("source_helper_result_id is required")
+        if not isinstance(event_id, str) or not event_id.startswith("harness-event:"):
+            raise HarnessBoundaryError("a bounded harness event id is required")
+        encoded_record = json.dumps(
+            proposal_record, sort_keys=True, separators=(",", ":")
+        )
+        encoded_event = json.dumps(
+            dict(event_payload), sort_keys=True, separators=(",", ":")
+        )
+        with self._lock, self._connection:
+            row = self._connection.execute(
+                "SELECT revision FROM office_task_proposals WHERE proposal_id=?",
+                (proposal_id,),
+            ).fetchone()
+            current_revision = int(row["revision"]) if row is not None else None
+            if expected_revision is None:
+                if current_revision is not None:
+                    raise HarnessBoundaryError("proposal already exists")
+            elif current_revision != expected_revision:
+                raise HarnessBoundaryError("proposal revision conflict")
+            self._connection.execute(
+                "INSERT INTO harness_events VALUES (?, ?, ?, ?)",
+                (event_id, _utc_now(), event_type, encoded_event),
+            )
+            self._connection.execute(
+                """
+                INSERT INTO office_task_proposals
+                    (proposal_id, source_helper_result_id, record_json, revision, updated_at)
+                VALUES (?, ?, ?, ?, ?)
+                ON CONFLICT(proposal_id) DO UPDATE SET
+                    source_helper_result_id=excluded.source_helper_result_id,
+                    record_json=excluded.record_json,
+                    revision=excluded.revision,
+                    updated_at=excluded.updated_at
+                """,
+                (proposal_id, source_helper_result_id, encoded_record, revision, _utc_now()),
             )
         return event_id
 

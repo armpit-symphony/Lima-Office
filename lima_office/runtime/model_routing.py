@@ -8,7 +8,15 @@ from lima_office.runtime.errors import PolicyDenyError
 from lima_office.runtime.taxonomy import classify_reason_code_set, validate_reason_codes, validate_taxonomy_version
 
 
-ROUTE_MODES = frozenset({"mock_only", "local_planned", "subscription_planned", "blocked_mvp"})
+ROUTE_MODES = frozenset(
+    {
+        "mock_only",
+        "local_planned",
+        "subscription_planned",
+        "subscription_lab_readonly",
+        "blocked_mvp",
+    }
+)
 ROUTE_STATUSES = frozenset({"selected", "degraded", "denied", "blocked_mvp", "unavailable"})
 BLOCKED_PRIVILEGED_CODES = frozenset(
     {
@@ -130,11 +138,52 @@ def classify_model_route(payload: dict[str, Any]) -> dict[str, Any]:
             raise PolicyDenyError("trust failure reason codes require denied/blocked/unavailable status")
 
     provider_ref = payload.get("provider_ref")
+    if route_mode != "subscription_lab_readonly":
+        if isinstance(provider_ref, dict) and provider_ref.get("live_call") is not False:
+            raise PolicyDenyError("only subscription_lab_readonly may make a live model call")
     if route_mode == "subscription_planned":
         if not isinstance(provider_ref, dict):
             raise PolicyDenyError("subscription_planned requires provider_ref placeholder")
         if provider_ref.get("live_call") is not False:
             raise PolicyDenyError("subscription_planned cannot imply live provider call")
+    if route_mode == "subscription_lab_readonly":
+        required_route_values = {
+            "model_role": "supervisor_reasoning",
+            "route_status": "selected",
+            "taint_status": "clean",
+            "risk_tier": "low",
+            "approval_required": False,
+            "fallback_allowed": False,
+        }
+        for field, expected in required_route_values.items():
+            if payload.get(field) != expected:
+                raise PolicyDenyError(
+                    f"subscription_lab_readonly requires {field}={expected!r}"
+                )
+        if payload.get("data_class") not in {"public", "internal"}:
+            raise PolicyDenyError(
+                "subscription_lab_readonly allows only public or internal text"
+            )
+        if not isinstance(provider_ref, dict):
+            raise PolicyDenyError("subscription_lab_readonly requires provider_ref")
+        required_provider_values = {
+            "provider_ref_type": "subscription_lab_readonly",
+            "live_call": True,
+            "auth_method": "saved_chatgpt_cli_session",
+            "sandbox_mode": "read_only",
+            "tools_enabled": False,
+            "web_search_enabled": False,
+            "session_persistence": "ephemeral",
+            "user_config_loaded": False,
+            "rules_loaded": False,
+        }
+        for field, expected in required_provider_values.items():
+            if provider_ref.get(field) != expected:
+                raise PolicyDenyError(
+                    f"subscription_lab_readonly provider requires {field}={expected!r}"
+                )
+        if payload.get("local_model_bundle_ref") is not None:
+            raise PolicyDenyError("subscription_lab_readonly cannot silently fall back locally")
 
     local_ref = payload.get("local_model_bundle_ref")
     if route_mode == "local_planned":
@@ -170,4 +219,5 @@ def classify_model_route(payload: dict[str, Any]) -> dict[str, Any]:
         "degraded": degraded,
         "fail_closed": blocked or bool(reason_classification["fail_closed"]),
         "can_authorize": False,
+        "model_call_allowed": route_mode == "subscription_lab_readonly" and not blocked,
     }

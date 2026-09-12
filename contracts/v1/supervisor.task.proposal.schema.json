@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/supervisor.task.proposal.schema.json",
+  "title": "Supervisor Synthetic Task Proposal Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name", "contract_version", "schema_version", "taxonomy_version",
+    "tenant_id", "customer_context_id", "environment", "correlation_id",
+    "causation_id", "idempotency_key", "producer", "policy_version",
+    "proposal_id", "revision", "state", "transition_reason_codes",
+    "source_helper_result_id", "scenario_id", "task_class", "priority",
+    "selected_step_ids", "issue_fields", "human_input_required",
+    "owner_decision", "guardian_decision_id", "pre_action_evidence_ref",
+    "post_action_evidence_ref", "synthetic_data_only", "free_form_content_allowed",
+    "approval_required_for_future_execution", "approval_token_issued",
+    "assigned_worker_id", "arc_dispatch_allowed", "arc_dispatched",
+    "model_called", "tools_used", "connector_accessed", "submission_allowed",
+    "external_side_effects", "created_at", "updated_at"
+  ],
+  "properties": {
+    "contract_name": {"type": "string", "const": "supervisor.task.proposal"},
+    "contract_version": {"type": "string", "const": "1.0.0"},
+    "schema_version": {"type": "string", "const": "1.0.0"},
+    "taxonomy_version": {"type": "string", "const": "taxonomy-reason-v1"},
+    "tenant_id": {"type": "string", "minLength": 1},
+    "customer_context_id": {"type": "string", "minLength": 1},
+    "environment": {"type": "string", "const": "phase0_lab"},
+    "correlation_id": {"type": "string", "minLength": 1},
+    "causation_id": {"type": "string", "minLength": 1},
+    "idempotency_key": {"type": "string", "minLength": 1},
+    "producer": {
+      "type": "object", "additionalProperties": false,
+      "required": ["component", "produced_at"],
+      "properties": {
+        "component": {"type": "string", "enum": ["supervisor", "operator_console"]},
+        "produced_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "policy_version": {"type": "string", "const": "policy-supervisor-task-proposal-lab-v1"},
+    "proposal_id": {"type": "string", "minLength": 1},
+    "revision": {"type": "integer", "minimum": 1},
+    "state": {"type": "string", "enum": ["draft", "proposed", "accepted_for_future_approval", "denied", "cancelled"]},
+    "transition_reason_codes": {
+      "type": "array", "minItems": 1, "maxItems": 2,
+      "items": {"type": "string", "enum": ["task_proposal_created", "task_proposal_edited", "task_proposal_proposed", "task_proposal_accepted_for_future_approval", "task_proposal_denied", "task_proposal_cancelled"]},
+      "uniqueItems": true
+    },
+    "source_helper_result_id": {"type": "string", "minLength": 1},
+    "scenario_id": {"type": "string", "enum": ["complete-contact", "missing-phone", "invalid-email", "invalid-postal-code", "consent-not-granted"]},
+    "task_class": {"type": "string", "const": "form_preparation"},
+    "priority": {"type": "string", "enum": ["low", "normal"]},
+    "selected_step_ids": {
+      "type": "array", "minItems": 1, "maxItems": 3, "uniqueItems": true,
+      "items": {"type": "string", "enum": ["review_synthetic_scenario", "resolve_human_input_fields", "owner_review_prepared_form"]}
+    },
+    "issue_fields": {
+      "type": "array", "maxItems": 9, "uniqueItems": true,
+      "items": {"type": "string", "enum": ["full_name", "email", "phone", "address_line1", "city", "state", "postal_code", "preferred_contact", "consent_to_contact"]}
+    },
+    "human_input_required": {"type": "boolean"},
+    "owner_decision": {"type": "string", "enum": ["none", "accepted", "denied", "cancelled"]},
+    "guardian_decision_id": {"type": "string", "minLength": 1},
+    "pre_action_evidence_ref": {"type": "string", "minLength": 1},
+    "post_action_evidence_ref": {"type": "string", "minLength": 1},
+    "synthetic_data_only": {"type": "boolean", "const": true},
+    "free_form_content_allowed": {"type": "boolean", "const": false},
+    "approval_required_for_future_execution": {"type": "boolean", "const": true},
+    "approval_token_issued": {"type": "boolean", "const": false},
+    "assigned_worker_id": {"type": "null"},
+    "arc_dispatch_allowed": {"type": "boolean", "const": false},
+    "arc_dispatched": {"type": "boolean", "const": false},
+    "model_called": {"type": "boolean", "const": false},
+    "tools_used": {"type": "boolean", "const": false},
+    "connector_accessed": {"type": "boolean", "const": false},
+    "submission_allowed": {"type": "boolean", "const": false},
+    "external_side_effects": {"type": "boolean", "const": false},
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {"if": {"properties": {"state": {"enum": ["draft", "proposed"]}}}, "then": {"properties": {"owner_decision": {"const": "none"}}}},
+    {"if": {"properties": {"state": {"const": "accepted_for_future_approval"}}}, "then": {"properties": {"owner_decision": {"const": "accepted"}}}},
+    {"if": {"properties": {"state": {"const": "denied"}}}, "then": {"properties": {"owner_decision": {"const": "denied"}}}},
+    {"if": {"properties": {"state": {"const": "cancelled"}}}, "then": {"properties": {"owner_decision": {"const": "cancelled"}}}}
+  ]
+}

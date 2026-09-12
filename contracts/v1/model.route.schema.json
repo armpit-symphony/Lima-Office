@@ -154,6 +154,7 @@
         "mock_only",
         "local_planned",
         "subscription_planned",
+        "subscription_lab_readonly",
         "blocked_mvp"
       ]
     },
@@ -407,7 +408,8 @@
           "enum": [
             "none",
             "mock_only",
-            "subscription_planned"
+            "subscription_planned",
+            "subscription_lab_readonly"
           ]
         },
         "placeholder_ref": {
@@ -415,8 +417,31 @@
           "minLength": 1
         },
         "live_call": {
-          "type": "boolean",
-          "const": false
+          "type": "boolean"
+        },
+        "auth_method": {
+          "type": "string",
+          "enum": ["saved_chatgpt_cli_session"]
+        },
+        "sandbox_mode": {
+          "type": "string",
+          "enum": ["read_only"]
+        },
+        "tools_enabled": {
+          "type": "boolean"
+        },
+        "web_search_enabled": {
+          "type": "boolean"
+        },
+        "session_persistence": {
+          "type": "string",
+          "enum": ["ephemeral"]
+        },
+        "user_config_loaded": {
+          "type": "boolean"
+        },
+        "rules_loaded": {
+          "type": "boolean"
         }
       }
     },
@@ -469,6 +494,29 @@
       "if": {
         "properties": {
           "route_mode": {
+            "not": {"const": "subscription_lab_readonly"}
+          }
+        },
+        "required": ["route_mode"]
+      },
+      "then": {
+        "properties": {
+          "provider_ref": {
+            "anyOf": [
+              {"type": "null"},
+              {
+                "type": "object",
+                "properties": {"live_call": {"const": false}}
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "route_mode": {
             "const": "blocked_mvp"
           }
         },
@@ -481,6 +529,53 @@
           "route_status": {
             "not": {
               "const": "selected"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "route_mode": {"const": "subscription_lab_readonly"}
+        },
+        "required": ["route_mode"]
+      },
+      "then": {
+        "required": ["provider_ref"],
+        "properties": {
+          "model_role": {"const": "supervisor_reasoning"},
+          "route_status": {"const": "selected"},
+          "taint_status": {"const": "clean"},
+          "data_class": {"enum": ["public", "internal"]},
+          "risk_tier": {"const": "low"},
+          "approval_required": {"const": false},
+          "fallback_allowed": {"const": false},
+          "local_model_bundle_ref": {"type": "null"},
+          "provider_ref": {
+            "type": "object",
+            "required": [
+              "provider_ref_type",
+              "placeholder_ref",
+              "live_call",
+              "auth_method",
+              "sandbox_mode",
+              "tools_enabled",
+              "web_search_enabled",
+              "session_persistence",
+              "user_config_loaded",
+              "rules_loaded"
+            ],
+            "properties": {
+              "provider_ref_type": {"const": "subscription_lab_readonly"},
+              "live_call": {"const": true},
+              "auth_method": {"const": "saved_chatgpt_cli_session"},
+              "sandbox_mode": {"const": "read_only"},
+              "tools_enabled": {"const": false},
+              "web_search_enabled": {"const": false},
+              "session_persistence": {"const": "ephemeral"},
+              "user_config_loaded": {"const": false},
+              "rules_loaded": {"const": false}
             }
           }
         }

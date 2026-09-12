@@ -162,6 +162,7 @@
         "supervisor_admin",
         "field_it_reviewer",
         "security_reviewer",
+        "business_owner",
         null
       ]
     },
@@ -177,7 +178,8 @@
         "remediation",
         "sensitive_data_access",
         "production_server_touch",
-        "regulated_system_use"
+        "regulated_system_use",
+        "synthetic_form_preparation_review"
       ]
     },
     "risk_tier": {
@@ -198,7 +200,8 @@
         "sensitive_finance",
         "sensitive_legal",
         "sensitive_medical",
-        "secret"
+        "secret",
+        "synthetic_fixture_only"
       ]
     },
     "requested_scope_hash": {
@@ -353,9 +356,69 @@
     "decided_at": {
       "type": "string",
       "format": "date-time"
-    }
+    },
+    "decision_kind": {
+      "type": "string",
+      "enum": ["attended_deny", "attended_cancel", "explicit_expire"]
+    },
+    "operator_session_binding_id": {"type": ["string", "null"]},
+    "approval_binding_created": {"type": "boolean"},
+    "token_verification_performed": {"type": "boolean"},
+    "replay_record_created": {"type": "boolean"},
+    "assigned_worker_id": {"type": ["string", "null"]},
+    "arc_dispatch_allowed": {"type": "boolean"},
+    "arc_dispatched": {"type": "boolean"},
+    "external_side_effects": {"type": "boolean"}
   },
   "allOf": [
+    {
+      "if": {
+        "properties": {"action_class": {"const": "synthetic_form_preparation_review"}},
+        "required": ["action_class"]
+      },
+      "then": {
+        "required": [
+          "decision_kind", "operator_session_binding_id", "approval_binding_created",
+          "token_verification_performed", "replay_record_created", "assigned_worker_id",
+          "arc_dispatch_allowed", "arc_dispatched", "external_side_effects"
+        ],
+        "properties": {
+          "environment": {"const": "phase0_lab"},
+          "result": {"enum": ["denied", "expired", "cancelled"]},
+          "risk_tier": {"const": "medium"},
+          "data_classification": {"const": "synthetic_fixture_only"},
+          "approved_scope_hash": {"const": null},
+          "approval_token_id": {"const": null},
+          "approval_chain_id": {"const": null},
+          "binding_id": {"const": null},
+          "token_use_policy": {"const": null},
+          "nonce_ref": {"const": null},
+          "bound_worker_id": {"const": null},
+          "blocked_mvp_action": {"const": false},
+          "denial_reason": {"type": "string", "minLength": 1},
+          "fresh_operator_intent_ref": {"type": "string", "minLength": 1},
+          "approval_binding_created": {"const": false},
+          "token_verification_performed": {"const": false},
+          "replay_record_created": {"const": false},
+          "assigned_worker_id": {"const": null},
+          "arc_dispatch_allowed": {"const": false},
+          "arc_dispatched": {"const": false},
+          "external_side_effects": {"const": false}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"action_class": {"const": "synthetic_form_preparation_review"}, "result": {"const": "denied"}}, "required": ["action_class", "result"]},
+      "then": {"properties": {"result_reason_code": {"const": "denied_by_approver"}, "decision_kind": {"const": "attended_deny"}, "approver_operator_id": {"type": "string", "minLength": 1}, "approver_role_ref": {"const": "business_owner"}, "operator_session_binding_id": {"type": "string", "minLength": 1}}}
+    },
+    {
+      "if": {"properties": {"action_class": {"const": "synthetic_form_preparation_review"}, "result": {"const": "cancelled"}}, "required": ["action_class", "result"]},
+      "then": {"properties": {"result_reason_code": {"const": "cancelled"}, "decision_kind": {"const": "attended_cancel"}, "approver_operator_id": {"type": "string", "minLength": 1}, "approver_role_ref": {"const": "business_owner"}, "operator_session_binding_id": {"type": "string", "minLength": 1}}}
+    },
+    {
+      "if": {"properties": {"action_class": {"const": "synthetic_form_preparation_review"}, "result": {"const": "expired"}}, "required": ["action_class", "result"]},
+      "then": {"properties": {"result_reason_code": {"const": "expired"}, "decision_kind": {"const": "explicit_expire"}, "approver_operator_id": {"const": null}, "approver_role_ref": {"const": null}, "operator_session_binding_id": {"const": null}}}
+    },
     {
       "if": {
         "properties": {

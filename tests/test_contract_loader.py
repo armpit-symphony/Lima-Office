@@ -9,7 +9,8 @@ from lima_office.runtime.errors import ContractLoadError
 class ContractLoaderTests(unittest.TestCase):
     def test_loads_all_v1_schemas(self):
         loader = ContractLoader().load()
-        self.assertEqual(78, len(loader.schema_keys))
+        self.assertEqual(85, len(loader.schema_keys))
+        self.assertIn("approval.readiness", loader.contract_names)
         self.assertIn("approval.binding", loader.contract_names)
         self.assertIn("approval.chain", loader.contract_names)
         self.assertIn("transaction.boundary", loader.contract_names)
@@ -55,6 +56,11 @@ class ContractLoaderTests(unittest.TestCase):
         self.assertIn("console.alert", loader.contract_names)
         self.assertIn("console.action", loader.contract_names)
         self.assertIn("supervisor.health", loader.contract_names)
+        self.assertIn("supervisor.conversation.turn", loader.contract_names)
+        self.assertIn("helper.assignment", loader.contract_names)
+        self.assertIn("helper.result", loader.contract_names)
+        self.assertIn("supervisor.task.proposal", loader.contract_names)
+        self.assertIn("supervisor.approval.preview", loader.contract_names)
         self.assertEqual("guardian.decision", loader.resolve_key("guardian.decision.schema.json"))
         self.assertEqual("guardian.replay", loader.resolve_key("guardian.replay.schema.json"))
 

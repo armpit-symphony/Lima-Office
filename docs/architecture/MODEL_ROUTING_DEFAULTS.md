@@ -2,10 +2,12 @@
 
 ## Purpose
 
-Define Phase 1A model-routing defaults for LIMA Office OS as contractable policy
-metadata, with fail-closed behavior and no execution authority.
+Define model-routing defaults for LIMA Office OS as contractable policy with
+fail-closed behavior. One narrow attended lab route now has execution authority;
+all other modes remain metadata-only.
 
-Status: design-only, not implemented.
+Status: contract-backed; `subscription_lab_readonly` is implemented for the
+localhost Supervisor conversation only.
 
 ## Model Route Decision Lifecycle
 
@@ -13,18 +15,22 @@ Status: design-only, not implemented.
    role/session/device posture, approval requirement).
 2. Evaluate policy defaults and blocked-MVP classes.
 3. Classify route mode and route status.
-4. Emit evidence-backed route metadata.
-5. Stop. No provider call, no local inference, no side effect.
+4. Write pre-action evidence and evaluate Guardian.
+5. Stop for every mode except an allowed `subscription_lab_readonly` route.
+6. For that route only, run one ephemeral read-only text turn and write
+   post-action evidence before returning the response.
 
 ## Route Modes (MVP)
 
 - `mock_only`
 - `local_planned`
 - `subscription_planned`
+- `subscription_lab_readonly`
 - `blocked_mvp`
 
 `local_planned` and `subscription_planned` are planning postures only; they do
-not authorize execution.
+not authorize execution. `subscription_lab_readonly` is limited to attended,
+low-risk Supervisor reasoning over public or non-sensitive internal text.
 
 ## Model Role Categories
 
@@ -59,10 +65,14 @@ not authorize execution.
 - `mock_only`: default-safe posture for MVP.
 - `local_planned`: future local bundle selection placeholder only.
 - `subscription_planned`: future provider class selection placeholder only.
+- `subscription_lab_readonly`: one explicit, ephemeral text turn through the
+  operator's saved ChatGPT/Codex session, with read-only sandbox, user config,
+  rules, web search, tools, memory, helpers, fallback, and Arc dispatch disabled.
 - `blocked_mvp`: explicit deny/block metadata when policy, taint, risk, trust,
   or MVP boundaries are violated.
 
-No external provider calls or local inference runs are permitted in this lane.
+No local inference runs are permitted in this lane. External provider use is
+permitted only by the narrow lab route above and never authorizes a side effect.
 
 ## Fail-Closed Rules
 
@@ -72,6 +82,10 @@ No external provider calls or local inference runs are permitted in this lane.
 - Untrusted device/session/RBAC posture for privileged route => blocked.
 - Failed/expired attestation or untrusted update metadata => blocked.
 - Blocked-MVP classes cannot be selected.
+- Any missing lab restriction, sensitive/tainted input, fallback request,
+  non-Supervisor role, or non-attended request => denied before invocation.
+- Pre-action or Guardian evidence failure => no invocation. Post-action evidence
+  failure => response withheld.
 
 ## Tainted Input Rules
 
@@ -86,6 +100,8 @@ No external provider calls or local inference runs are permitted in this lane.
   fail-closed blocked status.
 - `subscription_planned` and `local_planned` cannot imply live execution in
   privileged paths.
+- `subscription_lab_readonly` cannot accept privileged/high-risk work or act as
+  an approval, helper, worker, connector, or tool authority.
 
 ## Evidence and Audit Requirements
 
@@ -108,11 +124,14 @@ Lineage or authority conflict reason codes (for example
 Drift-class posture for these cases is defined in
 [ATTESTATION_REVOCATION_RECONCILIATION_DRILLS](../ATTESTATION_REVOCATION_RECONCILIATION_DRILLS.md).
 
-## Acceptance Gates Before Implementation
+## Implemented Lab Acceptance Gates
 
 1. Contract and taxonomy conformance pass with zero warnings/failures.
 2. Explicit fail-closed tests for taint, risk, trust, fallback, and blocked-MVP
    paths.
 3. Runbook coverage for degraded/blocked route review.
-4. No runtime provider wiring, local inference runtime, or authorization
-   expansion.
+4. Live-provider coverage proves read-only/ephemeral configuration, zero tool
+   events, explicit confirmation, no raw-content evidence persistence, and
+   fail-closed evidence behavior.
+5. Local inference, helpers, worker dispatch, connectors, and side effects
+   remain outside this route.

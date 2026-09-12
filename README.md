@@ -2,21 +2,52 @@
 
 LIMA Office OS is the SparkPit Labs / LIMA AI Office control-plane project for governed small-business AI office operations.
 
-The repo now contains one approved lab-only, non-executing Arc control-plane
-slice on top of the Phase 0 architecture and earlier mock runtime scaffolding.
-It is not production-ready. It does not contain live connectors, executable
-runtime dispatch, hidden background jobs, approval enforcement for live
-## Physical-PC test harness UI
+The repository now contains an attended, localhost-only Supervisor Console and
+a Guardian-gated Arc integration for synthetic office-work testing. It remains
+lab software, not a production business system. It does not authorize live
+connectors, customer-data changes, external submissions, unrestricted worker
+dispatch, hidden background actions, or production remediation.
+
+## Current Lab Checkpoint: Profile A
+
+Profile A (`attended_os_session_lab_only`) is selected temporarily while the
+complete implemented LIMA Office and Arc workflow is tested on a personal PC.
+It deliberately does not establish a named owner identity or MFA.
+
+The current source provides:
+
+- A business-owner Supervisor Console and Arc Lab UI on localhost.
+- One attended, read-only Supervisor reasoning turn through the local
+  ChatGPT/Codex subscription, with tools disabled and no prompt persistence.
+- A deterministic helper for five fixed synthetic registration scenarios.
+- Durable task drafts, tokenless approval previews, pending synthetic review
+  requests, and non-authorizing deny/cancel/expire records.
+- Guardian-gated evidence, exact-record checks, restart persistence, replay
+  rejection, SOP gaps, and bounded escalation.
+- Tested Supervisor operation with 1, 2, and 8 foreground Arc workers.
+- One narrowly governed `document_read` capability when both Supervisor and Arc
+  opt in and a fixed document root is supplied at startup.
+
+Positive approval, approval tokens, execution bindings, general Arc dispatch,
+external sends, form submission, connectors, and customer-record mutation are
+still blocked. See the [Profile A whole-system lab test](docs/audits/PROFILE_A_WHOLE_SYSTEM_LAB_TEST.md)
+and [local project logbook](limaoffice-logbook.md).
+
+## Physical-PC Test Harness UI
 
 The first bounded operator UI now runs one Arc worker and one Supervisor on
 loopback with explicit **Training** and **Working** modes:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\arc-runtime-harness.py `
-  --arc-source C:\LIMA\Arc-Bot-shell `
-  --document-root C:\path\to\safe-test-documents `
-  --execution-opt-in --execute-granted-capability --emit-document-content
+python scripts\arc-runtime-harness.py `
+  --arc-source C:\path\to\Arc-Bot-shell `
+  --session-dir C:\path\to\lima-profile-a-session `
+  --ui-port 8767
 ```
+
+Open `http://127.0.0.1:8767/office/` for LIMA Office or
+`http://127.0.0.1:8767/` for the Arc Lab. The safe default above starts in
+Training mode with execution disabled.
 
 Training is the startup default and persists reviewed SOP instructions.
 Working mode remains unavailable unless both independent execution opt-ins and
@@ -26,16 +57,16 @@ SOP gaps, training progress, and sanitized evidence are authoritative on the
 LIMA Office side, not in browser storage.
 
 See [the Arc physical runtime test harness](docs/ARC_RUNTIME_HARNESS.md).
-actions, production server control, or customer-system mutation.
 
 The coordinated Windows preview builder and attended operator instructions are
 in [release/lab-preview](release/lab-preview/README.md). A built artifact remains
 a local lab candidate until its clean-install smoke passes and publication is
 explicitly approved.
 
-The verified attended Lab Preview is available as the
-[v0.1.0-lab.1 GitHub prerelease](https://github.com/armpit-symphony/Lima-Office/releases/tag/v0.1.0-lab.1).
-It remains localhost-only, unauthenticated, and not production-ready.
+The latest published package is the
+[v0.1.0-lab.5 GitHub prerelease](https://github.com/armpit-symphony/Lima-Office/releases/tag/v0.1.0-lab.5).
+The Profile A checkpoint described above is newer source work and is not a new
+published package. Lab.5 remains localhost-only and not production-ready.
 
 ## Running a governed session
 
@@ -178,19 +209,20 @@ No remediation runtime, endpoint control, production server change, or network c
 - [Arc worker control-plane smoke](docs/runbooks/arc-worker-control-plane-smoke.md)
 - [Arc operator → Supervisor → Arc smoke](docs/runbooks/arc-operator-supervisor-smoke.md)
 
-## Current Repo Status
+## Current Repository Status
 
-This repo is currently stabilized on the
-`integration/phase-0-1a-baseline` branch as Phase 0 docs/contracts/governance,
-deployment and UX specs, plus Phase 1A mock runtime scaffolding only:
+The public default branch contains the lab.5 integration baseline. This
+checkpoint adds the tested Profile A Supervisor workflow while retaining these
+boundaries:
 
-- Docs and scaffolding are allowed.
-- Contracts are required before implementation.
-- Mock in-memory worker, heartbeat, task, Guardian, and evidence flows are allowed.
-- Governance policy details are docs/contracts scaffolding only.
-- Operator console UX specs are docs/contracts scaffolding only; no frontend code exists.
-- No production-readiness claims.
-- No live customer connectors.
-- No live runtime behavior beyond the tiny in-memory scaffold.
-- No external sends, external model APIs, browser automation, OAuth/provider wiring, or remediation execution.
-- No marketing, pricing, financial projections, TAM, investor content, or sales copy.
+- Contracts and Guardian checks precede every important runtime action.
+- The implemented runtime is attended, loopback-only, synthetic-data-only lab
+  software with durable local evidence.
+- The Supervisor Console exists, but it cannot issue positive approval or
+  dispatch general office work to Arc.
+- The OpenAI subscription route is one-turn, read-only, ephemeral, and has all
+  tools disabled.
+- There are no live customer connectors, external sends, browser writes,
+  OAuth/provider wiring, customer-system mutations, or remediation execution.
+- Profile B or C identity controls, threat review, clean packaging, and another
+  release gate are required before any customer or production claim.
