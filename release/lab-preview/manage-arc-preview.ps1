@@ -4,6 +4,7 @@ param(
     [string]$Action = "Start",
     [string]$InstallRoot = $PSScriptRoot,
     [ValidateRange(1024,65535)][int]$UiPort = 8766,
+    [ValidateSet("Arc", "Office")][string]$Surface = "Arc",
     [switch]$OpenBrowser
 )
 Set-StrictMode -Version Latest
@@ -28,6 +29,7 @@ try { $identity = ([BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UT
 finally { $sha.Dispose() }
 $startupLink = Join-Path ([Environment]::GetFolderPath("Startup")) ("Arc Lab " + $identity + ".lnk")
 $url = "http://127.0.0.1:$UiPort"
+$openUrl = if ($Surface -eq "Office") { "$url/office/" } else { "$url/" }
 $mutex = New-Object Threading.Mutex($false, ("Local\ArcLab-" + $identity))
 $locked = $false
 function Get-Health {
@@ -63,10 +65,10 @@ try {
             $shell = New-Object -ComObject WScript.Shell
             $shortcut = $shell.CreateShortcut($startupLink)
             $shortcut.TargetPath = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
-            $shortcut.Arguments = '-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $manager + '" -Action Start -InstallRoot "' + $InstallRoot + '" -UiPort ' + $UiPort + ' -OpenBrowser'
+            $shortcut.Arguments = '-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $manager + '" -Action Start -InstallRoot "' + $InstallRoot + '" -UiPort ' + $UiPort + ' -Surface ' + $Surface + ' -OpenBrowser'
             $shortcut.WorkingDirectory = $InstallRoot
             $shortcut.WindowStyle = 7
-            $shortcut.Description = "Start the localhost Arc lab at login; no tasks run automatically."
+            $shortcut.Description = "Open the localhost LIMA Office + Arc lab at login; no tasks run automatically."
             $shortcut.Save()
         } elseif (Test-Path -LiteralPath $startupLink) {
             $shell = New-Object -ComObject WScript.Shell
@@ -74,12 +76,12 @@ try {
             if (-not $shortcut.Arguments.Contains('"' + $manager + '"')) { throw "Startup shortcut identity mismatch." }
             Remove-Item -LiteralPath $startupLink
         }
-        [pscustomobject]@{login_startup=(Test-Path -LiteralPath $startupLink);shortcut=$startupLink} | ConvertTo-Json
+        [pscustomobject]@{login_startup=(Test-Path -LiteralPath $startupLink);shortcut=$startupLink;surface=$Surface;open_url=$openUrl} | ConvertTo-Json
         return
     }
     if ($Action -eq "Status") {
         $health = Get-Health
-        [pscustomobject]@{running=($null -ne $health);url=$url;login_startup=(Test-Path -LiteralPath $startupLink)} | ConvertTo-Json
+        [pscustomobject]@{running=($null -ne $health);url=$url;open_url=$openUrl;surface=$Surface;login_startup=(Test-Path -LiteralPath $startupLink)} | ConvertTo-Json
         return
     }
     if ($Action -in @("Stop","Restart")) { Stop-Managed }
@@ -121,8 +123,8 @@ try {
         } while ([DateTime]::UtcNow -lt $deadline)
         if ($null -eq (Get-Health)) { throw "Arc startup timed out. Inspect $errLog" }
     } elseif ($null -eq (Get-Health)) { throw "Managed Arc is not healthy; use Restart." }
-    Write-Output "Arc ready at $url (training only). Start/Restart/Stop and login controls are in $InstallRoot."
-    if ($OpenBrowser) { Start-Process -FilePath "$url/" -WindowStyle Hidden }
+    Write-Output "LIMA Office + Arc ready at $openUrl (training only). Start/Restart/Stop and login controls are in $InstallRoot."
+    if ($OpenBrowser) { Start-Process -FilePath $openUrl -WindowStyle Hidden }
 } finally {
     if ($locked) { $mutex.ReleaseMutex() }
     $mutex.Dispose()

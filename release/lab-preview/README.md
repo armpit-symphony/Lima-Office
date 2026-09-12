@@ -4,16 +4,22 @@ This artifact installs one attended, localhost-only LIMA Office Supervisor and
 the Arc worker source selected by the release manifest. It is a test preview,
 not a customer pilot or production release.
 
-## One-click Arc controls
+## One-click LIMA Office and Arc controls
 
-After installation, open Start Arc.cmd in the installed directory. Restart
-Arc.cmd and Stop Arc.cmd preserve saved SOPs and training history. These
-launchers use port 8766 and opt into the already installed local Qwen preview;
-they never pull models or run tasks automatically. Ollama must be running.
+After installation, open `Start LIMA Office.cmd` to start the shared localhost
+lab and open the business-owner Supervisor Console. `Restart LIMA Office.cmd`
+and `Stop LIMA Office.cmd` use the same governed lifecycle and preserve saved
+SOPs, proposals, review records, and training history. The corresponding Arc
+launchers open the Arc training surface instead. Both surfaces use the same
+process on port 8766, opt into the already installed local Qwen preview, never
+pull models, and never run tasks automatically. Ollama must be running.
 
-Enable Arc at login.cmd installs a per-user Startup shortcut. Disable Arc at
-login.cmd removes that shortcut. Login startup is optional and off by default.
-No administrator privileges or firewall changes are required.
+`Enable LIMA Office at login.cmd` installs one per-user Startup shortcut that
+starts the shared localhost lab and opens the Supervisor Console. `Disable LIMA
+Office at login.cmd` removes it. The Arc-named login controls select the Arc
+surface instead; enabling either surface updates the same per-install shortcut,
+so two copies do not start. Login startup is optional and off by default. No
+administrator privileges or firewall changes are required.
 
 The UI shows release version and Arc source commit, with a modified-source
 marker for development installations. Export diagnostic/evidence bundle saves

@@ -29,6 +29,11 @@ PAYLOAD_FILES = (
     "Stop Arc.cmd",
     "Enable Arc at login.cmd",
     "Disable Arc at login.cmd",
+    "Start LIMA Office.cmd",
+    "Restart LIMA Office.cmd",
+    "Stop LIMA Office.cmd",
+    "Enable LIMA Office at login.cmd",
+    "Disable LIMA Office at login.cmd",
 )
 
 

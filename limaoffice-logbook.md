@@ -46,7 +46,7 @@ Exact components recorded in the published package:
 
 | Purpose | Local path | Current state |
 | --- | --- | --- |
-| LIMA Office working source | `C:\Users\limap\Lima-Office` | `main` at `9c803abd4d453eff0e1159cb891c08425450cf14`; user files and historical release folders remain untracked. |
+| LIMA Office working source | `C:\Users\limap\Lima-Office` | Public `main` includes Profile A through merge `78f85b382f073c69d85522d6d3b005b18895fed8`; active local work is on `feature/lima-office-windows-startup`. User files and historical release folders remain untracked. |
 | Arc Bot working source | `C:\Users\limap\Arc-Bot-shell` | `main` at `89f0844e3247aad0024985c0f2e83bbc629ab5ef`; this includes post-release reboot-evidence source history and is newer than the Arc commit inside lab.5. |
 | LIMA Runtime working source | `C:\Users\limap\LIMA-AI-OS` | Local source checkout. The lab.5 package remains pinned to the exact runtime commit listed above. |
 | Guardian working source | `C:\Users\limap\LIMA-Guardian-Suite` | Local source checkout; current commit matches the lab.5 Guardian pin. |
@@ -76,6 +76,10 @@ Exact components recorded in the published package:
 - Optional login startup control, currently disabled.
 - Diagnostic/evidence export and synthetic-training-history reset controls.
 - Qwen local-model detection and saved SOP restoration after restart.
+- Packaged one-click LIMA Office start/restart/stop controls that open the
+  Supervisor Console while sharing the governed Arc lifecycle.
+- Optional per-user LIMA Office login startup control, explicitly off by default
+  and unable to run tasks automatically.
 
 ### Business-Owner Supervisor Console Foundation
 
@@ -183,7 +187,6 @@ Exact components recorded in the published package:
 
 ### Packaging And Operations
 
-- One-click LIMA Office Supervisor start/restart/stop controls.
 - Supervisor UI health checks, diagnostic export, backup/restore, and rollback.
 - Clean-install and reboot validation for the Supervisor Console package.
 - A packaged prerelease after the Supervisor conversation and Arc handoff tests pass.
@@ -430,6 +433,35 @@ Acceptance target:
   `https://github.com/armpit-symphony/Lima-Office/tree/checkpoint/profile-a-lab`.
 - Public review:
   `https://github.com/armpit-symphony/Lima-Office/pull/33`.
+- PR 33 was merged into public `main` at
+  `78f85b382f073c69d85522d6d3b005b18895fed8`.
+
+### 2026-09-11 — Owner-Attended Profile A Workflow Passed
+
+- Owner reported the **Complete fictional contact** workflow completed according
+  to the supplied attended walkthrough.
+- This validates the visible current-source helper, proposal, tokenless preview,
+  pending synthetic request, and non-authorizing decision path by owner report.
+- Positive approval, tokens, Arc dispatch, customer data, submissions, and
+  external effects remained outside this test and remain blocked.
+- The exact lab.6 package must repeat restart/reboot, durable restoration,
+  worker/evidence visibility, and attended-session rebinding checks.
+
+### 2026-09-11 — LIMA Office Windows Lifecycle Controls Implemented
+
+- Added one-click Start, Restart, and Stop launchers that open the LIMA Office
+  Supervisor Console while reusing the existing managed Arc lab process.
+- Added explicit Enable/Disable LIMA Office at login controls. The option remains
+  off by default, creates one per-install per-user shortcut, opens only the
+  localhost UI, and runs no task automatically.
+- Preserved process identity checks, graceful authenticated shutdown, loopback
+  binding, retained training/SOP data, and the existing Arc-named launchers.
+- Added release-payload tests and a Windows lifecycle runbook. Exact-package
+  clean-install and reboot verification remains a lab.6 release gate.
+- Validation passed: 922 tests with 1 skipped; 85 schemas and 233 examples;
+  reason-code conformance; 1,151 local Markdown links; PowerShell parsing; and
+  an installed-lab status probe that selected `/office/` while confirming login
+  startup remained disabled.
 
 ---
 
