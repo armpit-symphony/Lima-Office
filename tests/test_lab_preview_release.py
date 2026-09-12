@@ -103,11 +103,38 @@ class LabPreviewReleaseTests(unittest.TestCase):
                         "Stop Arc.cmd",
                         "Enable Arc at login.cmd",
                         "Disable Arc at login.cmd",
+                        "Start LIMA Office.cmd",
+                        "Restart LIMA Office.cmd",
+                        "Stop LIMA Office.cmd",
+                        "Enable LIMA Office at login.cmd",
+                        "Disable LIMA Office at login.cmd",
                     },
                     set(archive.namelist()),
                 )
                 archived = json.loads(archive.read("manifest.json"))
             self.assertEqual(manifest, archived)
+
+    def test_lifecycle_manager_opens_the_requested_surface(self):
+        source = (ROOT / "release" / "lab-preview" / "manage-arc-preview.ps1").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn('[ValidateSet("Arc", "Office")]', source)
+        self.assertIn('$url/office/', source)
+        self.assertIn("-Surface ' + $Surface", source)
+        self.assertIn('Start-Process -FilePath $openUrl', source)
+
+    def test_lima_office_launchers_are_explicit_and_attended(self):
+        release = ROOT / "release" / "lab-preview"
+        for action in ("Start", "Restart", "Stop"):
+            source = (release / f"{action} LIMA Office.cmd").read_text(encoding="utf-8")
+            self.assertIn(f"-Action {action}", source)
+            self.assertIn("-Surface Office", source)
+        for action in ("Enable", "Disable"):
+            source = (release / f"{action} LIMA Office at login.cmd").read_text(
+                encoding="utf-8"
+            )
+            self.assertIn(f"-Action {action}Login", source)
+            self.assertIn("-Surface Office", source)
 
     def test_installer_does_not_create_hidden_or_model_runtime(self):
         source = (ROOT / "release" / "lab-preview" / "install-lab-preview.ps1").read_text(

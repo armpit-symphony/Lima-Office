@@ -1,7 +1,7 @@
 # Profile A Whole-System Lab Test
 
 Date: 2026-09-09
-Result: automated current-scope pass; attended visual pass pending
+Result: automated current-scope pass; owner-reported primary attended workflow pass
 Scope: one LIMA Office Supervisor and 1, 2, or 8 temporary Arc workers on localhost
 
 ## Safety Boundary
@@ -45,11 +45,20 @@ tokens, execution bindings, external submission, or general Arc dispatch.
 - Named owner identity, Windows Hello/passkey, OIDC, MFA, or production device trust
 - Installer/package clean-install behavior for a build containing this milestone
 
-## Attended Visual Pass Still Required
+## Owner-Attended Result
 
-The Windows browser-control helper timed out during three initialization
-attempts, so the UI could not be visually exercised in this run. The owner must
-complete one attended pass from the current source or next packaged build:
+On 2026-09-11, the owner reported that the **Complete fictional contact** path
+completed according to the supplied walkthrough. This records a successful
+attended pass through the visible Profile A helper, proposal, tokenless preview,
+pending-request, and non-authorizing decision path. It does not authorize a
+positive result, token, Arc dispatch, customer data, or external effect.
+
+The remaining package-level gate is a clean-install/restart/reboot pass from the
+future lab.6 ZIP. That pass must also confirm worker/evidence visibility, durable
+request/result restoration, and that the process-only operator session must be
+bound again after restart.
+
+The owner walkthrough covered this current-source sequence:
 
 1. Open the LIMA Office Supervisor Console and confirm the Profile A lab-only card.
 2. Bind the attended Windows session and confirm the 30-minute, process-only warning.
@@ -57,8 +66,8 @@ complete one attended pass from the current source or next packaged build:
 4. Move the draft to future-approval review, create and review its tokenless preview.
 5. Create a pending synthetic request, then deny or cancel it.
 6. Refresh Arc inventory and confirm worker/evidence state is visible.
-7. Restart the lab, confirm the request/result persists, and confirm the attended
-   operator session must be bound again.
+7. Treat restart persistence and attended-session rebinding as package-level
+   checks that must be repeated against the exact lab.6 ZIP.
 
 Stop immediately if the UI claims a positive approval, token, worker dispatch,
 external effect, production identity, or customer-ready status.

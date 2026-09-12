@@ -49,6 +49,12 @@ Open `http://127.0.0.1:8767/office/` for LIMA Office or
 `http://127.0.0.1:8767/` for the Arc Lab. The safe default above starts in
 Training mode with execution disabled.
 
+A packaged Windows installation also includes `Start LIMA Office.cmd`,
+`Restart LIMA Office.cmd`, and `Stop LIMA Office.cmd`. The optional login
+launcher is a separate explicit opt-in and is off by default. It opens the
+localhost console but never runs an office task automatically. See the
+[Windows lab lifecycle runbook](docs/runbooks/windows-lab-lifecycle-controls.md).
+
 Training is the startup default and persists reviewed SOP instructions.
 Working mode remains unavailable unless both independent execution opt-ins and
 the bounded document root were supplied at startup. Its only executable

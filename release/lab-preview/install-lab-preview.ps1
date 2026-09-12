@@ -124,7 +124,19 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "Arc installed-package identity check failed." }
 
     Copy-Item -LiteralPath $manifestPath -Destination (Join-Path $configRoot "release-manifest.json")
-    foreach ($launcher in @("manage-arc-preview.ps1", "Start Arc.cmd", "Restart Arc.cmd", "Stop Arc.cmd", "Enable Arc at login.cmd", "Disable Arc at login.cmd")) {
+    foreach ($launcher in @(
+        "manage-arc-preview.ps1",
+        "Start Arc.cmd",
+        "Restart Arc.cmd",
+        "Stop Arc.cmd",
+        "Enable Arc at login.cmd",
+        "Disable Arc at login.cmd",
+        "Start LIMA Office.cmd",
+        "Restart LIMA Office.cmd",
+        "Stop LIMA Office.cmd",
+        "Enable LIMA Office at login.cmd",
+        "Disable LIMA Office at login.cmd"
+    )) {
         Copy-Item -LiteralPath (Join-Path $PSScriptRoot $launcher) -Destination (Join-Path $InstallRoot $launcher)
     }
     $installation = [ordered]@{
