@@ -1,0 +1,801 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LIMA Office · Supervisor Console</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07100f;
+      --panel: #0d1917;
+      --panel-2: #12211e;
+      --line: #223b36;
+      --text: #edf8f4;
+      --muted: #9bb4ad;
+      --mint: #69e3bd;
+      --mint-2: #35b98f;
+      --amber: #f2bd64;
+      --red: #ef7f75;
+      --blue: #7ab8ef;
+      --shadow: 0 18px 55px rgba(0, 0, 0, .28);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 80% 0%, rgba(53, 185, 143, .10), transparent 32rem),
+        radial-gradient(circle at 15% 100%, rgba(122, 184, 239, .07), transparent 28rem),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    .shell { min-height: 100vh; display: grid; grid-template-columns: 238px 1fr; }
+    .sidebar {
+      border-right: 1px solid var(--line);
+      background: rgba(8, 18, 16, .92);
+      padding: 26px 18px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .brand { display: flex; gap: 12px; align-items: center; margin: 0 8px 30px; }
+    .mark {
+      width: 38px; height: 38px; border: 1px solid rgba(105, 227, 189, .55);
+      border-radius: 12px; display: grid; place-items: center; color: var(--mint);
+      background: rgba(105, 227, 189, .08); font-weight: 800; letter-spacing: -.04em;
+    }
+    .brand strong { display: block; font-size: 14px; letter-spacing: .15em; }
+    .brand span { display: block; color: var(--muted); font-size: 11px; margin-top: 3px; }
+    nav { display: grid; gap: 6px; }
+    .nav-button {
+      width: 100%; border: 0; border-radius: 10px; padding: 11px 12px;
+      background: transparent; color: var(--muted); text-align: left;
+    }
+    .nav-button:hover, .nav-button.active { background: var(--panel-2); color: var(--text); }
+    .nav-button.active { box-shadow: inset 3px 0 var(--mint); }
+    .lab-note {
+      position: absolute; left: 18px; right: 18px; bottom: 22px;
+      border: 1px solid var(--line); border-radius: 12px; padding: 12px;
+      color: var(--muted); font-size: 11px; line-height: 1.55;
+    }
+    main { padding: 28px 34px 52px; max-width: 1500px; width: 100%; margin: 0 auto; }
+    .topbar { display: flex; justify-content: space-between; gap: 24px; align-items: flex-start; margin-bottom: 24px; }
+    .eyebrow { color: var(--mint); font-size: 11px; font-weight: 750; letter-spacing: .18em; text-transform: uppercase; }
+    h1 { font-size: clamp(28px, 4vw, 44px); letter-spacing: -.045em; margin: 8px 0 6px; }
+    .subhead { color: var(--muted); max-width: 720px; line-height: 1.55; margin: 0; }
+    .top-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+    .button {
+      border: 1px solid var(--line); border-radius: 10px; padding: 9px 13px;
+      color: var(--text); background: var(--panel-2); font-weight: 650;
+    }
+    .button:hover { border-color: var(--mint-2); }
+    .button.primary { background: var(--mint); color: #062017; border-color: var(--mint); }
+    .button:disabled { cursor: not-allowed; opacity: .45; }
+    .badge { display: inline-flex; gap: 7px; align-items: center; border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; color: var(--muted); font-size: 12px; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); }
+    .dot.good { background: var(--mint); box-shadow: 0 0 12px rgba(105, 227, 189, .55); }
+    .view { display: none; }
+    .view.active { display: block; }
+    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+    .card {
+      grid-column: span 4; background: linear-gradient(150deg, rgba(18, 33, 30, .94), rgba(12, 25, 22, .94));
+      border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: var(--shadow);
+    }
+    .card.wide { grid-column: span 8; }
+    .card.full { grid-column: 1 / -1; }
+    .card.half { grid-column: span 6; }
+    .card h2 { font-size: 16px; margin: 0 0 5px; letter-spacing: -.01em; }
+    .card p { color: var(--muted); margin: 0; line-height: 1.55; font-size: 13px; }
+    .metric { font-size: 34px; font-weight: 760; letter-spacing: -.04em; margin: 20px 0 4px; }
+    .label { color: var(--muted); font-size: 11px; letter-spacing: .11em; text-transform: uppercase; }
+    .section-title { display: flex; justify-content: space-between; align-items: end; margin: 10px 0 15px; }
+    .section-title h2 { margin: 0; font-size: 23px; }
+    .section-title p { color: var(--muted); margin: 4px 0 0; }
+    .status-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .status-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .status-row strong { font-size: 13px; }
+    .status-row span { color: var(--muted); font-size: 12px; text-align: right; }
+    .callout { border-left: 3px solid var(--amber); padding: 11px 13px; background: rgba(242, 189, 100, .07); color: #ead8ba; font-size: 12px; line-height: 1.55; border-radius: 0 9px 9px 0; }
+    .callout.good { border-color: var(--mint); background: rgba(105, 227, 189, .07); color: #cceee3; }
+    .chat-box { min-height: 340px; display: flex; flex-direction: column; justify-content: space-between; gap: 18px; }
+    .message { max-width: 78%; background: var(--panel-2); border: 1px solid var(--line); border-radius: 14px 14px 14px 4px; padding: 14px; color: var(--muted); line-height: 1.55; font-size: 13px; }
+    .composer { border-top: 1px solid var(--line); padding-top: 15px; display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+    textarea { resize: vertical; min-height: 68px; border: 1px solid var(--line); border-radius: 11px; padding: 12px; background: #091411; color: var(--text); }
+    textarea:disabled { color: #789087; }
+    select { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 10px; background: #091411; color: var(--text); }
+    .helper-controls { display: grid; gap: 11px; margin-top: 16px; }
+    .helper-result { margin-top: 14px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .helper-result strong { color: var(--text); }
+    .proposal-list { display: grid; gap: 13px; margin-top: 14px; }
+    .proposal-card { border: 1px solid var(--line); border-radius: 12px; padding: 15px; background: #091411; }
+    .proposal-card h3 { margin: 0; font-size: 15px; }
+    .proposal-meta { color: var(--muted); font-size: 11px; margin: 6px 0 12px; line-height: 1.5; }
+    .proposal-controls { display: grid; gap: 9px; margin-top: 12px; }
+    .step-choice { display: flex; gap: 8px; align-items: flex-start; color: var(--muted); font-size: 12px; }
+    .step-choice input { margin-top: 2px; accent-color: var(--mint); }
+    .proposal-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .proposal-message { color: var(--muted); font-size: 12px; margin-top: 10px; min-height: 18px; }
+    .turn-consent { display: flex; gap: 9px; align-items: flex-start; color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .turn-consent input { margin-top: 3px; accent-color: var(--mint); }
+    .chat-history { display: grid; gap: 12px; align-content: start; }
+    .message.owner { margin-left: auto; border-radius: 14px 14px 4px 14px; background: rgba(105, 227, 189, .09); color: var(--text); }
+    .turn-meta { color: var(--muted); font-size: 11px; margin-top: 7px; }
+    .scope-list { margin: 16px 0 0; padding: 0; list-style: none; display: grid; gap: 9px; }
+    .scope-list li { color: var(--muted); font-size: 13px; padding-left: 18px; position: relative; }
+    .scope-list li::before { content: "·"; position: absolute; left: 2px; color: var(--mint); font-weight: 900; }
+    table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+    th, td { text-align: left; padding: 11px 8px; border-bottom: 1px solid var(--line); font-size: 12px; }
+    th { color: var(--muted); font-weight: 650; }
+    .empty { color: var(--muted); border: 1px dashed var(--line); border-radius: 12px; padding: 22px; text-align: center; margin-top: 14px; }
+    code { color: var(--mint); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .fine { font-size: 11px !important; }
+    @media (max-width: 900px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 18px; }
+      .brand { margin-bottom: 14px; }
+      nav { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .nav-button { text-align: center; padding: 9px 5px; font-size: 12px; }
+      .lab-note { display: none; }
+      main { padding: 22px 18px 40px; }
+      .topbar { display: block; }
+      .top-actions { margin-top: 16px; justify-content: flex-start; }
+      .card, .card.wide, .card.half { grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="mark">L</div><div><strong>LIMA OFFICE</strong><span>Supervisor Console</span></div></div>
+      <nav aria-label="Console sections">
+        <button class="nav-button active" data-view="today">Today</button>
+        <button class="nav-button" data-view="supervisor">Supervisor</button>
+        <button class="nav-button" data-view="work">Work</button>
+        <button class="nav-button" data-view="approvals">Approvals</button>
+        <button class="nav-button" data-view="workers">Arc Workers</button>
+        <button class="nav-button" data-view="evidence">Evidence</button>
+        <button class="nav-button" data-view="settings">Settings</button>
+      </nav>
+      <div class="lab-note"><strong>Attended lab preview</strong><br>No external sends, form submissions, customer-record writes, or hidden background work.</div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div><div class="eyebrow">Business control room</div><h1 id="page-title">Today</h1><p class="subhead" id="page-subtitle">A calm view of what needs attention, what Arc is doing, and what remains blocked.</p></div>
+        <div class="top-actions">
+          <span class="badge"><span class="dot" id="supervisor-dot"></span><span id="supervisor-label">Checking Supervisor</span></span>
+          <button class="button" id="reload-state">Refresh view</button>
+          <a class="button" href="/">Open Arc Lab</a>
+        </div>
+      </header>
+
+      <section class="view active" id="view-today">
+        <div class="grid">
+          <article class="card"><div class="label">Arc workers</div><div class="metric" id="worker-count">—</div><p id="worker-summary">Inventory has not been refreshed.</p></article>
+          <article class="card"><div class="label">Waiting approval</div><div class="metric" id="approval-count">—</div><p>Nothing can be dispatched by this console slice.</p></article>
+          <article class="card"><div class="label">Training attempts</div><div class="metric" id="training-count">—</div><p>Synthetic lab history only.</p></article>
+          <article class="card wide">
+            <h2>Supervisor status</h2><p>LIMA owns coordination and evidence. ChatGPT/Codex can now provide one attended, read-only reasoning turn when its safety confirmation is checked.</p>
+            <div class="status-row"><strong>Control plane</strong><span id="control-plane-status">Checking…</span></div>
+            <div class="status-row"><strong>Guardian gate</strong><span>Required for every important action</span></div>
+            <div class="status-row"><strong>External side effects</strong><span>Blocked</span></div>
+            <div class="status-row"><strong>Automatic refresh</strong><span>Off — attended actions only</span></div>
+          </article>
+          <article class="card">
+            <h2>Next build gate</h2><p>Profile A is active for attended synthetic testing. Complete the LIMA Office and Arc test loop before selecting production-shaped owner identity. Positive approval, tokens, execution bindings, and Arc dispatch remain disabled.</p>
+            <div class="callout" style="margin-top:16px">This console does not claim that ChatGPT, the helper, or Arc performed work unless evidence exists.</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-supervisor">
+        <div class="section-title"><div><h2>Supervisor</h2><p>Talk to the control plane about the business and turn intent into reviewable work.</p></div><span class="badge" id="model-badge">Connection pending</span></div>
+        <div class="grid">
+          <article class="card wide chat-box">
+            <div class="chat-history" id="chat-history"><div class="message"><strong>LIMA Supervisor</strong><br>This attended lab can send one public or non-sensitive internal message to OpenAI through the local ChatGPT/Codex subscription. The turn is Guardian-gated, read-only, ephemeral, and has all tools disabled.</div></div>
+            <div>
+              <div class="callout" style="margin-bottom:12px">Do not enter customer personal data, credentials, HR, finance, legal, or medical information. Message text is sent to OpenAI; only hashes and evidence metadata are saved locally.</div>
+              <label class="turn-consent"><input type="checkbox" id="turn-consent">I confirm this message contains only public or non-sensitive internal text and request one read-only Supervisor turn.</label>
+              <div class="composer"><textarea id="supervisor-message" disabled maxlength="2000" aria-label="Supervisor message" placeholder="Ask for planning, explanation, summarization, or a draft-only recommendation."></textarea><button class="button primary" id="send-supervisor" disabled>Send</button></div>
+            </div>
+          </article>
+          <article class="card">
+            <div class="label">Office helper</div><div class="metric" id="helper-status" style="font-size:23px">Checking…</div><p>This deterministic Supervisor-side helper reviews only fixed synthetic registration scenarios. It cannot use AI models, tools, files, memory, approvals, connectors, or Arc.</p>
+            <ul class="scope-list" id="helper-scope"></ul>
+            <div class="helper-controls">
+              <select id="helper-scenario" disabled aria-label="Synthetic registration scenario"><option value="">Select a synthetic scenario</option></select>
+              <label class="turn-consent"><input type="checkbox" id="helper-consent" disabled>I request one deterministic synthetic review. No customer data or external action is involved.</label>
+              <button class="button primary" id="run-helper" disabled>Run helper review</button>
+            </div>
+            <div class="helper-result" id="helper-result">No helper review has run in this browser session.</div>
+            <button class="button" id="create-proposal" disabled style="margin-top:12px">Create task draft from this review</button>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-work">
+        <div class="section-title"><div><h2>Work</h2><p>Review durable synthetic task proposals. Acceptance here does not approve or dispatch work.</p></div><span class="badge"><span id="proposal-count">0</span>&nbsp; proposals</span></div>
+        <div class="grid">
+          <article class="card half"><div class="label">Existing Arc queue</div><div class="metric" id="task-count">—</div><p>Queue count from the existing Arc operator projection.</p></article>
+          <article class="card half"><h2>Dispatch boundary</h2><div class="callout">Worker dispatch is disabled. A future proposal must be explicitly approved, Guardian-authorized, and evidence-backed before Arc receives it.</div></article>
+          <article class="card full"><h2>Supervisor task proposals</h2><p>Only priority and the fixed task steps are editable. Every change is Guardian-gated and evidence-backed.</p><div class="proposal-list" id="proposal-list"><div class="empty">No task proposals exist yet. Run a synthetic helper review to create one.</div></div></article>
+        </div>
+      </section>
+
+      <section class="view" id="view-approvals">
+        <div class="section-title"><div><h2>Approvals</h2><p>Bind an attended lab session and create pending review requests without granting execution authority.</p></div><span class="badge"><span id="approval-preview-count">0</span>&nbsp; previews</span></div>
+        <div class="grid">
+          <article class="card full"><h2>Approval testing profile</h2><div class="status-row"><strong>Selected profile</strong><span id="approval-profile-name">Profile A</span></div><div class="status-row"><strong>Readiness</strong><span id="approval-profile-status">Checking...</span></div><div class="status-row"><strong>Customer or production use</strong><span>Blocked until profile B or C</span></div><div class="callout" style="margin-top:12px">Profile A exercises the attended synthetic review workflow only. It does not prove owner identity and cannot approve execution.</div></article>
+          <article class="card half"><div class="label">Existing Arc approval queue</div><div class="metric" id="approval-count-detail">—</div><p>Existing Arc approval records remain separate from these Supervisor previews.</p></article>
+          <article class="card half"><h2>Attended operator session</h2><div class="status-row"><strong>Status</strong><span id="operator-session-status">Not bound</span></div><div class="status-row"><strong>Assurance</strong><span id="operator-session-assurance">Lab only</span></div><button class="button primary" id="bind-operator-session" style="margin-top:12px">Bind this Windows session</button><div class="proposal-message" id="operator-session-message"></div><p class="fine">No PIN or password is collected. This process-only binding expires in 30 minutes and is not production identity or approval.</p></article>
+          <article class="card full"><h2>Supervisor approval previews</h2><p>A preview is not an approval request or result. Each preview is bound to one exact accepted proposal revision and expires for review after 15 minutes.</p><div class="proposal-list" id="approval-preview-list"><div class="empty">No approval previews exist yet.</div></div></article>
+          <article class="card full"><h2>Approval review requests</h2><div class="callout">You may deny or cancel an active synthetic request, or explicitly record its expiry. These terminal records never approve work, issue a token, create an execution binding, assign a worker, or dispatch Arc.</div><div class="proposal-list" id="pending-approval-request-list" style="margin-top:12px"><div class="empty">No approval review requests exist yet.</div></div></article>
+        </div>
+      </section>
+
+      <section class="view" id="view-workers">
+        <div class="section-title"><div><h2>Arc Workers</h2><p>Supervisor-owned worker state; refresh happens only when you request it.</p></div><button class="button primary" id="refresh-workers">Refresh workers</button></div>
+        <article class="card full">
+          <div id="workers-empty" class="empty">Worker inventory has not been explicitly refreshed.</div>
+          <table id="workers-table" hidden><thead><tr><th>Worker</th><th>Role</th><th>State</th><th>Eligible</th><th>Health</th></tr></thead><tbody></tbody></table>
+        </article>
+      </section>
+
+      <section class="view" id="view-evidence">
+        <div class="section-title"><div><h2>Evidence</h2><p>Recent redacted event metadata from the attended lab.</p></div></div>
+        <article class="card full"><div id="evidence-list" class="empty">No recent evidence metadata is available.</div><p class="fine" style="margin-top:12px">Raw prompts, customer payloads, credentials, and tool output are not included in this projection.</p></article>
+      </section>
+
+      <section class="view" id="view-settings">
+        <div class="section-title"><div><h2>Settings</h2><p>Safe readiness and build information.</p></div></div>
+        <div class="grid">
+          <article class="card half"><h2>ChatGPT/Codex subscription</h2><div class="status-row"><strong>Status</strong><span id="model-status">Checking…</span></div><div class="status-row"><strong>Auth profile</strong><span id="auth-status">Checking…</span></div><div class="status-row"><strong>Codex CLI</strong><span id="cli-status">Checking…</span></div><div class="status-row"><strong>Read-only turn</strong><span id="invocation-status">Checking…</span></div><p id="model-detail" style="margin-top:14px"></p></article>
+          <article class="card half"><h2>Build</h2><div class="status-row"><strong>Version</strong><span><code id="build-version">—</code></span></div><div class="status-row"><strong>Arc commit</strong><span><code id="build-commit">—</code></span></div><div class="status-row"><strong>Source modified</strong><span id="build-modified">—</span></div><div class="callout good" style="margin-top:14px">Credentials are never returned to this UI.</div></article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const descriptions = {
+      today: ["Today", "A calm view of what needs attention, what Arc is doing, and what remains blocked."],
+      supervisor: ["Supervisor", "ChatGPT/Codex will reason inside LIMA's Guardian-gated control plane."],
+      work: ["Work", "Review the business work pipeline without hidden dispatch."],
+      approvals: ["Approvals", "Human decisions remain visible and scope-bound."],
+      workers: ["Arc Workers", "Inspect the bounded worker fleet owned by the Supervisor."],
+      evidence: ["Evidence", "See what happened without exposing raw sensitive payloads."],
+      settings: ["Settings", "Check provider readiness, safety boundaries, and build identity."]
+    };
+    const text = (id, value) => { document.getElementById(id).textContent = String(value); };
+    const yesNo = value => value ? "Yes" : "No";
+    let conversationEnabled = false;
+    let helperEnabled = false;
+    let proposalEnabled = false;
+    let approvalPreviewEnabled = false;
+    let operatorSessionBindingId = null;
+    let pendingRequestByPreview = new Map();
+    let lastHelperResultId = null;
+    const stepLabels = {
+      review_synthetic_scenario: "Review the synthetic scenario against the SOP",
+      resolve_human_input_fields: "Resolve fields that require human input",
+      owner_review_prepared_form: "Present the prepared form for owner review"
+    };
+
+    document.querySelectorAll(".nav-button").forEach(button => button.addEventListener("click", () => {
+      document.querySelectorAll(".nav-button").forEach(item => item.classList.toggle("active", item === button));
+      document.querySelectorAll(".view").forEach(view => view.classList.toggle("active", view.id === `view-${button.dataset.view}`));
+      const [title, subtitle] = descriptions[button.dataset.view];
+      text("page-title", title); text("page-subtitle", subtitle);
+    }));
+
+    function renderWorkers(workers) {
+      const items = Array.isArray(workers.items) ? workers.items : [];
+      const table = document.getElementById("workers-table");
+      const empty = document.getElementById("workers-empty");
+      table.hidden = !workers.inventory_refreshed || items.length === 0;
+      empty.hidden = !table.hidden;
+      empty.textContent = workers.inventory_refreshed ? "No worker records were returned." : "Worker inventory has not been explicitly refreshed.";
+      const body = table.querySelector("tbody"); body.replaceChildren();
+      items.forEach(worker => {
+        const row = document.createElement("tr");
+        [worker.worker_id || "—", worker.worker_role || "—", worker.state || "—", yesNo(worker.eligible), worker.health_status || "—"].forEach(value => {
+          const cell = document.createElement("td"); cell.textContent = value; row.appendChild(cell);
+        });
+        body.appendChild(row);
+      });
+    }
+
+    function renderEvidence(evidence) {
+      const root = document.getElementById("evidence-list");
+      const items = Array.isArray(evidence.items) ? evidence.items : [];
+      root.replaceChildren(); root.className = items.length ? "" : "empty";
+      if (!items.length) { root.textContent = "No recent evidence metadata is available."; return; }
+      items.slice().reverse().forEach(event => {
+        const row = document.createElement("div"); row.className = "status-row";
+        const label = document.createElement("strong"); label.textContent = event.event_type || "Evidence event";
+        const value = document.createElement("span"); value.textContent = event.occurred_at || event.created_at || event.event_id || event.evidence_ref || "Recorded";
+        row.append(label, value); root.appendChild(row);
+      });
+    }
+
+    const actionButton = (label, handler, primary = false) => {
+      const button = document.createElement("button");
+      button.className = `button${primary ? " primary" : ""}`;
+      button.textContent = label;
+      button.addEventListener("click", handler);
+      return button;
+    };
+
+    async function postJson(path, body) {
+      const response = await fetch(path, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(body)
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.detail || "Proposal change denied");
+      return payload;
+    }
+
+    function renderProposals(work, approvalPreviews) {
+      const root = document.getElementById("proposal-list");
+      const proposals = Array.isArray(work.proposals) ? work.proposals : [];
+      const previews = Array.isArray(approvalPreviews.items) ? approvalPreviews.items : [];
+      const previewByProposal = new Map(previews.map(item => [item.source_proposal_id, item]));
+      root.replaceChildren();
+      text("proposal-count", proposals.length);
+      if (!proposals.length) {
+        const empty = document.createElement("div"); empty.className = "empty";
+        empty.textContent = "No task proposals exist yet. Run a synthetic helper review to create one.";
+        root.appendChild(empty); return;
+      }
+      proposals.forEach(proposal => {
+        const card = document.createElement("section"); card.className = "proposal-card";
+        const heading = document.createElement("h3");
+        heading.textContent = `${proposal.scenario_id.replaceAll("-", " ")} · ${proposal.state.replaceAll("_", " ")}`;
+        const meta = document.createElement("div"); meta.className = "proposal-meta";
+        meta.textContent = `Revision ${proposal.revision} · ${proposal.priority} priority · ${proposal.issue_fields.length} issue field(s)`;
+        card.append(heading, meta);
+
+        const controls = document.createElement("div"); controls.className = "proposal-controls";
+        const priority = document.createElement("select"); priority.setAttribute("aria-label", "Task priority");
+        (work.proposal_priorities || []).forEach(value => priority.add(new Option(`${value} priority`, value)));
+        priority.value = proposal.priority; priority.disabled = proposal.state !== "draft";
+        controls.appendChild(priority);
+        const selected = new Set(proposal.selected_step_ids || []);
+        const checkboxes = [];
+        (work.proposal_step_ids || []).forEach(stepId => {
+          const label = document.createElement("label"); label.className = "step-choice";
+          const input = document.createElement("input"); input.type = "checkbox";
+          input.value = stepId; input.checked = selected.has(stepId); input.disabled = proposal.state !== "draft";
+          label.append(input, document.createTextNode(stepLabels[stepId] || stepId));
+          controls.appendChild(label); checkboxes.push(input);
+        });
+        card.appendChild(controls);
+
+        const note = document.createElement("div"); note.className = "callout";
+        note.textContent = proposal.state === "accepted_for_future_approval"
+          ? "Accepted for a future approval request only. No approval token exists and Arc has not been dispatched."
+          : "Planning record only. No approval token, worker assignment, Arc dispatch, or external action.";
+        card.appendChild(note);
+        const actions = document.createElement("div"); actions.className = "proposal-actions";
+        const status = document.createElement("div"); status.className = "proposal-message";
+        const change = async (path, body) => {
+          [...actions.querySelectorAll("button")].forEach(button => { button.disabled = true; });
+          status.textContent = "Recording Guardian decision and evidence…";
+          try { await postJson(path, body); await loadState(); }
+          catch (error) { status.textContent = `${error.message}. No work was dispatched.`; [...actions.querySelectorAll("button")].forEach(button => { button.disabled = false; }); }
+        };
+        if (proposal.state === "draft") {
+          actions.append(
+            actionButton("Save draft", () => change("/api/office/proposals/edit", {
+              proposal_id: proposal.proposal_id, expected_revision: proposal.revision,
+              priority: priority.value,
+              selected_step_ids: checkboxes.filter(item => item.checked).map(item => item.value),
+              confirmation: "EDIT SYNTHETIC TASK DRAFT"
+            })),
+            actionButton("Propose for owner decision", () => change("/api/office/proposals/transition", {
+              proposal_id: proposal.proposal_id, expected_revision: proposal.revision,
+              action: "propose", confirmation: "CHANGE SYNTHETIC TASK STATE"
+            }), true),
+            actionButton("Cancel", () => change("/api/office/proposals/transition", {
+              proposal_id: proposal.proposal_id, expected_revision: proposal.revision,
+              action: "cancel", confirmation: "CHANGE SYNTHETIC TASK STATE"
+            }))
+          );
+        } else if (proposal.state === "proposed") {
+          actions.append(
+            actionButton("Accept for future approval", () => change("/api/office/proposals/transition", {
+              proposal_id: proposal.proposal_id, expected_revision: proposal.revision,
+              action: "accept", confirmation: "CHANGE SYNTHETIC TASK STATE"
+            }), true),
+            actionButton("Deny", () => change("/api/office/proposals/transition", {
+              proposal_id: proposal.proposal_id, expected_revision: proposal.revision,
+              action: "deny", confirmation: "CHANGE SYNTHETIC TASK STATE"
+            })),
+            actionButton("Cancel", () => change("/api/office/proposals/transition", {
+              proposal_id: proposal.proposal_id, expected_revision: proposal.revision,
+              action: "cancel", confirmation: "CHANGE SYNTHETIC TASK STATE"
+            }))
+          );
+        } else if (proposal.state === "accepted_for_future_approval") {
+          const existingPreview = previewByProposal.get(proposal.proposal_id);
+          if (!existingPreview && approvalPreviewEnabled) {
+            actions.appendChild(actionButton("Create tokenless approval preview", async () => {
+              [...actions.querySelectorAll("button")].forEach(button => { button.disabled = true; });
+              status.textContent = "Creating a tokenless, non-dispatching preview…";
+              try {
+                await postJson("/api/office/approval-previews/create", {
+                  proposal_id: proposal.proposal_id,
+                  expected_proposal_revision: proposal.revision,
+                  confirmation: "CREATE TOKENLESS APPROVAL PREVIEW"
+                });
+                await loadState();
+                document.querySelector('.nav-button[data-view="approvals"]').click();
+              } catch (error) {
+                status.textContent = `${error.message}. No approval request, token, or dispatch was created.`;
+                [...actions.querySelectorAll("button")].forEach(button => { button.disabled = false; });
+              }
+            }, true));
+          } else if (existingPreview) {
+            status.textContent = `Approval preview exists: ${existingPreview.state.replaceAll("_", " ")}.`;
+          }
+        }
+        card.append(actions, status); root.appendChild(card);
+      });
+    }
+
+    function renderApprovalPreviews(previewState) {
+      const root = document.getElementById("approval-preview-list");
+      const previews = Array.isArray(previewState.items) ? previewState.items : [];
+      root.replaceChildren(); text("approval-preview-count", previews.length);
+      if (!previews.length) {
+        const empty = document.createElement("div"); empty.className = "empty";
+        empty.textContent = "No approval previews exist yet. Create one from an accepted proposal in Work.";
+        root.appendChild(empty); return;
+      }
+      previews.forEach(preview => {
+        const card = document.createElement("section"); card.className = "proposal-card";
+        const heading = document.createElement("h3");
+        heading.textContent = `Tokenless preview · ${preview.state.replaceAll("_", " ")}`;
+        const meta = document.createElement("div"); meta.className = "proposal-meta";
+        meta.textContent = `Revision ${preview.revision} · source proposal revision ${preview.source_proposal_revision} · expires ${preview.preview_expires_at}`;
+        card.append(heading, meta);
+        const scope = preview.preview_scope || {};
+        const scopeRows = [
+          ["Scope", (scope.allowed_operations || []).join(", ") || "None"],
+          ["External effect", scope.external_effect || "none"],
+          ["Identity binding", (preview.approver_requirements || {}).identity_binding_status || "not bound"],
+          ["Token uses", scope.max_uses ?? 0],
+          ["Source current", yesNo(preview.source_current)],
+        ];
+        scopeRows.forEach(([labelText, valueText]) => {
+          const row = document.createElement("div"); row.className = "status-row";
+          const label = document.createElement("strong"); label.textContent = labelText;
+          const value = document.createElement("span"); value.textContent = String(valueText);
+          row.append(label, value); card.appendChild(row);
+        });
+        const note = document.createElement("div"); note.className = "callout"; note.style.marginTop = "12px";
+        note.textContent = preview.expired_for_review
+          ? "The 15-minute review window expired. No approval request or authority was created."
+          : "Preview only: no approval request, result, binding, nonce, replay record, token, worker assignment, or Arc dispatch exists.";
+        card.appendChild(note);
+        const actions = document.createElement("div"); actions.className = "proposal-actions";
+        const status = document.createElement("div"); status.className = "proposal-message";
+        const transition = async action => {
+          [...actions.querySelectorAll("button")].forEach(button => { button.disabled = true; });
+          status.textContent = "Recording Guardian decision and evidence…";
+          try {
+            await postJson("/api/office/approval-previews/transition", {
+              approval_preview_id: preview.approval_preview_id,
+              expected_revision: preview.revision,
+              action,
+              confirmation: "CHANGE TOKENLESS APPROVAL PREVIEW STATE"
+            });
+            await loadState();
+          } catch (error) {
+            status.textContent = `${error.message}. No approval request, token, or dispatch was created.`;
+            [...actions.querySelectorAll("button")].forEach(button => { button.disabled = false; });
+          }
+        };
+        if (preview.state === "preview_ready") {
+          if (preview.review_available) {
+            actions.appendChild(actionButton("Mark reviewed — no authority", () => transition("review"), true));
+          }
+          actions.append(
+            actionButton("Deny preview", () => transition("deny")),
+            actionButton("Withdraw preview", () => transition("withdraw"))
+          );
+        } else if (preview.state === "reviewed_no_authority") {
+          const existingRequest = pendingRequestByPreview.get(preview.approval_preview_id);
+          if (existingRequest) {
+            status.textContent = `Pending request exists: ${existingRequest.approval_request_id}. No approval authority exists.`;
+          } else if (operatorSessionBindingId && !preview.expired_for_review) {
+            actions.appendChild(actionButton("Create pending approval request", async () => {
+              [...actions.querySelectorAll("button")].forEach(button => { button.disabled = true; });
+              status.textContent = "Rechecking Guardian, source revision, session, and fresh intent…";
+              try {
+                await postJson("/api/office/approval-requests/create", {
+                  approval_preview_id: preview.approval_preview_id,
+                  expected_preview_revision: preview.revision,
+                  operator_session_binding_id: operatorSessionBindingId,
+                  confirmation: "CREATE PENDING APPROVAL REQUEST"
+                });
+                await loadState();
+              } catch (error) {
+                status.textContent = `${error.message}. No result, token, binding, or Arc dispatch was created.`;
+                [...actions.querySelectorAll("button")].forEach(button => { button.disabled = false; });
+              }
+            }, true));
+          } else if (!operatorSessionBindingId) {
+            status.textContent = "Bind the attended Windows session above before creating a pending request.";
+          }
+        }
+        card.append(actions, status); root.appendChild(card);
+      });
+    }
+
+    function renderPendingApprovalRequests(requestState) {
+      const root = document.getElementById("pending-approval-request-list");
+      const requests = Array.isArray(requestState.items) ? requestState.items : [];
+      pendingRequestByPreview = new Map(requests.map(item => [item.source_approval_preview_id, item]));
+      root.replaceChildren();
+      if (!requests.length) {
+        const empty = document.createElement("div"); empty.className = "empty";
+        empty.textContent = "No pending approval requests exist yet."; root.appendChild(empty); return;
+      }
+      requests.forEach(request => {
+        const card = document.createElement("section"); card.className = "proposal-card";
+        const heading = document.createElement("h3");
+        heading.textContent = `Approval request · ${request.status.replaceAll("_", " ")}`;
+        const meta = document.createElement("div"); meta.className = "proposal-meta";
+        meta.textContent = `${request.approval_request_id} · expires ${request.expires_at}`;
+        const note = document.createElement("div"); note.className = "callout";
+        note.textContent = request.approval_result_created
+          ? `Terminal ${request.approval_result} result recorded (${request.result_reason_code}). No authority was created.`
+          : request.expired_for_decision
+            ? "The validity window elapsed. Record expiry to close this request; no authority exists."
+            : "Pending attended review. Only deny or cancel is available; positive approval is disabled.";
+        card.append(heading, meta, note);
+        const rows = [
+          ["External effect", request.external_effect || "none"],
+          ["Arc dispatch", request.arc_dispatched ? "yes" : "disabled"],
+          ["Approval token", "not issued"],
+          ["Record hash", request.record_hash || "missing"],
+        ];
+        rows.forEach(([labelText, valueText]) => {
+          const row = document.createElement("div"); row.className = "status-row";
+          const label = document.createElement("strong"); label.textContent = labelText;
+          const value = document.createElement("span"); value.textContent = String(valueText);
+          row.append(label, value); card.appendChild(row);
+        });
+        const actions = document.createElement("div"); actions.className = "proposal-actions";
+        const status = document.createElement("div"); status.className = "proposal-message";
+        const decide = async action => {
+          [...actions.querySelectorAll("button")].forEach(button => { button.disabled = true; });
+          status.textContent = "Rechecking the exact request and recording Guardian evidence…";
+          try {
+            await postJson("/api/office/approval-requests/transition", {
+              approval_request_id: request.approval_request_id,
+              expected_request_hash: request.record_hash,
+              action,
+              operator_session_binding_id: action === "expire" ? null : operatorSessionBindingId,
+              confirmation: "RECORD NON-AUTHORIZING APPROVAL DECISION"
+            });
+            await loadState();
+          } catch (error) {
+            status.textContent = `${error.message}. No approval authority, token, or Arc dispatch was created.`;
+            [...actions.querySelectorAll("button")].forEach(button => { button.disabled = false; });
+          }
+        };
+        if (request.can_deny) actions.appendChild(actionButton("Deny request", () => decide("deny")));
+        if (request.can_cancel) actions.appendChild(actionButton("Cancel my request", () => decide("cancel")));
+        if (request.can_record_expiry) actions.appendChild(actionButton("Record expiry", () => decide("expire"), true));
+        if (request.status === "pending_review" && !actions.children.length) {
+          status.textContent = request.expired_for_decision
+            ? "Reload to enable explicit expiry recording."
+            : "Bind an attended Windows session to deny. Cancellation also requires the original request session.";
+        }
+        card.append(actions, status); root.appendChild(card);
+      });
+    }
+
+    function render(state) {
+      const connected = state.supervisor.connected === true;
+      document.getElementById("supervisor-dot").classList.toggle("good", connected);
+      text("supervisor-label", connected ? "Supervisor connected" : "Supervisor degraded");
+      text("control-plane-status", connected ? "Connected on localhost" : "Unavailable");
+      text("worker-count", state.workers.count);
+      text("worker-summary", state.workers.inventory_refreshed ? "Explicit Supervisor inventory result." : "Inventory has not been refreshed.");
+      text("approval-count", state.work.pending_approval_count + ((state.approval_requests || {}).pending_count || 0));
+      text("approval-count-detail", state.work.pending_approval_count);
+      text("task-count", state.work.task_count);
+      text("training-count", state.training.attempts);
+      text("model-badge", state.model.status.replaceAll("_", " "));
+      text("model-status", state.model.status.replaceAll("_", " "));
+      text("auth-status", state.model.auth_profile_detected ? "Detected" : "Not detected");
+      text("cli-status", state.model.cli_detected ? "Detected" : "Not detected");
+      text("model-detail", state.model.detail);
+      conversationEnabled = state.conversation.enabled === true;
+      text("invocation-status", conversationEnabled ? "Enabled for attended use" : "Unavailable");
+      document.getElementById("supervisor-message").disabled = !conversationEnabled;
+      document.getElementById("send-supervisor").disabled = !conversationEnabled || !document.getElementById("turn-consent").checked;
+      text("build-version", state.build.version);
+      text("build-commit", state.build.arc_commit.slice(0, 12));
+      text("build-modified", yesNo(state.build.source_modified));
+      const approvalProfile = state.approval_profile || {};
+      text("approval-profile-name", approvalProfile.display_name || "Profile A - attended OS session");
+      text("approval-profile-status", approvalProfile.status ? approvalProfile.status.replaceAll("_", " ") : "unavailable");
+      const scope = document.getElementById("helper-scope"); scope.replaceChildren();
+      state.helper.allowed_preview_work.forEach(item => { const li = document.createElement("li"); li.textContent = item.replaceAll("_", " "); scope.appendChild(li); });
+      helperEnabled = state.helper.runtime_enabled === true;
+      text("helper-status", helperEnabled ? "Ready" : "Unavailable");
+      const helperSelect = document.getElementById("helper-scenario");
+      const selected = helperSelect.value;
+      helperSelect.replaceChildren(new Option("Select a synthetic scenario", ""));
+      state.helper.scenarios.forEach(item => helperSelect.add(new Option(item.title, item.scenario_id)));
+      if ([...helperSelect.options].some(option => option.value === selected)) helperSelect.value = selected;
+      helperSelect.disabled = !helperEnabled;
+      document.getElementById("helper-consent").disabled = !helperEnabled;
+      document.getElementById("run-helper").disabled = !helperEnabled || !helperSelect.value || !document.getElementById("helper-consent").checked;
+      proposalEnabled = state.work.proposal_runtime_enabled === true;
+      approvalPreviewEnabled = state.approval_previews.runtime_enabled === true;
+      const session = state.operator_session || {};
+      operatorSessionBindingId = session.active && session.binding ? session.binding.binding_id : null;
+      text("operator-session-status", operatorSessionBindingId ? "Bound for this process" : "Not bound");
+      text("operator-session-assurance", session.binding ? session.binding.assurance_level.replaceAll("_", " ") : "Personal-PC lab only");
+      document.getElementById("bind-operator-session").textContent = operatorSessionBindingId ? "Refresh attended session" : "Bind this Windows session";
+      const proposals = Array.isArray(state.work.proposals) ? state.work.proposals : [];
+      const latestHelperId = state.helper.last_review && state.helper.last_review.helper_result_id;
+      lastHelperResultId = latestHelperId && !proposals.some(item => item.source_helper_result_id === latestHelperId) ? latestHelperId : null;
+      document.getElementById("create-proposal").disabled = !proposalEnabled || !lastHelperResultId;
+      renderProposals(state.work, state.approval_previews);
+      renderPendingApprovalRequests(state.approval_requests || {});
+      renderApprovalPreviews(state.approval_previews);
+      renderWorkers(state.workers); renderEvidence(state.evidence);
+    }
+
+    function renderHelperResult(payload) {
+      const root = document.getElementById("helper-result"); root.replaceChildren();
+      const heading = document.createElement("strong");
+      heading.textContent = payload.disposition === "needs_human_input" ? "Human input required" : "Ready for owner review";
+      root.appendChild(heading);
+      const findings = Array.isArray(payload.findings) ? payload.findings : [];
+      const recommendations = Array.isArray(payload.recommendations) ? payload.recommendations : [];
+      const summary = document.createElement("div");
+      summary.textContent = findings.length ? `${findings.length} field issue(s) found.` : "No fixed-field issues found; human review is still required.";
+      root.appendChild(summary);
+      const list = document.createElement("ul"); list.className = "scope-list";
+      recommendations.forEach(value => { const item = document.createElement("li"); item.textContent = value; list.appendChild(item); });
+      root.appendChild(list);
+      const meta = document.createElement("div"); meta.className = "turn-meta";
+      meta.textContent = `Guardian ${payload.guardian_decision_id} · Evidence ${payload.post_action_evidence_ref} · No Arc dispatch`;
+      root.appendChild(meta);
+    }
+
+    async function loadState() {
+      const response = await fetch("/api/office/state", {cache: "no-store"});
+      if (!response.ok) throw new Error("state unavailable");
+      render(await response.json());
+    }
+
+    function appendMessage(role, value, metadata = "") {
+      const history = document.getElementById("chat-history");
+      const message = document.createElement("div");
+      message.className = `message${role === "Business owner" ? " owner" : ""}`;
+      const heading = document.createElement("strong"); heading.textContent = role;
+      const body = document.createElement("div"); body.textContent = value;
+      message.append(heading, body);
+      if (metadata) { const meta = document.createElement("div"); meta.className = "turn-meta"; meta.textContent = metadata; message.appendChild(meta); }
+      history.appendChild(message);
+    }
+
+    document.getElementById("turn-consent").addEventListener("change", event => {
+      document.getElementById("send-supervisor").disabled = !conversationEnabled || !event.currentTarget.checked;
+    });
+    const updateHelperButton = () => {
+      document.getElementById("run-helper").disabled = !helperEnabled || !document.getElementById("helper-scenario").value || !document.getElementById("helper-consent").checked;
+    };
+    document.getElementById("helper-scenario").addEventListener("change", updateHelperButton);
+    document.getElementById("helper-consent").addEventListener("change", updateHelperButton);
+    document.getElementById("run-helper").addEventListener("click", async event => {
+      const button = event.currentTarget;
+      const select = document.getElementById("helper-scenario");
+      const consent = document.getElementById("helper-consent");
+      if (!helperEnabled || !select.value || !consent.checked) return;
+      button.disabled = true; button.textContent = "Reviewing…"; select.disabled = true; consent.disabled = true;
+      try {
+        const response = await fetch("/api/office/helper/review", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({scenario_id: select.value, confirmation: "RUN SYNTHETIC HELPER REVIEW"})
+        });
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.detail || "Helper review denied");
+        renderHelperResult(payload); lastHelperResultId = payload.helper_result_id;
+        document.getElementById("create-proposal").disabled = !proposalEnabled;
+        consent.checked = false;
+        await loadState();
+      } catch (error) {
+        text("helper-result", `${error.message || "Helper review failed closed."} No work was dispatched.`);
+      } finally {
+        select.disabled = !helperEnabled; consent.disabled = !helperEnabled; button.textContent = "Run helper review"; updateHelperButton();
+      }
+    });
+    document.getElementById("create-proposal").addEventListener("click", async event => {
+      const button = event.currentTarget;
+      if (!proposalEnabled || !lastHelperResultId) return;
+      button.disabled = true; button.textContent = "Creating draft…";
+      try {
+        await postJson("/api/office/proposals/create", {
+          helper_result_id: lastHelperResultId,
+          confirmation: "CREATE SYNTHETIC TASK DRAFT"
+        });
+        lastHelperResultId = null;
+        await loadState();
+        document.querySelector('.nav-button[data-view="work"]').click();
+      } catch (error) {
+        text("helper-result", `${error.message}. No work was dispatched.`);
+      } finally {
+        button.textContent = "Create task draft from this review";
+        button.disabled = !proposalEnabled || !lastHelperResultId;
+      }
+    });
+    document.getElementById("send-supervisor").addEventListener("click", async event => {
+      const button = event.currentTarget;
+      const input = document.getElementById("supervisor-message");
+      const consent = document.getElementById("turn-consent");
+      const message = input.value.trim();
+      if (!message || !consent.checked || !conversationEnabled) return;
+      appendMessage("Business owner", message, "Sent as non-sensitive internal text");
+      button.disabled = true; button.textContent = "Supervisor thinking…"; input.disabled = true;
+      try {
+        const response = await fetch("/api/office/conversation", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({message, confirmation: "READ-ONLY SUPERVISOR TURN", data_classification: "internal"})
+        });
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.detail || "Supervisor turn denied");
+        appendMessage("LIMA Supervisor", payload.response_text, `Guardian ${payload.guardian_decision_id} · Evidence ${payload.post_action_evidence_ref}`);
+        input.value = ""; consent.checked = false;
+        await loadState();
+      } catch (error) {
+        appendMessage("LIMA Supervisor", error.message || "Supervisor turn failed closed.", "No work was dispatched");
+      } finally {
+        input.disabled = !conversationEnabled; button.textContent = "Send";
+        button.disabled = !conversationEnabled || !consent.checked;
+      }
+    });
+
+    document.getElementById("reload-state").addEventListener("click", () => loadState().catch(() => text("supervisor-label", "State unavailable")));
+    document.getElementById("bind-operator-session").addEventListener("click", async event => {
+      const button = event.currentTarget; button.disabled = true;
+      text("operator-session-message", "Recording Guardian-gated process binding…");
+      try {
+        await postJson("/api/office/operator-session/bind", {
+          confirmation: "BIND ATTENDED LOCAL OPERATOR SESSION"
+        });
+        text("operator-session-message", "Bound. This is lab assurance only, not an approval.");
+        await loadState();
+      } catch (error) {
+        text("operator-session-message", `${error.message}. No approval authority was created.`);
+      } finally { button.disabled = false; }
+    });
+    document.getElementById("refresh-workers").addEventListener("click", async event => {
+      const button = event.currentTarget; button.disabled = true; button.textContent = "Refreshing…";
+      try {
+        const response = await fetch("/api/office/workers", {method: "POST", headers: {"Content-Type": "application/json"}, body: "{}"});
+        if (!response.ok) throw new Error("worker refresh denied");
+        await loadState();
+      } catch (_) { document.getElementById("workers-empty").textContent = "Worker refresh was denied or unavailable."; }
+      finally { button.disabled = false; button.textContent = "Refresh workers"; }
+    });
+    loadState().catch(() => text("supervisor-label", "State unavailable"));
+  </script>
+</body>
+</html>

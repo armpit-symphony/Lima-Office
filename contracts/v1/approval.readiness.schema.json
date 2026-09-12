@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/approval.readiness.schema.json",
+  "title": "Positive Approval Readiness Assessment Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name", "contract_version", "schema_version", "taxonomy_version",
+    "tenant_id", "customer_context_id", "environment", "correlation_id",
+    "causation_id", "idempotency_key", "producer", "policy_version",
+    "assessment_id", "assessment_mode", "target_action_class", "status",
+    "selected_identity_profile", "selected_separation_profile",
+    "required_contract_refs", "sparkbot_reference_refs", "control_posture",
+    "owner_decision_required", "owner_decision_options", "reason_codes",
+    "design_complete", "implementation_authorized", "approval_result_issuance_enabled",
+    "approval_token_issuance_enabled", "approval_binding_enabled",
+    "token_verification_enabled", "replay_consumption_enabled",
+    "worker_assignment_enabled", "arc_dispatch_enabled", "external_effects_enabled",
+    "evidence_refs", "assessed_at"
+  ],
+  "properties": {
+    "contract_name": {"type": "string", "const": "approval.readiness"},
+    "contract_version": {"type": "string", "const": "1.0.0"},
+    "schema_version": {"type": "string", "const": "1.0.0"},
+    "taxonomy_version": {"type": "string", "minLength": 1},
+    "tenant_id": {"type": "string", "minLength": 1},
+    "customer_context_id": {"type": "string", "minLength": 1},
+    "environment": {"type": "string", "const": "phase0_lab"},
+    "correlation_id": {"type": "string", "minLength": 1},
+    "causation_id": {"type": ["string", "null"]},
+    "idempotency_key": {"type": "string", "minLength": 1},
+    "producer": {
+      "type": "object", "additionalProperties": false,
+      "required": ["component", "produced_at"],
+      "properties": {
+        "component": {"type": "string", "const": "supervisor"},
+        "produced_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "policy_version": {"type": "string", "minLength": 1},
+    "assessment_id": {"type": "string", "minLength": 1},
+    "assessment_mode": {"type": "string", "const": "design_only"},
+    "target_action_class": {
+      "type": "string", "const": "synthetic_form_preparation_review"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "blocked_owner_decision", "blocked_controls_missing",
+        "ready_for_implementation_review"
+      ]
+    },
+    "selected_identity_profile": {
+      "type": ["string", "null"],
+      "enum": [
+        "attended_os_session_lab_only", "windows_hello_or_passkey_step_up",
+        "oidc_phishing_resistant_mfa", null
+      ]
+    },
+    "selected_separation_profile": {
+      "type": ["string", "null"],
+      "enum": [
+        "single_owner_low_risk_exception", "distinct_human_approver", null
+      ]
+    },
+    "required_contract_refs": {
+      "type": "array", "minItems": 8, "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "sparkbot_reference_refs": {
+      "type": "array", "minItems": 3, "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "control_posture": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "named_human_identity_selected", "step_up_authenticator_selected",
+        "session_ttl_selected", "device_binding_selected", "rbac_mapping_complete",
+        "separation_policy_selected", "scope_narrowing_defined",
+        "atomic_issuance_defined", "single_use_consumption_defined",
+        "durable_replay_store_defined", "evidence_failure_fails_closed",
+        "secret_redaction_required", "policy_recheck_before_execution"
+      ],
+      "properties": {
+        "named_human_identity_selected": {"type": "boolean"},
+        "step_up_authenticator_selected": {"type": "boolean"},
+        "session_ttl_selected": {"type": "boolean"},
+        "device_binding_selected": {"type": "boolean"},
+        "rbac_mapping_complete": {"type": "boolean"},
+        "separation_policy_selected": {"type": "boolean"},
+        "scope_narrowing_defined": {"type": "boolean"},
+        "atomic_issuance_defined": {"type": "boolean"},
+        "single_use_consumption_defined": {"type": "boolean"},
+        "durable_replay_store_defined": {"type": "boolean"},
+        "evidence_failure_fails_closed": {"type": "boolean", "const": true},
+        "secret_redaction_required": {"type": "boolean", "const": true},
+        "policy_recheck_before_execution": {"type": "boolean", "const": true}
+      }
+    },
+    "owner_decision_required": {"type": "boolean"},
+    "owner_decision_options": {
+      "type": "array", "minItems": 3, "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "lab_only_os_session_and_single_owner_exception",
+          "windows_hello_or_passkey_and_single_owner_exception",
+          "oidc_mfa_and_distinct_approver"
+        ]
+      }
+    },
+    "reason_codes": {
+      "type": "array", "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "mfa_required", "role_not_permitted", "sod_required",
+          "session_revoked", "device_untrusted", "missing_evidence",
+          "privileged_action_blocked"
+        ]
+      }
+    },
+    "design_complete": {"type": "boolean"},
+    "implementation_authorized": {"type": "boolean", "const": false},
+    "approval_result_issuance_enabled": {"type": "boolean", "const": false},
+    "approval_token_issuance_enabled": {"type": "boolean", "const": false},
+    "approval_binding_enabled": {"type": "boolean", "const": false},
+    "token_verification_enabled": {"type": "boolean", "const": false},
+    "replay_consumption_enabled": {"type": "boolean", "const": false},
+    "worker_assignment_enabled": {"type": "boolean", "const": false},
+    "arc_dispatch_enabled": {"type": "boolean", "const": false},
+    "external_effects_enabled": {"type": "boolean", "const": false},
+    "evidence_refs": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "assessed_at": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "blocked_owner_decision"}}, "required": ["status"]},
+      "then": {
+        "properties": {
+          "selected_identity_profile": {"const": null},
+          "selected_separation_profile": {"const": null},
+          "owner_decision_required": {"const": true},
+          "reason_codes": {"minItems": 1},
+          "design_complete": {"const": false}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"status": {"const": "blocked_controls_missing"}}, "required": ["status"]},
+      "then": {
+        "properties": {
+          "selected_identity_profile": {"type": "string"},
+          "selected_separation_profile": {"type": "string"},
+          "owner_decision_required": {"const": false},
+          "reason_codes": {"minItems": 1},
+          "design_complete": {"const": false}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"status": {"const": "ready_for_implementation_review"}}, "required": ["status"]},
+      "then": {
+        "properties": {
+          "selected_identity_profile": {"type": "string"},
+          "selected_separation_profile": {"type": "string"},
+          "owner_decision_required": {"const": false},
+          "reason_codes": {"maxItems": 0},
+          "design_complete": {"const": true},
+          "control_posture": {
+            "properties": {
+              "named_human_identity_selected": {"const": true},
+              "step_up_authenticator_selected": {"const": true},
+              "session_ttl_selected": {"const": true},
+              "device_binding_selected": {"const": true},
+              "rbac_mapping_complete": {"const": true},
+              "separation_policy_selected": {"const": true},
+              "scope_narrowing_defined": {"const": true},
+              "atomic_issuance_defined": {"const": true},
+              "single_use_consumption_defined": {"const": true},
+              "durable_replay_store_defined": {"const": true}
+            }
+          }
+        }
+      }
+    }
+  ]
+}

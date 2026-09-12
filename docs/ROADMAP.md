@@ -58,13 +58,49 @@
 
 ### Deliverables
 
-Current lab implementation status (2026-09-06): the attended localhost preview
+Current lab implementation status (2026-09-07): the attended localhost preview
 runs one Supervisor and one Arc worker as real child processes. Arc now exposes
 an explicit operator-triggered Supervisor inventory refresh and a separately
 authorized redacted evidence-trace read. Both use the existing signed operator
 channel, Guardian and LIMA gates, durable Supervisor evidence, and fail-closed
 client validation. There is no automatic dashboard polling, connector access,
 external submission, or task-execution authority in this surface.
+
+The same attended process now serves a separate business-owner console at
+`/office`. It displays redacted Supervisor, Arc worker, approval, training,
+evidence, build, and Codex subscription-readiness status. The lab.6 source now
+adds one explicit, Guardian-gated, evidenced, read-only and ephemeral Supervisor
+text turn through the saved ChatGPT/Codex session. The same attended process now
+also runs one deterministic `office_operations_helper` for explicitly requested
+reviews of the five fixed synthetic registration scenarios. The helper produces
+findings, recommendations, and proposed task steps without model calls, tools,
+memory, approvals, Arc dispatch, connector action, submission, or external
+business side effects. The Supervisor can now turn the current in-process helper
+result into a durable structured proposal, edit only fixed priority/steps, and
+record propose, accept-for-future-approval, deny, or cancel decisions. Revision
+checks and atomic proposal/completion-evidence commits are implemented. No
+approval token, worker assignment, Arc dispatch, or external effect is enabled.
+A separate tokenless approval-preview is now implemented. It binds the exact
+accepted proposal revision/hash, shows scope, expiry, prohibited operations,
+future identity/fresh-intent requirements, and supports reviewed-no-authority,
+deny, and withdraw outcomes. It creates no real approval request/result,
+binding, replay record, token, worker assignment, or Arc dispatch. Verified
+operator session binding and creation of a real pending approval request are now
+implemented for the synthetic form-review lane. The binding is pseudonymous,
+localhost/process-bound, expires after 30 minutes, survives no restart, collects
+no PIN/password, and explicitly does not claim production identity assurance.
+The resulting `approval.request` is durable and fixed at `pending_review` with
+external effect `none`, zero uses, and no approval token, execution binding,
+replay record, worker assignment, or Arc dispatch. Durable non-authorizing
+`denied`, `cancelled`, and explicitly recorded `expired` results are now
+implemented with exact-record checks and atomic request/result/evidence commits.
+The positive-approval readiness assessment contract and decision brief are now
+implemented. Profile A, `attended_os_session_lab_only`, is selected temporarily
+for whole-system synthetic testing with the low-risk single-owner exception.
+The assessment is `blocked_controls_missing`: positive approval, approval
+results, tokens, execution bindings, replay consumption, worker assignment,
+Arc dispatch, and external effects remain disabled. Profile B or C and its
+threat review are required before customer or production use.
 
 - Phase 1A mock runtime scaffold for contract loading and validation.
 - In-memory mock worker registry, heartbeat intake, task queue, Guardian decisions, and evidence writer.

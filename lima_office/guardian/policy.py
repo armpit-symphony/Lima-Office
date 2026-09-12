@@ -26,6 +26,13 @@ ALLOWED_MOCK_ACTIONS = {
     "mock_form_submission",
     "read_only_diagnostic",
 }
+ALLOWED_ATTENDED_LAB_ACTIONS = {
+    "helper_synthetic_review",
+    "model_subscription_readonly",
+    "office_task_proposal_manage",
+    "office_approval_preview_manage",
+    "operator_session_bind",
+}
 
 BAD_TOKEN_STATES = {"expired", "revoked", "used", "replayed", "missing", "mismatched", "wrong_scope", "ambiguous"}
 BLOCKED_SCHEMA_ACTION_CLASSES = {
@@ -67,6 +74,64 @@ class GuardianPolicy:
                 customer_context_id=context.get("customer_context_id", "customer-context-main"),
                 context=context,
             )
+        if action in ALLOWED_ATTENDED_LAB_ACTIONS and self._is_attended_model_context(context):
+            return build_guardian_decision(
+                action=action,
+                decision="allow_with_evidence",
+                reason=None,
+                tenant_id=context.get("tenant_id", "tenant-lab-001"),
+                customer_context_id=context.get("customer_context_id", "customer-context-main"),
+                context=context,
+            )
+        if action == "helper_synthetic_review" and self._is_attended_helper_context(context):
+            return build_guardian_decision(
+                action=action,
+                decision="allow_with_evidence",
+                reason=None,
+                tenant_id=context.get("tenant_id", "tenant-lab-001"),
+                customer_context_id=context.get("customer_context_id", "customer-context-main"),
+                context=context,
+            )
+        if action == "office_task_proposal_manage" and self._is_attended_proposal_context(context):
+            return build_guardian_decision(
+                action=action,
+                decision="allow_with_evidence",
+                reason=None,
+                tenant_id=context.get("tenant_id", "tenant-lab-001"),
+                customer_context_id=context.get("customer_context_id", "customer-context-main"),
+                context=context,
+            )
+        if action == "office_approval_preview_manage" and self._is_attended_approval_preview_context(context):
+            return build_guardian_decision(
+                action=action,
+                decision="allow_with_evidence",
+                reason=None,
+                tenant_id=context.get("tenant_id", "tenant-lab-001"),
+                customer_context_id=context.get("customer_context_id", "customer-context-main"),
+                context=context,
+            )
+        if action == "operator_session_bind" and self._is_attended_operator_session_context(context):
+            return build_guardian_decision(
+                action=action, decision="allow_with_evidence", reason=None,
+                tenant_id=context.get("tenant_id", "tenant-lab-001"),
+                customer_context_id=context.get("customer_context_id", "customer-context-main"),
+                context=context,
+            )
+        if action == "office_pending_approval_request_create" and self._is_pending_approval_request_context(context):
+            return build_guardian_decision(
+                action=action, decision="requires_approval", reason=None,
+                tenant_id=context.get("tenant_id", "tenant-lab-001"),
+                customer_context_id=context.get("customer_context_id", "customer-context-main"),
+                context=context,
+            )
+        if (action == "office_non_authorizing_approval_decision"
+                and self._is_non_authorizing_approval_decision_context(context)):
+            return build_guardian_decision(
+                action=action, decision="allow_with_evidence", reason=None,
+                tenant_id=context.get("tenant_id", "tenant-lab-001"),
+                customer_context_id=context.get("customer_context_id", "customer-context-main"),
+                context=context,
+            )
 
         return build_guardian_decision(
             action=action,
@@ -86,6 +151,27 @@ class GuardianPolicy:
         return decision
 
     def _deny_reason(self, action: str, context: dict[str, Any]) -> str | None:
+        if action == "model_subscription_readonly":
+            if not self._is_attended_model_context(context):
+                return "Read-only subscription model use did not satisfy the attended lab policy."
+        if action == "helper_synthetic_review":
+            if not self._is_attended_helper_context(context):
+                return "Office helper review did not satisfy the synthetic attended lab policy."
+        if action == "office_task_proposal_manage":
+            if not self._is_attended_proposal_context(context):
+                return "Task proposal change did not satisfy the synthetic attended lab policy."
+        if action == "office_approval_preview_manage":
+            if not self._is_attended_approval_preview_context(context):
+                return "Approval preview change did not satisfy the tokenless attended lab policy."
+        if action == "operator_session_bind":
+            if not self._is_attended_operator_session_context(context):
+                return "Operator session binding did not satisfy the attended localhost lab policy."
+        if action == "office_pending_approval_request_create":
+            if not self._is_pending_approval_request_context(context):
+                return "Pending approval request did not satisfy the attended request-only policy."
+        if action == "office_non_authorizing_approval_decision":
+            if not self._is_non_authorizing_approval_decision_context(context):
+                return "Approval decision did not satisfy the non-authorizing lab policy."
         if action == "lab_support":
             if context.get("scope") != "synthetic_registration_history" or context.get("preserve_sops") is not True:
                 return "Lab support requires a bounded scope and preserved SOPs."
@@ -118,9 +204,241 @@ class GuardianPolicy:
             return DENIED_ACTIONS["unrestricted_tool"]
         if context.get("evidence_required") and not context.get("evidence_artifact_ids"):
             return "Evidence-required action has no evidence reference."
-        if context.get("approval_required") and not self._token_verification_allows(context):
+        if (
+            action != "office_pending_approval_request_create"
+            and context.get("approval_required")
+            and not self._token_verification_allows(context)
+        ):
             return DENIED_ACTIONS["missing_approval_token"]
         return None
+
+    @staticmethod
+    def _is_attended_operator_session_context(context: dict[str, Any]) -> bool:
+        return all((
+            bool(context.get("tenant_id")), bool(context.get("customer_context_id")),
+            context.get("execution_mode") == "identity_metadata_only",
+            context.get("external_effect") == "none", context.get("evidence_required") is True,
+            bool(context.get("evidence_artifact_ids")), context.get("attended") is True,
+            context.get("operator_confirmation") is True,
+            context.get("local_loopback_only") is True, context.get("process_bound") is True,
+            context.get("raw_os_username_stored") is False,
+            context.get("credentials_collected") is False,
+            context.get("production_identity_verified") is False,
+            context.get("approval_authority") is False,
+            context.get("approval_result_allowed") is False,
+            context.get("approval_token_access_allowed") is False,
+            context.get("arc_dispatch_allowed") is False,
+            context.get("connector_access_allowed") is False,
+            context.get("submission_allowed") is False,
+            context.get("approval_required") is False,
+        ))
+
+    @staticmethod
+    def _is_non_authorizing_approval_decision_context(context: dict[str, Any]) -> bool:
+        operation = context.get("operation")
+        session_ok = (
+            operation in {"deny", "cancel"}
+            and context.get("attended") is True
+            and context.get("operator_session_active") is True
+            and bool(context.get("operator_session_binding_id"))
+            and context.get("request_expired") is False
+        ) or (
+            operation == "expire"
+            and context.get("attended") is False
+            and context.get("operator_session_active") is False
+            and context.get("operator_session_binding_id") is None
+            and context.get("request_expired") is True
+        )
+        return all((
+            bool(context.get("tenant_id")), bool(context.get("customer_context_id")),
+            bool(context.get("approval_request_id")),
+            context.get("execution_mode") == "decision_metadata_only",
+            context.get("external_effect") == "none",
+            context.get("evidence_required") is True,
+            bool(context.get("evidence_artifact_ids")),
+            context.get("operator_confirmation") is True,
+            context.get("fresh_intent") is True,
+            operation in {"deny", "cancel", "expire"},
+            context.get("result") in {"denied", "cancelled", "expired"},
+            context.get("non_authorizing") is True,
+            context.get("request_pending") is True,
+            context.get("synthetic_data_only") is True,
+            context.get("approval_result_created") is True,
+            context.get("approval_token_access_allowed") is False,
+            context.get("approval_binding_allowed") is False,
+            context.get("token_verification_allowed") is False,
+            context.get("replay_record_allowed") is False,
+            context.get("model_call_allowed") is False,
+            context.get("tool_execution_allowed") is False,
+            context.get("arc_dispatch_allowed") is False,
+            context.get("connector_access_allowed") is False,
+            context.get("submission_allowed") is False,
+            context.get("external_side_effects") is False,
+            context.get("approval_required") is False,
+            session_ok,
+            not context.get("connector_live_access"),
+            not context.get("cross_tenant_access"),
+            not context.get("unrestricted_tool"),
+        ))
+
+    @staticmethod
+    def _is_pending_approval_request_context(context: dict[str, Any]) -> bool:
+        return all((
+            bool(context.get("tenant_id")), bool(context.get("customer_context_id")),
+            bool(context.get("approval_request_id")),
+            context.get("execution_mode") == "request_metadata_only",
+            context.get("external_effect") == "none", context.get("evidence_required") is True,
+            bool(context.get("evidence_artifact_ids")), context.get("attended") is True,
+            context.get("operator_confirmation") is True,
+            context.get("operator_session_active") is True,
+            bool(context.get("operator_session_binding_id")),
+            context.get("production_identity_verified") is False,
+            context.get("fresh_intent") is True,
+            context.get("preview_reviewed_no_authority") is True,
+            context.get("source_current") is True,
+            context.get("synthetic_data_only") is True,
+            context.get("free_form_content_allowed") is False,
+            context.get("request_only") is True,
+            context.get("approval_result_allowed") is False,
+            context.get("approval_token_access_allowed") is False,
+            context.get("approval_binding_allowed") is False,
+            context.get("token_verification_allowed") is False,
+            context.get("replay_record_allowed") is False,
+            context.get("model_call_allowed") is False,
+            context.get("tool_execution_allowed") is False,
+            context.get("arc_dispatch_allowed") is False,
+            context.get("connector_access_allowed") is False,
+            context.get("submission_allowed") is False,
+            context.get("external_side_effects") is False,
+            context.get("approval_required") is True,
+            not context.get("connector_live_access"), not context.get("cross_tenant_access"),
+            not context.get("unrestricted_tool"),
+        ))
+
+    @staticmethod
+    def _is_attended_approval_preview_context(context: dict[str, Any]) -> bool:
+        return all(
+            (
+                bool(context.get("tenant_id")),
+                bool(context.get("customer_context_id")),
+                context.get("execution_mode") == "plan_only",
+                context.get("external_effect") == "none",
+                context.get("evidence_required") is True,
+                bool(context.get("evidence_artifact_ids")),
+                context.get("attended") is True,
+                context.get("operator_confirmation") is True,
+                context.get("operation") in {"create", "review", "deny", "withdraw"},
+                context.get("data_classification") == "synthetic_fixture_only",
+                context.get("synthetic_data_only") is True,
+                context.get("free_form_content_allowed") is False,
+                context.get("preview_only") is True,
+                context.get("real_approval_request_allowed") is False,
+                context.get("approval_result_allowed") is False,
+                context.get("approval_token_access_allowed") is False,
+                context.get("approval_binding_allowed") is False,
+                context.get("token_verification_allowed") is False,
+                context.get("replay_record_allowed") is False,
+                context.get("model_call_allowed") is False,
+                context.get("tool_execution_allowed") is False,
+                context.get("arc_dispatch_allowed") is False,
+                context.get("connector_access_allowed") is False,
+                context.get("submission_allowed") is False,
+                context.get("approval_required") is False,
+                not context.get("connector_live_access"),
+                not context.get("cross_tenant_access"),
+                not context.get("unrestricted_tool"),
+            )
+        )
+
+    @staticmethod
+    def _is_attended_proposal_context(context: dict[str, Any]) -> bool:
+        return all(
+            (
+                bool(context.get("tenant_id")),
+                bool(context.get("customer_context_id")),
+                context.get("execution_mode") == "plan_only",
+                context.get("external_effect") == "none",
+                context.get("evidence_required") is True,
+                bool(context.get("evidence_artifact_ids")),
+                context.get("attended") is True,
+                context.get("operator_confirmation") is True,
+                context.get("operation") in {"create", "edit", "propose", "accept", "deny", "cancel"},
+                context.get("data_classification") == "synthetic_fixture_only",
+                context.get("synthetic_data_only") is True,
+                context.get("free_form_content_allowed") is False,
+                context.get("model_call_allowed") is False,
+                context.get("tool_execution_allowed") is False,
+                context.get("approval_token_access_allowed") is False,
+                context.get("arc_dispatch_allowed") is False,
+                context.get("connector_access_allowed") is False,
+                context.get("submission_allowed") is False,
+                context.get("approval_required") is False,
+                not context.get("connector_live_access"),
+                not context.get("cross_tenant_access"),
+                not context.get("unrestricted_tool"),
+            )
+        )
+
+    @staticmethod
+    def _is_attended_helper_context(context: dict[str, Any]) -> bool:
+        return all(
+            (
+                bool(context.get("tenant_id")),
+                bool(context.get("customer_context_id")),
+                context.get("execution_mode") == "plan_only",
+                context.get("external_effect") == "none",
+                context.get("evidence_required") is True,
+                bool(context.get("evidence_artifact_ids")),
+                context.get("attended") is True,
+                context.get("operator_confirmation") is True,
+                context.get("helper_role") == "office_operations_helper",
+                context.get("review_type") == "registration_sop_review",
+                context.get("data_classification") == "synthetic_fixture_only",
+                context.get("synthetic_data_only") is True,
+                context.get("deterministic_review") is True,
+                context.get("model_call_allowed") is False,
+                context.get("tool_execution_allowed") is False,
+                context.get("memory_access_allowed") is False,
+                context.get("approval_token_access_allowed") is False,
+                context.get("arc_dispatch_allowed") is False,
+                context.get("connector_access_allowed") is False,
+                context.get("submission_allowed") is False,
+                context.get("approval_required") is False,
+                not context.get("connector_live_access"),
+                not context.get("cross_tenant_access"),
+                not context.get("unrestricted_tool"),
+            )
+        )
+
+    @staticmethod
+    def _is_attended_model_context(context: dict[str, Any]) -> bool:
+        return all(
+            (
+                bool(context.get("tenant_id")),
+                bool(context.get("customer_context_id")),
+                context.get("execution_mode") == "read_only",
+                context.get("external_effect") == "none",
+                context.get("evidence_required") is True,
+                bool(context.get("evidence_artifact_ids")),
+                context.get("attended") is True,
+                context.get("operator_confirmation") is True,
+                context.get("provider") == "openai_codex_subscription",
+                context.get("auth_method") == "saved_chatgpt_cli_session",
+                context.get("sandbox_mode") == "read_only",
+                context.get("session_persistence") == "ephemeral",
+                context.get("tools_enabled") is False,
+                context.get("web_search_enabled") is False,
+                context.get("user_config_loaded") is False,
+                context.get("rules_loaded") is False,
+                context.get("fallback_allowed") is False,
+                context.get("data_classification") in {"public", "internal"},
+                context.get("taint_status") == "clean",
+                context.get("approval_required") is False,
+                not context.get("connector_live_access"),
+                not context.get("cross_tenant_access"),
+                not context.get("unrestricted_tool"),
+            )
+        )
 
     @staticmethod
     def _is_mock_read_only_context(context: dict[str, Any]) -> bool:

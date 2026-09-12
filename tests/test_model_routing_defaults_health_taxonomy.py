@@ -38,6 +38,39 @@ class ModelRoutingDefaultsHealthTaxonomyTests(unittest.TestCase):
             "model.route",
         )
         self.validator.validate(example("model.route.local-planned-degraded.example.json"), "model.route")
+        self.validator.validate(
+            example("model.route.subscription-lab-readonly-selected.example.json"),
+            "model.route",
+        )
+
+    def test_subscription_lab_readonly_allows_only_the_model_call(self):
+        payload = copy.deepcopy(
+            example("model.route.subscription-lab-readonly-selected.example.json")
+        )
+        result = classify_model_route(payload)
+        self.assertTrue(result["model_call_allowed"])
+        self.assertFalse(result["can_authorize"])
+        self.assertFalse(result["blocked"])
+
+    def test_subscription_lab_readonly_rejects_tool_or_sensitive_expansion(self):
+        for mutation in (
+            lambda payload: payload["provider_ref"].update({"tools_enabled": True}),
+            lambda payload: payload.update({"data_class": "customer_confidential"}),
+            lambda payload: payload.update({"taint_status": "suspected"}),
+            lambda payload: payload.update(
+                {
+                    "fallback_allowed": True,
+                    "fallback_policy": "unsafe",
+                    "fallback_reason_codes": ["health_degraded"],
+                }
+            ),
+        ):
+            payload = copy.deepcopy(
+                example("model.route.subscription-lab-readonly-selected.example.json")
+            )
+            mutation(payload)
+            with self.subTest(payload=payload), self.assertRaises(PolicyDenyError):
+                classify_model_route(payload)
 
     def test_supervisor_health_model_route_example_validates(self):
         self.validator.validate(

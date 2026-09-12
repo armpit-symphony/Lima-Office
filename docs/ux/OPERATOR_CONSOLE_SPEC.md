@@ -8,7 +8,22 @@ approval requests, evidence, incidents, deployment posture, governance posture,
 connector readiness, and LIMA IT handoffs understandable to a small-business
 operator or SparkPit field operator.
 
-This is a specification only. It does not implement UI code or runtime controls.
+The complete control-room surface remains a specification. A narrow attended
+localhost business-owner foundation is implemented at `/office`; it is a
+redacted status projection and does not implement runtime authority or live
+business actions.
+
+## Business-Owner View
+
+The business-owner view uses a simpler navigation model than the field/admin
+control room: Today, Supervisor, Work, Approvals, Arc Workers, Evidence, and
+Settings. It is intended to make the current lab understandable without
+exposing raw evidence payloads, credentials, or low-level operator controls.
+
+In the foundation slice, Supervisor chat is visibly disabled, helper scope is
+shown as planned, worker refresh is explicit, and all dispatch and external
+side effects remain blocked. The detailed navigation below remains the target
+for the future approval-capable operator/admin surface.
 
 ## Target Users
 
@@ -115,7 +130,8 @@ The console must label these as blocked:
 - Live connectors, OAuth/provider wiring, connector tokens, webhooks, live reads,
   or live writes.
 - External email/text/chat sends or form submissions.
-- External model provider calls.
+- External model provider calls except the explicitly approved attended,
+  read-only and ephemeral Supervisor conversation turn.
 - Browser automation.
 - Remediation execution, endpoint control, network changes, software
   install/update execution, or production server touch.
@@ -123,6 +139,38 @@ The console must label these as blocked:
   production operations.
 - Breakglass runtime behavior.
 - Cross-tenant memory sharing.
+
+The implemented Office Helper surface must label its review as deterministic
+and synthetic-only, require explicit confirmation, expose Guardian/evidence
+IDs, and state that no AI model, tool, approval, submission, or Arc dispatch
+ran. It is the only helper runtime exception in this lab slice.
+
+The implemented Work view may render durable synthetic task proposals and allow
+only fixed priority and step selection. It must distinguish `proposed` from
+`accepted_for_future_approval` and state beside every proposal that acceptance
+does not issue an approval token, assign a worker, dispatch Arc, or permit an
+external action. Proposal changes are foreground actions; the view must not
+poll or transition work automatically.
+
+The implemented Approvals view may create one preview from an exact accepted
+proposal and show its allowed plan-review operation, prohibited execution
+operations, source-current status, future identity requirements, zero token
+uses, and 15-minute review window. **Mark reviewed** must be labeled
+`no authority`; deny and withdraw are terminal preview outcomes. The UI must
+never describe a preview as an approval request/result or imply that a token,
+binding, replay record, worker assignment, Arc dispatch, or external effect was
+created. Expiry and state refresh remain explicit with no polling.
+
+The implemented Approvals view also exposes a **Bind this Windows session**
+foreground action. It must label that binding as personal-PC lab assurance,
+no-PIN/no-password, no-MFA, process-only, restart-lost, and not an approval.
+After a preview is reviewed, the UI may offer **Create pending approval
+request** only while the preview and binding are current. The resulting card
+must say `pending_review` and external effect `none`. The UI may render only
+**Deny request**, original-requester **Cancel my request**, and post-TTL
+**Record expiry**. It must display the exact record hash and the resulting
+terminal status. It must not render an approve button or imply any token,
+binding, replay, worker assignment, Arc dispatch, or external action.
 
 ## Acceptance Gates
 

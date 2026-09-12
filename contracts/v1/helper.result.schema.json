@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/helper.result.schema.json",
+  "title": "Office Operations Helper Result Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name", "contract_version", "schema_version", "taxonomy_version",
+    "tenant_id", "customer_context_id", "environment", "correlation_id",
+    "causation_id", "idempotency_key", "producer", "policy_version",
+    "helper_result_id", "assignment_id", "request_id", "helper_scope_id",
+    "helper_agent_id", "helper_role", "review_type", "scenario_id", "status",
+    "disposition", "reason_codes", "findings", "recommendations",
+    "proposed_task_steps", "guardian_decision_id", "pre_action_evidence_ref",
+    "post_action_evidence_ref", "human_review_required", "synthetic_data_only",
+    "deterministic_review", "raw_profile_included", "model_called",
+    "tools_used", "memory_used", "approval_requested", "arc_dispatched",
+    "connector_accessed", "submission_allowed", "external_side_effects",
+    "created_at", "completed_at"
+  ],
+  "properties": {
+    "contract_name": {"type": "string", "const": "helper.result"},
+    "contract_version": {"type": "string", "const": "1.0.0"},
+    "schema_version": {"type": "string", "const": "1.0.0"},
+    "taxonomy_version": {"type": "string", "const": "taxonomy-reason-v1"},
+    "tenant_id": {"type": "string", "minLength": 1},
+    "customer_context_id": {"type": "string", "minLength": 1},
+    "environment": {"type": "string", "const": "phase0_lab"},
+    "correlation_id": {"type": "string", "minLength": 1},
+    "causation_id": {"type": "string", "minLength": 1},
+    "idempotency_key": {"type": "string", "minLength": 1},
+    "producer": {
+      "type": "object", "additionalProperties": false,
+      "required": ["component", "produced_at"],
+      "properties": {
+        "component": {"type": "string", "const": "supervisor"},
+        "produced_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "policy_version": {"type": "string", "minLength": 1},
+    "helper_result_id": {"type": "string", "minLength": 1},
+    "assignment_id": {"type": "string", "minLength": 1},
+    "request_id": {"type": "string", "minLength": 1},
+    "helper_scope_id": {"type": "string", "minLength": 1},
+    "helper_agent_id": {"type": "string", "const": "office-operations-helper-001"},
+    "helper_role": {"type": "string", "const": "office_operations_helper"},
+    "review_type": {"type": "string", "const": "registration_sop_review"},
+    "scenario_id": {
+      "type": "string",
+      "enum": ["complete-contact", "missing-phone", "invalid-email", "invalid-postal-code", "consent-not-granted"]
+    },
+    "status": {"type": "string", "const": "completed"},
+    "disposition": {"type": "string", "enum": ["ready_for_owner_review", "needs_human_input"]},
+    "reason_codes": {
+      "type": "array", "minItems": 1,
+      "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}, "uniqueItems": true
+    },
+    "findings": {
+      "type": "array", "maxItems": 9,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["field", "status", "reason_code"],
+        "properties": {
+          "field": {"type": "string", "enum": ["full_name", "email", "phone", "address_line1", "city", "state", "postal_code", "preferred_contact", "consent_to_contact"]},
+          "status": {"type": "string", "const": "NEEDS_HUMAN_INPUT"},
+          "reason_code": {"type": "string", "enum": ["missing_value", "invalid_synthetic_email", "invalid_phone", "invalid_state", "invalid_postal_code", "unsupported_contact_preference", "consent_not_granted"]}
+        }
+      }
+    },
+    "recommendations": {
+      "type": "array", "minItems": 1, "maxItems": 12,
+      "items": {"type": "string", "minLength": 1, "maxLength": 240}
+    },
+    "proposed_task_steps": {
+      "type": "array", "minItems": 3, "maxItems": 8,
+      "items": {"type": "string", "minLength": 1, "maxLength": 240}
+    },
+    "guardian_decision_id": {"type": "string", "minLength": 1},
+    "pre_action_evidence_ref": {"type": "string", "minLength": 1},
+    "post_action_evidence_ref": {"type": "string", "minLength": 1},
+    "human_review_required": {"type": "boolean", "const": true},
+    "synthetic_data_only": {"type": "boolean", "const": true},
+    "deterministic_review": {"type": "boolean", "const": true},
+    "raw_profile_included": {"type": "boolean", "const": false},
+    "model_called": {"type": "boolean", "const": false},
+    "tools_used": {"type": "boolean", "const": false},
+    "memory_used": {"type": "boolean", "const": false},
+    "approval_requested": {"type": "boolean", "const": false},
+    "arc_dispatched": {"type": "boolean", "const": false},
+    "connector_accessed": {"type": "boolean", "const": false},
+    "submission_allowed": {"type": "boolean", "const": false},
+    "external_side_effects": {"type": "boolean", "const": false},
+    "created_at": {"type": "string", "format": "date-time"},
+    "completed_at": {"type": "string", "format": "date-time"}
+  }
+}

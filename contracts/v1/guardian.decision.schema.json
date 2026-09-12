@@ -186,7 +186,8 @@
             "connector",
             "model_route",
             "memory_access",
-            "lima_it_handoff"
+            "lima_it_handoff",
+            "operator"
           ]
         },
         "subject_id": {
@@ -209,6 +210,12 @@
         "scheduled_action",
         "privileged_operation",
         "memory_access",
+        "internal_helper_review",
+        "internal_task_proposal",
+        "internal_approval_preview",
+        "internal_operator_session_binding",
+        "internal_pending_approval_request",
+        "internal_approval_decision",
         "worker_lifecycle",
         "lima_it_diagnostic",
         "lima_it_remediation"
@@ -240,6 +247,11 @@
             "external_message",
             "terminal",
             "credential_ref",
+            "synthetic_registration_scenario",
+            "task_proposal",
+            "approval_preview",
+            "operator_session",
+            "approval_request",
             "unknown"
           ]
         },
@@ -254,6 +266,7 @@
             "task_scoped",
             "worker_scoped",
             "operator_scoped",
+            "fixed_lab_fixture",
             "blocked_mvp"
           ]
         }
@@ -264,6 +277,7 @@
       "enum": [
         "public",
         "internal",
+        "synthetic_fixture_only",
         "customer_confidential",
         "sensitive_hr",
         "sensitive_finance",

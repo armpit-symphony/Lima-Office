@@ -1,0 +1,80 @@
+{
+  "contract_name": "approval.readiness",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "taxonomy_version": "taxonomy-reason-v1",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-approval-readiness-profile-a-001",
+  "causation_id": "owner-decision:profile-a-2026-09-09",
+  "idempotency_key": "idem-approval-readiness-profile-a-001",
+  "producer": {
+    "component": "supervisor",
+    "produced_at": "2026-09-09T19:00:00Z"
+  },
+  "policy_version": "policy-positive-approval-readiness-v1",
+  "assessment_id": "approval-readiness:profile-a-lab-001",
+  "assessment_mode": "design_only",
+  "target_action_class": "synthetic_form_preparation_review",
+  "status": "blocked_controls_missing",
+  "selected_identity_profile": "attended_os_session_lab_only",
+  "selected_separation_profile": "single_owner_low_risk_exception",
+  "required_contract_refs": [
+    "governance.identity",
+    "governance.rbac_matrix",
+    "governance.session_policy",
+    "governance.device_trust",
+    "approval.result",
+    "approval.token",
+    "approval.binding",
+    "token.verification",
+    "replay.store.record",
+    "guardian.decision",
+    "evidence.artifact"
+  ],
+  "sparkbot_reference_refs": [
+    "Sparkbot/backend/app/services/guardian/auth.py",
+    "Sparkbot/backend/app/services/guardian/pending_approvals.py",
+    "Sparkbot/docs/COMMAND_CENTER_SECURITY_AUDIT.md"
+  ],
+  "control_posture": {
+    "named_human_identity_selected": false,
+    "step_up_authenticator_selected": false,
+    "session_ttl_selected": true,
+    "device_binding_selected": false,
+    "rbac_mapping_complete": false,
+    "separation_policy_selected": true,
+    "scope_narrowing_defined": true,
+    "atomic_issuance_defined": false,
+    "single_use_consumption_defined": true,
+    "durable_replay_store_defined": false,
+    "evidence_failure_fails_closed": true,
+    "secret_redaction_required": true,
+    "policy_recheck_before_execution": true
+  },
+  "owner_decision_required": false,
+  "owner_decision_options": [
+    "lab_only_os_session_and_single_owner_exception",
+    "windows_hello_or_passkey_and_single_owner_exception",
+    "oidc_mfa_and_distinct_approver"
+  ],
+  "reason_codes": [
+    "mfa_required",
+    "role_not_permitted",
+    "sod_required",
+    "privileged_action_blocked"
+  ],
+  "design_complete": false,
+  "implementation_authorized": false,
+  "approval_result_issuance_enabled": false,
+  "approval_token_issuance_enabled": false,
+  "approval_binding_enabled": false,
+  "token_verification_enabled": false,
+  "replay_consumption_enabled": false,
+  "worker_assignment_enabled": false,
+  "arc_dispatch_enabled": false,
+  "external_effects_enabled": false,
+  "evidence_refs": ["ev-approval-readiness-profile-a-001"],
+  "assessed_at": "2026-09-09T19:00:00Z"
+}

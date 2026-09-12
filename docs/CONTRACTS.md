@@ -755,10 +755,33 @@ contexts, breaking-change coverage gaps, and missing/unsupported
 - Backwards compatibility notes: new approval action classes require autonomy-boundary and threat-model mapping.
 - MVP acceptance gates: approval-required external email draft can be represented without performing a live send; software install/update, remediation execution, production server touch, and regulated-system use remain denied blocked-MVP request outcomes.
 
+## Positive Approval Readiness Assessment Contract v1
+
+- Schema: [approval.readiness.schema.json](../contracts/v1/approval.readiness.schema.json)
+- Examples: [approval.readiness.blocked-owner-decision.example.json](../contracts/examples/approval.readiness.blocked-owner-decision.example.json), [approval.readiness.profile-a-lab-selected.example.json](../contracts/examples/approval.readiness.profile-a-lab-selected.example.json)
+- Purpose: ties the existing identity, RBAC, session, device, approval, token,
+  binding, replay, Guardian, and evidence contracts into a design gate before
+  any positive approval runtime can be considered.
+- Mode: `design_only`; the assessment cannot authorize implementation or action.
+- Profiles: attended OS session lab-only, Windows Hello/passkey step-up, or OIDC
+  phishing-resistant MFA; separation is either a low-risk single-owner
+  exception or a distinct human approver.
+- Security requirements: all result issuance, token, binding, verification,
+  replay consumption, worker assignment, Arc dispatch, and external-effect
+  flags are fixed false in every assessment state.
+- Failure behavior: missing owner selection, incomplete control design, any
+  blocker reason, or any authority flag fails closed.
+- Readiness semantics: `ready_for_implementation_review` means only that design
+  inputs are complete. `implementation_authorized` remains false and a separate
+  explicit implementation decision is still required.
+- Current lab posture: profile A is selected as
+  `attended_os_session_lab_only` with the low-risk single-owner exception. It
+  remains `blocked_controls_missing`, and every authority flag remains false.
+
 ## Approval Result Contract v1
 
 - Schema: [approval.result.schema.json](../contracts/v1/approval.result.schema.json)
-- Example objects: [approval.result.approved.example.json](../contracts/examples/approval.result.approved.example.json), [approval.result.denied-blocked-mvp.example.json](../contracts/examples/approval.result.denied-blocked-mvp.example.json)
+- Example objects: [approval.result.approved.example.json](../contracts/examples/approval.result.approved.example.json), [approval.result.denied-blocked-mvp.example.json](../contracts/examples/approval.result.denied-blocked-mvp.example.json), [approval.result.synthetic-denied.example.json](../contracts/examples/approval.result.synthetic-denied.example.json)
 - Purpose: records the approval outcome as a separate decision event, including denied blocked-MVP outcomes.
 - Version: `1.0.0`.
 - Producer: Supervisor approval service or operator console.
@@ -768,6 +791,11 @@ contexts, breaking-change coverage gaps, and missing/unsupported
 - Allowed states: `approved`, `denied`, `expired`, `cancelled`, `superseded`, `partial_approved`.
 - Terminal states: all result states are terminal for the referenced approval request event.
 - Security requirements: approval cannot broaden requested scope; blocked-MVP denial cannot produce a token; partial approval requires a new request before action.
+- Synthetic lab addendum: `synthetic_form_preparation_review` results are only
+  `denied`, `cancelled`, or `expired`; approved scope, token, chain, binding,
+  nonce, worker, verification, replay, Arc dispatch, and external-effect fields
+  are forced null or false. Deny/cancel carry attended operator metadata;
+  explicit expiry carries no approver identity.
 - Approval requirements: approver role and fresh operator intent are required for approved results.
 - Evidence requirements: every result links evidence.
 - Failure behavior: missing or contradictory approval result means the privileged action fails closed.
@@ -1114,3 +1142,22 @@ contexts, breaking-change coverage gaps, and missing/unsupported
 - Failure behavior: missing approval, production touch, or evidence failure blocks remediation.
 - Backwards compatibility notes: future remediation execution contracts require a major review and must not reuse diagnostic states.
 - MVP acceptance gates: one LIMA IT health-check handoff can be represented as read-only diagnostics with no remediation execution.
+
+## Attended Operator Session Binding Contract v1
+
+- Schema: [operator.session.binding.schema.json](../contracts/v1/operator.session.binding.schema.json)
+- Example: [operator.session.binding.attended-lab.example.json](../contracts/examples/operator.session.binding.attended-lab.example.json)
+- Purpose: represents a short-lived, in-process personal-PC lab session using a pseudonymous OS-subject digest.
+- Allowed state: `active`; expiry is evaluated on foreground access and restart discards the binding.
+- Security requirements: loopback/process-bound, no raw OS username, no password/PIN, no MFA or production-identity claim, no approval/token/dispatch authority.
+- Approval requirements: may create a fixed pending request only after Guardian, reviewed-preview, current-source, tenant, expiry, and fresh-intent checks; cannot decide it.
+- Evidence requirements: request and commit events with pseudonymous metadata only.
+
+## Synthetic Form Review Pending Approval Request v1 Addendum
+
+- Schema: [approval.request.schema.json](../contracts/v1/approval.request.schema.json)
+- Example: [approval.request.synthetic-form-review-pending.example.json](../contracts/examples/approval.request.synthetic-form-review-pending.example.json)
+- Purpose: instantiates a real approval-request record for the fixed synthetic plan-review lane without creating approval authority.
+- Required posture: `synthetic_form_preparation_review`, `pending_review`, result `pending`, external effect `none`, operation `review_prepared_form_plan`, `max_uses: 0`, exact preview revision/hash, active operator-session binding, and fresh-intent evidence.
+- Security requirements: approval result/token/binding/verification/replay/worker/dispatch/external-effect fields are null or false; one request per preview; request and completion evidence commit atomically.
+- Terminal states: none are implemented by this runtime slice. Decision endpoints and execution authority remain unavailable.

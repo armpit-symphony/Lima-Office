@@ -24,7 +24,13 @@ These blockers remain open after the current Phase 0/1A hardening baseline. None
 
 ## Identity/IdP/MFA/session runtime
 
-- Which IdP and MFA/session posture is selected for runtime implementation?
+- Closed for lab testing on 2026-09-09: the owner selected profile A (attended
+  OS session, lab-only) until whole-system LIMA Office and Arc testing is
+  complete. This selection does not configure an owner identity or authorize
+  positive approval, tokens, bindings, worker assignment, dispatch, or external
+  effects. See [Positive Approval Readiness Gate](POSITIVE_APPROVAL_READINESS_GATE.md).
+- Before customer or production use, should the owner upgrade to profile B
+  (Windows Hello/passkey) or profile C (OIDC MFA with a distinct approver)?
 - How will device trust and RBAC/session policies be enforced at runtime boundaries?
 - What lifecycle events must force session revocation in implementation?
 

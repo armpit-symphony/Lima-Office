@@ -120,7 +120,8 @@
         "file_helper",
         "memory_helper",
         "it_helper_readonly",
-        "background_review_helper"
+        "background_review_helper",
+        "office_operations_helper"
       ]
     },
     "parent_supervisor_id": {
@@ -170,7 +171,12 @@
           "diagnostic_gathering",
           "file_organization",
           "customer_service_draft",
-          "it_health_check"
+          "it_health_check",
+          "sop_review",
+          "task_decomposition",
+          "missing_field_check",
+          "draft_review",
+          "arc_result_review"
         ]
       },
       "uniqueItems": true
@@ -215,7 +221,8 @@
         "enum": [
           "public",
           "internal",
-          "customer_confidential"
+          "customer_confidential",
+          "synthetic_fixture_only"
         ]
       },
       "uniqueItems": true
@@ -300,7 +307,12 @@
           "production_server_touch",
           "payment_or_regulated_system",
           "cross_tenant_memory",
-          "unrestricted_tool_execution"
+          "unrestricted_tool_execution",
+          "model_call",
+          "worker_dispatch",
+          "approval_token_request",
+          "browser_automation",
+          "form_submission"
         ]
       },
       "uniqueItems": true
@@ -354,6 +366,67 @@
     }
   },
   "allOf": [
+    {
+      "if": {
+        "properties": {
+          "helper_role": {
+            "const": "office_operations_helper"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "allowed_task_classes": {
+            "const": [
+              "sop_review",
+              "task_decomposition",
+              "missing_field_check",
+              "draft_review",
+              "arc_result_review"
+            ]
+          },
+          "allowed_tool_packs": {
+            "maxItems": 0
+          },
+          "data_classifications_allowed": {
+            "const": [
+              "synthetic_fixture_only"
+            ]
+          },
+          "connector_access": {
+            "const": "none"
+          },
+          "network_scope": {
+            "const": "none"
+          },
+          "file_scope": {
+            "const": "none"
+          },
+          "memory_scope": {
+            "properties": {
+              "read_allowed": {"const": false},
+              "write_summary_allowed": {"const": false},
+              "delete_or_export_allowed": {"const": false},
+              "raw_content_allowed": {"const": false}
+            }
+          },
+          "approval_required_capabilities": {
+            "maxItems": 0
+          },
+          "blocked_capabilities": {
+            "allOf": [
+              {"contains": {"const": "model_call"}},
+              {"contains": {"const": "worker_dispatch"}},
+              {"contains": {"const": "approval_token_request"}},
+              {"contains": {"const": "browser_automation"}},
+              {"contains": {"const": "form_submission"}},
+              {"contains": {"const": "external_send"}},
+              {"contains": {"const": "customer_record_update"}}
+            ]
+          }
+        }
+      }
+    },
     {
       "if": {
         "properties": {
