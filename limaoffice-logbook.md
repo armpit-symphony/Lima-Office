@@ -424,6 +424,12 @@ Acceptance target:
   `sparkpitlabs.com.txt` notes remain untracked and are excluded.
 - This is a source checkpoint, not a new package, prerelease, production claim,
   positive-approval implementation, or ownership setup.
+- Local source checkpoint commit: `f7ea63d` (`feat: checkpoint Profile A
+  supervisor lab`).
+- GitHub branch:
+  `https://github.com/armpit-symphony/Lima-Office/tree/checkpoint/profile-a-lab`.
+- Public review:
+  `https://github.com/armpit-symphony/Lima-Office/pull/33`.
 
 ---
 
