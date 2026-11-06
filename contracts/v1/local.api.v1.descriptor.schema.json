@@ -33,9 +33,21 @@
     "legacy_prefix": {"type": "string", "const": "/api/office"},
     "legacy_aliases_deprecated": {"type": "boolean", "const": true},
     "anonymous_mutating_routes": {"type": "boolean", "const": false},
-    "production_ready": {"type": "boolean", "const": false},
-    "customer_pilot_allowed": {"type": "boolean", "const": false},
-    "operator_authentication_manifest": {"type": "boolean", "const": false},
+    "production_ready": {
+      "type": "boolean",
+      "const": false,
+      "description": "Stays false. operator_authentication_manifest true is a lab path claim only."
+    },
+    "customer_pilot_allowed": {
+      "type": "boolean",
+      "const": false,
+      "description": "Stays false. operator_authentication_manifest true is a lab path claim only."
+    },
+    "operator_authentication_manifest": {
+      "type": "boolean",
+      "const": true,
+      "description": "Matches operator_authentication. Lab capability claim only for the localhost Profile B path. It does not grant approval authority, Arc dispatch, production readiness, or customer-pilot permission. The display name is keyboard-chosen, Hello proves local user verification only, attestation format is none, the signature counter may stay zero, and the credential is process memory only."
+    },
     "runtime_authority_blocked": {"type": "boolean", "const": true},
     "foreign_operator_shell_dependency": {"type": "boolean", "const": false},
     "non_goals": {"type": "array", "const": [

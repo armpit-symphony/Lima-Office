@@ -24,9 +24,9 @@ None for this login check. The ceremony does not approve work. Do not treat a su
 
 ## Evidence to capture
 
-- Harness readiness JSON showing `loopback_only: true` and `operator_authentication_manifest: false`.
+- Harness readiness JSON showing `loopback_only: true`, `operator_authentication_manifest: true`, `production_ready: false`, and `customer_pilot_allowed: false`.
 - The UI message after both Hello prompts. The success text says the passkey assertion was verified and that approval authority remains off.
-- Health JSON showing `production_ready: false`, `customer_pilot_allowed: false`, and `operator_authentication: false`.
+- Health JSON showing `operator_authentication: true`, `production_ready: false`, and `customer_pilot_allowed: false`.
 - A redacted note of the owner display name and the time. Do not copy ceremony bytes, assertion signatures, or session handles into tickets or screenshots.
 
 ## Procedure
@@ -36,7 +36,7 @@ None for this login check. The ceremony does not approve work. Do not treat a su
 3. Enter the owner display name and start the Windows Hello / passkey ceremony.
 4. Complete Hello when the browser asks to create the passkey, then complete Hello again when it asks to sign the assertion. Both prompts must finish within 120 seconds. They use one challenge.
 5. Read the UI result. After a verified assertion, the status says signed in for this process. Approval authority stays off.
-6. Confirm health still reports `production_ready: false`, `customer_pilot_allowed: false`, and `operator_authentication: false`.
+6. Confirm health reports `operator_authentication: true` while `production_ready` and `customer_pilot_allowed` stay false. Approval authority stays off. The authentication flag is a lab path claim. It does not mean the operator may approve work.
 7. Confirm a worker refresh through `/api/v1/workers` without a session handle is denied. With the handle the UI holds for this tab, the refresh is allowed and still reports no approval authority.
 8. Confirm public Profile B status does not show the session handle.
 9. Stop and start the harness. The previous session is gone. The next sign-in creates a new passkey and signs a new assertion.
@@ -67,4 +67,4 @@ Stop if the browser offers a ceremony for any host other than localhost, if the 
 
 ## Open questions
 
-`operator_authentication` stays false in the lab manifest until a later packaging brief. Positive approval step-up remains a stub. A signature counter that stays at zero cannot show that the authenticator was cloned. Profile C is still a separate identity choice.
+`operator_authentication: true` is the signed lab path claim. It does not grant approval, Arc dispatch, production readiness, or customer-pilot permission. Positive approval step-up remains a stub. The display name is keyboard-chosen and is not directory identity. Hello proves local user verification only. Attestation format is `none`. A signature counter that stays at zero cannot show that the authenticator was cloned. The credential is process memory only. Profile C is still a separate identity choice. A separate yes is still required before any tag, prerelease, or installer publish.

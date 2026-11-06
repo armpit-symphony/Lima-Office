@@ -88,7 +88,7 @@ class ProfileBCeremonyTests(unittest.TestCase):
         self.assertFalse(session["approval_authority"])
         self.assertFalse(session["approval_token_allowed"])
         self.assertFalse(session["arc_dispatch_allowed"])
-        self.assertFalse(session["operator_authentication_manifest"])
+        self.assertTrue(session["operator_authentication_manifest"])
         self.assertEqual("stub_only", session["positive_approval_step_up"])
         self.assertFalse(session["step_up_issued"])
         self.assertEqual(self.sessions.step_up_stub()["approval_token_allowed"], False)
@@ -191,13 +191,16 @@ class ApiAuthorizationTests(unittest.TestCase):
             api.dispatch("POST", "/api/v1/not-a-route", {}, None)
         self.assertEqual(401, unknown.exception.status)
 
-    def test_public_reads_keep_manifest_flags_false(self):
+    def test_public_reads_claim_lab_auth_without_production_or_pilot(self):
         api = LocalLoopbackApi(clock=_clock(NOW))
         health = api.health()
         descriptor = api.descriptor()
         self.assertFalse(health["production_ready"])
         self.assertFalse(health["customer_pilot_allowed"])
-        self.assertFalse(health["operator_authentication"])
+        self.assertTrue(health["operator_authentication"])
+        self.assertTrue(descriptor["operator_authentication_manifest"])
+        self.assertFalse(descriptor["production_ready"])
+        self.assertFalse(descriptor["customer_pilot_allowed"])
         self.assertEqual("127.0.0.1", health["bind_host"])
         self.assertFalse(descriptor["anonymous_mutating_routes"])
         self.assertFalse(descriptor["foreign_operator_shell_dependency"])
@@ -227,7 +230,7 @@ class ApiAuthorizationTests(unittest.TestCase):
         manifest = module.build_manifest("profile-b-slice", "1" * 40)
         self.assertFalse(manifest["production_ready"])
         self.assertFalse(manifest["customer_pilot_allowed"])
-        self.assertFalse(manifest["operator_authentication"])
+        self.assertTrue(manifest["operator_authentication"])
 
     def test_new_runtime_modules_do_not_reference_a_foreign_shell(self):
         for relative in (
@@ -293,7 +296,7 @@ class HarnessApiTests(unittest.TestCase):
             with urlopen(f"{base}/api/v1/health", timeout=3) as response:
                 health = json.loads(response.read())
             self.assertEqual("ready", health["status"])
-            self.assertFalse(health["operator_authentication"])
+            self.assertTrue(health["operator_authentication"])
             self.assertFalse(health["production_ready"])
             self.assertFalse(health["customer_pilot_allowed"])
 

@@ -14,6 +14,7 @@ import shutil
 from typing import Any
 
 from lima_office.runtime.approval_readiness import profile_a_lab_state
+from lima_office.runtime.lab_packaging import OPERATOR_AUTHENTICATION_MANIFEST
 
 
 def _safe_nonnegative_int(value: Any) -> int:
@@ -213,7 +214,7 @@ def _profile_b_projection(state: Mapping[str, Any] | None) -> dict[str, Any]:
         "approval_authority": False,
         "production_identity_verified": False,
         "customer_or_production_use_allowed": False,
-        "operator_authentication_manifest": False,
+        "operator_authentication_manifest": OPERATOR_AUTHENTICATION_MANIFEST,
         "binding_published": False,
         "positive_approval_step_up": "stub_only",
         "verification_mode": _safe_text(source.get("verification_mode"), "fail_closed", 64),

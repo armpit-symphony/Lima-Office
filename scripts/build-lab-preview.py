@@ -9,11 +9,21 @@ import json
 from pathlib import Path
 import re
 import subprocess
+import sys
 import tempfile
 import zipfile
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from lima_office.runtime.lab_packaging import (  # noqa: E402
+    CUSTOMER_PILOT_ALLOWED,
+    OPERATOR_AUTHENTICATION,
+    PRODUCTION_READY,
+)
+
 RELEASE_SOURCE = ROOT / "release" / "lab-preview"
 COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
 VERSION_RE = re.compile(r"^[0-9A-Za-z][0-9A-Za-z.-]{0,63}$")
@@ -102,10 +112,10 @@ def build_manifest(version: str, office_commit: str) -> dict:
         "schema_version": "lima-office-arc-lab-preview-manifest-v1",
         "version": version,
         "release_channel": "local_lab_preview_candidate",
-        "production_ready": False,
-        "customer_pilot_allowed": False,
-        # Profile B can exist in lab source before a later packaging brief.
-        "operator_authentication": False,
+        "production_ready": PRODUCTION_READY,
+        "customer_pilot_allowed": CUSTOMER_PILOT_ALLOWED,
+        # Lab path claim only. It does not grant production, pilot, or approval.
+        "operator_authentication": OPERATOR_AUTHENTICATION,
         "topology": {
             "supervisor_servers": 1,
             "arc_worker_min": 1,

@@ -42,7 +42,7 @@
   "step_up_ttl_seconds": 300,
   "session_ttl_seconds": 1800,
   "runtime_authority_blocked": true,
-  "operator_authentication_manifest": false,
+  "operator_authentication_manifest": true,
   "guardian_decision_id": "gd-operator-profile-b:cb3fb3d39dbd401292195097e89b29ef",
   "pre_action_evidence_ref": "memory-event:0001",
   "post_action_evidence_ref": "memory-event:0002",

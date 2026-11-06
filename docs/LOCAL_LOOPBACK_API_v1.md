@@ -43,7 +43,7 @@ The verifier note is [PROFILE_B_WEBAUTHN_VERIFICATION.md](PROFILE_B_WEBAUTHN_VER
 | Route | Auth | Notes |
 | --- | --- | --- |
 | `GET /api/v1` | public read | Route descriptor. `runtime_authority_blocked` is true. |
-| `GET /api/v1/health` and `GET /api/v1/build` | public read | Build identity. `production_ready`, `customer_pilot_allowed`, and `operator_authentication` are false. |
+| `GET /api/v1/health` and `GET /api/v1/build` | public read | Build identity. `operator_authentication` is true as a localhost Profile B path claim. `production_ready` and `customer_pilot_allowed` stay false. |
 | `GET /api/v1/state` | public read | Same redacted console projection as the legacy state alias. |
 | `GET /api/v1/operator-session` | public read | Active flag, assurance, and expiry. No session handle. |
 | `GET /api/v1/workers` | session | Cached worker count only. |
@@ -65,7 +65,7 @@ Downstream Guardian denials stay fail-closed after the session check. They do no
 
 ## Non-goals
 
-This slice does not add a foreign operator-shell API, LAN bind, Profile C / OIDC, positive approval tokens, Arc dispatch of approved work, connectors, or customer data. The lab preview manifest keeps `production_ready`, `customer_pilot_allowed`, and `operator_authentication` false until a later packaging brief.
+This slice does not add a foreign operator-shell API, LAN bind, Profile C / OIDC, positive approval tokens, Arc dispatch of approved work, connectors, or customer data. The lab preview manifest keeps `production_ready` and `customer_pilot_allowed` false. `operator_authentication` true is the lab path claim from [ADR-0024](DECISIONS.md#adr-0024-claim-localhost-profile-b-authentication-in-lab-packaging-only). It does not mean production readiness, customer-pilot permission, or approval authority. A separate yes is still required before any tag or installer publish.
 
 ## Evidence and logs
 

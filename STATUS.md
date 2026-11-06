@@ -53,7 +53,8 @@ Validation completed on the development stack:
 
 ### Remaining Limitations
 
-- The localhost UI has no operator authentication and remains attended-lab-only.
+- The published lab.1 prerelease UI has no operator authentication and remains attended-lab-only.
+- Current source may report `operator_authentication` true as a localhost Profile B path claim. That claim is lab-only. `production_ready` and `customer_pilot_allowed` stay false, and this status note does not publish a new release.
 - This prerelease is not production-ready and is not approved for a customer pilot.
 - Live models, connectors, external sends, mutations, remediation, production
   server access, robotics, LAN exposure, and customer data remain blocked.

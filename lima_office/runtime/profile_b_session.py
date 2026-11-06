@@ -20,6 +20,7 @@ from uuid import uuid4
 
 from lima_office.contracts import ContractValidator
 from lima_office.guardian import GuardianPolicy
+from lima_office.runtime.lab_packaging import OPERATOR_AUTHENTICATION_MANIFEST
 from lima_office.runtime.webauthn_verifier import LocalhostWebAuthnVerifier
 
 
@@ -317,7 +318,7 @@ class ProfileBSessionService:
             "approval_authority": False,
             "production_identity_verified": False,
             "customer_or_production_use_allowed": False,
-            "operator_authentication_manifest": False,
+            "operator_authentication_manifest": OPERATOR_AUTHENTICATION_MANIFEST,
             "verification_mode": self.verifier.verification_mode,
             "binding_published": False,
             "positive_approval_step_up": "stub_only",
@@ -554,7 +555,7 @@ class ProfileBSessionService:
             "step_up_ttl_seconds": STEP_UP_TTL_SECONDS,
             "session_ttl_seconds": SESSION_TTL_SECONDS,
             "runtime_authority_blocked": True,
-            "operator_authentication_manifest": False,
+            "operator_authentication_manifest": OPERATOR_AUTHENTICATION_MANIFEST,
             "guardian_decision_id": decision["decision_id"],
             "pre_action_evidence_ref": pre,
             "post_action_evidence_ref": post,

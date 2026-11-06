@@ -49,7 +49,7 @@ This is a lab preview, not a production release.
 - Hidden background actions.
 - Live LIMA IT remediation.
 
-The current operator UI has no operator authentication. It is suitable only for an attended, localhost lab until an authentication contract and implementation are approved.
+Current source can report a localhost Profile B operator-authentication path. That claim is lab-only. The preview stays attended and localhost-only. `production_ready` and `customer_pilot_allowed` stay false. This plan still does not authorize a release, tag, or installer publish.
 
 ## Release units
 
@@ -64,9 +64,9 @@ The release manifest must record an exact commit for every unit. If any commit m
 
 ## Remaining preview limitations
 
-1. Operator authentication remains absent, so the preview is attended and localhost-only.
+1. A localhost Profile B operator-authentication claim may be true in current source. The preview stays attended and localhost-only. The claim does not approve work.
 2. Live models, connectors, customer data, and privileged actions remain blocked for this preview.
-3. The prerelease is not approved for production or a customer pilot.
+3. The prerelease is not approved for production or a customer pilot. `production_ready` and `customer_pilot_allowed` stay false.
 
 ## Release gates
 

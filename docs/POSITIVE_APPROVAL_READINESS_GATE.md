@@ -120,4 +120,4 @@ WebAuthn assertion verifies. The session is named, device-bound, process-local,
 and `survives_restart: false`. That login does not issue positive approval
 step-up and does not change this gate. Profile A remains the selected
 approval-test profile. Profile C still begins with identity-provider selection.
-The lab manifest flag `operator_authentication` stays false.
+The lab manifest flag `operator_authentication` may be true as a localhost path claim. That flag does not move this gate, and `production_ready` and `customer_pilot_allowed` stay false.

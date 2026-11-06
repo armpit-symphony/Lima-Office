@@ -22,6 +22,6 @@
   "source_modified": false,
   "production_ready": false,
   "customer_pilot_allowed": false,
-  "operator_authentication": false,
+  "operator_authentication": true,
   "runtime_authority_blocked": true
 }

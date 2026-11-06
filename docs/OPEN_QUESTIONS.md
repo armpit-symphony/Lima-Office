@@ -29,10 +29,16 @@ These blockers remain open after the current Phase 0/1A hardening baseline. None
   complete. This selection does not configure an owner identity or authorize
   positive approval, tokens, bindings, worker assignment, dispatch, or external
   effects. See [Positive Approval Readiness Gate](POSITIVE_APPROVAL_READINESS_GATE.md).
-- Profile B login now verifies a localhost WebAuthn assertion before it creates
-  a process-local session. `survives_restart` stays false. The lab manifest
-  still has `operator_authentication: false` until a packaging brief changes it.
-  See [Profile B WebAuthn Verification](PROFILE_B_WEBAUTHN_VERIFICATION.md).
+- Profile B login verifies a localhost WebAuthn assertion before it creates
+  a process-local session. `survives_restart` stays false. The signed packaging
+  brief (option A, 2026-11-06) sets `operator_authentication` and
+  `operator_authentication_manifest` true as a lab path claim.
+  `production_ready` and `customer_pilot_allowed` stay false. Approval
+  authority stays off. The keyboard-chosen display name is not directory
+  identity. Hello proves local user verification only. Attestation format is
+  `none`. The signature counter may stay zero. The credential is process
+  memory only. See [Profile B WebAuthn Verification](PROFILE_B_WEBAUTHN_VERIFICATION.md)
+  and [ADR-0024](DECISIONS.md#adr-0024-claim-localhost-profile-b-authentication-in-lab-packaging-only).
 - Before customer or production use, should the owner upgrade to profile B
   (Windows Hello/passkey) or profile C (OIDC MFA with a distinct approver)?
   Profile C is not part of the loopback API slice.

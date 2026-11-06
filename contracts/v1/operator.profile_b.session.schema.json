@@ -61,7 +61,11 @@
     "step_up_ttl_seconds": {"type": "integer", "const": 300},
     "session_ttl_seconds": {"type": "integer", "const": 1800},
     "runtime_authority_blocked": {"type": "boolean", "const": true},
-    "operator_authentication_manifest": {"type": "boolean", "const": false},
+    "operator_authentication_manifest": {
+      "type": "boolean",
+      "const": true,
+      "description": "Lab capability claim only. approval_authority stays false, positive_approval_step_up stays stub_only, arc_dispatch_allowed stays false, and survives_restart stays false. The display name is not directory identity. Hello proves local user verification only. Attestation format is none. The signature counter may stay zero. The credential is process memory only."
+    },
     "guardian_decision_id": {"type": "string", "minLength": 1},
     "pre_action_evidence_ref": {"type": "string", "minLength": 1},
     "post_action_evidence_ref": {"type": "string", "minLength": 1},

@@ -496,4 +496,15 @@ Acceptance target:
 
 ---
 
+### 2026-11-06 — Lab packaging claim for the Profile B authentication path
+
+- Phil answered Proceed (option A) to the auth-only packaging brief. This entry records the claim. It does not tag, release, or publish an installer.
+- `operator_authentication` and `operator_authentication_manifest` are true as a localhost Profile B path claim. `production_ready` and `customer_pilot_allowed` stay false.
+- Approval authority stays false. Positive approval step-up stays `stub_only`. Arc dispatch stays off. Profile C, LAN bind, and a durable credential store stay out. `survives_restart` stays false. Sparkbot stays out of Arc.
+- Residual limits stay in force: the display name is keyboard-chosen and is not directory identity; Hello proves local user verification only; attestation format is `none`; the signature counter may stay zero; the credential is process memory only.
+- This entry does not record a new attended Windows Hello run. Earlier attended success and refusal notes remain the Nov 5 lab record. Cloud tests are separate from that attended evidence.
+- ES256, RP ID `localhost`, and the 120-second challenge are unchanged.
+
+---
+
 Update this logbook after each meaningful contract, implementation, test, release, or operational milestone. Record only capabilities that are demonstrably built and validated; label planned, blocked, degraded, or lab-only work honestly.
