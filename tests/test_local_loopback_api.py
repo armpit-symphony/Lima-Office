@@ -232,6 +232,7 @@ class ApiAuthorizationTests(unittest.TestCase):
     def test_new_runtime_modules_do_not_reference_a_foreign_shell(self):
         for relative in (
             "lima_office/runtime/profile_b_session.py",
+            "lima_office/runtime/webauthn_verifier.py",
             "lima_office/runtime/local_loopback_api.py",
             "scripts/arc-runtime-harness.py",
         ):
@@ -418,6 +419,8 @@ class ProfileBUiTests(unittest.TestCase):
     def test_console_offers_profile_b_without_leaving_localhost(self):
         source = (ROOT / "ui" / "lima_office_supervisor_console.html").read_text(encoding="utf-8")
         self.assertIn("Sign in with Windows Hello / passkey", source)
+        self.assertIn("localhost_webauthn", source)
+        self.assertIn("The passkey assertion was verified", source)
         self.assertIn("/api/v1/operator-session/profile-b/begin", source)
         self.assertIn("BEGIN PROFILE B OPERATOR LOGIN", source)
         self.assertIn("Lab-only Profile A", source)

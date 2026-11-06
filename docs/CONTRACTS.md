@@ -1165,11 +1165,12 @@ contexts, breaking-change coverage gaps, and missing/unsupported
 ## Profile B Operator Session v1
 
 - Schemas: [operator.profile_b.ceremony.schema.json](../contracts/v1/operator.profile_b.ceremony.schema.json), [operator.profile_b.session.schema.json](../contracts/v1/operator.profile_b.session.schema.json)
-- Examples: [operator.profile_b.ceremony.challenge-issued.example.json](../contracts/examples/operator.profile_b.ceremony.challenge-issued.example.json), [operator.profile_b.session.lab-hmac.example.json](../contracts/examples/operator.profile_b.session.lab-hmac.example.json)
+- Examples: [operator.profile_b.ceremony.challenge-issued.example.json](../contracts/examples/operator.profile_b.ceremony.challenge-issued.example.json), [operator.profile_b.ceremony.localhost-webauthn.example.json](../contracts/examples/operator.profile_b.ceremony.localhost-webauthn.example.json), [operator.profile_b.ceremony.localhost-assertion.example.json](../contracts/examples/operator.profile_b.ceremony.localhost-assertion.example.json), [operator.profile_b.session.lab-hmac.example.json](../contracts/examples/operator.profile_b.session.lab-hmac.example.json), [operator.profile_b.session.webauthn.example.json](../contracts/examples/operator.profile_b.session.webauthn.example.json)
 - Purpose: named local owner login with a phishing-resistant ceremony, a device binding, a 30-minute TTL, and `survives_restart: false`.
-- Allowed session state: `active` only after a verifier accepts the ceremony. The default browser spike issues a challenge and does not accept the assertion.
-- Security requirements: no raw OS username, no collected password or PIN, no approval token, no Arc dispatch, and no customer or production use. Positive approval step-up is `stub_only` and `step_up_issued` is false.
+- Allowed session state: `active` only after a verifier accepts the ceremony. The default verifier accepts a localhost WebAuthn assertion signature. `ceremony_kind` is `registration_then_assertion` or `assertion`. The lab HMAC and platform-helper modes remain explicit overrides.
+- Security requirements: no raw OS username, no collected PIN, no approval token, no Arc dispatch, and no customer or production use. Positive approval step-up is `stub_only` and `step_up_issued` is false. RP ID is `localhost` only. The challenge TTL is 120 seconds.
 - Evidence requirements: ceremony request, rejection, and login commit record ids and hashes only.
+- Spec: [PROFILE_B_WEBAUTHN_VERIFICATION.md](PROFILE_B_WEBAUTHN_VERIFICATION.md).
 - Runbook: [profile-b-operator-login.md](runbooks/profile-b-operator-login.md).
 
 ## Synthetic Form Review Pending Approval Request v1 Addendum

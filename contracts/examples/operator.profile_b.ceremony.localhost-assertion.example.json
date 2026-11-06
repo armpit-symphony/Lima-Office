@@ -1,0 +1,41 @@
+{
+  "contract_name": "operator.profile_b.ceremony",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-profile-b-ceremony-91ab34cd56ef708192a3b4c5d6e7f809",
+  "causation_id": null,
+  "idempotency_key": "idem-profile-b-ceremony-91ab34cd56ef708192a3b4c5d6e7f809",
+  "producer": {
+    "component": "operator_console",
+    "produced_at": "2026-11-06T00:00:00Z"
+  },
+  "policy_version": "policy-operator-profile-b-session-lab-v1",
+  "status": "challenge_issued",
+  "ceremony_available": true,
+  "verification_mode": "localhost_webauthn",
+  "ceremony_kind": "assertion",
+  "challenge_id": "profile-b-challenge:91ab34cd56ef708192a3b4c5d6e7f809",
+  "challenge_b64url": "OTFhYjM0Y2Q1NmVmNzA4MTkyYTNiNGM1ZDZlN2Y4MDk",
+  "public_key_request": null,
+  "assertion_request": {
+    "rp_id": "localhost",
+    "challenge_b64url": "OTFhYjM0Y2Q1NmVmNzA4MTkyYTNiNGM1ZDZlN2Y4MDk",
+    "user_verification": "required",
+    "timeout_ms": 120000,
+    "allow_credential_ids_b64url": ["AQIDBAUGBwgJCgsMDQ4PEBESExQVFhc"]
+  },
+  "owner_display_name_accepted": true,
+  "session_created": false,
+  "binding_id": null,
+  "detail": "Sign the Profile B assertion. No session exists yet.",
+  "local_loopback_only": true,
+  "credentials_collected": false,
+  "approval_authority": false,
+  "runtime_authority_blocked": true,
+  "positive_approval_step_up": "stub_only",
+  "survives_restart": false,
+  "expires_at": "2026-11-06T00:02:00Z"
+}

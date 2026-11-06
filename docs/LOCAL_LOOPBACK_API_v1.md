@@ -32,12 +32,11 @@ Profile A remains available until `--disable-profile-a-lab` is set. That flag do
 Profile B is the Windows Hello / passkey / WebAuthn-class operator login for the localhost Supervisor UI.
 
 - The owner supplies a display name. The raw OS username is not stored.
-- The default verifier offers a platform-authenticator ceremony and then rejects the assertion. No session is created from an unverified ceremony.
-- A session is created only by the in-process lab HMAC verifier used in tests, or by an absolute `--profile-b-helper` / `LIMA_OFFICE_PROFILE_B_HELPER` program the operator configured. Helper stderr is discarded. The helper path and assertion are not written to evidence.
-- The session is device-bound, named, and process-local. `survives_restart` is false.
+- The default verifier checks a WebAuthn assertion for RP ID `localhost` before it creates a session. An unverified, tampered, expired, or wrong-origin assertion does not create a session. The lab HMAC verifier remains for tests. An absolute `--profile-b-helper` / `LIMA_OFFICE_PROFILE_B_HELPER` program replaces the default verifier when the operator sets it. Helper stderr is discarded. The helper path and assertion are not written to evidence.
+- The first ceremony in a process enrolls an ES256 public key and then requires an assertion signature. A later ceremony in that process checks the stored public key. Both the public key and the session stay in process memory. `survives_restart` is false.
 - Positive approval step-up is `stub_only`. This API does not issue an approval token, approval result, or Arc dispatch.
 
-OS steps for the attended ceremony are in [profile-b-operator-login.md](runbooks/profile-b-operator-login.md).
+The verifier note is [PROFILE_B_WEBAUTHN_VERIFICATION.md](PROFILE_B_WEBAUTHN_VERIFICATION.md). OS steps for the attended ceremony are in [profile-b-operator-login.md](runbooks/profile-b-operator-login.md).
 
 ## Resources
 

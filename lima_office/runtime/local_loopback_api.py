@@ -17,11 +17,11 @@ from lima_office.contracts import ContractValidator
 from lima_office.runtime.errors import ContractValidationError
 from lima_office.runtime.operator_session import OperatorSessionError
 from lima_office.runtime.profile_b_session import (
-    FailClosedWebAuthnSpikeVerifier,
     MemoryEvidenceStore,
     ProfileBError,
     ProfileBSessionService,
 )
+from lima_office.runtime.webauthn_verifier import LocalhostWebAuthnVerifier
 
 
 API_POLICY = "policy-local-loopback-api-v1"
@@ -145,7 +145,7 @@ class LocalLoopbackApi:
         self.operator_sessions = operator_sessions
         self.profile_b = profile_b or ProfileBSessionService(
             MemoryEvidenceStore(),
-            verifier=FailClosedWebAuthnSpikeVerifier(),
+            verifier=LocalhostWebAuthnVerifier(),
             tenant_id=tenant_id,
             customer_context_id=customer_context_id,
             validator=validator,
