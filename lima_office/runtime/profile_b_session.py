@@ -1,9 +1,8 @@
 """Profile B operator login: named owner, device-bound, process-local.
 
-The default verifier lets the localhost UI start a Windows Hello / passkey
-ceremony and then refuses to create a session. A session exists only after an
-explicit lab HMAC verifier or an operator-configured platform helper accepts
-the ceremony. Positive approval step-up is a stub and is never issued.
+The default verifier checks a localhost WebAuthn assertion before a session
+exists. A lab HMAC verifier and an operator-configured platform helper remain
+explicit overrides. Positive approval step-up is a stub and is never issued.
 """
 
 from __future__ import annotations
@@ -21,6 +20,7 @@ from uuid import uuid4
 
 from lima_office.contracts import ContractValidator
 from lima_office.guardian import GuardianPolicy
+from lima_office.runtime.webauthn_verifier import LocalhostWebAuthnVerifier
 
 
 BEGIN_CONFIRMATION = "BEGIN PROFILE B OPERATOR LOGIN"
@@ -34,6 +34,7 @@ _OWNER_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 .'-]{0,79}$")
 _CHALLENGE_RE = re.compile(r"^profile-b-challenge:[0-9a-f]{32}$")
 _HEX32_RE = re.compile(r"^[0-9a-f]{32}$")
 _SHA256_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
+_CREDENTIAL_ID_RE = re.compile(r"^[A-Za-z0-9_-]{16,256}$")
 _BANNED_EVIDENCE_FRAGMENTS = (
     "assertion",
     "challenge_b64",
@@ -59,9 +60,15 @@ class ProfileBStore(Protocol):
 class CeremonyVerifier(Protocol):
     verification_mode: str
 
-    def begin(self) -> Mapping[str, Any]: ...
+    def begin(self, *, owner_display_name: str | None = None) -> Mapping[str, Any]: ...
 
-    def complete(self, *, challenge: bytes, assertion: Any) -> Mapping[str, Any]: ...
+    def complete(
+        self,
+        *,
+        challenge: bytes,
+        assertion: Any,
+        owner_display_name: str | None = None,
+    ) -> Mapping[str, Any]: ...
 
 
 def _utc_now() -> datetime:
@@ -98,19 +105,26 @@ class MemoryEvidenceStore:
 
 
 class FailClosedWebAuthnSpikeVerifier:
-    """Offer a browser ceremony and never accept the assertion.
+    """Test double that offers a browser ceremony and never accepts it.
 
-    Phil can run Windows Hello from the localhost UI. This verifier does not
-    check a signature and does not create trust in the returned bytes.
+    The harness default is ``LocalhostWebAuthnVerifier``. This double remains
+    so tests can prove an unverified ceremony still creates no session.
     """
 
     verification_mode = "fail_closed"
 
-    def begin(self) -> Mapping[str, Any]:
-        return {"ceremony_available": True, "offer_browser_ceremony": True}
+    def begin(self, *, owner_display_name: str | None = None) -> Mapping[str, Any]:
+        del owner_display_name
+        return {"ceremony_available": True, "offer_browser_ceremony": True, "ceremony_kind": None}
 
-    def complete(self, *, challenge: bytes, assertion: Any) -> Mapping[str, Any]:
-        del challenge, assertion
+    def complete(
+        self,
+        *,
+        challenge: bytes,
+        assertion: Any,
+        owner_display_name: str | None = None,
+    ) -> Mapping[str, Any]:
+        del challenge, assertion, owner_display_name
         return {"verified": False}
 
 
@@ -127,13 +141,21 @@ class LabHmacCeremonyVerifier:
         self._device_binding_ref = digest[:32]
         self._credential_id_hash = "sha256:" + digest
 
-    def begin(self) -> Mapping[str, Any]:
-        return {"ceremony_available": True, "offer_browser_ceremony": False}
+    def begin(self, *, owner_display_name: str | None = None) -> Mapping[str, Any]:
+        del owner_display_name
+        return {"ceremony_available": True, "offer_browser_ceremony": False, "ceremony_kind": None}
 
     def assertion_for(self, challenge: bytes) -> str:
         return hmac.new(self._key, challenge, hashlib.sha256).hexdigest()
 
-    def complete(self, *, challenge: bytes, assertion: Any) -> Mapping[str, Any]:
+    def complete(
+        self,
+        *,
+        challenge: bytes,
+        assertion: Any,
+        owner_display_name: str | None = None,
+    ) -> Mapping[str, Any]:
+        del owner_display_name
         if not isinstance(assertion, str) or not re.fullmatch(r"[0-9a-f]{64}", assertion):
             return {"verified": False}
         expected = hmac.new(self._key, challenge, hashlib.sha256).hexdigest()
@@ -162,12 +184,20 @@ class PlatformHelperCeremonyVerifier:
             return None
         return candidate
 
-    def begin(self) -> Mapping[str, Any]:
+    def begin(self, *, owner_display_name: str | None = None) -> Mapping[str, Any]:
+        del owner_display_name
         if self._executable() is None:
-            return {"ceremony_available": False, "offer_browser_ceremony": False}
-        return {"ceremony_available": True, "offer_browser_ceremony": True}
+            return {"ceremony_available": False, "offer_browser_ceremony": False, "ceremony_kind": None}
+        return {"ceremony_available": True, "offer_browser_ceremony": True, "ceremony_kind": None}
 
-    def complete(self, *, challenge: bytes, assertion: Any) -> Mapping[str, Any]:
+    def complete(
+        self,
+        *,
+        challenge: bytes,
+        assertion: Any,
+        owner_display_name: str | None = None,
+    ) -> Mapping[str, Any]:
+        del owner_display_name
         executable = self._executable()
         if executable is None:
             raise ProfileBError(
@@ -243,7 +273,7 @@ class ProfileBSessionService:
         clock: Callable[[], datetime] | None = None,
     ) -> None:
         self.store = store
-        self.verifier = verifier or FailClosedWebAuthnSpikeVerifier()
+        self.verifier = verifier or LocalhostWebAuthnVerifier()
         self.tenant_id = tenant_id
         self.customer_context_id = customer_context_id
         self.validator = validator or ContractValidator()
@@ -310,17 +340,22 @@ class ProfileBSessionService:
                 "Owner display name must be a short label without control characters.",
                 code="request_invalid",
             )
-        offered = dict(self.verifier.begin())
+        offered = dict(self.verifier.begin(owner_display_name=owner_display_name))
         now = self.clock()
+        ceremony_kind = offered.get("ceremony_kind")
+        if ceremony_kind not in {None, "registration_then_assertion", "assertion"}:
+            ceremony_kind = None
         if offered.get("ceremony_available") is not True:
             return self._ceremony(
                 now=now,
                 status="ceremony_unavailable",
                 ceremony_available=False,
                 verification_mode=self.verifier.verification_mode,
+                ceremony_kind=None,
                 challenge_id=None,
                 challenge_b64url=None,
                 public_key_request=None,
+                assertion_request=None,
                 owner_display_name_accepted=True,
                 detail="Windows Hello / passkey ceremony is not available on this host.",
                 expires_at=None,
@@ -329,20 +364,49 @@ class ProfileBSessionService:
         challenge = token.encode("ascii")
         challenge_id = f"profile-b-challenge:{token}"
         challenge_b64url = _b64url(challenge)
+        allow_ids = _allow_credential_ids(offered.get("allow_credential_ids_b64url"))
         public_key = None
-        if offered.get("offer_browser_ceremony") is True:
-            public_key = {
-                "rp_id": "localhost",
-                "rp_name": "LIMA Office",
-                "user_display_name": owner_display_name,
-                "user_id_b64url": _b64url(uuid4().bytes),
-                "challenge_b64url": challenge_b64url,
-                "user_verification": "required",
-                "authenticator_attachment": "platform",
-                "timeout_ms": CHALLENGE_TTL_SECONDS * 1000,
-                "attestation": "none",
-                "resident_key": "preferred",
-            }
+        assertion_request = None
+        if ceremony_kind == "assertion":
+            if not allow_ids:
+                return self._ceremony(
+                    now=now,
+                    status="ceremony_unavailable",
+                    ceremony_available=False,
+                    verification_mode=self.verifier.verification_mode,
+                    ceremony_kind=None,
+                    challenge_id=None,
+                    challenge_b64url=None,
+                    public_key_request=None,
+                    assertion_request=None,
+                    owner_display_name_accepted=True,
+                    detail="Windows Hello / passkey ceremony is not available on this host.",
+                    expires_at=None,
+                )
+            assertion_request = _assertion_request(challenge_b64url, allow_ids)
+            detail = "Sign the Profile B assertion. No session exists yet."
+        else:
+            if offered.get("offer_browser_ceremony") is True:
+                public_key = {
+                    "rp_id": "localhost",
+                    "rp_name": "LIMA Office",
+                    "user_display_name": owner_display_name,
+                    "user_id_b64url": _b64url(uuid4().bytes),
+                    "challenge_b64url": challenge_b64url,
+                    "user_verification": "required",
+                    "authenticator_attachment": "platform",
+                    "timeout_ms": CHALLENGE_TTL_SECONDS * 1000,
+                    "attestation": "none",
+                    "resident_key": "preferred",
+                }
+            if ceremony_kind == "registration_then_assertion":
+                if public_key is None:
+                    ceremony_kind = None
+                else:
+                    assertion_request = _assertion_request(challenge_b64url, [])
+            detail = "Complete the Profile B ceremony. No session exists yet."
+            if ceremony_kind == "registration_then_assertion":
+                detail = "Create the passkey, then sign the assertion. No session exists yet."
         self._record(
             "operator_profile_b_ceremony_requested",
             {
@@ -365,11 +429,13 @@ class ProfileBSessionService:
             status="challenge_issued",
             ceremony_available=True,
             verification_mode=self.verifier.verification_mode,
+            ceremony_kind=ceremony_kind,
             challenge_id=challenge_id,
             challenge_b64url=challenge_b64url,
             public_key_request=public_key,
+            assertion_request=assertion_request,
             owner_display_name_accepted=True,
-            detail="Complete the Profile B ceremony. No session exists yet.",
+            detail=detail,
             expires_at=_timestamp(expires),
         )
 
@@ -380,7 +446,13 @@ class ProfileBSessionService:
         if pending is None or self.clock() >= pending["expires_at"]:
             raise ProfileBError("The ceremony challenge expired.", code="ceremony_rejected")
         try:
-            verified = dict(self.verifier.complete(challenge=pending["challenge"], assertion=assertion))
+            verified = dict(
+                self.verifier.complete(
+                    challenge=pending["challenge"],
+                    assertion=assertion,
+                    owner_display_name=pending["owner_display_name"],
+                )
+            )
         except ProfileBError:
             self._reject(challenge_id)
             raise
@@ -544,9 +616,11 @@ class ProfileBSessionService:
         status: str,
         ceremony_available: bool,
         verification_mode: str,
+        ceremony_kind: str | None,
         challenge_id: str | None,
         challenge_b64url: str | None,
         public_key_request: dict[str, Any] | None,
+        assertion_request: dict[str, Any] | None,
         owner_display_name_accepted: bool,
         detail: str,
         expires_at: str | None,
@@ -567,9 +641,11 @@ class ProfileBSessionService:
             "status": status,
             "ceremony_available": ceremony_available,
             "verification_mode": verification_mode,
+            "ceremony_kind": ceremony_kind,
             "challenge_id": challenge_id,
             "challenge_b64url": challenge_b64url,
             "public_key_request": public_key_request,
+            "assertion_request": assertion_request,
             "owner_display_name_accepted": owner_display_name_accepted,
             "session_created": False,
             "binding_id": None,
@@ -658,6 +734,28 @@ class ProfileBSessionService:
             "step_up_stub_only": True,
             "ceremony_verified": True,
         }
+
+
+def _allow_credential_ids(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    allowed: list[str] = []
+    for item in value:
+        if isinstance(item, str) and _CREDENTIAL_ID_RE.fullmatch(item) and item not in allowed:
+            allowed.append(item)
+        if len(allowed) == 8:
+            break
+    return allowed
+
+
+def _assertion_request(challenge_b64url: str, allow_ids: list[str]) -> dict[str, Any]:
+    return {
+        "rp_id": "localhost",
+        "challenge_b64url": challenge_b64url,
+        "user_verification": "required",
+        "timeout_ms": CHALLENGE_TTL_SECONDS * 1000,
+        "allow_credential_ids_b64url": allow_ids,
+    }
 
 
 def decode_challenge(challenge_b64url: str) -> bytes:

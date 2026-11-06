@@ -7,8 +7,9 @@
   "required": [
     "contract_name", "contract_version", "schema_version", "tenant_id", "customer_context_id",
     "environment", "correlation_id", "causation_id", "idempotency_key", "producer", "policy_version",
-    "status", "ceremony_available", "verification_mode", "challenge_id", "challenge_b64url",
-    "public_key_request", "owner_display_name_accepted", "session_created", "binding_id", "detail",
+    "status", "ceremony_available", "verification_mode", "ceremony_kind", "challenge_id",
+    "challenge_b64url", "public_key_request", "assertion_request", "owner_display_name_accepted",
+    "session_created", "binding_id", "detail",
     "local_loopback_only", "credentials_collected", "approval_authority", "runtime_authority_blocked",
     "positive_approval_step_up", "survives_restart", "expires_at"
   ],
@@ -29,7 +30,11 @@
     "policy_version": {"type": "string", "const": "policy-operator-profile-b-session-lab-v1"},
     "status": {"type": "string", "enum": ["challenge_issued", "ceremony_unavailable", "rejected", "verified"]},
     "ceremony_available": {"type": "boolean"},
-    "verification_mode": {"type": "string", "enum": ["lab_hmac", "platform_helper", "fail_closed"]},
+    "verification_mode": {"type": "string", "enum": ["lab_hmac", "platform_helper", "fail_closed", "localhost_webauthn"]},
+    "ceremony_kind": {"oneOf": [
+      {"type": "null"},
+      {"type": "string", "enum": ["registration_then_assertion", "assertion"]}
+    ]},
     "challenge_id": {"oneOf": [
       {"type": "null"},
       {"type": "string", "pattern": "^profile-b-challenge:[0-9a-f]{32}$"}
@@ -56,6 +61,20 @@
         "resident_key": {"type": "string", "const": "preferred"}
       }}
     ]},
+    "assertion_request": {"oneOf": [
+      {"type": "null"},
+      {"type": "object", "additionalProperties": false, "required": [
+        "rp_id", "challenge_b64url", "user_verification", "timeout_ms", "allow_credential_ids_b64url"
+      ], "properties": {
+        "rp_id": {"type": "string", "const": "localhost"},
+        "challenge_b64url": {"type": "string", "pattern": "^[A-Za-z0-9_-]{16,128}$"},
+        "user_verification": {"type": "string", "const": "required"},
+        "timeout_ms": {"type": "integer", "const": 120000},
+        "allow_credential_ids_b64url": {"type": "array", "maxItems": 8, "items": {
+          "type": "string", "pattern": "^[A-Za-z0-9_-]{16,256}$"
+        }}
+      }}
+    ]},
     "owner_display_name_accepted": {"type": "boolean"},
     "session_created": {"type": "boolean"},
     "binding_id": {"oneOf": [
@@ -76,6 +95,9 @@
   },
   "allOf": [
     {"if": {"properties": {"session_created": {"const": false}}, "required": ["session_created"]}, "then": {"properties": {"binding_id": {"type": "null"}}}},
-    {"if": {"properties": {"ceremony_available": {"const": false}}, "required": ["ceremony_available"]}, "then": {"properties": {"challenge_b64url": {"type": "null"}, "public_key_request": {"type": "null"}}}}
+    {"if": {"properties": {"ceremony_available": {"const": false}}, "required": ["ceremony_available"]}, "then": {"properties": {"challenge_b64url": {"type": "null"}, "public_key_request": {"type": "null"}, "assertion_request": {"type": "null"}, "ceremony_kind": {"type": "null"}}}},
+    {"if": {"properties": {"ceremony_kind": {"const": "assertion"}}, "required": ["ceremony_kind"]}, "then": {"properties": {"public_key_request": {"type": "null"}, "assertion_request": {"type": "object"}}}},
+    {"if": {"properties": {"ceremony_kind": {"const": "registration_then_assertion"}}, "required": ["ceremony_kind"]}, "then": {"properties": {"public_key_request": {"type": "object"}, "assertion_request": {"type": "object"}}}},
+    {"if": {"properties": {"ceremony_kind": {"type": "null"}}, "required": ["ceremony_kind"]}, "then": {"properties": {"assertion_request": {"type": "null"}}}}
   ]
 }

@@ -67,11 +67,11 @@ from lima_office.runtime.local_loopback_api import (  # noqa: E402
     host_header_is_loopback,
 )
 from lima_office.runtime.profile_b_session import (  # noqa: E402
-    FailClosedWebAuthnSpikeVerifier,
     PlatformHelperCeremonyVerifier,
     ProfileBError,
     ProfileBSessionService,
 )
+from lima_office.runtime.webauthn_verifier import LocalhostWebAuthnVerifier  # noqa: E402
 from lima_office.runtime.pending_approval_request import (  # noqa: E402
     PendingApprovalRequestError,
     PendingApprovalRequestService,
@@ -174,7 +174,7 @@ def _parser():
         "--profile-b-helper",
         type=Path,
         default=None,
-        help="Absolute platform helper for a later attended Profile B ceremony.",
+        help="Absolute platform helper. When unset, localhost WebAuthn verification is used.",
     )
     parser.add_argument(
         "--disable-profile-a-lab",
@@ -824,7 +824,7 @@ def main(argv: list[str] | None = None) -> int:
             verifier = (
                 PlatformHelperCeremonyVerifier(helper_path)
                 if helper_path is not None
-                else FailClosedWebAuthnSpikeVerifier()
+                else LocalhostWebAuthnVerifier()
             )
             profile_b = ProfileBSessionService(
                 store,

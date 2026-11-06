@@ -298,3 +298,11 @@ This is an ADR-style decision log. Status values are `accepted`, `proposed`, or 
 - Decision: Add `/api/v1` on `127.0.0.1` for the Supervisor UI. Mutating routes require a Profile A or Profile B session. Profile B is a named-owner WebAuthn-class ceremony that fails closed until a verifier accepts it. Legacy `/api/office` routes stay as deprecated aliases for the lab.7 transition. Profile A stays behind an explicit lab flag. The lab manifest keeps `operator_authentication`, `production_ready`, and `customer_pilot_allowed` false.
 - Rationale: The UI needs a long-lived local API, and the owner selected a first-party loopback contract instead of bringing a foreign operator shell into Arc. Profile B can be exercised on a lab PC without pretending the ceremony is already an approval credential.
 - Consequence: No positive approval token, Arc dispatch, connector, LAN bind, or customer-data path is added. A later packaging brief is required before the manifest may report operator authentication. Profile C remains an open identity choice for customer use.
+
+## ADR-0023: Verify Profile B WebAuthn Assertions On Localhost
+
+- Status: accepted for lab source only
+- Date: 2026-11-06
+- Decision: The default Profile B verifier checks an ES256 WebAuthn assertion for RP ID `localhost` with the `webauthn` 2.8 library. A session is created only after that signature verifies. The public credential is stored in process memory, bound to the named owner display name, and dropped on process exit. `survives_restart` stays false. `operator_authentication`, `production_ready`, and `customer_pilot_allowed` stay false.
+- Rationale: The attended Hello ceremony needs a real signature check before it can create a lab session. The manifest flag still needs a separate packaging brief, so verification and packaging stay apart.
+- Consequence: Unverified and tampered assertions still fail closed. Positive approval step-up, Arc dispatch, Profile C, LAN bind, and durable credential storage stay out of this change. The lab HMAC verifier and an explicit platform helper remain overrides. See [PROFILE_B_WEBAUTHN_VERIFICATION.md](PROFILE_B_WEBAUTHN_VERIFICATION.md).

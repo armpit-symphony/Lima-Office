@@ -363,7 +363,7 @@ The Phase 0 field-level schemas in [contracts/v1](../contracts/v1) define the mi
 
 ## Local Operator API
 
-The Supervisor UI calls a versioned loopback API on `127.0.0.1`. Mutating `/api/v1` routes require an in-memory Profile A or Profile B session. Profile B is a named-owner ceremony. The default verifier does not accept browser assertion bytes. Session handles, ceremony assertions, and helper output are not written to logs or evidence. The lab manifest does not report operator authentication, production readiness, or customer-pilot permission. See [Local Loopback API v1](LOCAL_LOOPBACK_API_v1.md).
+The Supervisor UI calls a versioned loopback API on `127.0.0.1`. Mutating `/api/v1` routes require an in-memory Profile A or Profile B session. Profile B is a named-owner ceremony. The default verifier creates a session only after a localhost WebAuthn assertion signature verifies. Session handles, ceremony assertions, and helper output are not written to logs or evidence. The lab manifest does not report operator authentication, and `production_ready` and `customer_pilot_allowed` stay false. See [Local Loopback API v1](LOCAL_LOOPBACK_API_v1.md) and [Profile B WebAuthn Verification](PROFILE_B_WEBAUTHN_VERIFICATION.md).
 
 ## Conceptual Standards Mapping
 

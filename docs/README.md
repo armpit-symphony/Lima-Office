@@ -14,6 +14,8 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [MVP scope](MVP_SCOPE.md)
 - [Roadmap](ROADMAP.md)
 - [Contracts](CONTRACTS.md)
+- [Profile B WebAuthn verification](PROFILE_B_WEBAUTHN_VERIFICATION.md)
+- [Local loopback API v1](LOCAL_LOOPBACK_API_v1.md)
 - [Cross-contract invariants](CROSS_CONTRACT_INVARIANTS.md)
 - [Approval token runtime binding](APPROVAL_TOKEN_RUNTIME_BINDING.md)
 - [Guardian expiry and replay policy](GUARDIAN_EXPIRY_REPLAY_POLICY.md)
@@ -157,6 +159,7 @@ This directory contains Phase 0 architecture, security, contracts, planning, Pha
 - [Phase 1B lab runtime drill](runbooks/phase-1b-lab-runtime-drill.md)
 - [Phase 1C supervised lab orchestration drill](runbooks/phase-1c-supervised-lab-orchestration-drill.md)
 - [Prompt injection response](runbooks/prompt-injection-response.md)
+- [Profile B operator login](runbooks/profile-b-operator-login.md)
 - [LIMA IT handoff](runbooks/lima-it-handoff.md)
 
 ## Policies

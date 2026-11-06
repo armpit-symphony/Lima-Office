@@ -232,7 +232,7 @@
         <div class="grid">
           <article class="card full"><h2>Approval testing profile</h2><div class="status-row"><strong>Selected profile</strong><span id="approval-profile-name">Profile A</span></div><div class="status-row"><strong>Readiness</strong><span id="approval-profile-status">Checking...</span></div><div class="status-row"><strong>Customer or production use</strong><span>Blocked until profile B or C</span></div><div class="callout" style="margin-top:12px">Profile A exercises the attended synthetic review workflow only. It does not prove owner identity and cannot approve execution. Profile B sign-in is a separate localhost ceremony and does not approve work.</div></article>
           <article class="card half"><div class="label">Existing Arc approval queue</div><div class="metric" id="approval-count-detail">—</div><p>Existing Arc approval records remain separate from these Supervisor previews.</p></article>
-          <article class="card half"><h2>Profile B operator login</h2><div class="status-row"><strong>Status</strong><span id="profile-b-status">Not signed in</span></div><div class="status-row"><strong>Restart</strong><span>Does not survive restart</span></div><label class="fine" for="profile-b-owner">Owner display name</label><input class="text-input" id="profile-b-owner" maxlength="80" autocomplete="name" spellcheck="false"><button class="button primary" id="profile-b-begin" style="margin-top:12px" type="button">Sign in with Windows Hello / passkey</button><div class="proposal-message" id="profile-b-message"></div><p class="fine">The ceremony runs on this PC. This lab build stores no passkey and creates a session only when a configured verifier accepts it. Positive approval step-up is not issued.</p></article>
+          <article class="card half"><h2>Profile B operator login</h2><div class="status-row"><strong>Status</strong><span id="profile-b-status">Not signed in</span></div><div class="status-row"><strong>Restart</strong><span>Does not survive restart</span></div><label class="fine" for="profile-b-owner">Owner display name</label><input class="text-input" id="profile-b-owner" maxlength="80" autocomplete="name" spellcheck="false"><button class="button primary" id="profile-b-begin" style="margin-top:12px" type="button">Sign in with Windows Hello / passkey</button><div class="proposal-message" id="profile-b-message"></div><p class="fine">Windows Hello runs on this PC. A session is created only after the localhost assertion signature verifies. The public credential stays in this process and does not survive restart. Positive approval step-up is not issued.</p></article>
           <article class="card half"><h2>Attended operator session</h2><div class="status-row"><strong>Status</strong><span id="operator-session-status">Not bound</span></div><div class="status-row"><strong>Assurance</strong><span id="operator-session-assurance">Lab only</span></div><button class="button primary" id="bind-operator-session" style="margin-top:12px">Bind this Windows session</button><div class="proposal-message" id="operator-session-message"></div><p class="fine">Lab-only Profile A flag. No PIN or password is collected. This process-only binding expires in 30 minutes and is not production identity or approval.</p></article>
           <article class="card full"><h2>Supervisor approval previews</h2><p>A preview is not an approval request or result. Each preview is bound to one exact accepted proposal revision and expires for review after 15 minutes.</p><div class="proposal-list" id="approval-preview-list"><div class="empty">No approval previews exist yet.</div></div></article>
           <article class="card full"><h2>Approval review requests</h2><div class="callout">You may deny or cancel an active synthetic request, or explicitly record its expiry. These terminal records never approve work, issue a token, create an execution binding, assign a worker, or dispatch Arc.</div><div class="proposal-list" id="pending-approval-request-list" style="margin-top:12px"><div class="empty">No approval review requests exist yet.</div></div></article>
@@ -794,6 +794,110 @@
       return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
     }
 
+    function webauthnCredential(credential, kind) {
+      const response = credential.response;
+      const payload = {
+        id: credential.id,
+        rawId: bytesToB64url(credential.rawId),
+        type: credential.type,
+        response: {clientDataJSON: bytesToB64url(response.clientDataJSON)}
+      };
+      if (kind === "registration") {
+        payload.response.attestationObject = bytesToB64url(response.attestationObject);
+      } else {
+        payload.response.authenticatorData = bytesToB64url(response.authenticatorData);
+        payload.response.signature = bytesToB64url(response.signature);
+        if (response.userHandle) payload.response.userHandle = bytesToB64url(response.userHandle);
+      }
+      return payload;
+    }
+
+    async function finishLocalhostWebAuthn(begin) {
+      if (!begin.ceremony_available) {
+        text("profile-b-message", `${begin.detail || "Ceremony unavailable."} No session was created.`);
+        return;
+      }
+      if (location.hostname !== "localhost") {
+        text("profile-b-message", "Open this console on localhost before Windows Hello. The numeric loopback address cannot satisfy the passkey origin. No session was created.");
+        return;
+      }
+      if (!window.PublicKeyCredential || !navigator.credentials) {
+        text("profile-b-message", "This browser cannot start a platform authenticator. No session was created.");
+        return;
+      }
+      let authentication = null;
+      let registration = null;
+      if (begin.ceremony_kind === "registration_then_assertion") {
+        if (!begin.public_key_request || !begin.assertion_request || !navigator.credentials.create || !navigator.credentials.get) {
+          text("profile-b-message", "This browser cannot start a platform authenticator. No session was created.");
+          return;
+        }
+        const options = begin.public_key_request;
+        const created = await navigator.credentials.create({
+          publicKey: {
+            challenge: b64urlToBytes(options.challenge_b64url),
+            rp: {name: options.rp_name, id: options.rp_id},
+            user: {
+              id: b64urlToBytes(options.user_id_b64url),
+              name: options.user_display_name,
+              displayName: options.user_display_name
+            },
+            pubKeyCredParams: [{type: "public-key", alg: -7}],
+            authenticatorSelection: {
+              authenticatorAttachment: options.authenticator_attachment,
+              userVerification: options.user_verification,
+              residentKey: options.resident_key
+            },
+            timeout: options.timeout_ms,
+            attestation: options.attestation
+          }
+        });
+        if (!created) throw new Error("The platform authenticator returned no credential");
+        const request = begin.assertion_request;
+        const asserted = await navigator.credentials.get({
+          publicKey: {
+            challenge: b64urlToBytes(request.challenge_b64url),
+            rpId: request.rp_id,
+            allowCredentials: [{type: "public-key", id: created.rawId}],
+            userVerification: request.user_verification,
+            timeout: request.timeout_ms
+          }
+        });
+        if (!asserted) throw new Error("The platform authenticator returned no assertion");
+        registration = webauthnCredential(created, "registration");
+        authentication = webauthnCredential(asserted, "authentication");
+      } else if (begin.ceremony_kind === "assertion") {
+        const request = begin.assertion_request;
+        if (!request || !navigator.credentials.get) {
+          text("profile-b-message", "This browser cannot start a platform authenticator. No session was created.");
+          return;
+        }
+        const asserted = await navigator.credentials.get({
+          publicKey: {
+            challenge: b64urlToBytes(request.challenge_b64url),
+            rpId: request.rp_id,
+            allowCredentials: (request.allow_credential_ids_b64url || []).map(id => ({type: "public-key", id: b64urlToBytes(id)})),
+            userVerification: request.user_verification,
+            timeout: request.timeout_ms
+          }
+        });
+        if (!asserted) throw new Error("The platform authenticator returned no assertion");
+        authentication = webauthnCredential(asserted, "authentication");
+      } else {
+        text("profile-b-message", "Ceremony unavailable. No session was created.");
+        return;
+      }
+      const done = await postJson("/api/v1/operator-session/profile-b/complete", {
+        challenge_id: begin.challenge_id,
+        assertion: registration ? {registration, authentication} : {authentication}
+      });
+      profileBSessionHandle = done.binding_id || null;
+      text("profile-b-message", profileBSessionHandle
+        ? "Signed in for this tab. The passkey assertion was verified. Approval authority remains off."
+        : "Ceremony finished without a session.");
+      await loadState();
+    }
+
     document.getElementById("profile-b-begin").addEventListener("click", async event => {
       const button = event.currentTarget;
       const owner = document.getElementById("profile-b-owner").value.trim();
@@ -806,6 +910,10 @@
         });
         if (begin.verification_mode === "lab_hmac") {
           text("profile-b-message", "Lab ceremony verifier is active. Finish it from the attended test client. No browser secret is stored.");
+          return;
+        }
+        if (begin.verification_mode === "localhost_webauthn") {
+          await finishLocalhostWebAuthn(begin);
           return;
         }
         if (!begin.ceremony_available || !begin.public_key_request) {

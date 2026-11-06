@@ -1,0 +1,52 @@
+{
+  "contract_name": "operator.profile_b.ceremony",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-profile-b-ceremony-4c0e2a6b9d1f4e0a8c7b5a3d2f6e1b90",
+  "causation_id": null,
+  "idempotency_key": "idem-profile-b-ceremony-4c0e2a6b9d1f4e0a8c7b5a3d2f6e1b90",
+  "producer": {
+    "component": "operator_console",
+    "produced_at": "2026-11-06T00:00:00Z"
+  },
+  "policy_version": "policy-operator-profile-b-session-lab-v1",
+  "status": "challenge_issued",
+  "ceremony_available": true,
+  "verification_mode": "localhost_webauthn",
+  "ceremony_kind": "registration_then_assertion",
+  "challenge_id": "profile-b-challenge:4c0e2a6b9d1f4e0a8c7b5a3d2f6e1b90",
+  "challenge_b64url": "NGMwZTJhNmI5ZDFmNGUwYThjN2I1YTNkMmY2ZTFiOTA",
+  "public_key_request": {
+    "rp_id": "localhost",
+    "rp_name": "LIMA Office",
+    "user_display_name": "Phil",
+    "user_id_b64url": "AAAAAAAAAAAAAAAAAAAAAA",
+    "challenge_b64url": "NGMwZTJhNmI5ZDFmNGUwYThjN2I1YTNkMmY2ZTFiOTA",
+    "user_verification": "required",
+    "authenticator_attachment": "platform",
+    "timeout_ms": 120000,
+    "attestation": "none",
+    "resident_key": "preferred"
+  },
+  "assertion_request": {
+    "rp_id": "localhost",
+    "challenge_b64url": "NGMwZTJhNmI5ZDFmNGUwYThjN2I1YTNkMmY2ZTFiOTA",
+    "user_verification": "required",
+    "timeout_ms": 120000,
+    "allow_credential_ids_b64url": []
+  },
+  "owner_display_name_accepted": true,
+  "session_created": false,
+  "binding_id": null,
+  "detail": "Create the passkey, then sign the assertion. No session exists yet.",
+  "local_loopback_only": true,
+  "credentials_collected": false,
+  "approval_authority": false,
+  "runtime_authority_blocked": true,
+  "positive_approval_step_up": "stub_only",
+  "survives_restart": false,
+  "expires_at": "2026-11-06T00:02:00Z"
+}
