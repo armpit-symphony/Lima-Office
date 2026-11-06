@@ -1,4 +1,4 @@
-# LIMA Office Logbook
+﻿# LIMA Office Logbook
 
 > **Goal:** Build LIMA Office as a Guardian-gated business operations platform where a business owner works through a clear Supervisor UI, ChatGPT/Codex supplies the Supervisor reasoning layer, bounded helper agents assist with office work, and 1-8 Arc Bot computers execute approved worker tasks with evidence.
 
@@ -207,7 +207,7 @@ Until their contracts, threat review, Guardian enforcement, approval flow, and e
 
 ## Next Release Target
 
-**Recommended milestone:** `0.1.0-lab.6` — LIMA Office Supervisor Console, first governed slice.
+**Recommended milestone:** `0.1.0-lab.6` â€” LIMA Office Supervisor Console, first governed slice.
 
 Acceptance target:
 
@@ -224,14 +224,14 @@ Acceptance target:
 
 ## Log Entries
 
-### 2026-09-06 — Logbook Created
+### 2026-09-06 â€” Logbook Created
 
 - Recorded the verified lab.5 release, public and local storage locations, component pins, working lab capabilities, and remaining product work.
 - Established the business-owner Supervisor Console as the next LIMA Office milestone.
 - Recorded ChatGPT/Codex as the Supervisor reasoning layer, with LIMA Supervisor as the control plane, Guardian as the syscall gate, and the owner as approval authority.
 - Recorded one bounded Office Operations Helper as the initial helper target.
 
-### 2026-09-06 — Supervisor Console Foundation Implemented
+### 2026-09-06 â€” Supervisor Console Foundation Implemented
 
 - Added the business-owner LIMA Office console to the existing attended
   localhost harness at `/office`.
@@ -245,7 +245,7 @@ Acceptance target:
   sends, form submissions, and live customer writes blocked for the next
   contract-reviewed slices.
 
-### 2026-09-07 — Governed Read-Only Supervisor Turn Implemented
+### 2026-09-07 â€” Governed Read-Only Supervisor Turn Implemented
 
 - Added `supervisor.conversation.turn` and the narrowly live
   `subscription_lab_readonly` model-route contract/example.
@@ -255,7 +255,7 @@ Acceptance target:
 - Added explicit per-turn confirmation and public/non-sensitive internal data
   classification in the `/office` UI.
 - Added pre-action, Guardian, completion, and failure evidence behavior. Durable
-  records contain hashes, lengths, IDs, and posture—not raw conversation text.
+  records contain hashes, lengths, IDs, and postureâ€”not raw conversation text.
 - Added fail-closed tests for confirmation, sensitive classification, auth,
   evidence failures, and unexpected tool events. Helper execution, persistent
   chat, approvals, Arc dispatch, connectors, and external effects remain blocked.
@@ -264,7 +264,7 @@ Acceptance target:
   events, no external side effect, three evidence events, and no raw prompt or
   response text persisted. The temporary smoke database was deleted at exit.
 
-### 2026-09-07 — Office Operations Helper Implemented
+### 2026-09-07 â€” Office Operations Helper Implemented
 
 - Added `helper.assignment` and `helper.result` contracts and extended
   `helper.scope` for one `office_operations_helper` role.
@@ -283,7 +283,7 @@ Acceptance target:
   events were produced. No synthetic profile content was persisted and no model,
   tool, Arc dispatch, or external side effect occurred.
 
-### 2026-09-07 — Durable Tokenless Task Proposals Implemented
+### 2026-09-07 â€” Durable Tokenless Task Proposals Implemented
 
 - Added the `supervisor.task.proposal` contract, sanitized example, proposal
   reason codes, and the matching Guardian action/resource vocabulary.
@@ -296,7 +296,7 @@ Acceptance target:
 - Kept approval tokens, worker assignment, Arc dispatch, model/tool use,
   connectors, form submission, customer data, and external side effects blocked.
 
-### 2026-09-07 — Tokenless Approval Preview Implemented
+### 2026-09-07 â€” Tokenless Approval Preview Implemented
 
 - Added the `supervisor.approval.preview` contract, sanitized example, Guardian
   action/resource vocabulary, and four evidence reason codes.
@@ -314,7 +314,7 @@ Acceptance target:
   approval binding, token, worker assignment, Arc dispatch, model/tool/connector
   use, submission, customer data, or external effect was enabled.
 
-### 2026-09-08 — Attended Lab Session And Pending Request Implemented
+### 2026-09-08 â€” Attended Lab Session And Pending Request Implemented
 
 - Added `operator.session.binding` for a 30-minute pseudonymous personal-PC lab
   session. It collects no PIN/password, stores no raw OS username, does not
@@ -331,7 +331,7 @@ Acceptance target:
   and external effects remain unavailable. Next: a separate deny/cancel/expire
   decision-record milestone before any approval/token work.
 
-### 2026-09-09 — Non-Authorizing Approval Decisions Implemented
+### 2026-09-09 â€” Non-Authorizing Approval Decisions Implemented
 
 - Added a durable decision service for exactly three synthetic request outcomes:
   attended deny, original-requester cancel, and explicit post-TTL expiry.
@@ -361,7 +361,7 @@ Acceptance target:
   separation of duties, and single-use positive authority before implementing
   any approval or execution path.
 
-### 2026-09-09 — Positive Approval Readiness Gate Prepared
+### 2026-09-09 â€” Positive Approval Readiness Gate Prepared
 
 - Reviewed the local Sparkbot Guardian source for its short-lived privileged
   session, PIN hashing/lockout, one-time pending-approval consumption, evidence
@@ -384,7 +384,7 @@ Acceptance target:
 - Current blocker: owner selection of profile A, B, or C. No runtime positive
   approval work will begin until that input is provided.
 
-### 2026-09-09 — Profile A Selected For Whole-System Lab Testing
+### 2026-09-09 â€” Profile A Selected For Whole-System Lab Testing
 
 - Owner selected `attended_os_session_lab_only` temporarily while the complete
   LIMA Office and Arc workflow is tested on the personal PC.
@@ -410,7 +410,7 @@ Acceptance target:
   initialization attempts, so visual UI execution still requires the owner at
   the PC.
 
-### 2026-09-11 — Local And GitHub Source Checkpoint Prepared
+### 2026-09-11 â€” Local And GitHub Source Checkpoint Prepared
 
 - Owner opened the restored Profile A Supervisor Console on localhost and
   confirmed that its visible state looked good. This confirms the UI loads; it
@@ -436,7 +436,7 @@ Acceptance target:
 - PR 33 was merged into public `main` at
   `78f85b382f073c69d85522d6d3b005b18895fed8`.
 
-### 2026-09-11 — Owner-Attended Profile A Workflow Passed
+### 2026-09-11 â€” Owner-Attended Profile A Workflow Passed
 
 - Owner reported the **Complete fictional contact** workflow completed according
   to the supplied attended walkthrough.
@@ -447,7 +447,7 @@ Acceptance target:
 - The exact lab.6 package must repeat restart/reboot, durable restoration,
   worker/evidence visibility, and attended-session rebinding checks.
 
-### 2026-09-11 — LIMA Office Windows Lifecycle Controls Implemented
+### 2026-09-11 â€” LIMA Office Windows Lifecycle Controls Implemented
 
 - Added one-click Start, Restart, and Stop launchers that open the LIMA Office
   Supervisor Console while reusing the existing managed Arc lab process.
@@ -462,6 +462,37 @@ Acceptance target:
   reason-code conformance; 1,151 local Markdown links; PowerShell parsing; and
   an installed-lab status probe that selected `/office/` while confirming login
   startup remained disabled.
+
+
+### 2026-11-05 — Lab.6 package closed; attended Profile A pass completed
+
+- Sparkbot is **out of Arc** (Phil, Nov 5). Historical Sparkbot code reuse in Arc does not make Sparkbot a dependency, release component, or package contents.
+- Lab.6 candidate: `dist-lab6-candidate\lima-office-arc-lab-preview-0.1.0-lab.6.zip`.
+  - ZIP SHA-256: `a5f5110a5d9bf53c3f191146a356aa1fda139125da9953b091d277cc3b33d82e` (matches adjacent `.sha256` file).
+- Exact stack in installed release-manifest (`lima-preview-installed-lab6-48f4d92\config\release-manifest.json`):
+  - LIMA Office: `48f4d92d98695ceafd8da68f805f97f53348bcf8`
+  - Arc worker: `72a5221bff908f5427eab5c7b10bea828ba75ddf`
+  - LIMA Runtime: `4a599405961e786808ea7a7da71ecc65f7358e4f`
+  - Guardian: `69e843218c521b913edcec404dea6b7be8c64f06`
+  - Version label: `0.1.0-lab.6`; `production_ready` false; `operator_authentication` false; `customer_pilot_allowed` false; channel `local_lab_preview_candidate`.
+- **Gates closed (non-attended):**
+  - Clean install from the exact ZIP (Sept 11, 2026) into `C:\Users\limap\lima-preview-installed-lab6-48f4d92`; login startup left disabled.
+  - Restart preserves saved SOP (Sept 11).
+  - Real Windows reboot: lab stayed stopped with login startup off (boot Nov 4); Start path then restored loopback UI, SOP `lab6-restart-sop`, Qwen `qwen2.5:7b` ready, one healthy eligible worker `arc-worker-001`, redacted evidence trace readable (execution opt-in still off).
+  - Post-reboot diagnostic evidence: `dist-lab6-candidate\lab6-post-reboot-diagnostic-evidence-2026-11-05.zip` — SHA-256 `E1E860585A81D8298F63A05BEEF97CD6E9F5DC35B142FF94670F43C66FC76E13` (sop_count 1, model_ready true, external_side_effects false).
+  - Automated suite on Lima-Office source: 922 passed, 1 skipped (re-run morning of Nov 5).
+- **Attended gates closed (Phil, evening Nov 5, America/New_York, ~7:30–8:00 PM ET):**
+  1. Bound attended Windows session in packaged `/office/` UI (`lima-preview-installed-lab6-48f4d92`).
+  2. Ran Office helper **Complete fictional contact** → created task draft → proposal `complete-contact` reached `accepted_for_future_approval`.
+  3. Created tokenless approval preview; finished with **Deny** (`review_outcome: denied`). Positive Approve stayed unused in this lab profile.
+  4. `Restart LIMA Office.cmd`; proposal (`accepted_for_future_approval`) and denied approval preview remained listed after restart. Session unbind after restart matches Profile A `survives_restart: false`.
+  - Note: an older Lab 5 install had been holding port 8766 earlier tonight and was stopped so Lab 6 Start/Restart could bind cleanly.
+- **Owner decisions same evening (Phil yes to all three):**
+  - Append this entry to the tracked logbook.
+  - Publish GitHub prerelease `v0.1.0-lab.6`.
+  - Launch Profile B / versioned local API cloud-agent brief (`notes\CLOUD-AGENT-BRIEF-profile-b-local-api.md`).
+- Positive approval, Arc dispatch of approved dry-run, customer data, and Profile C remain blocked by design (pilot / T-009 gates).
+- Runtime left for Phil's use after the attended pass; login startup left off. Roundtable stays with Atlas/Meridian.
 
 ---
 
