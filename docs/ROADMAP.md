@@ -100,9 +100,11 @@ for whole-system synthetic testing with the low-risk single-owner exception.
 The assessment is `blocked_controls_missing`: positive approval, approval
 results, tokens, execution bindings, replay consumption, worker assignment,
 Arc dispatch, and external effects remain disabled. A lab `/api/v1` loopback
-surface and a fail-closed Profile B login ceremony are now in source. They do
-not flip `operator_authentication` or authorize customer use. Profile B or C
-and its threat review are required before customer or production use.
+surface and a fail-closed Profile B login ceremony are now in source. The
+lab packaging claim sets `operator_authentication` true for that localhost
+path only. `production_ready` and `customer_pilot_allowed` stay false, and
+the claim does not authorize customer use or approval. Profile B or C and its
+threat review are required before customer or production use.
 
 - Phase 1A mock runtime scaffold for contract loading and validation.
 - In-memory mock worker registry, heartbeat intake, task queue, Guardian decisions, and evidence writer.

@@ -45,7 +45,7 @@ class LabPreviewReleaseTests(unittest.TestCase):
         manifest = builder.build_manifest("test-preview", "1" * 40)
         self.assertFalse(manifest["production_ready"])
         self.assertFalse(manifest["customer_pilot_allowed"])
-        self.assertFalse(manifest["operator_authentication"])
+        self.assertTrue(manifest["operator_authentication"])
         self.assertEqual(
             [
                 "document_list",

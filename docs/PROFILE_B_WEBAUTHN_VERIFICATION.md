@@ -1,6 +1,6 @@
 # Profile B WebAuthn Verification
 
-Status: lab source. This note is the contract for the localhost verifier. It does not make the lab manifest report operator authentication, and it does not authorize approval, Arc dispatch, connectors, or customer use.
+Status: lab source. This note is the contract for the localhost verifier. Health, the API descriptor, the session record, the public Profile B summary, the Supervisor console projection, harness readiness, and the lab-preview manifest report `operator_authentication` / `operator_authentication_manifest` true. That value is a lab capability claim for the localhost Profile B path. `production_ready` and `customer_pilot_allowed` stay false. The claim does not authorize approval, Arc dispatch, connectors, or customer use.
 
 ## Library
 
@@ -52,10 +52,14 @@ A later login in the same process is `assertion`. The server checks the signatur
 
 A tampered signature, wrong origin, wrong RP ID, missing user verification, mismatched credential, or unknown credential returns the static rejection. No session is created.
 
-## What stays false
+## Packaging claim
 
-`operator_authentication`, `production_ready`, and `customer_pilot_allowed` stay false in the lab manifest, health payload, and session record. Positive approval step-up stays `stub_only`. Profile C, LAN bind, and a durable credential store are out of scope.
+`operator_authentication` and `operator_authentication_manifest` are true together. They come from `lima_office/runtime/lab_packaging.py`. The value means this localhost lab package has a Profile B authentication path. It is a capability claim. It is not a live "someone is signed in" bit. Public status still uses `active` for that.
 
-## Residual risk
+`production_ready` and `customer_pilot_allowed` stay false on every surface that carries them, including the error envelope, health, the descriptor, and the lab-preview manifest. Positive approval step-up stays `stub_only`. `approval_authority` stays false. Profile C, LAN bind, and a durable credential store stay out of scope. `survives_restart` stays false. The public credential remains process memory only.
 
-The display name is chosen by the person at the keyboard. Windows Hello proves user verification on this PC; it does not prove a directory identity. `fmt: none` does not prove the authenticator model. A signature counter that never moves cannot detect a cloned authenticator. Those limits are why the manifest flag stays false until a later packaging brief.
+ES256 (COSE alg `-7`) stays the only accepted public key. RP ID stays `localhost`. The challenge TTL stays 120 seconds.
+
+## Residual limits
+
+The display name is chosen by the person at the keyboard. It is a label for the process-local credential. It is not a directory or IdP identity. Windows Hello proves user verification on the enrolled platform authenticator of this PC. It does not prove that the person is a named business directory principal. Attestation format is `none`, so the ceremony does not prove authenticator model or a certificate chain. The signature counter may stay at zero. Some platform authenticators never increment it, so clone detection from the counter is weak. The one-time challenge still blocks replay of the same assertion. A process restart drops the public credential. The packaging claim is about the path, not durable enrollment. A true authentication flag does not mean the package is ready for production or a customer pilot.

@@ -363,7 +363,7 @@ The Phase 0 field-level schemas in [contracts/v1](../contracts/v1) define the mi
 
 ## Local Operator API
 
-The Supervisor UI calls a versioned loopback API on `127.0.0.1`. Mutating `/api/v1` routes require an in-memory Profile A or Profile B session. Profile B is a named-owner ceremony. The default verifier creates a session only after a localhost WebAuthn assertion signature verifies. Session handles, ceremony assertions, and helper output are not written to logs or evidence. The lab manifest does not report operator authentication, and `production_ready` and `customer_pilot_allowed` stay false. See [Local Loopback API v1](LOCAL_LOOPBACK_API_v1.md) and [Profile B WebAuthn Verification](PROFILE_B_WEBAUTHN_VERIFICATION.md).
+The Supervisor UI calls a versioned loopback API on `127.0.0.1`. Mutating `/api/v1` routes require an in-memory Profile A or Profile B session. Profile B is a named-owner ceremony. The default verifier creates a session only after a localhost WebAuthn assertion signature verifies. Session handles, ceremony assertions, and helper output are not written to logs or evidence. The lab manifest reports `operator_authentication` true as a localhost path claim. `production_ready` and `customer_pilot_allowed` stay false. The claim does not grant approval authority. The keyboard-chosen display name is not directory identity. Windows Hello proves local user verification only. Attestation format is `none`. The signature counter may stay zero. The credential is process memory only. See [Local Loopback API v1](LOCAL_LOOPBACK_API_v1.md) and [Profile B WebAuthn Verification](PROFILE_B_WEBAUTHN_VERIFICATION.md).
 
 ## Conceptual Standards Mapping
 

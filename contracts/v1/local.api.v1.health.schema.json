@@ -33,9 +33,21 @@
     "build_version": {"type": "string", "pattern": "^[0-9A-Za-z.-]{1,64}$"},
     "arc_commit": {"type": "string", "pattern": "^(unknown|[0-9a-f]{40})$"},
     "source_modified": {"type": "boolean"},
-    "production_ready": {"type": "boolean", "const": false},
-    "customer_pilot_allowed": {"type": "boolean", "const": false},
-    "operator_authentication": {"type": "boolean", "const": false},
+    "production_ready": {
+      "type": "boolean",
+      "const": false,
+      "description": "Stays false. A true operator_authentication claim does not make this package production-ready."
+    },
+    "customer_pilot_allowed": {
+      "type": "boolean",
+      "const": false,
+      "description": "Stays false. A true operator_authentication claim does not permit a customer pilot."
+    },
+    "operator_authentication": {
+      "type": "boolean",
+      "const": true,
+      "description": "Lab capability claim only: this package has a localhost Profile B authentication path. The keyboard-chosen display name is not directory identity. Windows Hello proves local user verification only. Attestation format is none. The signature counter may stay zero. The credential is process memory only. This flag does not grant approval authority, Arc dispatch, production readiness, or customer-pilot permission."
+    },
     "runtime_authority_blocked": {"type": "boolean", "const": true}
   }
 }

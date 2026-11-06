@@ -27,6 +27,11 @@ _session = importlib.util.module_from_spec(_spec)
 sys.modules["_arc_office_session"] = _session
 _spec.loader.exec_module(_session)
 
+from lima_office.runtime.lab_packaging import (  # noqa: E402
+    CUSTOMER_PILOT_ALLOWED,
+    OPERATOR_AUTHENTICATION_MANIFEST,
+    PRODUCTION_READY,
+)
 from lima_office.runtime.operator_harness import HarnessBoundaryError  # noqa: E402
 from lima_office.runtime.operator_ide import (  # noqa: E402
     OperatorIDEStateStore,
@@ -870,9 +875,9 @@ def main(argv: list[str] | None = None) -> int:
                     "loopback_only": True,
                     "profile_b_helper_configured": args.profile_b_helper is not None or bool(os.environ.get("LIMA_OFFICE_PROFILE_B_HELPER")),
                     "profile_a_lab_enabled": not args.disable_profile_a_lab,
-                    "operator_authentication_manifest": False,
-                    "production_ready": False,
-                    "customer_pilot_allowed": False,
+                    "operator_authentication_manifest": OPERATOR_AUTHENTICATION_MANIFEST,
+                    "production_ready": PRODUCTION_READY,
+                    "customer_pilot_allowed": CUSTOMER_PILOT_ALLOWED,
                 }
             ),
             flush=True,

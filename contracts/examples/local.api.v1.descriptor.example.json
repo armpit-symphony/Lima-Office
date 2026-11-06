@@ -21,7 +21,7 @@
   "anonymous_mutating_routes": false,
   "production_ready": false,
   "customer_pilot_allowed": false,
-  "operator_authentication_manifest": false,
+  "operator_authentication_manifest": true,
   "runtime_authority_blocked": true,
   "foreign_operator_shell_dependency": false,
   "non_goals": [

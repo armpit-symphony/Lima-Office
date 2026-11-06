@@ -43,7 +43,7 @@ runtime authority, or perform external side effects.
 ## Verify
 
 Compare the ZIP SHA-256 with the adjacent checksum file before extraction.
-Open manifest.json and confirm production_ready is false.
+Open manifest.json and confirm production_ready is false and customer_pilot_allowed is false. operator_authentication may be true. That field is a localhost Profile B path claim. It does not grant approval authority, production readiness, or a customer pilot.
 
 ## Install on Windows
 

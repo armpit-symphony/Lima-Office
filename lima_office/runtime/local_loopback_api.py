@@ -15,6 +15,12 @@ from uuid import uuid4
 
 from lima_office.contracts import ContractValidator
 from lima_office.runtime.errors import ContractValidationError
+from lima_office.runtime.lab_packaging import (
+    CUSTOMER_PILOT_ALLOWED,
+    OPERATOR_AUTHENTICATION,
+    OPERATOR_AUTHENTICATION_MANIFEST,
+    PRODUCTION_READY,
+)
 from lima_office.runtime.operator_session import OperatorSessionError
 from lima_office.runtime.profile_b_session import (
     MemoryEvidenceStore,
@@ -184,8 +190,8 @@ class LocalLoopbackApi:
             "loopback_only": True,
             "runtime_authority_blocked": True,
             "approval_authority": False,
-            "production_ready": False,
-            "customer_pilot_allowed": False,
+            "production_ready": PRODUCTION_READY,
+            "customer_pilot_allowed": CUSTOMER_PILOT_ALLOWED,
         }
         return self._validated(record, "local.api.v1.error")
 
@@ -200,9 +206,9 @@ class LocalLoopbackApi:
             "legacy_prefix": "/api/office",
             "legacy_aliases_deprecated": True,
             "anonymous_mutating_routes": False,
-            "production_ready": False,
-            "customer_pilot_allowed": False,
-            "operator_authentication_manifest": False,
+            "production_ready": PRODUCTION_READY,
+            "customer_pilot_allowed": CUSTOMER_PILOT_ALLOWED,
+            "operator_authentication_manifest": OPERATOR_AUTHENTICATION_MANIFEST,
             "runtime_authority_blocked": True,
             "foreign_operator_shell_dependency": False,
             "non_goals": list(NON_GOALS),
@@ -236,9 +242,9 @@ class LocalLoopbackApi:
             "build_version": version,
             "arc_commit": commit,
             "source_modified": self.build_info.get("source_modified") is True,
-            "production_ready": False,
-            "customer_pilot_allowed": False,
-            "operator_authentication": False,
+            "production_ready": PRODUCTION_READY,
+            "customer_pilot_allowed": CUSTOMER_PILOT_ALLOWED,
+            "operator_authentication": OPERATOR_AUTHENTICATION,
             "runtime_authority_blocked": True,
         }
         return self._validated(record, "local.api.v1.health")

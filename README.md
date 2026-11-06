@@ -14,9 +14,11 @@ Profile A (`attended_os_session_lab_only`) is selected temporarily while the
 complete implemented LIMA Office and Arc workflow is tested on a personal PC.
 It deliberately does not establish a named owner identity or MFA.
 
-Profile B login and `/api/v1` are now in lab source for the localhost
-Supervisor UI. The default ceremony does not create a session, and the lab
-manifest still reports operator authentication as false. See
+Profile B login and `/api/v1` are in lab source for the localhost
+Supervisor UI. The default ceremony creates a session only after a localhost
+WebAuthn assertion verifies. Health and the lab manifest report
+`operator_authentication` true as a lab path claim. `production_ready` and
+`customer_pilot_allowed` stay false. Approval authority stays off. See
 [Local Loopback API v1](docs/LOCAL_LOOPBACK_API_v1.md).
 
 The current source provides:
