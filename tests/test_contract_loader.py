@@ -9,7 +9,13 @@ from lima_office.runtime.errors import ContractLoadError
 class ContractLoaderTests(unittest.TestCase):
     def test_loads_all_v1_schemas(self):
         loader = ContractLoader().load()
-        self.assertEqual(85, len(loader.schema_keys))
+        self.assertEqual(91, len(loader.schema_keys))
+        self.assertIn("local.api.v1.descriptor", loader.contract_names)
+        self.assertIn("local.api.v1.error", loader.contract_names)
+        self.assertIn("local.api.v1.health", loader.contract_names)
+        self.assertIn("local.api.v1.sop_list", loader.contract_names)
+        self.assertIn("operator.profile_b.ceremony", loader.contract_names)
+        self.assertIn("operator.profile_b.session", loader.contract_names)
         self.assertIn("approval.readiness", loader.contract_names)
         self.assertIn("approval.binding", loader.contract_names)
         self.assertIn("approval.chain", loader.contract_names)

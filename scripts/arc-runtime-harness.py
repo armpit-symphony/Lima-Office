@@ -58,6 +58,20 @@ from lima_office.runtime.operator_session import (  # noqa: E402
     AttendedOperatorSessionService,
     OperatorSessionError,
 )
+from lima_office.runtime.local_loopback_api import (  # noqa: E402
+    LocalApiError,
+    LocalLoopbackApi,
+    assert_loopback_bind,
+    client_is_loopback,
+    deprecation_headers,
+    host_header_is_loopback,
+)
+from lima_office.runtime.profile_b_session import (  # noqa: E402
+    FailClosedWebAuthnSpikeVerifier,
+    PlatformHelperCeremonyVerifier,
+    ProfileBError,
+    ProfileBSessionService,
+)
 from lima_office.runtime.pending_approval_request import (  # noqa: E402
     PendingApprovalRequestError,
     PendingApprovalRequestService,
@@ -156,6 +170,17 @@ def _parser():
     )
     parser.add_argument("--installation-info", type=Path)
     parser.add_argument("--lifecycle-token-file", type=Path)
+    parser.add_argument(
+        "--profile-b-helper",
+        type=Path,
+        default=None,
+        help="Absolute platform helper for a later attended Profile B ceremony.",
+    )
+    parser.add_argument(
+        "--disable-profile-a-lab",
+        action="store_true",
+        help="Turn off the lab-only Profile A attended bind. Profile A stays on unless this is set.",
+    )
     return parser
 
 
@@ -188,7 +213,10 @@ class HarnessHTTPServer(ThreadingHTTPServer):
         operator_sessions: AttendedOperatorSessionService | None = None,
         pending_approval_requests: PendingApprovalRequestService | None = None,
         approval_decisions: NonAuthorizingApprovalDecisionService | None = None,
+        profile_b: ProfileBSessionService | None = None,
+        profile_a_lab_enabled: bool = True,
     ) -> None:
+        assert_loopback_bind(address[0])
         self.harness = harness
         self.ui = ui
         self.office_ui = office_ui
@@ -199,9 +227,16 @@ class HarnessHTTPServer(ThreadingHTTPServer):
         self.operator_sessions = operator_sessions
         self.pending_approval_requests = pending_approval_requests
         self.approval_decisions = approval_decisions
+        self.profile_b = profile_b
+        self.profile_a_lab_enabled = profile_a_lab_enabled
+        self.local_api = None
         self.build_info = {"version": "development", "arc_commit": "unknown", "source_modified": True}
         self.lifecycle_token = None
         super().__init__(address, HarnessRequestHandler)
+
+
+class _OfficeRouteNotFound(Exception):
+    pass
 
 
 class HarnessRequestHandler(BaseHTTPRequestHandler):
@@ -210,7 +245,7 @@ class HarnessRequestHandler(BaseHTTPRequestHandler):
     def log_message(self, format: str, *args: Any) -> None:
         sys.stderr.write("arc-harness: " + (format % args) + "\n")
 
-    def _headers(self, status: int, content_type: str, length: int) -> None:
+    def _headers(self, status: int, content_type: str, length: int, extra: dict[str, str] | None = None) -> None:
         self.send_response(status)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(length))
@@ -218,6 +253,8 @@ class HarnessRequestHandler(BaseHTTPRequestHandler):
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("X-Frame-Options", "DENY")
         self.send_header("Referrer-Policy", "no-referrer")
+        for key, value in (extra or {}).items():
+            self.send_header(key, value)
         self.send_header(
             "Content-Security-Policy",
             "default-src 'self'; script-src 'self' 'unsafe-inline'; "
@@ -228,7 +265,8 @@ class HarnessRequestHandler(BaseHTTPRequestHandler):
 
     def _json(self, status: int, payload: Any) -> None:
         body = json.dumps(payload, sort_keys=True).encode("utf-8")
-        self._headers(status, "application/json; charset=utf-8", len(body))
+        extra = deprecation_headers() if self.path.startswith("/api/office") else None
+        self._headers(status, "application/json; charset=utf-8", len(body), extra)
         self.wfile.write(body)
 
     def _read_json(self) -> dict[str, Any]:
@@ -260,7 +298,241 @@ class HarnessRequestHandler(BaseHTTPRequestHandler):
         }
         return origin in allowed
 
+    def _reject_non_loopback(self) -> bool:
+        client_host = self.client_address[0] if self.client_address else ""
+        if not client_is_loopback(client_host):
+            self._json(403, self._safe_error("non_loopback", "This API accepts 127.0.0.1 clients only."))
+            return True
+        port = self.server.server_address[1]
+        if not host_header_is_loopback(self.headers.get("Host"), port):
+            self._json(403, self._safe_error("non_loopback", "The Host header is not loopback."))
+            return True
+        return False
+
+    def _safe_error(self, code: str, detail: str) -> dict[str, Any]:
+        try:
+            return self._local_api().error(code, detail)
+        except Exception:
+            return {
+                "error": code,
+                "detail": detail,
+                "loopback_only": True,
+                "approval_authority": False,
+            }
+
+    def _local_api(self) -> LocalLoopbackApi:
+        api = self.server.local_api
+        if api is not None:
+            return api
+        api = LocalLoopbackApi(
+            operator_sessions=self.server.operator_sessions,
+            profile_b=self.server.profile_b,
+            build_info=self.server.build_info,
+            profile_a_lab_enabled=self.server.profile_a_lab_enabled,
+        )
+        self.server.local_api = api
+        if self.server.profile_b is None:
+            self.server.profile_b = api.profile_b
+        return api
+
+    def _supervisor_state(self) -> dict[str, Any]:
+        profile_b = self.server.profile_b
+        return build_supervisor_console_state(
+            self.server.harness.state(),
+            self.server.build_info,
+            conversation_state=(
+                self.server.supervisor_conversation.state_summary()
+                if self.server.supervisor_conversation is not None
+                else None
+            ),
+            helper_state=(
+                self.server.office_helper.state_summary()
+                if self.server.office_helper is not None
+                else None
+            ),
+            proposal_state=(
+                self.server.task_proposals.state_summary()
+                if self.server.task_proposals is not None
+                else None
+            ),
+            approval_preview_state=(
+                self.server.approval_previews.state_summary()
+                if self.server.approval_previews is not None
+                else None
+            ),
+            operator_session_state=(
+                self.server.operator_sessions.state_summary()
+                if self.server.operator_sessions is not None else None
+            ),
+            pending_approval_request_state=(
+                self.server.pending_approval_requests.state_summary()
+                if self.server.pending_approval_requests is not None else None
+            ),
+            profile_b_state=(
+                profile_b.public_summary() if profile_b is not None else None
+            ),
+        )
+
+    def _cached_worker_count(self) -> dict[str, Any]:
+        state = self.server.harness.state()
+        office = state.get("office_integration") if isinstance(state, dict) else None
+        office = office if isinstance(office, dict) else {}
+        inventory = office.get("inventory") if isinstance(office.get("inventory"), dict) else {}
+        workers = inventory.get("workers") if isinstance(inventory, dict) else []
+        return {
+            "resource": "workers",
+            "cached": True,
+            "count": len(workers) if isinstance(workers, list) else 0,
+            "runtime_authority_blocked": True,
+            "automatic_refresh": False,
+            "approval_authority": False,
+        }
+
+    def _handle_v1(self, method: str) -> None:
+        if method == "POST" and not self._origin_allowed():
+            self._json(403, self._safe_error("origin_not_allowed", "The request origin is not this loopback UI."))
+            return
+        payload = None
+        if method == "POST":
+            try:
+                payload = self._read_json()
+            except HarnessBoundaryError as exc:
+                self._json(409, self._safe_error("request_invalid", str(exc)))
+                return
+        try:
+            outcome = self._local_api().dispatch(
+                method,
+                self.path,
+                payload,
+                self.headers.get("X-Lima-Operator-Session"),
+            )
+        except LocalApiError as exc:
+            self._json(exc.status, self._safe_error(exc.code, str(exc)))
+            return
+        if outcome.read_kind == "state":
+            self._json(200, self._supervisor_state())
+            return
+        if outcome.read_kind == "workers":
+            self._json(200, self._cached_worker_count())
+            return
+        if outcome.office_path:
+            try:
+                result = self._legacy_office_post(outcome.office_path, payload or {})
+            except _OfficeRouteNotFound:
+                self._json(404, self._safe_error("not_found", "No such local API route."))
+                return
+            except (
+                HarnessBoundaryError, OfficeHelperError, SupervisorConversationError,
+                TaskProposalError, ApprovalPreviewError, OperatorSessionError,
+                PendingApprovalRequestError, ApprovalDecisionError, ProfileBError,
+            ) as exc:
+                self._json(409, {"error": "boundary_denied", "detail": str(exc)})
+                return
+            except Exception as exc:
+                self.log_error("request failed: %s", type(exc).__name__)
+                self._json(500, {"error": "harness_request_failed"})
+                return
+            self._json(200, result)
+            return
+        self._json(outcome.status, outcome.body)
+
+    def _legacy_office_post(self, path: str, payload: dict[str, Any]) -> dict[str, Any]:
+        if path == "/api/office/workers":
+            return self.server.harness.refresh_office_workers()
+        if path == "/api/office/evidence":
+            return self.server.harness.read_office_evidence(
+                target_request_id=payload.get("target_request_id")
+            )
+        if path == "/api/office/conversation":
+            if self.server.supervisor_conversation is None:
+                raise SupervisorConversationError("Supervisor conversation contracts are unavailable.")
+            return self.server.supervisor_conversation.turn(
+                message=payload.get("message"),
+                confirmation=payload.get("confirmation"),
+                data_classification=payload.get("data_classification"),
+            )
+        if path == "/api/office/helper/review":
+            if self.server.office_helper is None:
+                raise OfficeHelperError("Office Operations Helper is unavailable.")
+            return self.server.office_helper.review_registration(
+                scenario_id=payload.get("scenario_id"),
+                confirmation=payload.get("confirmation"),
+            )
+        if path == "/api/office/proposals/create":
+            if self.server.office_helper is None or self.server.task_proposals is None:
+                raise TaskProposalError("Supervisor task proposals are unavailable.")
+            helper_result = self.server.office_helper.proposal_source(payload.get("helper_result_id"))
+            return self.server.task_proposals.create_from_helper(
+                helper_result=helper_result,
+                confirmation=payload.get("confirmation"),
+            )
+        if path == "/api/office/proposals/edit":
+            if self.server.task_proposals is None:
+                raise TaskProposalError("Supervisor task proposals are unavailable.")
+            return self.server.task_proposals.edit(
+                proposal_id=payload.get("proposal_id"),
+                expected_revision=payload.get("expected_revision"),
+                priority=payload.get("priority"),
+                selected_step_ids=payload.get("selected_step_ids"),
+                confirmation=payload.get("confirmation"),
+            )
+        if path == "/api/office/proposals/transition":
+            if self.server.task_proposals is None:
+                raise TaskProposalError("Supervisor task proposals are unavailable.")
+            return self.server.task_proposals.transition(
+                proposal_id=payload.get("proposal_id"),
+                expected_revision=payload.get("expected_revision"),
+                action=payload.get("action"),
+                confirmation=payload.get("confirmation"),
+            )
+        if path == "/api/office/approval-previews/create":
+            if self.server.approval_previews is None:
+                raise ApprovalPreviewError("Approval previews are unavailable.")
+            return self.server.approval_previews.create_from_proposal(
+                proposal_id=payload.get("proposal_id"),
+                expected_proposal_revision=payload.get("expected_proposal_revision"),
+                confirmation=payload.get("confirmation"),
+            )
+        if path == "/api/office/approval-previews/transition":
+            if self.server.approval_previews is None:
+                raise ApprovalPreviewError("Approval previews are unavailable.")
+            return self.server.approval_previews.transition(
+                approval_preview_id=payload.get("approval_preview_id"),
+                expected_revision=payload.get("expected_revision"),
+                action=payload.get("action"),
+                confirmation=payload.get("confirmation"),
+            )
+        if path == "/api/office/operator-session/bind":
+            if self.server.operator_sessions is None:
+                raise OperatorSessionError("Operator-session binding is unavailable.")
+            return self.server.operator_sessions.bind(confirmation=payload.get("confirmation"))
+        if path == "/api/office/approval-requests/create":
+            if self.server.pending_approval_requests is None:
+                raise PendingApprovalRequestError("Pending approval requests are unavailable.")
+            return self.server.pending_approval_requests.create(
+                approval_preview_id=payload.get("approval_preview_id"),
+                expected_preview_revision=payload.get("expected_preview_revision"),
+                operator_session_binding_id=payload.get("operator_session_binding_id"),
+                confirmation=payload.get("confirmation"),
+            )
+        if path == "/api/office/approval-requests/transition":
+            if self.server.approval_decisions is None:
+                raise ApprovalDecisionError("Approval decisions are unavailable.")
+            return self.server.approval_decisions.transition(
+                approval_request_id=payload.get("approval_request_id"),
+                expected_request_hash=payload.get("expected_request_hash"),
+                action=payload.get("action"),
+                operator_session_binding_id=payload.get("operator_session_binding_id"),
+                confirmation=payload.get("confirmation"),
+            )
+        raise _OfficeRouteNotFound()
+
     def do_GET(self) -> None:  # noqa: N802
+        if self._reject_non_loopback():
+            return
+        if self.path.startswith("/api/v1"):
+            self._handle_v1("GET")
+            return
         if self.path in {"/", "/index.html"}:
             self._headers(200, "text/html; charset=utf-8", len(self.server.ui))
             self.wfile.write(self.server.ui)
@@ -277,41 +549,7 @@ class HarnessRequestHandler(BaseHTTPRequestHandler):
             self._json(200, {**self.server.harness.state(), "build": self.server.build_info})
             return
         if self.path == "/api/office/state":
-            self._json(
-                200,
-                build_supervisor_console_state(
-                    self.server.harness.state(),
-                    self.server.build_info,
-                    conversation_state=(
-                        self.server.supervisor_conversation.state_summary()
-                        if self.server.supervisor_conversation is not None
-                        else None
-                    ),
-                    helper_state=(
-                        self.server.office_helper.state_summary()
-                        if self.server.office_helper is not None
-                        else None
-                    ),
-                    proposal_state=(
-                        self.server.task_proposals.state_summary()
-                        if self.server.task_proposals is not None
-                        else None
-                    ),
-                    approval_preview_state=(
-                        self.server.approval_previews.state_summary()
-                        if self.server.approval_previews is not None
-                        else None
-                    ),
-                    operator_session_state=(
-                        self.server.operator_sessions.state_summary()
-                        if self.server.operator_sessions is not None else None
-                    ),
-                    pending_approval_request_state=(
-                        self.server.pending_approval_requests.state_summary()
-                        if self.server.pending_approval_requests is not None else None
-                    ),
-                ),
-            )
+            self._json(200, self._supervisor_state())
             return
         if self.path == "/api/training/registration/catalog":
             self._json(200, self.server.harness.registration_catalog())
@@ -329,6 +567,11 @@ class HarnessRequestHandler(BaseHTTPRequestHandler):
         self._json(404, {"error": "not_found"})
 
     def do_POST(self) -> None:  # noqa: N802
+        if self._reject_non_loopback():
+            return
+        if self.path.startswith("/api/v1"):
+            self._handle_v1("POST")
+            return
         if not self._origin_allowed():
             self._json(403, {"error": "origin_not_allowed"})
             return
@@ -402,102 +645,12 @@ class HarnessRequestHandler(BaseHTTPRequestHandler):
                 )
             elif self.path == "/api/worker/status":
                 result = self.server.harness.worker_status()
-            elif self.path == "/api/office/workers":
-                result = self.server.harness.refresh_office_workers()
-            elif self.path == "/api/office/evidence":
-                result = self.server.harness.read_office_evidence(
-                    target_request_id=payload.get("target_request_id")
-                )
-            elif self.path == "/api/office/conversation":
-                if self.server.supervisor_conversation is None:
-                    raise SupervisorConversationError(
-                        "Supervisor conversation contracts are unavailable."
-                    )
-                result = self.server.supervisor_conversation.turn(
-                    message=payload.get("message"),
-                    confirmation=payload.get("confirmation"),
-                    data_classification=payload.get("data_classification"),
-                )
-            elif self.path == "/api/office/helper/review":
-                if self.server.office_helper is None:
-                    raise OfficeHelperError(
-                        "Office Operations Helper is unavailable."
-                    )
-                result = self.server.office_helper.review_registration(
-                    scenario_id=payload.get("scenario_id"),
-                    confirmation=payload.get("confirmation"),
-                )
-            elif self.path == "/api/office/proposals/create":
-                if self.server.office_helper is None or self.server.task_proposals is None:
-                    raise TaskProposalError("Supervisor task proposals are unavailable.")
-                helper_result = self.server.office_helper.proposal_source(
-                    payload.get("helper_result_id")
-                )
-                result = self.server.task_proposals.create_from_helper(
-                    helper_result=helper_result,
-                    confirmation=payload.get("confirmation"),
-                )
-            elif self.path == "/api/office/proposals/edit":
-                if self.server.task_proposals is None:
-                    raise TaskProposalError("Supervisor task proposals are unavailable.")
-                result = self.server.task_proposals.edit(
-                    proposal_id=payload.get("proposal_id"),
-                    expected_revision=payload.get("expected_revision"),
-                    priority=payload.get("priority"),
-                    selected_step_ids=payload.get("selected_step_ids"),
-                    confirmation=payload.get("confirmation"),
-                )
-            elif self.path == "/api/office/proposals/transition":
-                if self.server.task_proposals is None:
-                    raise TaskProposalError("Supervisor task proposals are unavailable.")
-                result = self.server.task_proposals.transition(
-                    proposal_id=payload.get("proposal_id"),
-                    expected_revision=payload.get("expected_revision"),
-                    action=payload.get("action"),
-                    confirmation=payload.get("confirmation"),
-                )
-            elif self.path == "/api/office/approval-previews/create":
-                if self.server.approval_previews is None:
-                    raise ApprovalPreviewError("Approval previews are unavailable.")
-                result = self.server.approval_previews.create_from_proposal(
-                    proposal_id=payload.get("proposal_id"),
-                    expected_proposal_revision=payload.get("expected_proposal_revision"),
-                    confirmation=payload.get("confirmation"),
-                )
-            elif self.path == "/api/office/approval-previews/transition":
-                if self.server.approval_previews is None:
-                    raise ApprovalPreviewError("Approval previews are unavailable.")
-                result = self.server.approval_previews.transition(
-                    approval_preview_id=payload.get("approval_preview_id"),
-                    expected_revision=payload.get("expected_revision"),
-                    action=payload.get("action"),
-                    confirmation=payload.get("confirmation"),
-                )
-            elif self.path == "/api/office/operator-session/bind":
-                if self.server.operator_sessions is None:
-                    raise OperatorSessionError("Operator-session binding is unavailable.")
-                result = self.server.operator_sessions.bind(
-                    confirmation=payload.get("confirmation")
-                )
-            elif self.path == "/api/office/approval-requests/create":
-                if self.server.pending_approval_requests is None:
-                    raise PendingApprovalRequestError("Pending approval requests are unavailable.")
-                result = self.server.pending_approval_requests.create(
-                    approval_preview_id=payload.get("approval_preview_id"),
-                    expected_preview_revision=payload.get("expected_preview_revision"),
-                    operator_session_binding_id=payload.get("operator_session_binding_id"),
-                    confirmation=payload.get("confirmation"),
-                )
-            elif self.path == "/api/office/approval-requests/transition":
-                if self.server.approval_decisions is None:
-                    raise ApprovalDecisionError("Approval decisions are unavailable.")
-                result = self.server.approval_decisions.transition(
-                    approval_request_id=payload.get("approval_request_id"),
-                    expected_request_hash=payload.get("expected_request_hash"),
-                    action=payload.get("action"),
-                    operator_session_binding_id=payload.get("operator_session_binding_id"),
-                    confirmation=payload.get("confirmation"),
-                )
+            elif self.path.startswith("/api/office/"):
+                try:
+                    result = self._legacy_office_post(self.path, payload)
+                except _OfficeRouteNotFound:
+                    self._json(404, {"error": "not_found"})
+                    return
             elif self.path == "/api/work/content-page":
                 result = self.server.harness.document_page(
                     content_id=payload.get("content_id"),
@@ -662,6 +815,25 @@ def main(argv: list[str] | None = None) -> int:
             operator_sessions = None
             pending_approval_requests = None
             approval_decisions = None
+        profile_b = None
+        try:
+            helper_path = args.profile_b_helper
+            if helper_path is None:
+                env_helper = os.environ.get("LIMA_OFFICE_PROFILE_B_HELPER")
+                helper_path = Path(env_helper) if env_helper else None
+            verifier = (
+                PlatformHelperCeremonyVerifier(helper_path)
+                if helper_path is not None
+                else FailClosedWebAuthnSpikeVerifier()
+            )
+            profile_b = ProfileBSessionService(
+                store,
+                verifier=verifier,
+                tenant_id=str(args.tenant_id),
+                customer_context_id="customer-context-main",
+            )
+        except Exception:
+            profile_b = None
         server = HarnessHTTPServer(
             ("127.0.0.1", args.ui_port),
             harness,
@@ -674,6 +846,8 @@ def main(argv: list[str] | None = None) -> int:
             operator_sessions,
             pending_approval_requests,
             approval_decisions,
+            profile_b,
+            profile_a_lab_enabled=not args.disable_profile_a_lab,
         )
         server.build_info = _build_info(args)
         if args.lifecycle_token_file:
@@ -692,6 +866,13 @@ def main(argv: list[str] | None = None) -> int:
                     "working_ready": harness.working_ready,
                     "session_dir": str(args.session_dir),
                     "local_model_ready": harness.state()["local_model"]["ready"],
+                    "api_version": "v1",
+                    "loopback_only": True,
+                    "profile_b_helper_configured": args.profile_b_helper is not None or bool(os.environ.get("LIMA_OFFICE_PROFILE_B_HELPER")),
+                    "profile_a_lab_enabled": not args.disable_profile_a_lab,
+                    "operator_authentication_manifest": False,
+                    "production_ready": False,
+                    "customer_pilot_allowed": False,
                 }
             ),
             flush=True,

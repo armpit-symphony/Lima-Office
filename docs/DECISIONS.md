@@ -290,3 +290,11 @@ This is an ADR-style decision log. Status values are `accepted`, `proposed`, or 
   execution binding, replay consumption, worker assignment, or Arc dispatch is
   authorized. Profile B or C still requires its own threat review and explicit
   implementation approval before customer or production use.
+
+## ADR-0022: Add Profile B Login And A Versioned Loopback API
+
+- Status: accepted for lab source only
+- Date: 2026-11-06
+- Decision: Add `/api/v1` on `127.0.0.1` for the Supervisor UI. Mutating routes require a Profile A or Profile B session. Profile B is a named-owner WebAuthn-class ceremony that fails closed until a verifier accepts it. Legacy `/api/office` routes stay as deprecated aliases for the lab.7 transition. Profile A stays behind an explicit lab flag. The lab manifest keeps `operator_authentication`, `production_ready`, and `customer_pilot_allowed` false.
+- Rationale: The UI needs a long-lived local API, and the owner selected a first-party loopback contract instead of bringing a foreign operator shell into Arc. Profile B can be exercised on a lab PC without pretending the ceremony is already an approval credential.
+- Consequence: No positive approval token, Arc dispatch, connector, LAN bind, or customer-data path is added. A later packaging brief is required before the manifest may report operator authentication. Profile C remains an open identity choice for customer use.

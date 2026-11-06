@@ -115,5 +115,11 @@ runtime projection is visible in the Supervisor Console, but it cannot create a
 positive approval result or any execution authority.
 
 After the whole-system LIMA Office and Arc test pass, the next owner decision is
-profile B or C. Profile B begins with a passkey/Windows Hello feasibility spike;
-profile C begins with identity-provider selection.
+profile B or C. Profile B now has a lab login spike: a localhost
+Windows Hello / passkey ceremony, a named display name, a device-bound
+process-local session, and an explicit `survives_restart: false` policy.
+That spike does not verify a production WebAuthn signature, does not issue
+positive approval step-up, and does not change this gate. Profile A remains
+the selected approval-test profile. Profile C still begins with
+identity-provider selection. The lab manifest flag `operator_authentication`
+stays false.

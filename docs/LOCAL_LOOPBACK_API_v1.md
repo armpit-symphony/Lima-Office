@@ -1,0 +1,73 @@
+# Local Loopback API v1
+
+Status: lab source. Not a production or customer-pilot API.
+Scope: one Supervisor Server, one tenant, localhost only.
+
+## Bind
+
+The harness listens on `127.0.0.1` only. Any other bind address is refused before the socket opens. A request whose client address is not `127.0.0.1`, or whose `Host` header is not `127.0.0.1` or `localhost` for this port, is denied. LAN bind, reverse proxies, and non-loopback origins are out of scope.
+
+## Versioning
+
+- Current prefix: `/api/v1`.
+- Legacy prefix: `/api/office`. Those routes remain during the lab.7 transition and respond with `Deprecation: true` and a successor link to `/api/v1`.
+- New UI login uses `/api/v1`. Existing lab screens may still call the legacy aliases until that package cut.
+
+## Authentication
+
+Anonymous clients may read loopback health, build identity, the API descriptor, the redacted console projection, and Profile B status. Profile B status does not republish the session handle.
+
+These POSTs establish a session and do not authorize office work:
+
+- `/api/v1/operator-session/bind` — Profile A, and only while the lab-only flag is on.
+- `/api/v1/operator-session/profile-b/begin`
+- `/api/v1/operator-session/profile-b/complete`
+
+Every other POST under `/api/v1`, including unknown paths, requires a session handle in `X-Lima-Operator-Session`. The handle is returned once by bind or complete. It is process memory, expires in 30 minutes, and is dropped on restart. A missing, expired, or unknown handle is `unauthenticated`. The browser must not treat a public GET as a way to recover the handle.
+
+Profile A remains available until `--disable-profile-a-lab` is set. That flag does not enable customer or production use.
+
+## Profile B
+
+Profile B is the Windows Hello / passkey / WebAuthn-class operator login for the localhost Supervisor UI.
+
+- The owner supplies a display name. The raw OS username is not stored.
+- The default verifier offers a platform-authenticator ceremony and then rejects the assertion. No session is created from an unverified ceremony.
+- A session is created only by the in-process lab HMAC verifier used in tests, or by an absolute `--profile-b-helper` / `LIMA_OFFICE_PROFILE_B_HELPER` program the operator configured. Helper stderr is discarded. The helper path and assertion are not written to evidence.
+- The session is device-bound, named, and process-local. `survives_restart` is false.
+- Positive approval step-up is `stub_only`. This API does not issue an approval token, approval result, or Arc dispatch.
+
+OS steps for the attended ceremony are in [profile-b-operator-login.md](runbooks/profile-b-operator-login.md).
+
+## Resources
+
+| Route | Auth | Notes |
+| --- | --- | --- |
+| `GET /api/v1` | public read | Route descriptor. `runtime_authority_blocked` is true. |
+| `GET /api/v1/health` and `GET /api/v1/build` | public read | Build identity. `production_ready`, `customer_pilot_allowed`, and `operator_authentication` are false. |
+| `GET /api/v1/state` | public read | Same redacted console projection as the legacy state alias. |
+| `GET /api/v1/operator-session` | public read | Active flag, assurance, and expiry. No session handle. |
+| `GET /api/v1/workers` | session | Cached worker count only. |
+| `POST /api/v1/workers` | session | Explicit inventory refresh. |
+| `POST /api/v1/evidence` | session | Redacted evidence trace. |
+| `GET /api/v1/sop` | session | SOP titles only. Instruction bodies are not included. |
+| Proposal, preview, request, conversation, and helper POSTs | session | Same lab services as the legacy aliases. They still cannot approve or dispatch. |
+
+Downstream Guardian denials stay fail-closed after the session check. They do not become approval.
+
+## Contracts
+
+- [local.api.v1.descriptor.schema.json](../contracts/v1/local.api.v1.descriptor.schema.json)
+- [local.api.v1.error.schema.json](../contracts/v1/local.api.v1.error.schema.json)
+- [local.api.v1.health.schema.json](../contracts/v1/local.api.v1.health.schema.json)
+- [local.api.v1.sop_list.schema.json](../contracts/v1/local.api.v1.sop_list.schema.json)
+- [operator.profile_b.ceremony.schema.json](../contracts/v1/operator.profile_b.ceremony.schema.json)
+- [operator.profile_b.session.schema.json](../contracts/v1/operator.profile_b.session.schema.json)
+
+## Non-goals
+
+This slice does not add a foreign operator-shell API, LAN bind, Profile C / OIDC, positive approval tokens, Arc dispatch of approved work, connectors, or customer data. The lab preview manifest keeps `production_ready`, `customer_pilot_allowed`, and `operator_authentication` false until a later packaging brief.
+
+## Evidence and logs
+
+Ceremony and login evidence store ids, hashes, verifier mode, and authority flags. They do not store assertions, helper output, passwords, or raw OS usernames. Request logs stay on the request line and do not include header or body values.

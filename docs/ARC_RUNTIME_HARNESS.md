@@ -100,9 +100,13 @@ Pass `--session-dir` to select an explicit test-state directory.
 - Mode changes and work outcomes create evidence events. There are no hidden
   background actions.
 
-The loopback UI has no operator authentication layer yet. That is acceptable
-only for a locally attended lab PC. Do not bind it to a LAN interface, reverse
-proxy it, or treat it as a customer deployment.
+The loopback UI now has a versioned `/api/v1` surface. Mutating routes require
+a Profile A or Profile B session. The default Profile B ceremony can start
+Windows Hello and still refuses to create a session until a verifier accepts
+it. Legacy `/api/office` routes remain deprecated aliases. This is still only
+acceptable for a locally attended lab PC. Do not bind it to a LAN interface,
+reverse proxy it, or treat it as a customer deployment. See
+[Local Loopback API v1](LOCAL_LOOPBACK_API_v1.md).
 
 ## Stop and recovery
 

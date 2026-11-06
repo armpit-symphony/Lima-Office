@@ -32,6 +32,7 @@ ALLOWED_ATTENDED_LAB_ACTIONS = {
     "office_task_proposal_manage",
     "office_approval_preview_manage",
     "operator_session_bind",
+    "operator_profile_b_login",
 }
 
 BAD_TOKEN_STATES = {"expired", "revoked", "used", "replayed", "missing", "mismatched", "wrong_scope", "ambiguous"}
@@ -117,6 +118,13 @@ class GuardianPolicy:
                 customer_context_id=context.get("customer_context_id", "customer-context-main"),
                 context=context,
             )
+        if action == "operator_profile_b_login" and self._is_profile_b_login_context(context):
+            return build_guardian_decision(
+                action=action, decision="allow_with_evidence", reason=None,
+                tenant_id=context.get("tenant_id", "tenant-lab-001"),
+                customer_context_id=context.get("customer_context_id", "customer-context-main"),
+                context=context,
+            )
         if action == "office_pending_approval_request_create" and self._is_pending_approval_request_context(context):
             return build_guardian_decision(
                 action=action, decision="requires_approval", reason=None,
@@ -166,6 +174,9 @@ class GuardianPolicy:
         if action == "operator_session_bind":
             if not self._is_attended_operator_session_context(context):
                 return "Operator session binding did not satisfy the attended localhost lab policy."
+        if action == "operator_profile_b_login":
+            if not self._is_profile_b_login_context(context):
+                return "Profile B login did not satisfy the loopback ceremony policy."
         if action == "office_pending_approval_request_create":
             if not self._is_pending_approval_request_context(context):
                 return "Pending approval request did not satisfy the attended request-only policy."
@@ -231,6 +242,21 @@ class GuardianPolicy:
             context.get("connector_access_allowed") is False,
             context.get("submission_allowed") is False,
             context.get("approval_required") is False,
+        ))
+
+    @staticmethod
+    def _is_profile_b_login_context(context: dict[str, Any]) -> bool:
+        return all((
+            GuardianPolicy._is_attended_operator_session_context(context),
+            context.get("phishing_resistant_step_up") is True,
+            context.get("named_owner") is True,
+            context.get("device_bound") is True,
+            context.get("mfa_verified") is True,
+            context.get("survives_process_restart") is False,
+            context.get("positive_approval_step_up_issued") is False,
+            context.get("step_up_stub_only") is True,
+            context.get("ceremony_verified") is True,
+            context.get("bound_action_type") == "operator_profile_b_login",
         ))
 
     @staticmethod

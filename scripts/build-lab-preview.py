@@ -104,6 +104,7 @@ def build_manifest(version: str, office_commit: str) -> dict:
         "release_channel": "local_lab_preview_candidate",
         "production_ready": False,
         "customer_pilot_allowed": False,
+        # Profile B can exist in lab source before a later packaging brief.
         "operator_authentication": False,
         "topology": {
             "supervisor_servers": 1,

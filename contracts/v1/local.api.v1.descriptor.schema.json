@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/local.api.v1.descriptor.schema.json",
+  "title": "Local Loopback API v1 Descriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name", "contract_version", "schema_version", "tenant_id", "customer_context_id",
+    "environment", "correlation_id", "causation_id", "idempotency_key", "producer", "policy_version",
+    "api_version", "bind_host", "version_prefix", "legacy_prefix", "legacy_aliases_deprecated",
+    "anonymous_mutating_routes", "production_ready", "customer_pilot_allowed",
+    "operator_authentication_manifest", "runtime_authority_blocked",
+    "foreign_operator_shell_dependency", "non_goals", "routes"
+  ],
+  "properties": {
+    "contract_name": {"type": "string", "const": "local.api.v1.descriptor"},
+    "contract_version": {"type": "string", "const": "1.0.0"},
+    "schema_version": {"type": "string", "const": "1.0.0"},
+    "tenant_id": {"type": "string", "minLength": 1},
+    "customer_context_id": {"type": "string", "minLength": 1},
+    "environment": {"type": "string", "const": "phase0_lab"},
+    "correlation_id": {"type": "string", "minLength": 1},
+    "causation_id": {"type": "null"},
+    "idempotency_key": {"type": "string", "minLength": 1},
+    "producer": {"type": "object", "additionalProperties": false, "required": ["component", "produced_at"], "properties": {
+      "component": {"type": "string", "const": "local_loopback_api"},
+      "produced_at": {"type": "string", "format": "date-time"}
+    }},
+    "policy_version": {"type": "string", "const": "policy-local-loopback-api-v1"},
+    "api_version": {"type": "string", "const": "v1"},
+    "bind_host": {"type": "string", "const": "127.0.0.1"},
+    "version_prefix": {"type": "string", "const": "/api/v1"},
+    "legacy_prefix": {"type": "string", "const": "/api/office"},
+    "legacy_aliases_deprecated": {"type": "boolean", "const": true},
+    "anonymous_mutating_routes": {"type": "boolean", "const": false},
+    "production_ready": {"type": "boolean", "const": false},
+    "customer_pilot_allowed": {"type": "boolean", "const": false},
+    "operator_authentication_manifest": {"type": "boolean", "const": false},
+    "runtime_authority_blocked": {"type": "boolean", "const": true},
+    "foreign_operator_shell_dependency": {"type": "boolean", "const": false},
+    "non_goals": {"type": "array", "const": [
+      "foreign_operator_shell_shapes", "lan_bind", "positive_approval_token_issue",
+      "arc_dispatch", "profile_c_oidc", "customer_data"
+    ]},
+    "routes": {"type": "array", "minItems": 1, "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["method", "path", "auth", "mutating", "runtime_authority_blocked"],
+      "properties": {
+        "method": {"type": "string", "enum": ["GET", "POST"]},
+        "path": {"type": "string", "pattern": "^/api/v1(/[a-z0-9-]+)*$"},
+        "auth": {"type": "string", "enum": ["public_read", "session_establishment", "session_required"]},
+        "mutating": {"type": "boolean"},
+        "runtime_authority_blocked": {"type": "boolean", "const": true}
+      }
+    }}
+  }
+}

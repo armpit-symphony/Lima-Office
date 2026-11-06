@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/local.api.v1.error.schema.json",
+  "title": "Local Loopback API v1 Error",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name", "contract_version", "schema_version", "tenant_id", "customer_context_id",
+    "environment", "correlation_id", "causation_id", "idempotency_key", "producer", "policy_version",
+    "error", "detail", "loopback_only", "runtime_authority_blocked", "approval_authority",
+    "production_ready", "customer_pilot_allowed"
+  ],
+  "properties": {
+    "contract_name": {"type": "string", "const": "local.api.v1.error"},
+    "contract_version": {"type": "string", "const": "1.0.0"},
+    "schema_version": {"type": "string", "const": "1.0.0"},
+    "tenant_id": {"type": "string", "minLength": 1},
+    "customer_context_id": {"type": "string", "minLength": 1},
+    "environment": {"type": "string", "const": "phase0_lab"},
+    "correlation_id": {"type": "string", "minLength": 1},
+    "causation_id": {"type": "null"},
+    "idempotency_key": {"type": "string", "minLength": 1},
+    "producer": {"type": "object", "additionalProperties": false, "required": ["component", "produced_at"], "properties": {
+      "component": {"type": "string", "const": "local_loopback_api"},
+      "produced_at": {"type": "string", "format": "date-time"}
+    }},
+    "policy_version": {"type": "string", "const": "policy-local-loopback-api-v1"},
+    "error": {"type": "string", "enum": [
+      "unauthenticated", "origin_not_allowed", "non_loopback", "not_found",
+      "ceremony_rejected", "ceremony_unavailable", "profile_a_disabled",
+      "boundary_denied", "request_invalid"
+    ]},
+    "detail": {"type": "string", "minLength": 1, "maxLength": 240},
+    "loopback_only": {"type": "boolean", "const": true},
+    "runtime_authority_blocked": {"type": "boolean", "const": true},
+    "approval_authority": {"type": "boolean", "const": false},
+    "production_ready": {"type": "boolean", "const": false},
+    "customer_pilot_allowed": {"type": "boolean", "const": false}
+  }
+}

@@ -1153,6 +1153,25 @@ contexts, breaking-change coverage gaps, and missing/unsupported
 - Approval requirements: may create a fixed pending request only after Guardian, reviewed-preview, current-source, tenant, expiry, and fresh-intent checks; cannot decide it.
 - Evidence requirements: request and commit events with pseudonymous metadata only.
 
+## Local Loopback API v1
+
+- Schemas: [local.api.v1.descriptor.schema.json](../contracts/v1/local.api.v1.descriptor.schema.json), [local.api.v1.error.schema.json](../contracts/v1/local.api.v1.error.schema.json), [local.api.v1.health.schema.json](../contracts/v1/local.api.v1.health.schema.json), [local.api.v1.sop_list.schema.json](../contracts/v1/local.api.v1.sop_list.schema.json)
+- Examples: [local.api.v1.descriptor.example.json](../contracts/examples/local.api.v1.descriptor.example.json), [local.api.v1.error.unauthenticated.example.json](../contracts/examples/local.api.v1.error.unauthenticated.example.json), [local.api.v1.health.example.json](../contracts/examples/local.api.v1.health.example.json), [local.api.v1.sop_list.example.json](../contracts/examples/local.api.v1.sop_list.example.json)
+- Purpose: versioned localhost API for the Supervisor UI. Bind is `127.0.0.1` only. Legacy `/api/office` routes are deprecated aliases during the lab.7 transition.
+- Security requirements: no anonymous mutating route; session establishment is limited to Profile A lab bind and the Profile B ceremony; health keeps `production_ready`, `customer_pilot_allowed`, and `operator_authentication` false; foreign operator-shell shapes, LAN bind, positive approval tokens, Arc dispatch, Profile C, and customer data are non-goals.
+- Evidence requirements: authz failures return the error contract and do not include session handles or ceremony material.
+- Spec: [LOCAL_LOOPBACK_API_v1.md](LOCAL_LOOPBACK_API_v1.md).
+
+## Profile B Operator Session v1
+
+- Schemas: [operator.profile_b.ceremony.schema.json](../contracts/v1/operator.profile_b.ceremony.schema.json), [operator.profile_b.session.schema.json](../contracts/v1/operator.profile_b.session.schema.json)
+- Examples: [operator.profile_b.ceremony.challenge-issued.example.json](../contracts/examples/operator.profile_b.ceremony.challenge-issued.example.json), [operator.profile_b.session.lab-hmac.example.json](../contracts/examples/operator.profile_b.session.lab-hmac.example.json)
+- Purpose: named local owner login with a phishing-resistant ceremony, a device binding, a 30-minute TTL, and `survives_restart: false`.
+- Allowed session state: `active` only after a verifier accepts the ceremony. The default browser spike issues a challenge and does not accept the assertion.
+- Security requirements: no raw OS username, no collected password or PIN, no approval token, no Arc dispatch, and no customer or production use. Positive approval step-up is `stub_only` and `step_up_issued` is false.
+- Evidence requirements: ceremony request, rejection, and login commit record ids and hashes only.
+- Runbook: [profile-b-operator-login.md](runbooks/profile-b-operator-login.md).
+
 ## Synthetic Form Review Pending Approval Request v1 Addendum
 
 - Schema: [approval.request.schema.json](../contracts/v1/approval.request.schema.json)
