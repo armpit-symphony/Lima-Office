@@ -361,6 +361,10 @@ The Phase 0 field-level schemas in [contracts/v1](../contracts/v1) define the mi
 - Governance identity/access review/breakglass/audit export/connector consent/update records: [governance.identity.schema.json](../contracts/v1/governance.identity.schema.json), [governance.access_review.schema.json](../contracts/v1/governance.access_review.schema.json), [governance.breakglass.schema.json](../contracts/v1/governance.breakglass.schema.json), [governance.audit_export.schema.json](../contracts/v1/governance.audit_export.schema.json), [governance.connector_consent.schema.json](../contracts/v1/governance.connector_consent.schema.json), and [governance.update_record.schema.json](../contracts/v1/governance.update_record.schema.json) record governance posture without implementing live capabilities.
 - Console view/alert/action records: [console.view.schema.json](../contracts/v1/console.view.schema.json), [console.alert.schema.json](../contracts/v1/console.alert.schema.json), and [console.action.schema.json](../contracts/v1/console.action.schema.json) record metadata-only console posture without implementing UI or runtime controls.
 
+## Local Operator API
+
+The Supervisor UI calls a versioned loopback API on `127.0.0.1`. Mutating `/api/v1` routes require an in-memory Profile A or Profile B session. Profile B is a named-owner ceremony. The default verifier does not accept browser assertion bytes. Session handles, ceremony assertions, and helper output are not written to logs or evidence. The lab manifest does not report operator authentication, production readiness, or customer-pilot permission. See [Local Loopback API v1](LOCAL_LOOPBACK_API_v1.md).
+
 ## Conceptual Standards Mapping
 
 This mapping is conceptual and does not claim certification or compliance.

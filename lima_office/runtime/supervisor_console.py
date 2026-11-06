@@ -202,6 +202,29 @@ def _safe_approval_preview(preview: Any) -> dict[str, Any] | None:
     return projected if isinstance(projected.get("approval_preview_id"), str) else None
 
 
+def _profile_b_projection(state: Mapping[str, Any] | None) -> dict[str, Any]:
+    """Public Profile B status. The session handle is never republished."""
+
+    source = state if isinstance(state, Mapping) else {}
+    projected = {
+        "profile_id": "windows_hello_passkey",
+        "active": source.get("active") is True,
+        "survives_restart": False,
+        "approval_authority": False,
+        "production_identity_verified": False,
+        "customer_or_production_use_allowed": False,
+        "operator_authentication_manifest": False,
+        "binding_published": False,
+        "positive_approval_step_up": "stub_only",
+        "verification_mode": _safe_text(source.get("verification_mode"), "fail_closed", 64),
+    }
+    if source.get("active") is True:
+        projected["assurance_level"] = _safe_text(source.get("assurance_level"), "unavailable", 80)
+        projected["owner_display_name"] = _safe_text(source.get("owner_display_name"), "Owner", 80)
+        projected["expires_at"] = _safe_text(source.get("expires_at"), "unknown", 40)
+    return projected
+
+
 def build_supervisor_console_state(
     harness_state: Mapping[str, Any],
     build_info: Mapping[str, Any],
@@ -214,6 +237,7 @@ def build_supervisor_console_state(
     approval_preview_state: Mapping[str, Any] | None = None,
     operator_session_state: Mapping[str, Any] | None = None,
     pending_approval_request_state: Mapping[str, Any] | None = None,
+    profile_b_state: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build a redacted, non-executing business-owner console projection."""
 
@@ -506,6 +530,7 @@ def build_supervisor_console_state(
             "pin_required": False,
             "binding": binding,
         },
+        "profile_b": _profile_b_projection(profile_b_state),
         "approval_requests": {
             "runtime_enabled": pending_requests_state.get("runtime_enabled") is True,
             "request_creation_enabled": pending_requests_state.get("request_creation_enabled") is True,

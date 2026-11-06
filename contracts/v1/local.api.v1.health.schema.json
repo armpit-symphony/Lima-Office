@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/local.api.v1.health.schema.json",
+  "title": "Local Loopback API v1 Health And Build Identity",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name", "contract_version", "schema_version", "tenant_id", "customer_context_id",
+    "environment", "correlation_id", "causation_id", "idempotency_key", "producer", "policy_version",
+    "status", "loopback_only", "bind_host", "api_version", "build_version", "arc_commit",
+    "source_modified", "production_ready", "customer_pilot_allowed", "operator_authentication",
+    "runtime_authority_blocked"
+  ],
+  "properties": {
+    "contract_name": {"type": "string", "const": "local.api.v1.health"},
+    "contract_version": {"type": "string", "const": "1.0.0"},
+    "schema_version": {"type": "string", "const": "1.0.0"},
+    "tenant_id": {"type": "string", "minLength": 1},
+    "customer_context_id": {"type": "string", "minLength": 1},
+    "environment": {"type": "string", "const": "phase0_lab"},
+    "correlation_id": {"type": "string", "minLength": 1},
+    "causation_id": {"type": "null"},
+    "idempotency_key": {"type": "string", "minLength": 1},
+    "producer": {"type": "object", "additionalProperties": false, "required": ["component", "produced_at"], "properties": {
+      "component": {"type": "string", "const": "local_loopback_api"},
+      "produced_at": {"type": "string", "format": "date-time"}
+    }},
+    "policy_version": {"type": "string", "const": "policy-local-loopback-api-v1"},
+    "status": {"type": "string", "const": "ready"},
+    "loopback_only": {"type": "boolean", "const": true},
+    "bind_host": {"type": "string", "const": "127.0.0.1"},
+    "api_version": {"type": "string", "const": "v1"},
+    "build_version": {"type": "string", "pattern": "^[0-9A-Za-z.-]{1,64}$"},
+    "arc_commit": {"type": "string", "pattern": "^(unknown|[0-9a-f]{40})$"},
+    "source_modified": {"type": "boolean"},
+    "production_ready": {"type": "boolean", "const": false},
+    "customer_pilot_allowed": {"type": "boolean", "const": false},
+    "operator_authentication": {"type": "boolean", "const": false},
+    "runtime_authority_blocked": {"type": "boolean", "const": true}
+  }
+}

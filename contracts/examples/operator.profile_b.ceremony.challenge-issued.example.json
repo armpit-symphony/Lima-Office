@@ -1,0 +1,33 @@
+{
+  "contract_name": "operator.profile_b.ceremony",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-profile-b-ceremony-7a25380c4f784841bf51c7b05c3eb56b",
+  "causation_id": null,
+  "idempotency_key": "idem-profile-b-ceremony-7a25380c4f784841bf51c7b05c3eb56b",
+  "producer": {
+    "component": "operator_console",
+    "produced_at": "2026-11-06T00:00:00Z"
+  },
+  "policy_version": "policy-operator-profile-b-session-lab-v1",
+  "status": "challenge_issued",
+  "ceremony_available": true,
+  "verification_mode": "lab_hmac",
+  "challenge_id": "profile-b-challenge:8e71b34847c8438aa07696d4b031cd1d",
+  "challenge_b64url": "OGU3MWIzNDg0N2M4NDM4YWEwNzY5NmQ0YjAzMWNkMWQ",
+  "public_key_request": null,
+  "owner_display_name_accepted": true,
+  "session_created": false,
+  "binding_id": null,
+  "detail": "Complete the Profile B ceremony. No session exists yet.",
+  "local_loopback_only": true,
+  "credentials_collected": false,
+  "approval_authority": false,
+  "runtime_authority_blocked": true,
+  "positive_approval_step_up": "stub_only",
+  "survives_restart": false,
+  "expires_at": "2026-11-06T00:02:00Z"
+}

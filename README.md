@@ -14,6 +14,11 @@ Profile A (`attended_os_session_lab_only`) is selected temporarily while the
 complete implemented LIMA Office and Arc workflow is tested on a personal PC.
 It deliberately does not establish a named owner identity or MFA.
 
+Profile B login and `/api/v1` are now in lab source for the localhost
+Supervisor UI. The default ceremony does not create a session, and the lab
+manifest still reports operator authentication as false. See
+[Local Loopback API v1](docs/LOCAL_LOOPBACK_API_v1.md).
+
 The current source provides:
 
 - A business-owner Supervisor Console and Arc Lab UI on localhost.

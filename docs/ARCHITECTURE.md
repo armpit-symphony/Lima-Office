@@ -175,7 +175,7 @@ flowchart TD
 
 ## Trust Boundaries
 
-- Operator to Supervisor: authenticated operator session and role.
+- Operator to Supervisor: authenticated operator session and role. The lab UI uses a `127.0.0.1` `/api/v1` surface; Profile B is the named-owner ceremony and Profile A remains the lab-only bind.
 - Supervisor to Worker: authenticated device identity, capability lease, heartbeat, and revocation.
 - Guardian to Tool/Connector/Model: explicit decision envelope before action.
 - Worker to Local Cache: encrypted cache and tenant-bound data.

@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/local.api.v1.sop_list.schema.json",
+  "title": "Local Loopback API v1 SOP List",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name", "contract_version", "schema_version", "tenant_id", "customer_context_id",
+    "environment", "correlation_id", "causation_id", "idempotency_key", "producer", "policy_version",
+    "items", "count", "instruction_bodies_included", "runtime_authority_blocked", "dispatch_enabled"
+  ],
+  "properties": {
+    "contract_name": {"type": "string", "const": "local.api.v1.sop_list"},
+    "contract_version": {"type": "string", "const": "1.0.0"},
+    "schema_version": {"type": "string", "const": "1.0.0"},
+    "tenant_id": {"type": "string", "minLength": 1},
+    "customer_context_id": {"type": "string", "minLength": 1},
+    "environment": {"type": "string", "const": "phase0_lab"},
+    "correlation_id": {"type": "string", "minLength": 1},
+    "causation_id": {"type": "null"},
+    "idempotency_key": {"type": "string", "minLength": 1},
+    "producer": {"type": "object", "additionalProperties": false, "required": ["component", "produced_at"], "properties": {
+      "component": {"type": "string", "const": "local_loopback_api"},
+      "produced_at": {"type": "string", "format": "date-time"}
+    }},
+    "policy_version": {"type": "string", "const": "policy-local-loopback-api-v1"},
+    "items": {"type": "array", "maxItems": 8, "items": {
+      "type": "object", "additionalProperties": false, "required": ["sop_id", "title"],
+      "properties": {
+        "sop_id": {"type": "string", "pattern": "^sop-[a-z0-9-]{1,64}$"},
+        "title": {"type": "string", "minLength": 1, "maxLength": 80}
+      }
+    }},
+    "count": {"type": "integer", "minimum": 0, "maximum": 8},
+    "instruction_bodies_included": {"type": "boolean", "const": false},
+    "runtime_authority_blocked": {"type": "boolean", "const": true},
+    "dispatch_enabled": {"type": "boolean", "const": false}
+  }
+}

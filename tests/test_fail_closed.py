@@ -17,15 +17,25 @@ class FailClosedTests(unittest.TestCase):
             with self.subTest(forbidden=forbidden):
                 self.assertNotIn(forbidden, source)
 
-        subprocess_importers = [
+        subprocess_importers = sorted(
             path.relative_to(runtime_root).as_posix()
             for path in runtime_files
             if "import subprocess" in path.read_text(encoding="utf-8")
-        ]
+        )
+        # profile_b_session launches only an operator-configured local ceremony
+        # helper: absolute path, shell disabled, stderr discarded, no network.
         self.assertEqual(
-            ["runtime/supervisor_conversation.py"],
+            [
+                "runtime/profile_b_session.py",
+                "runtime/supervisor_conversation.py",
+            ],
             subprocess_importers,
         )
+        profile_b_source = (runtime_root / "runtime" / "profile_b_session.py").read_text(encoding="utf-8")
+        self.assertIn("shell=False", profile_b_source)
+        self.assertIn("stderr=subprocess.DEVNULL", profile_b_source)
+        self.assertNotIn("import requests", profile_b_source)
+        self.assertNotIn("import socket", profile_b_source)
         conversation_source = (
             runtime_root / "runtime" / "supervisor_conversation.py"
         ).read_text(encoding="utf-8")

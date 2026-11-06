@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lima-office.local/contracts/v1/operator.profile_b.ceremony.schema.json",
+  "title": "Profile B Operator Ceremony v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_name", "contract_version", "schema_version", "tenant_id", "customer_context_id",
+    "environment", "correlation_id", "causation_id", "idempotency_key", "producer", "policy_version",
+    "status", "ceremony_available", "verification_mode", "challenge_id", "challenge_b64url",
+    "public_key_request", "owner_display_name_accepted", "session_created", "binding_id", "detail",
+    "local_loopback_only", "credentials_collected", "approval_authority", "runtime_authority_blocked",
+    "positive_approval_step_up", "survives_restart", "expires_at"
+  ],
+  "properties": {
+    "contract_name": {"type": "string", "const": "operator.profile_b.ceremony"},
+    "contract_version": {"type": "string", "const": "1.0.0"},
+    "schema_version": {"type": "string", "const": "1.0.0"},
+    "tenant_id": {"type": "string", "minLength": 1},
+    "customer_context_id": {"type": "string", "minLength": 1},
+    "environment": {"type": "string", "const": "phase0_lab"},
+    "correlation_id": {"type": "string", "minLength": 1},
+    "causation_id": {"type": "null"},
+    "idempotency_key": {"type": "string", "minLength": 1},
+    "producer": {"type": "object", "additionalProperties": false, "required": ["component", "produced_at"], "properties": {
+      "component": {"type": "string", "const": "operator_console"},
+      "produced_at": {"type": "string", "format": "date-time"}
+    }},
+    "policy_version": {"type": "string", "const": "policy-operator-profile-b-session-lab-v1"},
+    "status": {"type": "string", "enum": ["challenge_issued", "ceremony_unavailable", "rejected", "verified"]},
+    "ceremony_available": {"type": "boolean"},
+    "verification_mode": {"type": "string", "enum": ["lab_hmac", "platform_helper", "fail_closed"]},
+    "challenge_id": {"oneOf": [
+      {"type": "null"},
+      {"type": "string", "pattern": "^profile-b-challenge:[0-9a-f]{32}$"}
+    ]},
+    "challenge_b64url": {"oneOf": [
+      {"type": "null"},
+      {"type": "string", "pattern": "^[A-Za-z0-9_-]{16,128}$"}
+    ]},
+    "public_key_request": {"oneOf": [
+      {"type": "null"},
+      {"type": "object", "additionalProperties": false, "required": [
+        "rp_id", "rp_name", "user_display_name", "user_id_b64url", "challenge_b64url",
+        "user_verification", "authenticator_attachment", "timeout_ms", "attestation", "resident_key"
+      ], "properties": {
+        "rp_id": {"type": "string", "const": "localhost"},
+        "rp_name": {"type": "string", "const": "LIMA Office"},
+        "user_display_name": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9 .'-]{0,79}$"},
+        "user_id_b64url": {"type": "string", "pattern": "^[A-Za-z0-9_-]{16,128}$"},
+        "challenge_b64url": {"type": "string", "pattern": "^[A-Za-z0-9_-]{16,128}$"},
+        "user_verification": {"type": "string", "const": "required"},
+        "authenticator_attachment": {"type": "string", "const": "platform"},
+        "timeout_ms": {"type": "integer", "const": 120000},
+        "attestation": {"type": "string", "const": "none"},
+        "resident_key": {"type": "string", "const": "preferred"}
+      }}
+    ]},
+    "owner_display_name_accepted": {"type": "boolean"},
+    "session_created": {"type": "boolean"},
+    "binding_id": {"oneOf": [
+      {"type": "null"},
+      {"type": "string", "pattern": "^operator-profile-b-session:[0-9a-f]{32}$"}
+    ]},
+    "detail": {"type": "string", "minLength": 1, "maxLength": 240},
+    "local_loopback_only": {"type": "boolean", "const": true},
+    "credentials_collected": {"type": "boolean", "const": false},
+    "approval_authority": {"type": "boolean", "const": false},
+    "runtime_authority_blocked": {"type": "boolean", "const": true},
+    "positive_approval_step_up": {"type": "string", "const": "stub_only"},
+    "survives_restart": {"type": "boolean", "const": false},
+    "expires_at": {"oneOf": [
+      {"type": "null"},
+      {"type": "string", "format": "date-time"}
+    ]}
+  },
+  "allOf": [
+    {"if": {"properties": {"session_created": {"const": false}}, "required": ["session_created"]}, "then": {"properties": {"binding_id": {"type": "null"}}}},
+    {"if": {"properties": {"ceremony_available": {"const": false}}, "required": ["ceremony_available"]}, "then": {"properties": {"challenge_b64url": {"type": "null"}, "public_key_request": {"type": "null"}}}}
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "contract_name": "local.api.v1.descriptor",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-local.api.v1.descriptor-descriptor",
+  "causation_id": null,
+  "idempotency_key": "idem-local.api.v1.descriptor-descriptor",
+  "producer": {
+    "component": "local_loopback_api",
+    "produced_at": "2026-11-06T00:00:00Z"
+  },
+  "policy_version": "policy-local-loopback-api-v1",
+  "api_version": "v1",
+  "bind_host": "127.0.0.1",
+  "version_prefix": "/api/v1",
+  "legacy_prefix": "/api/office",
+  "legacy_aliases_deprecated": true,
+  "anonymous_mutating_routes": false,
+  "production_ready": false,
+  "customer_pilot_allowed": false,
+  "operator_authentication_manifest": false,
+  "runtime_authority_blocked": true,
+  "foreign_operator_shell_dependency": false,
+  "non_goals": [
+    "foreign_operator_shell_shapes",
+    "lan_bind",
+    "positive_approval_token_issue",
+    "arc_dispatch",
+    "profile_c_oidc",
+    "customer_data"
+  ],
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/api/v1",
+      "auth": "public_read",
+      "mutating": false,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/health",
+      "auth": "public_read",
+      "mutating": false,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/build",
+      "auth": "public_read",
+      "mutating": false,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/state",
+      "auth": "public_read",
+      "mutating": false,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/operator-session",
+      "auth": "public_read",
+      "mutating": false,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/operator-session/bind",
+      "auth": "session_establishment",
+      "mutating": true,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/operator-session/profile-b/begin",
+      "auth": "session_establishment",
+      "mutating": true,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/operator-session/profile-b/complete",
+      "auth": "session_establishment",
+      "mutating": true,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/workers",
+      "auth": "session_required",
+      "mutating": false,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/workers",
+      "auth": "session_required",
+      "mutating": true,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/evidence",
+      "auth": "session_required",
+      "mutating": true,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sop",
+      "auth": "session_required",
+      "mutating": false,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/conversation",
+      "auth": "session_required",
+      "mutating": true,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/helper/review",
+      "auth": "session_required",
+      "mutating": true,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/proposals/create",
+      "auth": "session_required",
+      "mutating": true,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/proposals/edit",
+      "auth": "session_required",
+      "mutating": true,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/proposals/transition",
+      "auth": "session_required",
+      "mutating": true,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/approval-previews/create",
+      "auth": "session_required",
+      "mutating": true,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/approval-previews/transition",
+      "auth": "session_required",
+      "mutating": true,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/approval-requests/create",
+      "auth": "session_required",
+      "mutating": true,
+      "runtime_authority_blocked": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/approval-requests/transition",
+      "auth": "session_required",
+      "mutating": true,
+      "runtime_authority_blocked": true
+    }
+  ]
+}

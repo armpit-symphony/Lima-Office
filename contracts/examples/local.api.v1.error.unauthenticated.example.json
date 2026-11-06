@@ -1,0 +1,23 @@
+{
+  "contract_name": "local.api.v1.error",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-local.api.v1.error-19b0f8c2c91c4efda0e76879c275f5b0",
+  "causation_id": null,
+  "idempotency_key": "idem-local.api.v1.error-19b0f8c2c91c4efda0e76879c275f5b0",
+  "producer": {
+    "component": "local_loopback_api",
+    "produced_at": "2026-11-06T00:00:00Z"
+  },
+  "policy_version": "policy-local-loopback-api-v1",
+  "error": "unauthenticated",
+  "detail": "An active operator session is required.",
+  "loopback_only": true,
+  "runtime_authority_blocked": true,
+  "approval_authority": false,
+  "production_ready": false,
+  "customer_pilot_allowed": false
+}

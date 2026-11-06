@@ -1,0 +1,26 @@
+{
+  "contract_name": "local.api.v1.sop_list",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-local.api.v1.sop_list-sop",
+  "causation_id": null,
+  "idempotency_key": "idem-local.api.v1.sop_list-sop",
+  "producer": {
+    "component": "local_loopback_api",
+    "produced_at": "2026-11-06T00:00:00Z"
+  },
+  "policy_version": "policy-local-loopback-api-v1",
+  "items": [
+    {
+      "sop_id": "sop-lab-registration-practice",
+      "title": "Synthetic registration practice"
+    }
+  ],
+  "count": 1,
+  "instruction_bodies_included": false,
+  "runtime_authority_blocked": true,
+  "dispatch_enabled": false
+}

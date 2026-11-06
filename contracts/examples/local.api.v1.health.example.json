@@ -1,0 +1,27 @@
+{
+  "contract_name": "local.api.v1.health",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "tenant_id": "tenant-lab-001",
+  "customer_context_id": "customer-context-main",
+  "environment": "phase0_lab",
+  "correlation_id": "corr-local.api.v1.health-health",
+  "causation_id": null,
+  "idempotency_key": "idem-local.api.v1.health-health",
+  "producer": {
+    "component": "local_loopback_api",
+    "produced_at": "2026-11-06T00:00:00Z"
+  },
+  "policy_version": "policy-local-loopback-api-v1",
+  "status": "ready",
+  "loopback_only": true,
+  "bind_host": "127.0.0.1",
+  "api_version": "v1",
+  "build_version": "development",
+  "arc_commit": "unknown",
+  "source_modified": false,
+  "production_ready": false,
+  "customer_pilot_allowed": false,
+  "operator_authentication": false,
+  "runtime_authority_blocked": true
+}
